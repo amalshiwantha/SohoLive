@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.view.activity.BroadcastActivity
+import com.soho.sohoapp.live.view.activity.HaishinActivity
 import com.soho.sohoapp.live.viewmodel.HomeViewModel
 
 @Composable
@@ -46,7 +47,7 @@ fun HomeScreen(navController: NavHostController, homeVm: HomeViewModel = viewMod
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
                 Button(onClick = {
                     //homeVm.setMessage("Updated")
-                    val intent = Intent(context, BroadcastActivity::class.java)
+                    val intent = Intent(context, HaishinActivity::class.java)
                     context.startActivity(intent)
                 }) {
                     Text("Update Message")
