@@ -61,7 +61,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation (libs.ui)
     implementation (libs.androidx.navigation.compose)
-
+    implementation(libs.rootencoder)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

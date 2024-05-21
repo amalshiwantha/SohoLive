@@ -32,7 +32,7 @@ fun SplashScreen(
     val isSplashVisible = remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        delay(5000)
+        delay(1000)
         isSplashVisible.value = false
 
         // Navigate to the HomeScreen
