@@ -59,13 +59,14 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation (libs.ui)
-    implementation (libs.androidx.navigation.compose)
-    implementation(libs.rootencoder)
-    implementation(libs.androidx.appcompat)
+    implementation(libs.ui)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    //RootEncoder
+    implementation(libs.rootencoder)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
