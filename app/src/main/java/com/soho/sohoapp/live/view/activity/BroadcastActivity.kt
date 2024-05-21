@@ -34,6 +34,7 @@ class BroadcastActivity : AppCompatActivity(), SurfaceHolder.Callback, ConnectCh
 
     // Mux's RTMP Entry point
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
+    private var streamKey: String = "cc62507f-a298-3091-6114-0360ad1d4de6"
 
     // UI Element references
     private var goLiveButton: Button? = null
@@ -44,15 +45,14 @@ class BroadcastActivity : AppCompatActivity(), SurfaceHolder.Callback, ConnectCh
 
     private var rtmpCamera: RtmpCamera1? = null
     private var liveDesired = false
-    private var streamKey: String = "0f3e96ac-5b7b-533c-dd6f-f2792e10d778"
     private var preset: Preset = Preset.sd_360p_30fps_1mbps
 
     // Encoding presets and profiles
     enum class Preset(var bitrate: Int, var width: Int, var height: Int, var frameRate: Int) {
         hd_1080p_30fps_5mbps(5000 * 1024, 1920, 1080, 30),
-        hd_720p_30fps_3mbps(3000 * 1024, 1280, 720, 90),
+        hd_720p_30fps_3mbps(3000 * 1024, 1280, 720, 30),
         sd_540p_30fps_2mbps(2000 * 1024, 960, 540, 30),
-        sd_360p_30fps_1mbps(1000 * 1024, 640, 360, 150),
+        sd_360p_30fps_1mbps(1000 * 1024, 640, 360, 30),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,7 +153,7 @@ class BroadcastActivity : AppCompatActivity(), SurfaceHolder.Callback, ConnectCh
 
     // Little wrapper to relocate and re-pad the toast a little
     private fun muxToast(message: String) {
-        val t = Toast.makeText(this@BroadcastActivity, message, Toast.LENGTH_SHORT)
+        val t = Toast.makeText(this@BroadcastActivity, message, Toast.LENGTH_LONG)
         t.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 5)
         t.show()
     }
@@ -197,8 +197,10 @@ class BroadcastActivity : AppCompatActivity(), SurfaceHolder.Callback, ConnectCh
             muxToast("RTMP Connection Failure: $reason")
         }
 
+        goLiveClicked()
         // Retry RTMP connection failures every 5 seconds
         //rtmpCamera?.retry(5000, reason)
+
     }
 
     fun onNewBitrateRtmp(bitrate: Long) {
