@@ -36,7 +36,9 @@ fun SplashScreen(
         isSplashVisible.value = false
 
         // Navigate to the HomeScreen
-        navController.navigate(NavigationPath.HOME.name)
+        navController.navigate(NavigationPath.HOME.name) {
+            popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
+        }
     }
 
     if (isSplashVisible.value) {
