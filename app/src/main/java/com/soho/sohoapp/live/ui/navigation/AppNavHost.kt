@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.view.nav
+package com.soho.sohoapp.live.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost

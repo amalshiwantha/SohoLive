@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
-import com.soho.sohoapp.live.view.nav.AppNavHost
+import com.soho.sohoapp.live.ui.navigation.AppNavHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

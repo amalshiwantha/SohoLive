@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.view.nav.NavigationPath
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import kotlinx.coroutines.delay
 
 @Composable
