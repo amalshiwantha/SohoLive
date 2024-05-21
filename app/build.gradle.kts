@@ -62,6 +62,10 @@ dependencies {
     implementation (libs.ui)
     implementation (libs.androidx.navigation.compose)
     implementation(libs.rootencoder)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

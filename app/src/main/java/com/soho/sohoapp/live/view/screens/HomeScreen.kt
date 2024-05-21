@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.view.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.view.activity.BroadcastActivity
 import com.soho.sohoapp.live.viewmodel.HomeViewModel
 
 @Composable
@@ -42,7 +44,11 @@ fun HomeScreen(navController: NavHostController, homeVm: HomeViewModel = viewMod
             ) {
                 Text("Welcome to the SohoLive ${uiState.loadingMessage}")
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
-                Button(onClick = { homeVm.setMessage("Updated") }) {
+                Button(onClick = {
+                    //homeVm.setMessage("Updated")
+                    val intent = Intent(context, BroadcastActivity::class.java)
+                    context.startActivity(intent)
+                }) {
                     Text("Update Message")
                 }
             }

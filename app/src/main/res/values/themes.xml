@@ -2,4 +2,6 @@
 <resources>
 
     <style name="Theme.SohoLive" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Broadcast" parent="Theme.AppCompat.Light.NoActionBar"/>
 </resources>
