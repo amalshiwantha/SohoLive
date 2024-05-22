@@ -15,6 +15,7 @@ import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.StreamResolution
 
+
 class HaishinActivity : AppCompatActivity() {
 
     private var rtmpCamera2: RtmpCamera2? = null
