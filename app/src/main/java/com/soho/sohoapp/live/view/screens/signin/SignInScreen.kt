@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 
 @Composable
-fun SigninScreen(
+fun SignInScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
