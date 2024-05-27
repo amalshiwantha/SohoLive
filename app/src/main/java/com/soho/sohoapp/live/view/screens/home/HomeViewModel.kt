@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.viewmodel
+package com.soho.sohoapp.live.view.screens.home
 
 import androidx.lifecycle.ViewModel
 import com.soho.sohoapp.live.model.UiState

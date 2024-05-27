@@ -5,6 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.view.screens.home.HomeScreen
+import com.soho.sohoapp.live.view.screens.signin.SigninScreen
+import com.soho.sohoapp.live.view.screens.signup.SignupScreen
 import com.soho.sohoapp.live.view.screens.splash.SplashScreen
 
 @Composable
@@ -16,10 +18,10 @@ fun AppNavHost() {
             SplashScreen(navController = navController)
         }
         composable(route = NavigationPath.SIGNIN.name) {
-            SplashScreen(navController = navController)
+            SigninScreen(navController = navController)
         }
         composable(route = NavigationPath.SIGNUP.name) {
-            SplashScreen(navController = navController)
+            SignupScreen(navController = navController)
         }
         composable(route = NavigationPath.HOME.name) {
             HomeScreen(navController = navController)

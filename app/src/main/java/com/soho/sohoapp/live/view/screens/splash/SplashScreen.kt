@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.datastore.DataStoreKeys
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import kotlinx.coroutines.delay
 
@@ -29,15 +31,25 @@ fun SplashScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
+    val context = LocalContext.current
+    //val addDataStore = AppDataStoreManager(context)
+
     val isSplashVisible = remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         delay(1000)
         isSplashVisible.value = false
 
-        // Navigate to the HomeScreen
-        navController.navigate(NavigationPath.HOME.name) {
-            popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
+        //val isLogged = addDataStore.readValue(DataStoreKeys.LOGIN_STATE)
+
+        if(false){
+            // Navigate to the HomeScreen
+            navController.navigate(NavigationPath.HOME.name) {
+                popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
+            }
+        }else{
+            // Navigate to the LoginScreen
+            navController.navigate(NavigationPath.SIGNIN.name)
         }
     }
 

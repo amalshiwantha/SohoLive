@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    //preference
+    implementation(libs.androidx.datastore)
+
     //RootEncoder
     implementation(libs.rootencoder)
 

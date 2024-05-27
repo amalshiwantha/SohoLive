@@ -23,7 +23,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.view.activity.HaishinActivity
-import com.soho.sohoapp.live.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(navController: NavHostController, homeVm: HomeViewModel = viewModel()) {
