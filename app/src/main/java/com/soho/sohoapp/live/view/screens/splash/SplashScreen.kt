@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.view.screens
+package com.soho.sohoapp.live.view.screens.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

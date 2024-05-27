@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.view.screens
+package com.soho.sohoapp.live.view.screens.home
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.view.activity.BroadcastActivity
 import com.soho.sohoapp.live.view.activity.HaishinActivity
 import com.soho.sohoapp.live.viewmodel.HomeViewModel
 
