@@ -33,57 +33,64 @@ fun SplashScreen(
     navController: NavHostController,
     splashViewModel: SplashViewModel = koinViewModel()
 ) {
-    val context = LocalContext.current
-    val isSplashVisible = remember { mutableStateOf(true) }
 
+    val isSplashVisible = remember { mutableStateOf(true) }
     val isLoggedIn by splashViewModel.isLoggedIn.collectAsState()
 
     LaunchedEffect(Unit) {
-        delay(1000)
+        delay(3000)
         isSplashVisible.value = false
-
-        if (isLoggedIn) {
-            // Navigate to the HomeScreen
-            navController.navigate(NavigationPath.HOME.name) {
-                popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
-            }
-        } else {
-            // Navigate to the LoginScreen
-            navController.navigate(NavigationPath.SIGNIN.name) {
-                popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
-            }
-        }
+        screenNavigation(isLoggedIn, navController)
     }
 
     if (isSplashVisible.value) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF2B0235),
-                            Color(0xFF32003E)
-                        )
+        SplashViewContent(modifier)
+    }
+}
+
+private fun screenNavigation(isLoggedIn: Boolean, navController: NavHostController) {
+    if (isLoggedIn) {
+        // Navigate to the HomeScreen
+        navController.navigate(NavigationPath.HOME.name) {
+            popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
+        }
+    } else {
+        // Navigate to the LoginScreen
+        navController.navigate(NavigationPath.SIGNIN.name) {
+            popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
+        }
+    }
+}
+
+@Composable
+private fun SplashViewContent(modifier: Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF2B0235),
+                        Color(0xFF32003E)
                     )
-                ),
-            contentAlignment = Alignment.Center,
+                )
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.soho_white),
-                    contentDescription = null,
-                    modifier = Modifier.wrapContentSize()
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.live_icon),
-                    contentDescription = null,
-                    modifier = Modifier.wrapContentSize()
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.soho_white),
+                contentDescription = null,
+                modifier = Modifier.wrapContentSize()
+            )
+            Image(
+                painter = painterResource(id = R.drawable.live_icon),
+                contentDescription = null,
+                modifier = Modifier.wrapContentSize()
+            )
         }
     }
 }
