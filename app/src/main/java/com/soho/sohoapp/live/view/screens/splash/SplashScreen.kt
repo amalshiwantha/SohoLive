@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,29 +23,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    splashViewModel: SplashViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
-    val addDataStore = AppDataStoreManager(context)
-
     val isSplashVisible = remember { mutableStateOf(true) }
+
+    val isLoggedIn by splashViewModel.isLoggedIn.collectAsState()
 
     LaunchedEffect(Unit) {
         delay(1000)
         isSplashVisible.value = false
 
-        //this is for temp
-        addDataStore.setLoginState(false)
-        val isLogged = addDataStore.readLoginState()
-
-        if (isLogged) {
+        if (isLoggedIn) {
             // Navigate to the HomeScreen
             navController.navigate(NavigationPath.HOME.name) {
                 popUpTo(NavigationPath.SPLASH.name) { inclusive = true }

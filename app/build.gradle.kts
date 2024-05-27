@@ -71,6 +71,13 @@ dependencies {
     //RootEncoder
     implementation(libs.rootencoder)
 
+    //DI
+    implementation("io.insert-koin:koin-android:3.4.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation("androidx.activity:activity-compose:1.9.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

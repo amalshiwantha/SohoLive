@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,6 +13,7 @@ import com.soho.sohoapp.live.view.screens.splash.SplashScreen
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
+    val context = LocalContext.current
 
     NavHost(navController = navController, startDestination = NavigationPath.SPLASH.name) {
         composable(route = NavigationPath.SPLASH.name) {

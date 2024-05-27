@@ -3,22 +3,23 @@ package com.soho.sohoapp.live.datastore
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-import com.soho.sohoapp.live.datastore.DataStoreKeys.PREF_KEY_LOGIN
-import kotlinx.coroutines.flow.first
+import com.soho.sohoapp.live.datastore.DataStoreKeys.PREF_KEY_LOGIN_STATE
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-const val APP_DATASTORE = "soholive"
+const val APP_DATASTORE = "sohoLive-pref"
 private val Context.dataStore by preferencesDataStore(APP_DATASTORE)
 
-class AppDataStoreManager(context: Context) {
-    private val dataStore = context.dataStore
+class AppDataStoreManager(private val context: Context) {
 
-    suspend fun setLoginState(isLogged: Boolean) {
-        dataStore.edit {
-            it[PREF_KEY_LOGIN] = isLogged
+    val loginState: Flow<Boolean>
+        get() = context.dataStore.data.map { preferences ->
+            preferences[PREF_KEY_LOGIN_STATE] ?: false
         }
-    }
 
-    suspend fun readLoginState(): Boolean {
-        return dataStore.data.first()[PREF_KEY_LOGIN] ?: false
+    suspend fun setLoginState(isLoggedIn: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PREF_KEY_LOGIN_STATE] = isLoggedIn
+        }
     }
 }
