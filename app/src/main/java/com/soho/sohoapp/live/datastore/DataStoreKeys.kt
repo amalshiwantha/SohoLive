@@ -1,5 +1,7 @@
 package com.soho.sohoapp.live.datastore
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
+
 object DataStoreKeys {
-    const val LOGIN_STATE = "com.soho.sohoapp.live.LOGIN_STATE"
+    val PREF_KEY_LOGIN = booleanPreferencesKey("login_state")
 }
