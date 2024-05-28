@@ -7,9 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
+import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.ui.navigation.AppNavHost
+import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,10 +26,22 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    ChangeSystemTrayColor()
                     AppNavHost()
                 }
             }
         }
+    }
+
+    @Composable
+    private fun ChangeSystemTrayColor() {
+        val systemUiController = rememberSystemUiController()
+        val useDarkIcons = false
+
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = useDarkIcons
+        )
     }
 }
 
