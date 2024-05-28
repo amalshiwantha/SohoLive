@@ -53,12 +53,12 @@ fun BottomButtons(modifier: Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ColouredBtn(text = "Log In",
+        ColouredBtn(text = stringResource(R.string.log_in),
             color = AppGreen,
             onBtnClick = { /* Handle button click */ })
 
         OutlinedBtnWhite(
-            text = "Sign Up",
+            text = stringResource(R.string.sign_up),
             onBtnClick = { /* Handle button click */ })
     }
 }
