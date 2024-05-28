@@ -21,8 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
@@ -37,7 +37,7 @@ fun SplashScreen(
     val isLoggedIn by splashViewModel.isLoggedIn.collectAsState()
 
     LaunchedEffect(Unit) {
-        delay(3000)
+        delay(1000)
         isSplashVisible.value = false
         screenNavigation(isLoggedIn, navController)
     }

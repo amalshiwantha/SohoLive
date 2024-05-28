@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.theme
+package com.soho.sohoapp.live.view.ui.theme
 
 import android.app.Activity
 import android.os.Build

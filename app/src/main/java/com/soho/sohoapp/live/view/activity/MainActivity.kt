@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.soho.sohoapp.live.ui.navigation.AppNavHost
-import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
+import com.soho.sohoapp.live.view.ui.navigation.AppNavHost
+import com.soho.sohoapp.live.view.ui.theme.SohoLiveTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

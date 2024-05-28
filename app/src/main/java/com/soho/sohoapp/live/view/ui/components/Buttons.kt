@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.components
+package com.soho.sohoapp.live.view.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth

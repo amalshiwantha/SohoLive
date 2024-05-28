@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.components
+package com.soho.sohoapp.live.view.ui.components
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

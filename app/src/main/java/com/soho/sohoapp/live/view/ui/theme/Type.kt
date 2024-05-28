@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.theme
+package com.soho.sohoapp.live.view.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

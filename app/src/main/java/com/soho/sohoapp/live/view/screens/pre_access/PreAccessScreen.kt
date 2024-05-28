@@ -25,11 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.ui.components.ColouredBtn
-import com.soho.sohoapp.live.ui.components.OutlinedBtnWhite
-import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.view.ui.components.ColouredBtn
+import com.soho.sohoapp.live.view.ui.components.OutlinedBtnWhite
+import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.view.ui.theme.AppGreen
+import com.soho.sohoapp.live.view.ui.theme.AppWhite
 
 @Composable
 fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostController) {
@@ -40,12 +41,12 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
         contentAlignment = Alignment.Center,
     ) {
         CenterImgText(modifier)
-        BottomButtons(modifier.align(alignment = Alignment.BottomCenter))
+        BottomButtons(modifier.align(alignment = Alignment.BottomCenter), navController)
     }
 }
 
 @Composable
-fun BottomButtons(modifier: Modifier) {
+fun BottomButtons(modifier: Modifier, navController: NavHostController) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -55,11 +56,11 @@ fun BottomButtons(modifier: Modifier) {
     ) {
         ColouredBtn(text = stringResource(R.string.log_in),
             color = AppGreen,
-            onBtnClick = { /* Handle button click */ })
+            onBtnClick = { navController.navigate(NavigationPath.SIGNIN.name) })
 
         OutlinedBtnWhite(
             text = stringResource(R.string.sign_up),
-            onBtnClick = { /* Handle button click */ })
+            onBtnClick = { navController.navigate(NavigationPath.SIGNUP.name) })
     }
 }
 
