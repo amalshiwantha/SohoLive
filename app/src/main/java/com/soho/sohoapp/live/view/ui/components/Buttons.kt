@@ -29,7 +29,7 @@ fun ColouredBtn(
             containerColor = color
         )
     ) {
-        TextWhite14(text)
+        TextWhite14(title = text)
     }
 }
 
