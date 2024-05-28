@@ -9,8 +9,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.TextWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
@@ -22,7 +24,11 @@ fun SignInScreen(
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { AppTopBar(title = "Log In", onBackClick = { navController.popBackStack() }) },
+        topBar = {
+            AppTopBar(
+                title = stringResource(R.string.welcome_back),
+                onBackClick = { navController.popBackStack() })
+        },
         content = { innerPadding ->
             Column(
                 modifier = Modifier
