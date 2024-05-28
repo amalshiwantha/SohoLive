@@ -1,11 +1,9 @@
 package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 
 val brushMainGradientBg = Brush.verticalGradient(
-    colors = listOf(
-        Color(0xFF2B0235),
-        Color(0xFF32003E)
-    )
+    colors = listOf(BgGradientPurpleLight, BgGradientPurpleDark)
 )

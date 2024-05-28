@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,6 +28,8 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.ColouredBtn
 import com.soho.sohoapp.live.ui.components.OutlinedBtnWhite
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @Composable
 fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostController) {
@@ -52,12 +53,12 @@ fun BottomButtons(modifier: Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ColouredBtn(text = "Login",
-            color = Color(0xFF00BFA8),
+        ColouredBtn(text = "Log In",
+            color = AppGreen,
             onBtnClick = { /* Handle button click */ })
 
         OutlinedBtnWhite(
-            text = "No Account? Visit livecast.soho.com.au",
+            text = "Sign Up",
             onBtnClick = { /* Handle button click */ })
     }
 }
@@ -77,7 +78,7 @@ fun CenterImgText(modifier: Modifier) {
             text = stringResource(R.string.pre_access_msg),
             fontFamily = FontFamily(Font(R.font.axiforma)),
             fontWeight = FontWeight(950),
-            color = Color(0xFFFFFFFF),
+            color = AppWhite,
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             lineHeight = 33.6.sp,
