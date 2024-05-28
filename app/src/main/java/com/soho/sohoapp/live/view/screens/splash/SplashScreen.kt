@@ -51,18 +51,12 @@ private fun screenNavigation(isLoggedIn: Boolean, navController: NavHostControll
     if (isLoggedIn) {
         // Navigate to the HomeScreen
         navController.navigate(NavigationPath.HOME.name) {
-            popUpTo(NavigationPath.SPLASH.name) {
-                inclusive = true
-                saveState = true
-            }
+            popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
         }
     } else {
         // Navigate to the PreAccessScreen
         navController.navigate(NavigationPath.PRE_ACCESS.name) {
-            popUpTo(NavigationPath.SPLASH.name) {
-                inclusive = true
-                saveState = true
-            }
+            popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
         }
     }
 }

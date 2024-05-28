@@ -112,10 +112,8 @@ private fun BottomLoginBtn(modifier: Modifier, navController: NavHostController)
             color = AppGreen,
             onBtnClick = {
                 navController.navigate(NavigationPath.HOME.name) {
-                    popUpTo(NavigationPath.SIGNIN.name) {
-                        inclusive = true
-                        saveState = true
-                    }
+                    popUpTo(NavigationPath.SIGNIN.name) { inclusive = true }
+                    popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
                 }
             })
     }
