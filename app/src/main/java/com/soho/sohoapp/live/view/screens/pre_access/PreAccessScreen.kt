@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.ui.components.ColouredBtnTxt14
+import com.soho.sohoapp.live.ui.components.ColouredBtn
 import com.soho.sohoapp.live.ui.components.OutlinedBtnWhite
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 
@@ -52,7 +52,7 @@ fun BottomButtons(modifier: Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ColouredBtnTxt14(text = "Login",
+        ColouredBtn(text = "Login",
             color = Color(0xFF00BFA8),
             onBtnClick = { /* Handle button click */ })
 
@@ -71,11 +71,8 @@ fun CenterImgText(modifier: Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.pre_access_img),
-            contentDescription = null,
-            modifier = Modifier.wrapContentSize()
-        )
+        CenterImage()
+
         Text(
             text = stringResource(R.string.pre_access_msg),
             fontFamily = FontFamily(Font(R.font.axiforma)),
@@ -85,6 +82,26 @@ fun CenterImgText(modifier: Modifier) {
             textAlign = TextAlign.Center,
             lineHeight = 33.6.sp,
             letterSpacing = 0.28.sp
+        )
+    }
+}
+
+@Composable
+fun CenterImage() {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.pre_access_img),
+            contentDescription = null,
+            modifier = Modifier.wrapContentSize()
+        )
+        Image(
+            painter = painterResource(id = R.drawable.girl_stand),
+            contentDescription = null,
+            modifier = Modifier
+                .wrapContentSize()
+                .align(alignment = Alignment.BottomCenter)
         )
     }
 }

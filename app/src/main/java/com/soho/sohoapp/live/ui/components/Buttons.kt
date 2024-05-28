@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ColouredBtnTxt14(
+fun ColouredBtn(
     text: String,
     color: Color,
     onBtnClick: () -> Unit
@@ -56,7 +56,7 @@ private fun CustomButtonPrev() {
 @Preview
 @Composable
 private fun ColouredButtonPrev() {
-    ColouredBtnTxt14(text = "Login",
+    ColouredBtn(text = "Login",
         color = Color.Red,
         onBtnClick = { /* Handle button click */ })
 }
