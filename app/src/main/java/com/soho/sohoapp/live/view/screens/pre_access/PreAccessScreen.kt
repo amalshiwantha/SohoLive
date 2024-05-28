@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.view.ui.components.ColouredBtn
-import com.soho.sohoapp.live.view.ui.components.OutlinedBtnWhite
+import com.soho.sohoapp.live.view.ui.components.ButtonColoured
+import com.soho.sohoapp.live.view.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.view.ui.theme.AppGreen
@@ -54,11 +54,11 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ColouredBtn(text = stringResource(R.string.log_in),
+        ButtonColoured(text = stringResource(R.string.log_in),
             color = AppGreen,
             onBtnClick = { navController.navigate(NavigationPath.SIGNIN.name) })
 
-        OutlinedBtnWhite(
+        ButtonOutlineWhite(
             text = stringResource(R.string.sign_up),
             onBtnClick = { navController.navigate(NavigationPath.SIGNUP.name) })
     }

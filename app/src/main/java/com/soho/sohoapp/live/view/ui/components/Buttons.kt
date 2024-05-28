@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ColouredBtn(
+fun ButtonColoured(
     text: String,
     color: Color,
     onBtnClick: () -> Unit
@@ -34,7 +34,7 @@ fun ColouredBtn(
 }
 
 @Composable
-fun OutlinedBtnWhite(text: String, onBtnClick: () -> Unit) {
+fun ButtonOutlineWhite(text: String, onBtnClick: () -> Unit) {
     OutlinedButton(
         onClick = { onBtnClick() },
         modifier = Modifier
@@ -50,13 +50,13 @@ fun OutlinedBtnWhite(text: String, onBtnClick: () -> Unit) {
 @Preview
 @Composable
 private fun CustomButtonPrev() {
-    OutlinedBtnWhite(text = "Signup", onBtnClick = { /* Handle button click */ })
+    ButtonOutlineWhite(text = "Signup", onBtnClick = { /* Handle button click */ })
 }
 
 @Preview
 @Composable
 private fun ColouredButtonPrev() {
-    ColouredBtn(text = "Login",
+    ButtonColoured(text = "Login",
         color = Color.Red,
         onBtnClick = { /* Handle button click */ })
 }
