@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SohoLive</string>
+    <string name="pre_access_msg">Multi-stream live auctions and home inspections on your socials</string>
 </resources>

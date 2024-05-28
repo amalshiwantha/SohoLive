@@ -15,14 +15,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
@@ -55,9 +54,9 @@ private fun screenNavigation(isLoggedIn: Boolean, navController: NavHostControll
             popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
         }
     } else {
-        // Navigate to the LoginScreen
-        navController.navigate(NavigationPath.SIGNIN.name) {
-            popUpTo(NavigationPath.SPLASH.name) { inclusive = true }
+        // Navigate to the PreAccessScreen
+        navController.navigate(NavigationPath.PRE_ACCESS.name) {
+            popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
         }
     }
 }
@@ -67,14 +66,7 @@ private fun SplashViewContent(modifier: Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF2B0235),
-                        Color(0xFF32003E)
-                    )
-                )
-            ),
+            .background(brushMainGradientBg),
         contentAlignment = Alignment.Center,
     ) {
         Row(
