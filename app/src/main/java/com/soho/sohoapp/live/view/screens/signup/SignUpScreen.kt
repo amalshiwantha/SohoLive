@@ -1,8 +1,9 @@
-package com.soho.sohoapp.live.view.screens.signin
+package com.soho.sohoapp.live.view.screens.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,14 +24,13 @@ import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
 import com.soho.sohoapp.live.view.ui.components.InputWhite
 import com.soho.sohoapp.live.view.ui.components.SpacerVertical
-import com.soho.sohoapp.live.view.ui.components.TextBlue14
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.view.ui.theme.AppGreen
 
 @Composable
-fun SignInScreen(
+fun SignUpScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
@@ -39,7 +40,7 @@ fun SignInScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.signin_title),
+                title = stringResource(R.string.signup_title),
                 onBackClick = { navController.popBackStack() })
         }
     ) { innerPadding ->
@@ -78,6 +79,25 @@ fun SignInScreen(
 private fun LoginForm() {
     Column {
 
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp, CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                TextLabelWhite14(label = stringResource(R.string.fName))
+                SpacerVertical(8.dp)
+                InputWhite()
+            }
+
+            Column(modifier = Modifier.weight(1f)) {
+                TextLabelWhite14(label = stringResource(R.string.lName))
+                SpacerVertical(8.dp)
+                InputWhite()
+            }
+        }
+
+        SpacerVertical(24.dp)
+
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
         InputWhite()
@@ -89,13 +109,6 @@ private fun LoginForm() {
         InputWhite()
 
         SpacerVertical(24.dp)
-
-        TextBlue14(
-            label = stringResource(R.string.forgot_password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(CenterHorizontally)
-        )
     }
 }
 
@@ -108,11 +121,11 @@ private fun BottomLoginBtn(modifier: Modifier, navController: NavHostController)
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        ButtonColoured(text = stringResource(R.string.log_in),
+        ButtonColoured(text = stringResource(R.string.sign_up),
             color = AppGreen,
             onBtnClick = {
                 navController.navigate(NavigationPath.HOME.name) {
-                    popUpTo(NavigationPath.SIGNIN.name) { inclusive = true }
+                    popUpTo(NavigationPath.SIGNUP.name) { inclusive = true }
                     popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
                 }
             })
@@ -122,5 +135,5 @@ private fun BottomLoginBtn(modifier: Modifier, navController: NavHostController)
 @Preview
 @Composable
 private fun SignInScreenPreview() {
-    SignInScreen(navController = NavHostController(LocalContext.current))
+    SignUpScreen(navController = NavHostController(LocalContext.current))
 }
