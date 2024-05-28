@@ -5,5 +5,6 @@ enum class NavigationPath {
     PRE_ACCESS,
     SIGNIN,
     SIGNUP,
+    FORGET_PW,
     HOME
 }

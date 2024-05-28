@@ -3,11 +3,14 @@
     <string name="pre_access_msg">Multi-stream live auctions and home inspections on your socials</string>
     <string name="log_in">Log In</string>
     <string name="sign_up">Sign Up</string>
+    <string name="forget_pw_link">Send Login Link</string>
     <string name="signin_title">Welcome Back</string>
     <string name="signup_title">Register and go live</string>
+    <string name="forget_pw_title">Forget Password</string>
     <string name="fName">First Name</string>
     <string name="lName">Last Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_pw_msg">If you have an existing account, we will send you a link to log in</string>
 </resources>

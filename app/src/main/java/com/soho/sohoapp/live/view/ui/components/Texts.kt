@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.view.ui.theme.AppWhite
 
 @Composable
 fun TextWhite14(modifier: Modifier = Modifier, title: String) {
@@ -20,7 +21,7 @@ fun TextWhite14(modifier: Modifier = Modifier, title: String) {
         lineHeight = 19.6.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(800),
-        color = Color(0xFFFFFFFF),
+        color = AppWhite,
         textAlign = TextAlign.Center,
         letterSpacing = 0.17.sp
     )
@@ -35,9 +36,23 @@ fun TextLabelWhite14(modifier: Modifier = Modifier, label: String) {
         lineHeight = 19.6.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(700),
-        color = Color(0xFFFFFFFF),
+        color = AppWhite,
         textAlign = TextAlign.Center,
         letterSpacing = 0.17.sp
+    )
+}
+
+@Composable
+fun TextSubtitleWhite14(modifier: Modifier = Modifier, label: String) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(400),
+        color = AppWhite,
+        letterSpacing = 0.17.sp,
     )
 }
 
