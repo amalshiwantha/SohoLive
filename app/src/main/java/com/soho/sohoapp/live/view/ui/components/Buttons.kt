@@ -29,7 +29,7 @@ fun ColouredBtn(
             containerColor = color
         )
     ) {
-        WhiteText_14sp(text)
+        TextWhite14(text)
     }
 }
 
@@ -43,7 +43,7 @@ fun OutlinedBtnWhite(text: String, onBtnClick: () -> Unit) {
         border = BorderStroke(2.dp, Color.White),
         shape = RoundedCornerShape(16.dp),
     ) {
-        WhiteText_14sp(title = text)
+        TextWhite14(title = text)
     }
 }
 
