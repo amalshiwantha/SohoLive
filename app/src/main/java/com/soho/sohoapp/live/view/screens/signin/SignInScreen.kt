@@ -47,6 +47,7 @@ fun SignInScreen(
     netUtil: NetworkUtils = koinInject()
 ) {
 
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val stateVm = vmSignIn.state.value
     val snackBarState = remember { SnackbarHostState() }
@@ -103,8 +104,8 @@ fun SignInScreen(
                     } else {
                         scope.launch {
                             snackBarState.showSnackbar(
-                                message = "No Internet Connection",
-                                actionLabel = "OK",
+                                message = context.getString(R.string.no_net),
+                                actionLabel = context.getString(R.string.ok),
                                 duration = SnackbarDuration.Short
                             )
                         }
