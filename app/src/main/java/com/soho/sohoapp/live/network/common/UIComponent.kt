@@ -1,4 +1,4 @@
-package network.common
+package com.soho.sohoapp.live.network.common
 
 sealed class UIComponent {
 

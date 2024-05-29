@@ -1,7 +1,6 @@
 package com.soho.sohoapp.live.network.common
 
 import network.common.NetworkState
-import network.common.UIComponent
 
 sealed class ApiState<T> {
 
