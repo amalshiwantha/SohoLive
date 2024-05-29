@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -18,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
 import com.soho.sohoapp.live.view.ui.components.InputWhite
@@ -25,17 +27,17 @@ import com.soho.sohoapp.live.view.ui.components.SpacerVertical
 import com.soho.sohoapp.live.view.ui.components.TextBlue14
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.view.ui.theme.AppGreen
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    signInVm: SignInViewModel = koinViewModel()
+    vmSignIn: SignInViewModel = koinInject()
 ) {
     val scrollState = rememberScrollState()
+    val stateVm = vmSignIn.state.value
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -65,11 +67,16 @@ fun SignInScreen(
                         .verticalScroll(scrollState),
                     verticalArrangement = Arrangement.Top
                 ) {
-                    LoginForm()
+                    LoginForm(vmSignIn, stateVm)
+                    if (stateVm.loadingState is ProgressBarState.Loading) {
+                        CircularProgressIndicator()
+                    }
                 }
 
                 SpacerVertical(24.dp)
-                BottomLoginBtn(modifier, navController)
+                BottomLoginBtn(modifier) {
+                    vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
+                }
             }
         }
     }
@@ -77,18 +84,25 @@ fun SignInScreen(
 
 
 @Composable
-private fun LoginForm() {
+private fun LoginForm(viewModel: SignInViewModel, state: SignInState) {
     Column {
+        val requestData = state.request
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
-        InputWhite()
+        InputWhite(onTextChange = {
+            requestData.apply { email = it }
+            viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+        })
 
         SpacerVertical(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerVertical(8.dp)
-        InputWhite()
+        InputWhite(onTextChange = {
+            requestData.apply { password = it }
+            viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+        })
 
         SpacerVertical(24.dp)
 
@@ -102,7 +116,7 @@ private fun LoginForm() {
 }
 
 @Composable
-private fun BottomLoginBtn(modifier: Modifier, navController: NavHostController) {
+private fun BottomLoginBtn(modifier: Modifier, onBtnClick: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -113,10 +127,11 @@ private fun BottomLoginBtn(modifier: Modifier, navController: NavHostController)
         ButtonColoured(text = stringResource(R.string.log_in),
             color = AppGreen,
             onBtnClick = {
-                navController.navigate(NavigationPath.HOME.name) {
+                onBtnClick()
+                /*navController.navigate(NavigationPath.HOME.name) {
                     popUpTo(NavigationPath.SIGNIN.name) { inclusive = true }
                     popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
-                }
+                }*/
             })
     }
 }

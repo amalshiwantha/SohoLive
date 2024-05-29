@@ -6,20 +6,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthResponse(
-    val candidates: List<Candidate>
+    val result: String? = null,
+    val status: Boolean = false,
+    val alert: Alert
 )
 
 @Serializable
-data class Candidate(
-    @SerialName("content") val content: Contents,
-)
-
-@Serializable
-data class Contents(
-    @SerialName("parts") val parts: List<Parts>
-)
-
-@Serializable
-data class Parts(
-    val text: String
+data class Alert(
+    val title: String,
+    val message: String
 )

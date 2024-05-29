@@ -5,8 +5,8 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import network.common.NetworkState
 
 data class SignInState(
-    val request: SignInRequest? = null,
+    val request: SignInRequest = SignInRequest("",""),
     val response: String? = null,
-    val progressBarState: ProgressBarState = ProgressBarState.Idle,
+    val loadingState: ProgressBarState = ProgressBarState.Idle,
     val networkState: NetworkState = NetworkState.Good
 )

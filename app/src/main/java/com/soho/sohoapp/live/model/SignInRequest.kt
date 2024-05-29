@@ -1,3 +1,6 @@
 package com.soho.sohoapp.live.model
 
-data class SignInRequest(val username: String, val password: String)
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class SignInRequest(var email: String, var password: String)

@@ -84,7 +84,7 @@ private fun LoginForm() {
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
-        InputWhite()
+        //InputWhite(txtEml)
 
         SpacerVertical(24.dp)
     }

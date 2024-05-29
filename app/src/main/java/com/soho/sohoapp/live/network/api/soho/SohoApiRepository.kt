@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
-    fun login(loginReq: SignInRequest): Flow<ApiState<String>> = flow {
+    fun signIn(loginReq: SignInRequest): Flow<ApiState<String>> = flow {
         try {
 
             emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
             val apiResponse = service.login(loginReq)
-            val recipeResult = apiResponse.candidates.first().content.parts.first().text
+            val recipeResult = apiResponse.alert.message
 
             emit(ApiState.Data(recipeResult))
 

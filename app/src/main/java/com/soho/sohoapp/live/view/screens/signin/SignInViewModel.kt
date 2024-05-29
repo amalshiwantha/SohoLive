@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
-    private val state: MutableState<SignInState> = mutableStateOf(SignInState())
+    val state: MutableState<SignInState> = mutableStateOf(SignInState())
 
     fun onTriggerEvent(signInEvent: SignInEvent) {
         when (signInEvent) {
-            SignInEvent.CallSignIn -> callSignIn()
+            SignInEvent.CallSignIn -> callSignInApi()
             is SignInEvent.OnUpdateRequest -> updateRequest(signInEvent.request)
         }
     }
@@ -24,25 +24,23 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
         state.value = state.value.copy(request = event)
     }
 
-    private fun callSignIn() {
-        state.value.request?.let {
-            apiRepo.login(it).onEach { apiState ->
-                when (apiState) {
-                    is ApiState.Data -> {
-                        apiState.data?.let { result ->
-                            state.value = state.value.copy(response = result)
-                        }
+    private fun callSignInApi() {
+        apiRepo.signIn(state.value.request).onEach { apiState ->
+            when (apiState) {
+                is ApiState.Data -> {
+                    apiState.data?.let { result ->
+                        state.value = state.value.copy(response = result)
                     }
-
-                    is ApiState.Loading -> {
-                        state.value =
-                            state.value.copy(progressBarState = apiState.progressBarState)
-                    }
-
-                    is ApiState.NetworkStatus -> TODO()
-                    is ApiState.Response -> TODO()
                 }
-            }.launchIn(viewModelScope)
-        }
+
+                is ApiState.Loading -> {
+                    state.value =
+                        state.value.copy(loadingState = apiState.progressBarState)
+                }
+
+                is ApiState.NetworkStatus -> TODO()
+                is ApiState.Response -> TODO()
+            }
+        }.launchIn(viewModelScope)
     }
 }

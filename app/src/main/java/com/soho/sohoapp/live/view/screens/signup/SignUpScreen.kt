@@ -86,13 +86,13 @@ private fun LoginForm() {
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.fName))
                 SpacerVertical(8.dp)
-                InputWhite()
+                //InputWhite(txtEml)
             }
 
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.lName))
                 SpacerVertical(8.dp)
-                InputWhite()
+                //InputWhite(txtEml)
             }
         }
 
@@ -100,13 +100,13 @@ private fun LoginForm() {
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
-        InputWhite()
+        //InputWhite(txtEml)
 
         SpacerVertical(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerVertical(8.dp)
-        InputWhite()
+        //InputWhite(txtEml)
 
         SpacerVertical(24.dp)
     }

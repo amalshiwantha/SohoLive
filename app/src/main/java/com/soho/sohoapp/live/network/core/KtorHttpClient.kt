@@ -57,9 +57,7 @@ object KtorHttpClient {
         HttpResponseValidator {
             validateResponse { response: HttpResponse ->
                 val statusCode = response.status.value
-                if (statusCode !in 200..299) {
-                    throw Exception("AppDebug Error : $statusCode")
-                }
+                println("AppDebug statusCode : $statusCode")
             }
         }
 
