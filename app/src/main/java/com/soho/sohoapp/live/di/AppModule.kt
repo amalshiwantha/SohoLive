@@ -5,6 +5,7 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.api.soho.SohoApiServices
 import com.soho.sohoapp.live.network.api.soho.SohoServicesImpl
 import com.soho.sohoapp.live.network.core.KtorHttpClient
+import com.soho.sohoapp.live.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.view.screens.splash.SplashViewModel
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
@@ -25,4 +26,5 @@ val appModule = module {
 
     //ViewModels
     viewModel { SplashViewModel(get()) }
+    viewModel { SignInViewModel(get()) }
 }

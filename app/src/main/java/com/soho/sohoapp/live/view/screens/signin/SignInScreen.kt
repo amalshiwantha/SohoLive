@@ -27,11 +27,13 @@ import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.view.ui.theme.AppGreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    signInVm: SignInViewModel = koinViewModel()
 ) {
     val scrollState = rememberScrollState()
 
