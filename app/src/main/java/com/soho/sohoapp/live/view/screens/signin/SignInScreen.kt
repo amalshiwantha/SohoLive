@@ -8,14 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,7 +27,9 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.utility.AlertDialogConfig
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.view.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
 import com.soho.sohoapp.live.view.ui.components.InputWhite
@@ -106,18 +105,14 @@ fun SignInScreen(
 
                     //Display alert
                     if (stateVm.alertState is AlertState.Display) {
-                        AlertDialog(
-                            onDismissRequest = { vmSignIn.onTriggerEvent(SignInEvent.DismissAlert) },
-                            title = { Text(text = "alert.title") },
-                            text = { Text(text = "alert.message") },
-                            confirmButton = {
-                                Button(onClick = {
-                                    vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
-                                }) {
-                                    Text(text = "confirmBtnText")
-                                }
-                            }
-                        )
+                        AppAlertDialog(
+                            alert = AlertDialogConfig.SIGN_IN_ERROR,
+                            onConfirm = {
+                                vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+                            },
+                            onDismiss = {
+                                vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+                            })
                     }
                 }
 

@@ -5,7 +5,7 @@ enum class AlertDialogConfig(
     val message: String,
     val confirmBtnText: String,
     val dismissBtnText: String,
-    val isConfirm: Boolean = false
+    var isConfirm: Boolean = false
 ) {
     SIGN_IN_ERROR(
         title = "Sign In Problem",
