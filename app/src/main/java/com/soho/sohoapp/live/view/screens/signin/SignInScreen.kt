@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +28,7 @@ import com.soho.sohoapp.live.view.ui.components.SpacerVertical
 import com.soho.sohoapp.live.view.ui.components.TextBlue14
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.view.ui.theme.AppGreen
 import org.koin.compose.koinInject
 
@@ -38,6 +40,15 @@ fun SignInScreen(
 ) {
     val scrollState = rememberScrollState()
     val stateVm = vmSignIn.state.value
+
+    LaunchedEffect(key1 = stateVm.isLoginSuccess) {
+        if (stateVm.isLoginSuccess) {
+            navController.navigate(NavigationPath.HOME.name) {
+                popUpTo(NavigationPath.SIGNIN.name) { inclusive = true }
+                popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -128,10 +139,6 @@ private fun BottomLoginBtn(modifier: Modifier, onBtnClick: () -> Unit) {
             color = AppGreen,
             onBtnClick = {
                 onBtnClick()
-                /*navController.navigate(NavigationPath.HOME.name) {
-                    popUpTo(NavigationPath.SIGNIN.name) { inclusive = true }
-                    popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
-                }*/
             })
     }
 }
