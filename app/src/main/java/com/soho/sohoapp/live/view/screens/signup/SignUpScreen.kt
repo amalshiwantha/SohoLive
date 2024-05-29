@@ -16,13 +16,17 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
+import com.soho.sohoapp.live.view.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.SpacerVertical
+import com.soho.sohoapp.live.view.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
@@ -63,7 +67,7 @@ fun SignUpScreen(
                         .verticalScroll(scrollState),
                     verticalArrangement = Arrangement.Top
                 ) {
-                    LoginForm()
+                    SignupFormContent()
                 }
 
                 SpacerVertical(24.dp)
@@ -75,7 +79,7 @@ fun SignUpScreen(
 
 
 @Composable
-private fun LoginForm() {
+private fun SignupFormContent() {
     Column {
 
         Row(
@@ -85,13 +89,23 @@ private fun LoginForm() {
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.fName))
                 SpacerVertical(8.dp)
-                //InputWhite(txtEml)
+                TextFieldWhite(
+                    FieldConfig.NEXT.apply {
+                        placeholder = stringResource(R.string.fName)
+                        keyboardType = KeyboardType.Text
+                    },
+                    onTextChange = {})
             }
 
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.lName))
                 SpacerVertical(8.dp)
-                //InputWhite(txtEml)
+                TextFieldWhite(
+                    FieldConfig.NEXT.apply {
+                        placeholder = stringResource(R.string.lName)
+                        keyboardType = KeyboardType.Text
+                    },
+                    onTextChange = {})
             }
         }
 
@@ -99,13 +113,18 @@ private fun LoginForm() {
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
-        //InputWhite(txtEml)
+        TextFieldWhite(
+            FieldConfig.NEXT.apply {
+                placeholder = stringResource(R.string.email)
+                keyboardType = KeyboardType.Email
+            },
+            onTextChange = {})
 
         SpacerVertical(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerVertical(8.dp)
-        //InputWhite(txtEml)
+        PasswordTextFieldWhite(onTextChange = {})
 
         SpacerVertical(24.dp)
     }
