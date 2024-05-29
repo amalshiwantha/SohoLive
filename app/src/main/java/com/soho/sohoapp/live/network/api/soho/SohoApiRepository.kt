@@ -1,6 +1,6 @@
 package com.soho.sohoapp.live.network.api.soho
 
-import com.soho.sohoapp.live.model.LoginRequest
+import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.common.formatException
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
-    fun login(loginReq: LoginRequest): Flow<ApiState<String>> = flow {
+    fun login(loginReq: SignInRequest): Flow<ApiState<String>> = flow {
         try {
 
             emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
