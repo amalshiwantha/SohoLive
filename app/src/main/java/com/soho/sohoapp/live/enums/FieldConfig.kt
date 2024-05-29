@@ -6,7 +6,7 @@ import androidx.compose.ui.text.input.KeyboardType
 enum class FieldConfig(
     var placeholder: String = "",
     var keyboardType: KeyboardType = KeyboardType.Text,
-    val imeAction: ImeAction = ImeAction.Next,
+    var imeAction: ImeAction = ImeAction.Next,
     var isSingleLine: Boolean = true
 ) {
     NEXT(imeAction = ImeAction.Next),

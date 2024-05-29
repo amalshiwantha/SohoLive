@@ -35,7 +35,7 @@ import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
 import com.soho.sohoapp.live.view.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.SpacerVertical
-import com.soho.sohoapp.live.view.ui.components.TextBlue14
+import com.soho.sohoapp.live.view.ui.components.TextButtonBlue
 import com.soho.sohoapp.live.view.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
@@ -98,7 +98,9 @@ fun SignInScreen(
                 ) {
 
                     //Display login form
-                    LoginForm(vmSignIn, stateVm)
+                    LoginForm(vmSignIn, stateVm) {
+                        navController.navigate(NavigationPath.FORGET_PW.name)
+                    }
 
                     //Display progress bar
                     if (stateVm.loadingState is ProgressBarState.Loading) {
@@ -140,7 +142,7 @@ fun SignInScreen(
 }
 
 @Composable
-private fun LoginForm(viewModel: SignInViewModel, state: SignInState) {
+private fun LoginForm(viewModel: SignInViewModel, state: SignInState, onForgetPwClick: () -> Unit) {
     Column {
         val requestData = state.request
 
@@ -164,12 +166,11 @@ private fun LoginForm(viewModel: SignInViewModel, state: SignInState) {
 
         SpacerVertical(24.dp)
 
-        TextBlue14(
-            label = stringResource(R.string.forgot_password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(CenterHorizontally)
-        )
+        TextButtonBlue(text = stringResource(R.string.forgot_password), modifier = Modifier
+            .fillMaxWidth()
+            .align(CenterHorizontally), onBtnClick = {
+            onForgetPwClick()
+        })
     }
 }
 
