@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
+import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -17,7 +18,13 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
         when (signInEvent) {
             SignInEvent.CallSignIn -> callSignInApi()
             is SignInEvent.OnUpdateRequest -> updateRequest(signInEvent.request)
+            SignInEvent.DismissAlert -> dismissAlertState()
         }
+    }
+
+    private fun dismissAlertState() {
+        state.value =
+            state.value.copy(alertState = AlertState.Idle)
     }
 
     private fun updateRequest(event: SignInRequest) {
@@ -26,23 +33,22 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
 
     private fun callSignInApi() {
         apiRepo.signIn(state.value.request).onEach { apiState ->
+
             when (apiState) {
+
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        state.value = state.value.copy(
-                            response = result.alert.title,
-                            isLoginSuccess = result.status
-                        )
+                        state.value = state.value.copy(isLoginSuccess = result.status)
                     }
                 }
 
                 is ApiState.Loading -> {
-                    state.value =
-                        state.value.copy(loadingState = apiState.progressBarState)
+                    state.value = state.value.copy(loadingState = apiState.progressBarState)
                 }
 
-                is ApiState.NetworkStatus -> TODO()
-                is ApiState.AlertResponse -> TODO()
+                is ApiState.Alert -> {
+                    state.value = state.value.copy(alertState = apiState.alertState)
+                }
             }
         }.launchIn(viewModelScope)
     }

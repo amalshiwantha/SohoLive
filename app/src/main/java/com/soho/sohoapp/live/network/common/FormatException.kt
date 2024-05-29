@@ -8,10 +8,7 @@ fun <T> formatException(e: Exception): ApiState<T> {
     val errorTitle = e.cause?.message
     val errorMsg = e.message
 
-    return ApiState.AlertResponse(
-        alertView = AlertView.Dialog(
-            title = errorTitle.toString(),
-            description = errorMsg.toString()
-        )
+    return ApiState.Alert(
+        alertState = AlertState.Display
     )
 }

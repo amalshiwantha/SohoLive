@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -25,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
@@ -46,13 +50,13 @@ fun SignInScreen(
     vmSignIn: SignInViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject()
 ) {
-
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val stateVm = vmSignIn.state.value
     val snackBarState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    //if login success then open home screen
     LaunchedEffect(key1 = stateVm.isLoginSuccess) {
         if (stateVm.isLoginSuccess) {
             navController.navigate(NavigationPath.HOME.name) {
@@ -91,13 +95,35 @@ fun SignInScreen(
                         .verticalScroll(scrollState),
                     verticalArrangement = Arrangement.Top
                 ) {
+
+                    //Display login form
                     LoginForm(vmSignIn, stateVm)
+
+                    //Display progress bar
                     if (stateVm.loadingState is ProgressBarState.Loading) {
                         CircularProgressIndicator()
+                    }
+
+                    //Display alert
+                    if (stateVm.alertState is AlertState.Display) {
+                        AlertDialog(
+                            onDismissRequest = { vmSignIn.onTriggerEvent(SignInEvent.DismissAlert) },
+                            title = { Text(text = "alert.title") },
+                            text = { Text(text = "alert.message") },
+                            confirmButton = {
+                                Button(onClick = {
+                                    vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+                                }) {
+                                    Text(text = "confirmBtnText")
+                                }
+                            }
+                        )
                     }
                 }
 
                 SpacerVertical(24.dp)
+
+                //Display bottom login button
                 BottomLoginBtn(modifier) {
                     if (netUtil.isNetworkAvailable()) {
                         vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
@@ -115,7 +141,6 @@ fun SignInScreen(
         }
     }
 }
-
 
 @Composable
 private fun LoginForm(viewModel: SignInViewModel, state: SignInState) {
