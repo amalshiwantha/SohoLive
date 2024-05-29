@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.model
+package com.soho.sohoapp.live.enums
 
 enum class StreamResolution(val width: Int, val height: Int) {
     FULL_HD(1920, 1080),

@@ -22,7 +22,6 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
-import com.soho.sohoapp.live.view.ui.components.InputWhite
 import com.soho.sohoapp.live.view.ui.components.SpacerVertical
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg

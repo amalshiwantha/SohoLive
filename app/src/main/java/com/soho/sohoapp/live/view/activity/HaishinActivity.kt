@@ -13,7 +13,7 @@ import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.model.StreamResolution
+import com.soho.sohoapp.live.enums.StreamResolution
 
 
 class HaishinActivity : AppCompatActivity() {

@@ -25,16 +25,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.AlertDialogConfig
+import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
-import com.soho.sohoapp.live.utility.AlertDialogConfig
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.view.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
-import com.soho.sohoapp.live.view.ui.components.InputWhite
+import com.soho.sohoapp.live.view.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.SpacerVertical
 import com.soho.sohoapp.live.view.ui.components.TextBlue14
+import com.soho.sohoapp.live.view.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
@@ -144,16 +146,18 @@ private fun LoginForm(viewModel: SignInViewModel, state: SignInState) {
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
-        InputWhite(onTextChange = {
-            requestData.apply { email = it }
-            viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
-        })
+        TextFieldWhite(
+            FieldConfig.NEXT.apply { placeholder = stringResource(R.string.email) },
+            onTextChange = {
+                requestData.apply { email = it }
+                viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+            })
 
         SpacerVertical(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerVertical(8.dp)
-        InputWhite(onTextChange = {
+        PasswordTextFieldWhite(onTextChange = {
             requestData.apply { password = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
         })

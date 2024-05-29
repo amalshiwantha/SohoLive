@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.utility
+package com.soho.sohoapp.live.enums
 
 enum class AlertDialogConfig(
     val title: String,
