@@ -11,6 +11,6 @@ sealed class ApiState<T> {
     data class Loading<T>(val progressBarState: ProgressBarState = ProgressBarState.Idle) :
         ApiState<T>()
 
-    data class Response<T>(val uiComponent: UIComponent) : ApiState<T>()
+    data class AlertResponse<T>(val alertView: AlertView) : ApiState<T>()
 
 }

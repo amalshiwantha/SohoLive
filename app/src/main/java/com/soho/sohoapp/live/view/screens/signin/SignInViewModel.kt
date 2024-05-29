@@ -29,8 +29,10 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
             when (apiState) {
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        state.value = state.value.copy(response = result)
-                        state.value = state.value.copy(isLoginSuccess = true)
+                        state.value = state.value.copy(
+                            response = result.alert.title,
+                            isLoginSuccess = result.status
+                        )
                     }
                 }
 
@@ -40,7 +42,7 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
                 }
 
                 is ApiState.NetworkStatus -> TODO()
-                is ApiState.Response -> TODO()
+                is ApiState.AlertResponse -> TODO()
             }
         }.launchIn(viewModelScope)
     }

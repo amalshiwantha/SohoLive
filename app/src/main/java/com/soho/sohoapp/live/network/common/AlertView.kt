@@ -1,12 +1,12 @@
 package com.soho.sohoapp.live.network.common
 
-sealed class UIComponent {
+sealed class AlertView {
 
     data class Toast(
         val title: String,
-    ) : UIComponent()
+    ) : AlertView()
 
     data class Dialog(
         val title: String, val description: String
-    ) : UIComponent()
+    ) : AlertView()
 }
