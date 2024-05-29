@@ -10,8 +10,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.view.ui.components.AppTopBar
 import com.soho.sohoapp.live.view.ui.components.ButtonColoured
 import com.soho.sohoapp.live.view.ui.components.InputWhite
@@ -30,16 +36,21 @@ import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.view.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.view.ui.theme.AppGreen
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    vmSignIn: SignInViewModel = koinInject()
+    vmSignIn: SignInViewModel = koinInject(),
+    netUtil: NetworkUtils = koinInject()
 ) {
+
     val scrollState = rememberScrollState()
     val stateVm = vmSignIn.state.value
+    val snackBarState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = stateVm.isLoginSuccess) {
         if (stateVm.isLoginSuccess) {
@@ -52,6 +63,7 @@ fun SignInScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(hostState = snackBarState) },
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.signin_title),
@@ -86,7 +98,17 @@ fun SignInScreen(
 
                 SpacerVertical(24.dp)
                 BottomLoginBtn(modifier) {
-                    vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
+                    if (netUtil.isNetworkAvailable()) {
+                        vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
+                    } else {
+                        scope.launch {
+                            snackBarState.showSnackbar(
+                                message = "No Internet Connection",
+                                actionLabel = "OK",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
                 }
             }
         }
