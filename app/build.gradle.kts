@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 android {
@@ -75,9 +76,16 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.4.3")
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
     implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+
+    //Kort (Network)
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.okhttp)
+    implementation(libs.ktor.serialization)
+    implementation(libs.ktor.negotiation)
 
 
     testImplementation(libs.junit)
