@@ -17,10 +17,8 @@ class SohoApiRepository(private val service: SohoApiServices) {
             val apiResponse = service.login(loginReq)
             emit(ApiState.Data(data = apiResponse))
 
-            emit(ApiState.Alert(alertState = AlertState.Display))
-
         } catch (e: Exception) {
-            //emit(formatException(e))
+            emit(ApiState.Alert(alertState = AlertState.Display))
         } finally {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
         }

@@ -9,7 +9,7 @@ enum class AlertDialogConfig(
 ) {
     SIGN_IN_ERROR(
         title = "Sign In Problem",
-        message = "Please check your credentials and try again.",
+        message = "Something went wrong. Please re-try later",
         confirmBtnText = "",
         dismissBtnText = "OK",
     ),
