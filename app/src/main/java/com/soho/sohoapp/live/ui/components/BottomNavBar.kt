@@ -3,11 +3,15 @@ package com.soho.sohoapp.live.ui.components
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.soho.sohoapp.live.enums.BottomNavigationItem
+import com.soho.sohoapp.live.ui.theme.BottomBarBg
+import com.soho.sohoapp.live.ui.theme.BottomBarSelect
+import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
 
 @Composable
 fun BottomNavigationBar(
@@ -17,10 +21,20 @@ fun BottomNavigationBar(
 ) {
     var navigationSelectedItem = selectedItem
 
-    NavigationBar {
+    NavigationBar(
+        containerColor = BottomBarBg
+    ) {
         BottomNavigationItem().navigationItems()
             .forEachIndexed { index, navigationItem ->
                 NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = BottomBarSelect,
+                        selectedTextColor = BottomBarSelect,
+                        unselectedIconColor = BottomBarUnselect,
+                        unselectedTextColor = BottomBarUnselect,
+                        indicatorColor = BottomBarBg,
+
+                        ),
                     selected = index == navigationSelectedItem,
                     label = {
                         Text(navigationItem.label)
