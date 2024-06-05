@@ -32,7 +32,7 @@ fun AppNavHost() {
             ForgetPwScreen(navController = navController)
         }
         composable(route = NavigationPath.HOME.name) {
-            HomeScreen(navController = navController)
+            HomeScreen(navControllerHome = navController)
         }
     }
 }
