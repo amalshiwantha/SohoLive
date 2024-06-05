@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,7 +47,7 @@ fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = vie
 
     val context = LocalContext.current
     val uiState by homeVm.uiState.collectAsState()
-    var navigationSelectedItem by remember { mutableStateOf(0) }
+    var navigationSelectedItem by remember { mutableIntStateOf(0) }
     val navController = rememberNavController()
 
     Scaffold(
