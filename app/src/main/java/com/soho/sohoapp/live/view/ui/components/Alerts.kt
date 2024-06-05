@@ -5,12 +5,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.soho.sohoapp.live.enums.AlertDialogConfig
+import com.soho.sohoapp.live.enums.AlertConfig
 
 
 @Composable
 fun AppAlertDialog(
-    alert: AlertDialogConfig,
+    alert: AlertConfig,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {

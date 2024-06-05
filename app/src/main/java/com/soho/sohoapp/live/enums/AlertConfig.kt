@@ -1,6 +1,6 @@
 package com.soho.sohoapp.live.enums
 
-enum class AlertDialogConfig(
+enum class AlertConfig(
     val title: String,
     var message: String,
     val confirmBtnText: String,
