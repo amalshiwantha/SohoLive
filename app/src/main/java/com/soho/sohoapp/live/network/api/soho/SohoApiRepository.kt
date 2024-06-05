@@ -22,7 +22,6 @@ class SohoApiRepository(private val service: SohoApiServices) {
         } catch (e: Exception) {
             //emit(formatException(e))
         } finally {
-
             emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
         }
     }

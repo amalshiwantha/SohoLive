@@ -13,23 +13,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertDialogConfig
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -57,7 +55,7 @@ fun SignInScreen(
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val stateVm = vmSignIn.state.value
+    val stateVm = vmSignIn.mStateLogin.value
     val snackBarState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -146,9 +144,15 @@ fun SignInScreen(
 }
 
 @Composable
-private fun LoginForm(viewModel: SignInViewModel, state: SignInState, onForgetPwClick: () -> Unit) {
+private fun LoginForm(
+    viewModel: SignInViewModel,
+    loginState: SignInState,
+    onForgetPwClick: () -> Unit
+) {
+
     Column {
-        val requestData = state.request
+        val requestData = loginState.request
+        val errorState = loginState.errorStates
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
@@ -158,7 +162,11 @@ private fun LoginForm(viewModel: SignInViewModel, state: SignInState, onForgetPw
                 requestData.apply { email = it }
                 viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
             })
-        TextError(errorMsg = "Invalid Email")
+
+        //error email visibility
+        errorState[FieldType.LOGIN_EMAIL]?.let {
+            TextError(errorMsg = it)
+        }
 
         SpacerVertical(24.dp)
 
@@ -168,7 +176,10 @@ private fun LoginForm(viewModel: SignInViewModel, state: SignInState, onForgetPw
             requestData.apply { password = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
         })
-        TextError(errorMsg = "Required Password")
+        //error pw visibility
+        errorState[FieldType.LOGIN_PW]?.let {
+            TextError(errorMsg = it)
+        }
 
         SpacerVertical(24.dp)
 

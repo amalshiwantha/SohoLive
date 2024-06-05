@@ -15,4 +15,7 @@
     <string name="forgot_pw_msg">If you have an existing account, we will send you a link to log in</string>
     <string name="no_net">No Internet Connection</string>
     <string name="ok">OK</string>
+    <string name="email_empty">Email cannot be empty</string>
+    <string name="email_notvalid">Email is not valid</string>
+    <string name="password_empty">Password cannot be empty</string>
 </resources>
