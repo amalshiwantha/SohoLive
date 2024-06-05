@@ -2,13 +2,13 @@ package com.soho.sohoapp.live.enums
 
 enum class AlertDialogConfig(
     val title: String,
-    val message: String,
+    var message: String,
     val confirmBtnText: String,
     val dismissBtnText: String,
     var isConfirm: Boolean = false
 ) {
     SIGN_IN_ERROR(
-        title = "Sign In Problem",
+        title = "SignIn Problem",
         message = "Something went wrong. Please re-try later",
         confirmBtnText = "",
         dismissBtnText = "OK",

@@ -36,8 +36,6 @@ fun formValidation(
                     null
                 }
             }
-
-            else -> null
         }
 
         //update local state

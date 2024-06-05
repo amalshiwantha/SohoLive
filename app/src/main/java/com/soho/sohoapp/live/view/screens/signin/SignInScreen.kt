@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.AlertDialogConfig
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.network.common.AlertState
@@ -111,8 +110,10 @@ fun SignInScreen(
 
                     //Display alert
                     if (stateVm.alertState is AlertState.Display) {
+                        val alertConfig = stateVm.alertState.config
+
                         AppAlertDialog(
-                            alert = AlertDialogConfig.SIGN_IN_ERROR,
+                            alert = alertConfig,
                             onConfirm = {
                                 vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
                             },

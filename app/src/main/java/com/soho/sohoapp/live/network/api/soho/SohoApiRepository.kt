@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.network.api.soho
 
+import com.soho.sohoapp.live.enums.AlertDialogConfig
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
@@ -18,7 +19,11 @@ class SohoApiRepository(private val service: SohoApiServices) {
             emit(ApiState.Data(data = apiResponse))
 
         } catch (e: Exception) {
-            emit(ApiState.Alert(alertState = AlertState.Display))
+            e.message?.let {
+                emit(ApiState.Alert(alertState = AlertState.Display(AlertDialogConfig.SIGN_IN_ERROR.apply {
+                    message = it
+                })))
+            }
         } finally {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
         }

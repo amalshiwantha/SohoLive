@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soho.sohoapp.live.enums.AlertDialogConfig
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
@@ -62,7 +63,15 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
                             mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
                         } else {
                             mStateLogin.value =
-                                mStateLogin.value.copy(alertState = AlertState.Display)
+                                mStateLogin.value.copy(
+                                    alertState = AlertState.Display(
+                                        AlertDialogConfig.SIGN_IN_ERROR.apply {
+                                            result.response?.let {
+                                                message = it
+                                            }
+                                        }
+                                    )
+                                )
                         }
                     }
                 }
