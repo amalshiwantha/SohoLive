@@ -38,7 +38,9 @@ fun BottomNavigationBar(
                         ),
                     selected = index == navigationSelectedItem,
                     label = {
-                        Text(navigationItem.label)
+                        if (navigationItem.label.isNotEmpty()) {
+                            Text(navigationItem.label)
+                        }
                     },
                     icon = {
                         Icon(

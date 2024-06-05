@@ -26,7 +26,7 @@ data class BottomNavigationItem(
                 route = NavigationPath.VIDEO_LIBRARY.name
             ),
             BottomNavigationItem(
-                label = "Profile",
+                label = "",
                 icon = R.drawable.ic_bottom_profile,
                 route = NavigationPath.PROFILE.name
             ),
