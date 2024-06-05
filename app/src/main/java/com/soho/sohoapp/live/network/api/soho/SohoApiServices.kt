@@ -6,7 +6,7 @@ import com.soho.sohoapp.live.network.response.AuthResponse
 
 interface SohoApiServices {
     companion object {
-        const val LOGIN = "user/login?key=?"
+        const val LOGIN = "sessions/login"
         const val SIGNUP = "user/signup?key=?"
         const val FORGET_PW = "user/forgetPw?key=?"
     }

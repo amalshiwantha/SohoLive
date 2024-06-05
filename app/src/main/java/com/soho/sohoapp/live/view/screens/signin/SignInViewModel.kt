@@ -38,7 +38,8 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        state.value = state.value.copy(isLoginSuccess = result.status)
+                        val isSuccessLogin = !result.responseType.equals("error")
+                        state.value = state.value.copy(isLoginSuccess = isSuccessLogin)
                     }
                 }
 

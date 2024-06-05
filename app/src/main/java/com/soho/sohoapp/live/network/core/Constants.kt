@@ -1,3 +1,3 @@
 package com.soho.sohoapp.live.network.core
 
-const val BASE_URL = "https://shop.soheilkhaledabadi.ir/api/v1/"
+const val BASE_URL = "https://staging.sohoapp.com/api/soho_live/"
