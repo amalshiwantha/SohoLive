@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
-import com.soho.sohoapp.live.view.screens.signin.SignInState
+import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 
 fun formValidation(
     state: MutableState<SignInState>, mapList: MutableMap<FieldType, String?>

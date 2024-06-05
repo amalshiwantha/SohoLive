@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.BroadcastActivity">
+    tools:context=".ui.view.activity.BroadcastActivity">
 
     <Button
         android:id="@+id/btnGoLive"
