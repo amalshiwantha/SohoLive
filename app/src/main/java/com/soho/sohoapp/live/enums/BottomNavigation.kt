@@ -1,37 +1,33 @@
 package com.soho.sohoapp.live.enums
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 
 data class BottomNavigationItem(
     val label: String = "",
-    val icon: ImageVector = Icons.Filled.Home,
+    val icon: Int = R.drawable.ic_bottom_schadule,
     val route: String = ""
 ) {
     fun navigationItems(): List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(
                 label = "Scheduled",
-                icon = Icons.Filled.Home,
+                icon = R.drawable.ic_bottom_schadule,
                 route = NavigationPath.SCHEDULED.name
             ),
             BottomNavigationItem(
                 label = "Go Live",
-                icon = Icons.Filled.Search,
+                icon = R.drawable.ic_bottom_live,
                 route = NavigationPath.GO_LIVE.name
             ),
             BottomNavigationItem(
                 label = "Video Library",
-                icon = Icons.Filled.Search,
+                icon = R.drawable.ic_bottom_play,
                 route = NavigationPath.VIDEO_LIBRARY.name
             ),
             BottomNavigationItem(
                 label = "Profile",
-                icon = Icons.Filled.AccountCircle,
+                icon = R.drawable.ic_bottom_profile,
                 route = NavigationPath.PROFILE.name
             ),
         )

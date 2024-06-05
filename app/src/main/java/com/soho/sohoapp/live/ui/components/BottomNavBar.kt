@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.soho.sohoapp.live.enums.BottomNavigationItem
@@ -41,7 +42,7 @@ fun BottomNavigationBar(
                     },
                     icon = {
                         Icon(
-                            navigationItem.icon,
+                            painterResource(id = navigationItem.icon),
                             contentDescription = navigationItem.label
                         )
                     },
