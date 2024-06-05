@@ -13,16 +13,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertDialogConfig
@@ -36,6 +39,7 @@ import com.soho.sohoapp.live.view.ui.components.ButtonColoured
 import com.soho.sohoapp.live.view.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.SpacerVertical
 import com.soho.sohoapp.live.view.ui.components.TextButtonBlue
+import com.soho.sohoapp.live.view.ui.components.TextError
 import com.soho.sohoapp.live.view.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.view.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.view.ui.components.brushMainGradientBg
@@ -154,6 +158,7 @@ private fun LoginForm(viewModel: SignInViewModel, state: SignInState, onForgetPw
                 requestData.apply { email = it }
                 viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
             })
+        TextError(errorMsg = "Invalid Email")
 
         SpacerVertical(24.dp)
 
@@ -163,6 +168,7 @@ private fun LoginForm(viewModel: SignInViewModel, state: SignInState, onForgetPw
             requestData.apply { password = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
         })
+        TextError(errorMsg = "Required Password")
 
         SpacerVertical(24.dp)
 

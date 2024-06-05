@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.view.ui.components
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,6 +9,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.view.ui.theme.AppWhite
@@ -68,5 +70,19 @@ fun TextBlue14(modifier: Modifier = Modifier, label: String) {
         color = Color(0xFF0DAEE1),
         textAlign = TextAlign.Center,
         letterSpacing = 0.17.sp
+    )
+}
+
+@Composable
+fun TextError(modifier: Modifier = Modifier, errorMsg: String) {
+    Text(
+        text = errorMsg,
+        color = Color(0xFFEE21C1),
+        lineHeight = 19.6.sp,
+        letterSpacing = 0.17.sp,
+        fontSize = 12.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(400),
+        modifier = modifier.padding(top = 4.dp)
     )
 }
