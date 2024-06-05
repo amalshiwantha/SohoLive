@@ -87,6 +87,11 @@ dependencies {
     implementation(libs.ktor.serialization)
     implementation(libs.ktor.negotiation)
 
+    //bottom nav
+    implementation("androidx.compose.ui:ui:1.6.7")
+    implementation("androidx.compose.material:material:1.6.7")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -95,4 +100,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(kotlin("reflect"))
 }

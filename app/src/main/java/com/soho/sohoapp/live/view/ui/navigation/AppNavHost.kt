@@ -15,7 +15,7 @@ import com.soho.sohoapp.live.view.screens.splash.SplashScreen
 fun AppNavHost() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = NavigationPath.SPLASH.name) {
+    NavHost(navController = navController, startDestination = NavigationPath.HOME.name) {
         composable(route = NavigationPath.SPLASH.name) {
             SplashScreen(navController = navController)
         }
