@@ -5,13 +5,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-
-sealed class Screens(val route: String) {
-    data object Scheduled : Screens("route_scheduled")
-    data object GoLive : Screens("route_go_live")
-    data object VideoLibrary : Screens("route_video_library")
-    data object Profile : Screens("route_profile")
-}
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 
 data class BottomNavigationItem(
     val label: String = "",
@@ -23,22 +17,22 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "Scheduled",
                 icon = Icons.Filled.Home,
-                route = Screens.Scheduled.route
+                route = NavigationPath.SCHEDULED.name
             ),
             BottomNavigationItem(
                 label = "Go Live",
                 icon = Icons.Filled.Search,
-                route = Screens.GoLive.route
+                route = NavigationPath.GO_LIVE.name
             ),
             BottomNavigationItem(
                 label = "Video Library",
                 icon = Icons.Filled.Search,
-                route = Screens.VideoLibrary.route
+                route = NavigationPath.VIDEO_LIBRARY.name
             ),
             BottomNavigationItem(
                 label = "Profile",
                 icon = Icons.Filled.AccountCircle,
-                route = Screens.Profile.route
+                route = NavigationPath.PROFILE.name
             ),
         )
     }

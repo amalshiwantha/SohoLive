@@ -6,5 +6,9 @@ enum class NavigationPath {
     SIGNIN,
     SIGNUP,
     FORGET_PW,
-    HOME
+    HOME,
+    SCHEDULED,
+    GO_LIVE,
+    VIDEO_LIBRARY,
+    PROFILE
 }

@@ -34,14 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.Screens
 import com.soho.sohoapp.live.model.UiState
-import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
+import com.soho.sohoapp.live.ui.navigation.BottomNavHost
+import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 
 @Composable
 fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = viewModel()) {
@@ -59,26 +57,7 @@ fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = vie
             })
         }
     ) { innerPadding ->
-
-        NavHost(
-            navController = navController,
-            startDestination = Screens.Scheduled.route,
-            modifier = Modifier.padding(paddingValues = innerPadding)
-        ) {
-            composable(Screens.Scheduled.route) {
-                HomeContent(navController, "Home Content")
-            }
-            composable(Screens.GoLive.route) {
-                GoLiveScreen(uiState, context)
-            }
-            composable(Screens.VideoLibrary.route) {
-                HomeContent(navController, "Video Library")
-            }
-            composable(Screens.Profile.route) {
-                HomeContent(navController, "Profile Content")
-            }
-        }
-
+        BottomNavHost(navController, innerPadding)
     }
 }
 
