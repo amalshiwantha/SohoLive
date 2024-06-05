@@ -28,6 +28,9 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
     private fun dismissAlertState() {
         mStateLogin.value =
             mStateLogin.value.copy(alertState = AlertState.Idle)
+
+        //THIS IS FOR TEMP
+        mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
     }
 
     private fun updateRequest(event: SignInRequest) {
