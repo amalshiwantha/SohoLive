@@ -18,4 +18,8 @@
     <string name="email_empty">Email cannot be empty</string>
     <string name="email_notvalid">Email is not valid</string>
     <string name="password_empty">Password cannot be empty</string>
+    <string name="scheduled_livestreams">Scheduled Livestreams</string>
+    <string name="create_livestream">Create Livestream</string>
+    <string name="your_videos">Your Videos</string>
+    <string name="manage_profile">Manage Profile</string>
 </resources>
