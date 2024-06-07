@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.ui.view.screens.home
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,7 +40,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.UiState
+import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
+import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 
@@ -52,13 +56,25 @@ fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = vie
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        topBar = {
+            AppTopBar(
+                title = stringResource(R.string.signin_title),
+                onBackClick = { navController.popBackStack() })
+        },
         bottomBar = {
             BottomNavigationBar(navController, navigationSelectedItem, onTabClick = {
                 navigationSelectedItem = it
             })
         }
     ) { innerPadding ->
-        BottomNavHost(navController, innerPadding)
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(brushMainGradientBg)
+                .padding(innerPadding)
+        ) {
+            BottomNavHost(navController)
+        }
     }
 }
 

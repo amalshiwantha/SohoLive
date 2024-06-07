@@ -11,10 +11,9 @@ import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 
 @Composable
-fun BottomNavHost(navController: NavHostController, innerPadding: PaddingValues) {
+fun BottomNavHost(navController: NavHostController) {
     NavHost(
-        navController = navController, startDestination = NavigationPath.SCHEDULED.name,
-        modifier = Modifier.padding(paddingValues = innerPadding)
+        navController = navController, startDestination = NavigationPath.SCHEDULED.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
             HomeContent(navController, "SCHEDULED")
