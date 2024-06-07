@@ -20,7 +20,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppTopBar(title: String, onBackClick: () -> Unit) {
+fun AppTopBar(title: String, isAllowBack: Boolean = true, onBackClick: () -> Unit) {
     TopAppBar(
         title = {
             Text(
@@ -34,12 +34,14 @@ fun AppTopBar(title: String, onBackClick: () -> Unit) {
             )
         },
         navigationIcon = {
-            IconButton(onClick = { onBackClick() }) {
-                Icon(
-                    imageVector = Icons.Sharp.ArrowBackIosNew,
-                    tint = AppWhite,
-                    contentDescription = "Back"
-                )
+            if (isAllowBack) {
+                IconButton(onClick = { onBackClick() }) {
+                    Icon(
+                        imageVector = Icons.Sharp.ArrowBackIosNew,
+                        tint = AppWhite,
+                        contentDescription = "Back"
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -51,5 +53,5 @@ fun AppTopBar(title: String, onBackClick: () -> Unit) {
 @Preview
 @Composable
 private fun PreviewAppTopBar() {
-    AppTopBar("Welcome Back"){}
+    AppTopBar("Welcome Back") {}
 }

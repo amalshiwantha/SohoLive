@@ -59,6 +59,7 @@ fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = vie
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.signin_title),
+                isAllowBack = false,
                 onBackClick = { navController.popBackStack() })
         },
         bottomBar = {
