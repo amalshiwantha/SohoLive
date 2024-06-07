@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 
 @Composable
@@ -19,7 +20,7 @@ fun BottomNavHost(navController: NavHostController, innerPadding: PaddingValues)
             HomeContent(navController, "SCHEDULED")
         }
         composable(route = NavigationPath.GO_LIVE.name) {
-            HomeContent(navController, "GO LIVE")
+            GoLiveScreen(navController)
         }
         composable(route = NavigationPath.VIDEO_LIBRARY.name) {
             HomeContent(navController, "VIDEO LIBRARY")

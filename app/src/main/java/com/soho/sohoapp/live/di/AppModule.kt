@@ -5,6 +5,8 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.api.soho.SohoApiServices
 import com.soho.sohoapp.live.network.api.soho.SohoServicesImpl
 import com.soho.sohoapp.live.network.core.KtorHttpClient
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashViewModel
@@ -29,4 +31,5 @@ val appModule = module {
     //ViewModels
     viewModel { SplashViewModel(get()) }
     viewModel { SignInViewModel(get()) }
+    viewModel { GoLiveViewModel(get()) }
 }

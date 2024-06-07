@@ -63,7 +63,7 @@ fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = vie
 }
 
 @Composable
-fun GoLiveScreen(uiState: UiState, context: Context) {
+fun GoLiveScreenActivity(uiState: UiState, context: Context) {
     Box(
         modifier = Modifier
             .fillMaxSize(), contentAlignment = Alignment.Center
