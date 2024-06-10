@@ -74,10 +74,16 @@ fun GoLiveScreen(
             ScrollableContent()
         }
 
-        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter)) {
-            currentStepId = (currentStepId + 1) % stepCount
-            changeStepView(currentStepId)
-        }
+        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter),
+            currentStepId = currentStepId,
+            onClickedNext = {
+                currentStepId = (currentStepId + 1) % stepCount
+                changeStepView(currentStepId)
+            },
+            onClickedBack = {
+                currentStepId = (currentStepId - 1) % stepCount
+                changeStepView(currentStepId)
+            })
     }
 }
 
@@ -115,7 +121,12 @@ private fun StepIndicator(
 }
 
 @Composable
-private fun FixedNextButton(modifier: Modifier, onClickedNext: () -> Unit) {
+private fun FixedNextButton(
+    modifier: Modifier,
+    currentStepId: Int,
+    onClickedNext: () -> Unit,
+    onClickedBack: () -> Unit
+) {
     Box(
         modifier = modifier.background(
             brushBottomGradientBg, shape = RoundedCornerShape(
@@ -123,11 +134,35 @@ private fun FixedNextButton(modifier: Modifier, onClickedNext: () -> Unit) {
             )
         )
     ) {
-        ButtonColoured(
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            if (currentStepId > 0) {
+                ButtonColoured(
+                    text = "Back", color = Color.Gray, modifier = Modifier.weight(1f)
+                ) {
+                    onClickedBack.invoke()
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+            ButtonColoured(
+                text = "Next", color = AppGreen, modifier = Modifier.weight(1f)
+            ) {
+                onClickedNext.invoke()
+            }
+
+        }
+        /*ButtonColoured(
             text = "Next", color = AppGreen, modifier = Modifier.padding(16.dp)
         ) {
             onClickedNext.invoke()
-        }
+        }*/
     }
 }
 
@@ -306,6 +341,9 @@ private fun PreviewGoLiveScreen() {
             ScrollableContent()
         }
 
-        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter)) {}
+        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter),
+            currentStepId = 0,
+            onClickedNext = {},
+            onClickedBack = {})
     }
 }
