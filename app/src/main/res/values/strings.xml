@@ -23,4 +23,5 @@
     <string name="your_videos">Your Videos</string>
     <string name="manage_profile">Manage Profile</string>
     <string name="placeholder_search">Search for an address</string>
+    <string name="search_address">Search for an address</string>
 </resources>

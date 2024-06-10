@@ -41,11 +41,8 @@ fun ScreenContent() {
         )
     ) {
         StepCountTitleInfo()
-
         Spacer(modifier = Modifier.height(40.dp))
-
         SearchBar()
-
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
