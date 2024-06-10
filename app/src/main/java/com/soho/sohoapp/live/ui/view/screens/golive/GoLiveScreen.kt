@@ -77,8 +77,10 @@ fun GoLiveScreen(
         FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStepId,
             onClickedNext = {
-                currentStepId = (currentStepId + 1) % stepCount
-                changeStepView(currentStepId)
+                if (currentStepId < stepCount - 1) {
+                    currentStepId++
+                    changeStepView(currentStepId)
+                }
             },
             onClickedBack = {
                 currentStepId = (currentStepId - 1) % stepCount
@@ -156,13 +158,7 @@ private fun FixedNextButton(
             ) {
                 onClickedNext.invoke()
             }
-
         }
-        /*ButtonColoured(
-            text = "Next", color = AppGreen, modifier = Modifier.padding(16.dp)
-        ) {
-            onClickedNext.invoke()
-        }*/
     }
 }
 
