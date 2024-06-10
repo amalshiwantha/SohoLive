@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerVertical
@@ -64,9 +65,9 @@ fun GoLiveScreen(
 
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            StepIndicator(stepCount = stepCount, currentStep = currentStepId)
+            StepIndicator(totalSteps = stepCount, currentStep = currentStepId)
             SpacerVertical(16.dp)
-            StepCountTitleInfo()
+            StepCountTitleInfo(currentStepId)
             SpacerVertical(40.dp)
             SearchBar()
             SpacerVertical(16.dp)
@@ -80,20 +81,17 @@ fun GoLiveScreen(
     }
 }
 
-fun changeStepView(currentStepId: Int) {
+private fun changeStepView(currentStepId: Int) {
     println("myStep old " + currentStepId)
 }
 
 @Composable
 private fun StepIndicator(
-    stepCount: Int,
+    totalSteps: Int,
     currentStep: Int,
     activeColor: Color = Color.White,
     inactiveColor: Color = Color.DarkGray
 ) {
-
-    val totalSteps = 4
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -117,7 +115,7 @@ private fun StepIndicator(
 }
 
 @Composable
-fun FixedNextButton(modifier: Modifier, onClickedNext: () -> Unit) {
+private fun FixedNextButton(modifier: Modifier, onClickedNext: () -> Unit) {
     Box(
         modifier = modifier.background(
             brushBottomGradientBg, shape = RoundedCornerShape(
@@ -135,7 +133,7 @@ fun FixedNextButton(modifier: Modifier, onClickedNext: () -> Unit) {
 
 
 @Composable
-fun ScrollableContent() {
+private fun ScrollableContent() {
     val defaultPadding = 50.dp
     val listState = rememberLazyListState()
     var bottomPadding by remember { mutableStateOf(defaultPadding) }
@@ -161,7 +159,7 @@ fun ScrollableContent() {
 }
 
 @Composable
-fun ItemContent(index: Int) {
+private fun ItemContent(index: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -200,7 +198,7 @@ fun ItemContent(index: Int) {
 }
 
 @Composable
-fun AmenitiesView() {
+private fun AmenitiesView() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -217,7 +215,7 @@ fun AmenitiesView() {
 }
 
 @Composable
-fun AmenitiesIcon(icon: Int) {
+private fun AmenitiesIcon(icon: Int) {
     Image(
         painter = painterResource(id = icon),
         contentDescription = null,
@@ -227,7 +225,7 @@ fun AmenitiesIcon(icon: Int) {
 }
 
 @Composable
-fun TypeAndCheckBox(isChecked: Boolean) {
+private fun TypeAndCheckBox(isChecked: Boolean) {
 
     var checked by remember { mutableStateOf(isChecked) }
 
@@ -278,13 +276,19 @@ fun TypeAndCheckBox(isChecked: Boolean) {
     }
 }
 
+private fun getStepInfo(currentStepId: Int): StepInfo {
+    return StepInfo.entries[(currentStepId) % StepInfo.entries.size]
+}
+
 @Composable
-fun StepCountTitleInfo() {
-    Text700_14sp(step = "Step 1 of 4")
+private fun StepCountTitleInfo(currentStepId: Int) {
+    val stepInfo = getStepInfo(currentStepId)
+
+    Text700_14sp(step = stepInfo.counter)
     SpacerVertical(8.dp)
-    Text950_20sp(title = "Link livestream to your property")
+    Text950_20sp(title = stepInfo.title)
     SpacerVertical(8.dp)
-    Text400_14sp(info = "Prospect interested in your listing will be notified of your scheduled livestream and will be livecasted on your property listing page.")
+    Text400_14sp(info = stepInfo.info)
 }
 
 @Preview
@@ -293,9 +297,9 @@ private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             SpacerVertical(40.dp)
-            StepIndicator(stepCount = 0, currentStep = 2)
+            StepIndicator(totalSteps = 0, currentStep = 2)
             SpacerVertical(16.dp)
-            StepCountTitleInfo()
+            StepCountTitleInfo(0)
             SpacerVertical(40.dp)
             SearchBar()
             SpacerVertical(16.dp)
