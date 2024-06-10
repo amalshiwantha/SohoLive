@@ -145,6 +145,34 @@ fun TextPlaceHolder(modifier: Modifier = Modifier, label: String) {
     )
 }
 
+@Composable
+fun Text700_12sp(modifier: Modifier = Modifier, label: String) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        letterSpacing = 0.14.sp,
+        color = Color(0xFF00BFA8),
+        fontWeight = FontWeight(700),
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+    )
+}
+
+@Composable
+fun Text400_12sp(modifier: Modifier = Modifier, label: String) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        letterSpacing = 0.14.sp,
+        color = Color(0xFFFFFFFF),
+        fontWeight = FontWeight(400),
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+    )
+}
+
 
 @Preview
 @Composable
