@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,9 +59,12 @@ fun GoLiveScreen(
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject()
 ) {
+    val stepCount = 4
+    var currentStepId by remember { mutableIntStateOf(0) }
+
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            StepIndicator(currentStep = 1)
+            StepIndicator(stepCount = stepCount, currentStep = currentStepId)
             SpacerVertical(16.dp)
             StepCountTitleInfo()
             SpacerVertical(40.dp)
@@ -69,12 +73,20 @@ fun GoLiveScreen(
             ScrollableContent()
         }
 
-        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter))
+        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter)) {
+            currentStepId = (currentStepId + 1) % stepCount
+            changeStepView(currentStepId)
+        }
     }
+}
+
+fun changeStepView(currentStepId: Int) {
+    println("myStep old " + currentStepId)
 }
 
 @Composable
 private fun StepIndicator(
+    stepCount: Int,
     currentStep: Int,
     activeColor: Color = Color.White,
     inactiveColor: Color = Color.DarkGray
@@ -105,7 +117,7 @@ private fun StepIndicator(
 }
 
 @Composable
-fun FixedNextButton(modifier: Modifier) {
+fun FixedNextButton(modifier: Modifier, onClickedNext: () -> Unit) {
     Box(
         modifier = modifier.background(
             brushBottomGradientBg, shape = RoundedCornerShape(
@@ -116,7 +128,7 @@ fun FixedNextButton(modifier: Modifier) {
         ButtonColoured(
             text = "Next", color = AppGreen, modifier = Modifier.padding(16.dp)
         ) {
-
+            onClickedNext.invoke()
         }
     }
 }
@@ -281,7 +293,7 @@ private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             SpacerVertical(40.dp)
-            StepIndicator(currentStep = 1)
+            StepIndicator(stepCount = 0, currentStep = 2)
             SpacerVertical(16.dp)
             StepCountTitleInfo()
             SpacerVertical(40.dp)
@@ -290,6 +302,6 @@ private fun PreviewGoLiveScreen() {
             ScrollableContent()
         }
 
-        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter))
+        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter)) {}
     }
 }
