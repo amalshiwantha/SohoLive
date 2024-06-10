@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
+import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,10 +35,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -199,7 +202,7 @@ private fun ScrollableContentStep3() {
     val defaultPadding = 0.dp
     val listState = rememberLazyListState()
     var bottomPadding by remember { mutableStateOf(defaultPadding) }
-    val socialMediaItems = SocialMediaInfo.values().toList()
+    val socialMediaItems = SocialMediaInfo.entries
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
@@ -337,11 +340,16 @@ private fun SocialMediaItemContent(info: SocialMediaInfo) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
 
             //logo
+            val imgSize = getImageWidth(info.icon)
             Image(
                 painter = painterResource(id = info.icon),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
+                modifier = if (imgSize.width == 0) {
+                    Modifier
+                } else {
+                    Modifier.size(imgSize.width.dp, imgSize.height.dp)
+                }
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -352,6 +360,21 @@ private fun SocialMediaItemContent(info: SocialMediaInfo) {
             }
         }
     }
+}
+
+@Composable
+private fun getImageWidth(drawableResId: Int): Size {
+    val context = LocalContext.current
+    val drawable = ResourcesCompat.getDrawable(context.resources, drawableResId, null)
+    val width = drawable?.intrinsicWidth ?: 0
+    val height = drawable?.intrinsicHeight ?: 0
+
+    if (width > 1000) {
+        return Size(105, 24)
+    } else {
+        return Size(0, 0)
+    }
+
 }
 
 @Composable
