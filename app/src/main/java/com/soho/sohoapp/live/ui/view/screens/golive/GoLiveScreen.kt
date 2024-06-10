@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.golive
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,19 +69,14 @@ fun GoLiveScreen(
 @Composable
 fun FixedNextButton(modifier: Modifier) {
     Box(
-        modifier = modifier
-            .background(
-                brushBottomGradientBg, shape = RoundedCornerShape(
-                    topStart = 16.dp,
-                    topEnd = 16.dp,
-                    bottomStart = 0.dp,
-                    bottomEnd = 0.dp
-                )
+        modifier = modifier.background(
+            brushBottomGradientBg, shape = RoundedCornerShape(
+                topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp
             )
+        )
     ) {
         ButtonColoured(
-            text = "Next", color = AppGreen,
-            modifier = Modifier.padding(16.dp)
+            text = "Next", color = AppGreen, modifier = Modifier.padding(16.dp)
         ) {
 
         }
@@ -96,24 +91,18 @@ fun ScrollableContent() {
     var bottomPadding by remember { mutableStateOf(defaultPadding) }
 
     LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
-            .collect { visibleItems ->
-                bottomPadding =
-                    if (visibleItems.isNotEmpty() &&
-                        visibleItems.lastOrNull()?.index ==
-                        listState.layoutInfo.totalItemsCount - 1
-                    ) {
-                        80.dp
-                    } else {
-                        defaultPadding
-                    }
-            }
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
+            bottomPadding =
+                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
+                    80.dp
+                } else {
+                    defaultPadding
+                }
+        }
     }
 
     LazyColumn(
-        state = listState,
-        modifier = Modifier
-            .padding(bottom = bottomPadding)
+        state = listState, modifier = Modifier.padding(bottom = bottomPadding)
     ) {
         items(10) { index ->
             ItemContent(index)
@@ -131,7 +120,7 @@ fun ItemContent(index: Int) {
         colors = CardDefaults.cardColors(containerColor = ItemCardBg),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Row(modifier = Modifier.padding(vertical = 10.dp, horizontal = 14.dp)) {
+        Row(modifier = Modifier.padding(14.dp)) {
             //image
             Image(
                 painter = painterResource(id = R.drawable.prop_image),
@@ -147,7 +136,9 @@ fun ItemContent(index: Int) {
                     .padding(start = 14.dp)
                     .fillMaxWidth()
             ) {
-                TypeAndCheckBox()
+                val isChecked = index % 2 == 0
+                TypeAndCheckBox(isChecked)
+                SpacerVertical(size = 8.dp)
                 Text700_14sp(step = "308/50 Murray Street, Sydney NSW 2000")
                 SpacerVertical(size = 8.dp)
                 Text400_14sp(info = "3 scheduled livestream")
@@ -186,11 +177,13 @@ fun AmenitiesIcon(icon: Int) {
 }
 
 @Composable
-fun TypeAndCheckBox() {
-    var checked by remember { mutableStateOf(false) }
+fun TypeAndCheckBox(isChecked: Boolean) {
+
+    var checked by remember { mutableStateOf(isChecked) }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -206,10 +199,31 @@ fun TypeAndCheckBox() {
             Text400_12sp(label = "Apartment")
         }
 
-        Checkbox(
-            checked = checked,
-            onCheckedChange = { checked = it }
-        )
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .clickable { checked = !checked },
+            contentAlignment = Alignment.Center
+        ) {
+            //CheckBox BG
+            Image(
+                painter = if (checked) {
+                    painterResource(id = R.drawable.check_box_chcked)
+                } else {
+                    painterResource(id = R.drawable.cehck_box_uncheck)
+                }, contentDescription = null, contentScale = ContentScale.FillBounds
+            )
+
+            //Tick Icon
+            if (checked) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_tick),
+                    contentDescription = null,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+        }
 
     }
 }
