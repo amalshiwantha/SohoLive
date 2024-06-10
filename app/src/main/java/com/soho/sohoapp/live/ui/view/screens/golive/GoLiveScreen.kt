@@ -42,12 +42,15 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SearchBar
+import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text950_20sp
+import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -93,11 +96,11 @@ fun StepContents(currentStepId: Int) {
         0 -> {
             SearchBar()
             SpacerVertical(16.dp)
-            ScrollableContent()
+            ScrollableContentStep1()
         }
 
         1 -> {
-            Text700_14sp(step = "This is step#2")
+            ScrollableContentStep2()
         }
 
         2 -> {
@@ -188,7 +191,33 @@ private fun NextBackButtons(
 
 
 @Composable
-private fun ScrollableContent() {
+private fun ScrollableContentStep2() {
+    val defaultPadding = 0.dp
+    val listState = rememberLazyListState()
+    var bottomPadding by remember { mutableStateOf(defaultPadding) }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
+            bottomPadding =
+                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
+                    80.dp
+                } else {
+                    defaultPadding
+                }
+        }
+    }
+
+    LazyColumn(
+        state = listState, modifier = Modifier.padding(bottom = bottomPadding)
+    ) {
+        items(3) { index ->
+            ProfileItemContent(index)
+        }
+    }
+}
+
+@Composable
+private fun ScrollableContentStep1() {
     val defaultPadding = 0.dp
     val listState = rememberLazyListState()
     var bottomPadding by remember { mutableStateOf(defaultPadding) }
@@ -209,6 +238,41 @@ private fun ScrollableContent() {
     ) {
         items(10) { index ->
             ItemContent(index)
+        }
+    }
+}
+
+@Composable
+private fun ProfileItemContent(index: Int) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            //image
+            Image(
+                painter = painterResource(id = R.drawable.prop_image),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(width = 70.dp, height = 68.dp)
+                    .clip(CircleShape)
+            )
+            //info
+            Column(
+                modifier = Modifier
+                    .padding(start = 14.dp)
+                    .fillMaxWidth()
+            ) {
+                val isChecked = index % 2 == 0
+                ProfileNameCheckBox(isChecked)
+                SpacerVertical(size = 8.dp)
+                Text400_14sp(info = "james@raywhite.com.au")
+            }
         }
     }
 }
@@ -331,6 +395,60 @@ private fun TypeAndCheckBox(isChecked: Boolean) {
     }
 }
 
+@Composable
+private fun ProfileNameCheckBox(isChecked: Boolean) {
+
+    var checked by remember { mutableStateOf(isChecked) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Text700_14spBold(step = "James Hiyashi")
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.Right
+        ) {
+
+            TextStarRating(rate = "* 5.0")
+
+            SpacerHorizontal(size = 16.dp)
+
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clickable { checked = !checked },
+                contentAlignment = Alignment.Center
+            ) {
+                //CheckBox BG
+                Image(
+                    painter = if (checked) {
+                        painterResource(id = R.drawable.check_box_chcked)
+                    } else {
+                        painterResource(id = R.drawable.cehck_box_uncheck)
+                    }, contentDescription = null, contentScale = ContentScale.FillBounds
+                )
+
+                //Tick Icon
+                if (checked) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_tick),
+                        contentDescription = null,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+            }
+        }
+    }
+}
+
 private fun getStepInfo(currentStepId: Int): StepInfo {
     return StepInfo.entries[(currentStepId) % StepInfo.entries.size]
 }
@@ -350,19 +468,28 @@ private fun StepCountTitleInfo(currentStepId: Int) {
 @Composable
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
+        val currentStep = 1
+
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SpacerVertical(40.dp)
+            /*SpacerVertical(40.dp)
             StepIndicator(totalSteps = 0, currentStep = 2)
             SpacerVertical(16.dp)
             StepCountTitleInfo(0)
             SpacerVertical(40.dp)
             SearchBar()
             SpacerVertical(16.dp)
-            ScrollableContent()
+            ScrollableContent()*/
+
+
+            SpacerVertical(40.dp)
+            StepIndicator(totalSteps = 4, currentStep = currentStep)
+            SpacerVertical(16.dp)
+            StepCountTitleInfo(currentStep)
+            StepContents(currentStep)
         }
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
-            currentStepId = 0,
+            currentStepId = currentStep,
             onClickedNext = {},
             onClickedBack = {})
     }
