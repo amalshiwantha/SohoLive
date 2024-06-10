@@ -24,4 +24,6 @@
     <string name="manage_profile">Manage Profile</string>
     <string name="placeholder_search">Search for an address</string>
     <string name="search_address">Search for an address</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
 </resources>

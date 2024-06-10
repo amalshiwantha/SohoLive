@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -71,7 +72,7 @@ fun GoLiveScreen(
             StepContents(currentStepId)
         }
 
-        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter),
+        NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStepId,
             onClickedNext = {
                 if (currentStepId < stepCount - 1) {
@@ -143,7 +144,7 @@ private fun StepIndicator(
 }
 
 @Composable
-private fun FixedNextButton(
+private fun NextBackButtons(
     modifier: Modifier,
     currentStepId: Int,
     onClickedNext: () -> Unit,
@@ -167,14 +168,17 @@ private fun FixedNextButton(
 
             if (currentStepId > 0) {
                 ButtonColoured(
-                    text = "Back", color = Color.Gray, modifier = Modifier.weight(1f)
+                    text = stringResource(R.string.back), color = Color.Transparent,
+                    modifier = Modifier.weight(1f),
+                    isBackButton = true
                 ) {
                     onClickedBack.invoke()
                 }
                 Spacer(modifier = Modifier.width(16.dp))
             }
             ButtonColoured(
-                text = "Next", color = AppGreen, modifier = Modifier.weight(1f)
+                text = stringResource(R.string.next), color = AppGreen,
+                modifier = Modifier.weight(1f)
             ) {
                 onClickedNext.invoke()
             }
@@ -185,7 +189,7 @@ private fun FixedNextButton(
 
 @Composable
 private fun ScrollableContent() {
-    val defaultPadding = 50.dp
+    val defaultPadding = 0.dp
     val listState = rememberLazyListState()
     var bottomPadding by remember { mutableStateOf(defaultPadding) }
 
@@ -357,7 +361,7 @@ private fun PreviewGoLiveScreen() {
             ScrollableContent()
         }
 
-        FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter),
+        NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = 0,
             onClickedNext = {},
             onClickedBack = {})

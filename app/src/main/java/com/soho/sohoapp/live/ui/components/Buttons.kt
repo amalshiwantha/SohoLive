@@ -19,6 +19,7 @@ fun ButtonColoured(
     modifier: Modifier = Modifier,
     text: String,
     color: Color,
+    isBackButton: Boolean = false,
     onBtnClick: () -> Unit
 ) {
     Button(
@@ -31,7 +32,11 @@ fun ButtonColoured(
             containerColor = color
         )
     ) {
-        TextWhite14(title = text)
+        if (isBackButton) {
+            TextWhite14Left(title = text)
+        } else {
+            TextWhite14(title = text)
+        }
     }
 }
 

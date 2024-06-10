@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +28,22 @@ fun TextWhite14(modifier: Modifier = Modifier, title: String) {
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(800),
         color = AppWhite,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Left,
+        letterSpacing = 0.17.sp
+    )
+}
+
+@Composable
+fun TextWhite14Left(modifier: Modifier = Modifier, title: String) {
+    Text(
+        modifier = modifier.fillMaxWidth(),
+        text = title,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(800),
+        color = AppWhite,
+        textAlign = TextAlign.Left,
         letterSpacing = 0.17.sp
     )
 }
