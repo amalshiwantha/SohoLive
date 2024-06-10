@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
@@ -43,14 +44,11 @@ fun ScreenContent() {
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        //search ui
+        SearchBar()
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        //api results ui
     }
 }
-
 
 
 @Composable
