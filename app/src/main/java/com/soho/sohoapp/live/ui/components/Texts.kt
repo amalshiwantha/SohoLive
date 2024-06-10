@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -9,9 +10,11 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @Composable
@@ -85,4 +88,60 @@ fun TextError(modifier: Modifier = Modifier, errorMsg: String) {
         fontWeight = FontWeight(400),
         modifier = modifier.padding(top = 4.dp)
     )
+}
+
+@Composable
+fun Text950_20sp(modifier: Modifier = Modifier, title: String) {
+    Text(
+        modifier = modifier,
+        text = title,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(950),
+        color = AppWhite,
+        letterSpacing = 0.24.sp
+    )
+}
+
+@Composable
+fun Text700_14sp(modifier: Modifier = Modifier, step: String) {
+    Text(
+        modifier = modifier,
+        text = step,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(700),
+        color = AppWhite,
+        letterSpacing = 0.17.sp
+    )
+}
+
+@Composable
+fun Text400_14sp(modifier: Modifier = Modifier, info: String) {
+    Text(
+        modifier = modifier,
+        text = info,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(400),
+        color = AppWhite,
+        letterSpacing = 0.17.sp
+    )
+}
+
+
+@Preview
+@Composable
+private fun PreViewTextError() {
+    Column {
+        Text950_20sp(title = "This is Title")
+        TextWhite14(title = "This is error message")
+        TextLabelWhite14(label = "Label")
+        TextSubtitleWhite14(label = "Label")
+        TextBlue14(label = "Label")
+        TextError(errorMsg = "This is error message")
+    }
 }
