@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +48,15 @@ fun GoLiveScreen(
 @Composable
 fun FixedNextButton(modifier: Modifier) {
     Box(
-        modifier = modifier.background(brushBottomGradientBg)
+        modifier = modifier
+            .background(
+                brushBottomGradientBg, shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                )
+            )
     ) {
         ButtonColoured(
             text = "Next", color = AppGreen,
