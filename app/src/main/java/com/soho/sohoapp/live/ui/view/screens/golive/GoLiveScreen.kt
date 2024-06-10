@@ -7,19 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.test.bottom
-import androidx.compose.ui.test.top
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SearchBar
@@ -28,8 +22,8 @@ import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.components.brushMainGradientTransBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.NextButtonBg
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
 
@@ -39,93 +33,66 @@ fun GoLiveScreen(
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject()
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brushMainGradientBg)
-    ) {
-        ScreenContent()
-        BottomNextButton()
-    }
-}
-
-/*@Composable
-fun HomeScreen() {
-    val scrollState = rememberScrollState()
 
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .background(brushMainGradientBg)
     ) {
-        val (topBar, content, submitButton) = FocusRequester.createRefs()
+        val (content, submitButton) = createRefs()
 
-        // Top action bar
-        TopAppBar(
-            title = { Text("Home") },
+        //top content
+        Column(
             modifier = Modifier
-                .constrainAs(topBar) {
+                .padding(horizontal = 16.dp)
+                .constrainAs(content) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }
-        )
-
-        // Middle content list
-        LazyColumn(
-            modifier = Modifier
-                .constrainAs(content) {
-                    top.linkTo(topBar.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
                     bottom.linkTo(submitButton.top)
+                    height = Dimension.fillToConstraints
                 }
         ) {
-            // Add your content list items here
+            StepCountTitleInfo()
+            SpacerVertical(40.dp)
+            SearchBar()
+            SpacerVertical(16.dp)
+            ScrollContent()
         }
 
-        // Submit button
-        Button(
-            onClick = { *//* Handle submit button click *//* },
+        // Fixed Next Button
+        Box(
             modifier = Modifier
                 .constrainAs(submitButton) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
                 }
+                .background(NextButtonBg)
+                .padding(16.dp)
         ) {
-            Text("Submit")
+            ButtonColoured(text = "Next", color = AppGreen) {
+            }
         }
-    }
-}*/
 
-
-@Composable
-fun BottomNextButton() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(brushMainGradientTransBg)
-            .padding(16.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        ButtonColoured(text = "Next", color = AppGreen) {
-
-        }
     }
 }
 
 @Composable
-private fun ScreenContent() {
-    Column(
-        modifier = Modifier.padding(
-            horizontal = 16.dp, vertical = 24.dp
-        )
-    ) {
-        StepCountTitleInfo()
-        SpacerVertical(40.dp)
-        SearchBar()
-        SpacerVertical(16.dp)
+fun ScrollContent() {
+    LazyColumn(modifier = Modifier) {
+        items(10) { index ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color.LightGray)
+                    .padding(16.dp)
+            ) {
+                Text(text = "Item #$index")
+            }
+        }
     }
 }
 
