@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -354,9 +355,14 @@ private fun SocialMediaItemContent(info: SocialMediaInfo) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            //button
-            ButtonConnect(text = "Connect Now", color = AppGreen) {
-                println("ConnectNow ${info.title}")
+            if (info.isConnect) {
+                //switch
+                ConnectSwitch()
+            } else {
+                //button
+                ButtonConnect(text = "Connect Now", color = AppGreen) {
+                    println("ConnectNow ${info.title}")
+                }
             }
         }
     }
@@ -597,6 +603,13 @@ private fun StepCountTitleInfo(currentStepId: Int) {
     Text950_20sp(title = stepInfo.title)
     SpacerVertical(8.dp)
     Text400_14sp(info = stepInfo.info)
+}
+
+
+@Composable
+fun ConnectSwitch() {
+    var isChecked by remember { mutableStateOf(false) }
+    Switch(checked = isChecked, onCheckedChange = { isChecked = it })
 }
 
 @Preview
