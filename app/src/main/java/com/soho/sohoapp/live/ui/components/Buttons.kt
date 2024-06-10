@@ -16,12 +16,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ButtonColoured(
+    modifier: Modifier = Modifier,
     text: String,
     color: Color,
     onBtnClick: () -> Unit
 ) {
     Button(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(48.dp),
         shape = RoundedCornerShape(16.dp),
