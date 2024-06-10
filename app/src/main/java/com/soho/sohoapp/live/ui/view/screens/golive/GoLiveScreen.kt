@@ -142,7 +142,7 @@ private fun StepIndicator(
                     .weight(1f)
                     .height(4.dp)
                     .background(
-                        color = if (i == currentStep) activeColor else inactiveColor,
+                        color = if (i <= currentStep) activeColor else inactiveColor,
                         shape = CircleShape
                     )
             )
@@ -632,16 +632,6 @@ private fun PreviewGoLiveScreen() {
         val currentStep = 2
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            /*SpacerVertical(40.dp)
-            StepIndicator(totalSteps = 0, currentStep = 2)
-            SpacerVertical(16.dp)
-            StepCountTitleInfo(0)
-            SpacerVertical(40.dp)
-            SearchBar()
-            SpacerVertical(16.dp)
-            ScrollableContent()*/
-
-
             SpacerVertical(40.dp)
             StepIndicator(totalSteps = 4, currentStep = currentStep)
             SpacerVertical(16.dp)
