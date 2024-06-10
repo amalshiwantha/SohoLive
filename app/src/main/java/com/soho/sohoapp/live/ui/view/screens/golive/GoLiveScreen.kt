@@ -68,10 +68,7 @@ fun GoLiveScreen(
             StepIndicator(totalSteps = stepCount, currentStep = currentStepId)
             SpacerVertical(16.dp)
             StepCountTitleInfo(currentStepId)
-            SpacerVertical(40.dp)
-            SearchBar()
-            SpacerVertical(16.dp)
-            ScrollableContent()
+            StepContents(currentStepId)
         }
 
         FixedNextButton(modifier = Modifier.align(Alignment.BottomCenter),
@@ -79,13 +76,36 @@ fun GoLiveScreen(
             onClickedNext = {
                 if (currentStepId < stepCount - 1) {
                     currentStepId++
-                    changeStepView(currentStepId)
                 }
             },
             onClickedBack = {
                 currentStepId = (currentStepId - 1) % stepCount
-                changeStepView(currentStepId)
             })
+    }
+}
+
+@Composable
+fun StepContents(currentStepId: Int) {
+    SpacerVertical(40.dp)
+
+    when (currentStepId) {
+        0 -> {
+            SearchBar()
+            SpacerVertical(16.dp)
+            ScrollableContent()
+        }
+
+        1 -> {
+            Text700_14sp(step = "This is step#2")
+        }
+
+        2 -> {
+            Text700_14sp(step = "This is step#3")
+        }
+
+        3 -> {
+            Text700_14sp(step = "This is step#4")
+        }
     }
 }
 
