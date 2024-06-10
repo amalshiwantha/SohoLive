@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -197,6 +199,7 @@ private fun ScrollableContentStep3() {
     val defaultPadding = 0.dp
     val listState = rememberLazyListState()
     var bottomPadding by remember { mutableStateOf(defaultPadding) }
+    val socialMediaItems = SocialMediaInfo.values().toList()
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
@@ -208,11 +211,13 @@ private fun ScrollableContentStep3() {
                 }
         }
     }
+
     LazyColumn(
-        state = listState, modifier = Modifier.padding(bottom = bottomPadding)
+        state = listState,
+        modifier = Modifier.padding(bottom = 16.dp)
     ) {
-        items(4) { index ->
-            SocialMediaItemContent(index)
+        items(socialMediaItems) { item ->
+            SocialMediaItemContent(item)
         }
     }
 }
@@ -320,7 +325,7 @@ private fun ProfileHideItem() {
 }
 
 @Composable
-private fun SocialMediaItemContent(index: Int) {
+private fun SocialMediaItemContent(info: SocialMediaInfo) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -333,7 +338,7 @@ private fun SocialMediaItemContent(index: Int) {
 
             //logo
             Image(
-                painter = painterResource(id = R.drawable.logo_youtube),
+                painter = painterResource(id = info.icon),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -343,6 +348,7 @@ private fun SocialMediaItemContent(index: Int) {
 
             //button
             ButtonConnect(text = "Connect Now", color = AppGreen) {
+                println("ConnectNow ${info.title}")
             }
         }
     }
