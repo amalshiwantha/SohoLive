@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -608,8 +607,22 @@ private fun StepCountTitleInfo(currentStepId: Int) {
 
 @Composable
 fun ConnectSwitch() {
-    var isChecked by remember { mutableStateOf(false) }
-    Switch(checked = isChecked, onCheckedChange = { isChecked = it })
+    var checked by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .clickable { checked = !checked },
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = if (checked) {
+                painterResource(id = R.drawable.switch_on)
+            } else {
+                painterResource(id = R.drawable.switch_off)
+            }, contentDescription = null, contentScale = ContentScale.FillBounds
+        )
+    }
 }
 
 @Preview
