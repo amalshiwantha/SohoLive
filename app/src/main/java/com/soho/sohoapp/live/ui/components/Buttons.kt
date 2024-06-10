@@ -41,6 +41,25 @@ fun ButtonColoured(
 }
 
 @Composable
+fun ButtonConnect(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color,
+    onBtnClick: () -> Unit
+) {
+    Button(
+        modifier = modifier.height(40.dp),
+        shape = RoundedCornerShape(16.dp),
+        onClick = { onBtnClick() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = color
+        )
+    ) {
+        TextWhite12(title = text)
+    }
+}
+
+@Composable
 fun ButtonOutlineWhite(text: String, onBtnClick: () -> Unit) {
     OutlinedButton(
         onClick = { onBtnClick() },

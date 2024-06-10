@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
@@ -54,6 +55,7 @@ import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
@@ -100,11 +102,12 @@ fun StepContents(currentStepId: Int) {
         }
 
         1 -> {
+            ProfileHideItem()
             ScrollableContentStep2()
         }
 
         2 -> {
-            Text700_14sp(step = "This is step#3")
+            ScrollableContentStep3()
         }
 
         3 -> {
@@ -189,6 +192,30 @@ private fun NextBackButtons(
     }
 }
 
+@Composable
+private fun ScrollableContentStep3() {
+    val defaultPadding = 0.dp
+    val listState = rememberLazyListState()
+    var bottomPadding by remember { mutableStateOf(defaultPadding) }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
+            bottomPadding =
+                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
+                    80.dp
+                } else {
+                    defaultPadding
+                }
+        }
+    }
+    LazyColumn(
+        state = listState, modifier = Modifier.padding(bottom = bottomPadding)
+    ) {
+        items(4) { index ->
+            SocialMediaItemContent(index)
+        }
+    }
+}
 
 @Composable
 private fun ScrollableContentStep2() {
@@ -206,7 +233,6 @@ private fun ScrollableContentStep2() {
                 }
         }
     }
-
     LazyColumn(
         state = listState, modifier = Modifier.padding(bottom = bottomPadding)
     ) {
@@ -238,6 +264,86 @@ private fun ScrollableContentStep1() {
     ) {
         items(10) { index ->
             ItemContent(index)
+        }
+    }
+}
+
+@Composable
+private fun ProfileHideItem() {
+    var checked by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+
+        Row(
+            modifier = Modifier
+                .padding(vertical = 20.dp, horizontal = 16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text700_14spBold(step = "Do not show profile")
+            Spacer(modifier = Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clickable { checked = !checked },
+                contentAlignment = Alignment.Center
+            ) {
+                //CheckBox BG
+                Image(
+                    painter = if (checked) {
+                        painterResource(id = R.drawable.check_box_chcked)
+                    } else {
+                        painterResource(id = R.drawable.cehck_box_uncheck)
+                    }, contentDescription = null, contentScale = ContentScale.FillBounds
+                )
+
+                //Tick Icon
+                if (checked) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_tick),
+                        contentDescription = null,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SocialMediaItemContent(index: Int) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = AppWhite),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+
+            //logo
+            Image(
+                painter = painterResource(id = R.drawable.logo_youtube),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            //button
+            ButtonConnect(text = "Connect Now", color = AppGreen) {
+            }
         }
     }
 }
@@ -468,7 +574,7 @@ private fun StepCountTitleInfo(currentStepId: Int) {
 @Composable
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
-        val currentStep = 1
+        val currentStep = 2
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             /*SpacerVertical(40.dp)

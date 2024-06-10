@@ -35,6 +35,21 @@ fun TextWhite14(modifier: Modifier = Modifier, title: String) {
 }
 
 @Composable
+fun TextWhite12(modifier: Modifier = Modifier, title: String) {
+    Text(
+        modifier = modifier,
+        text = title,
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(800),
+        color = AppWhite,
+        textAlign = TextAlign.Center,
+        letterSpacing = 0.14.sp
+    )
+}
+
+@Composable
 fun TextWhite14Left(modifier: Modifier = Modifier, title: String) {
     Text(
         modifier = modifier.fillMaxWidth(),
