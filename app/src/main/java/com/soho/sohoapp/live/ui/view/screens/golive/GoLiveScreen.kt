@@ -256,10 +256,10 @@ private fun Content4(
 
         SpacerVertical(size = 16.dp)
         ShareDownloadButtons()
-
-        SpacerVertical(size = 24.dp)
-        CustomizeCoverImageCard()
     }
+
+    SpacerVertical(size = 24.dp)
+    CustomizeCoverImageCard()
 
     SpacerVertical(size = 16.dp)
     CustomizeCoverOptionCards()
@@ -276,6 +276,8 @@ fun CustomizeCoverOptionCards() {
 
 @Composable
 fun CoverOptionItem(it: CustomCoverOption) {
+    var isChecked by remember { mutableStateOf(it.isEnabled) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -290,17 +292,17 @@ fun CoverOptionItem(it: CustomCoverOption) {
         ) {
             Text700_14sp(step = it.title)
             Spacer(modifier = Modifier.weight(1f))
-            Image(
-                painter = painterResource(id = if (it.isEnabled) R.drawable.toggle_on else R.drawable.toggle_off),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-            )
+            SwitchCompo(isChecked, onCheckedChange = {
+                isChecked = it
+            })
         }
     }
 }
 
 @Composable
 fun CustomizeCoverImageCard() {
+    var isChecked by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,11 +318,9 @@ fun CustomizeCoverImageCard() {
             ) {
                 Text700_14sp(step = "Customize cover image")
                 Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.toggle_off),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                )
+                SwitchCompo(isChecked, onCheckedChange = {
+                    isChecked = it
+                })
             }
 
             SpacerVertical(size = 20.dp)
@@ -579,6 +579,8 @@ private fun ProfileHideItem() {
 
 @Composable
 private fun SocialMediaItemContent(info: SocialMediaInfo) {
+    var isChecked by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -606,7 +608,9 @@ private fun SocialMediaItemContent(info: SocialMediaInfo) {
 
             if (info.isConnect) {
                 //switch
-                ConnectSwitch()
+                SwitchCompo(isChecked, onCheckedChange = {
+                    isChecked = it
+                })
             } else {
                 //button
                 ButtonConnect(text = "Connect Now", color = AppGreen) {
@@ -856,17 +860,17 @@ private fun StepCountTitleInfo(currentStepId: Int) {
 
 
 @Composable
-fun ConnectSwitch() {
-    var checked by remember { mutableStateOf(false) }
-
+fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) {
     Box(
         modifier = Modifier
             .padding(horizontal = 8.dp)
-            .clickable { checked = !checked },
+            .clickable {
+                onCheckedChange(!isChecked)
+            },
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = if (checked) {
+            painter = if (isChecked) {
                 painterResource(id = R.drawable.switch_on)
             } else {
                 painterResource(id = R.drawable.switch_off)
