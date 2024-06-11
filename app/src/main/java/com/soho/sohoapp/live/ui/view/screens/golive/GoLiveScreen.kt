@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -65,6 +66,7 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text950_20sp
+import com.soho.sohoapp.live.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
@@ -137,8 +139,31 @@ fun StepContents(currentStepId: Int) {
 @Composable
 private fun Content4() {
     Text700_14sp(step = "When do you want to go live?")
+
     SpacerVertical(size = 8.dp)
     SwipeableSwitch()
+
+    SpacerVertical(size = 24.dp)
+    Text700_14sp(step = "What is this livestream for?")
+    TextFieldWhite(FieldConfig.NEXT.apply { placeholder = "Select an option" }) {}
+
+    SpacerVertical(size = 24.dp)
+    Text700_14sp(step = "Stream title")
+    TextFieldWhite(FieldConfig.NEXT.apply {
+        placeholder = "Address or title for your livestream"
+    }) {}
+
+    SpacerVertical(size = 24.dp)
+    Text700_14sp(step = "Description")
+    TextFieldWhite(FieldConfig.NEXT.apply {
+        placeholder =
+            "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
+    }) {}
+
+    SpacerVertical(size = 40.dp)
+    Text700_14sp(step = "Livestream cover image")
+    Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
+
     SpacerVertical(size = 128.dp)
 }
 
