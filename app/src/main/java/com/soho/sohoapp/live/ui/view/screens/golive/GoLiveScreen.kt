@@ -734,26 +734,19 @@ fun ConnectSwitch() {
 @Composable
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
+        val countSteps = 4
         val currentStep = 3
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             item {
-                TopContent(2, currentStep)
+                TopContent(countSteps, currentStep)
             }
             item {
-                ScrollableContentStep3()
+                StepContents(currentStep, mutableListOf(), "") {}
             }
         }
-
-        /*Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SpacerVertical(40.dp)
-            StepIndicator(totalSteps = 4, currentStep = currentStep)
-            SpacerVertical(16.dp)
-            StepCountTitleInfo(currentStep)
-            StepContents(currentStep, mutableListOf(), "") {}
-        }*/
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStep,
