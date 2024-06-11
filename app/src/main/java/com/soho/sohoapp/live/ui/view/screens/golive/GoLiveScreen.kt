@@ -305,8 +305,7 @@ fun CustomizeCoverImageCard() {
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = ItemCardBg)
     ) {
@@ -323,16 +322,20 @@ fun CustomizeCoverImageCard() {
                 })
             }
 
-            SpacerVertical(size = 20.dp)
-            UpgradedPlansText()
+            //if true hide view plan button and show sub options
+            if(!isChecked){
+                SpacerVertical(size = 20.dp)
+                UpgradedPlansText()
 
-            SpacerVertical(size = 16.dp)
-            ButtonGradientIcon(
-                text = "View Plans",
-                icon = R.drawable.ic_upgrade,
-                gradientBrush = brushPlanBtnGradientBg,
-                onBtnClick = {}
-            )
+                SpacerVertical(size = 16.dp)
+                ButtonGradientIcon(
+                    text = "View Plans",
+                    icon = R.drawable.ic_upgrade,
+                    gradientBrush = brushPlanBtnGradientBg,
+                    onBtnClick = {}
+                )
+            }
+
         }
     }
 
