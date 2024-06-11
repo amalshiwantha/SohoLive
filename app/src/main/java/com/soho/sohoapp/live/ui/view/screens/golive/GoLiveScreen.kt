@@ -93,17 +93,22 @@ fun GoLiveScreen(
     var selectedOption by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.background(brushMainGradientBg)) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            StepIndicator(totalSteps = stepCount, currentStep = currentStepId)
-            SpacerVertical(16.dp)
-            StepCountTitleInfo(currentStepId)
-            StepContents(
-                currentStepId = currentStepId,
-                optionList = optionList,
-                selectedOption = selectedOption,
-                onSelectOption = {
-                    selectedOption = it
-                })
+
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            item {
+                TopContent(stepCount, currentStepId)
+            }
+            item {
+                StepContents(
+                    currentStepId = currentStepId,
+                    optionList = optionList,
+                    selectedOption = selectedOption,
+                    onSelectOption = {
+                        selectedOption = it
+                    })
+            }
         }
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
@@ -117,6 +122,41 @@ fun GoLiveScreen(
                 currentStepId = (currentStepId - 1) % stepCount
             })
     }
+}
+
+@Composable
+private fun ScrollableContentStep3a() {
+    val defaultPadding = 0.dp
+    val listState = rememberLazyListState()
+    var bottomPadding by remember { mutableStateOf(defaultPadding) }
+    val socialMediaItems = SocialMediaInfo.entries
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
+            bottomPadding =
+                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
+                    80.dp
+                } else {
+                    defaultPadding
+                }
+        }
+    }
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.padding(bottom = 16.dp)
+    ) {
+        items(socialMediaItems) { item ->
+            SocialMediaItemContent(item)
+        }
+    }
+}
+
+@Composable
+fun TopContent(stepCount: Int, currentStepId: Int) {
+    StepIndicator(totalSteps = stepCount, currentStep = currentStepId)
+    SpacerVertical(16.dp)
+    StepCountTitleInfo(currentStepId)
 }
 
 @Composable
@@ -322,80 +362,22 @@ private fun NextBackButtons(
 
 @Composable
 private fun ScrollableContentStep3() {
-    val defaultPadding = 0.dp
-    val listState = rememberLazyListState()
-    var bottomPadding by remember { mutableStateOf(defaultPadding) }
-    val socialMediaItems = SocialMediaInfo.entries
-
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
-            bottomPadding =
-                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
-                    80.dp
-                } else {
-                    defaultPadding
-                }
-        }
-    }
-
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.padding(bottom = 16.dp)
-    ) {
-        items(socialMediaItems) { item ->
-            SocialMediaItemContent(item)
-        }
+    SocialMediaInfo.entries.forEach { item ->
+        SocialMediaItemContent(item)
     }
 }
 
 @Composable
 private fun ScrollableContentStep2() {
-    val defaultPadding = 0.dp
-    val listState = rememberLazyListState()
-    var bottomPadding by remember { mutableStateOf(defaultPadding) }
-
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
-            bottomPadding =
-                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
-                    80.dp
-                } else {
-                    defaultPadding
-                }
-        }
-    }
-    LazyColumn(
-        state = listState, modifier = Modifier.padding(bottom = bottomPadding)
-    ) {
-        items(3) { index ->
-            ProfileItemContent(index)
-        }
+    for (index in 1..3) {
+        ProfileItemContent(index)
     }
 }
 
 @Composable
 private fun ScrollableContentStep1() {
-    val defaultPadding = 0.dp
-    val listState = rememberLazyListState()
-    var bottomPadding by remember { mutableStateOf(defaultPadding) }
-
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
-            bottomPadding =
-                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
-                    80.dp
-                } else {
-                    defaultPadding
-                }
-        }
-    }
-
-    LazyColumn(
-        state = listState, modifier = Modifier.padding(bottom = bottomPadding)
-    ) {
-        items(10) { index ->
-            ItemContent(index)
-        }
+    for (i in 1..5) {
+        ItemContent(i)
     }
 }
 
@@ -754,13 +736,24 @@ private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         val currentStep = 3
 
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            item {
+                TopContent(2, currentStep)
+            }
+            item {
+                ScrollableContentStep3()
+            }
+        }
+
+        /*Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             SpacerVertical(40.dp)
             StepIndicator(totalSteps = 4, currentStep = currentStep)
             SpacerVertical(16.dp)
             StepCountTitleInfo(currentStep)
-            StepContents(currentStep, mutableListOf(), ""){}
-        }
+            StepContents(currentStep, mutableListOf(), "") {}
+        }*/
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStep,
