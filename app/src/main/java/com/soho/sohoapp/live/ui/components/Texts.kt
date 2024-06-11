@@ -237,6 +237,20 @@ fun Text400_12sp(modifier: Modifier = Modifier, label: String) {
 }
 
 @Composable
+fun Text800_12sp(modifier: Modifier = Modifier, label: String) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        letterSpacing = 0.14.sp,
+        color = Color(0xFFFFFFFF),
+        fontWeight = FontWeight(800),
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+    )
+}
+
+@Composable
 fun TextSwipeSelection(modifier: Modifier, title: String, textColor: Color) {
     Box(
         modifier = modifier.fillMaxSize(),

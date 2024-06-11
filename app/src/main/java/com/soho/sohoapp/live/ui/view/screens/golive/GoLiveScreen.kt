@@ -54,6 +54,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
+import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
@@ -204,34 +205,65 @@ private fun Content4(
     SpacerVertical(size = 8.dp)
     SwipeableSwitch()
 
-    SpacerVertical(size = 24.dp)
-    Text700_14sp(step = "What is this livestream for?")
-    DropDownWhatForLiveStream(
-        selectedValue = selectedOption,
-        options = optionList,
-        placeHolder = "Select an option",
-        onValueChangedEvent = {
-            onSelectOption(it)
-        })
+    if (false) {
+        SpacerVertical(size = 24.dp)
+        Text700_14sp(step = "What is this livestream for?")
+        DropDownWhatForLiveStream(
+            selectedValue = selectedOption,
+            options = optionList,
+            placeHolder = "Select an option",
+            onValueChangedEvent = {
+                onSelectOption(it)
+            })
 
-    SpacerVertical(size = 24.dp)
-    Text700_14sp(step = "Stream title")
-    TextFieldWhite(FieldConfig.NEXT.apply {
-        placeholder = "Address or title for your livestream"
-    }) {}
+        SpacerVertical(size = 24.dp)
+        Text700_14sp(step = "Stream title")
+        TextFieldWhite(FieldConfig.NEXT.apply {
+            placeholder = "Address or title for your livestream"
+        }) {}
 
-    SpacerVertical(size = 24.dp)
-    Text700_14sp(step = "Description")
-    TextAreaWhite(FieldConfig.NEXT.apply {
-        placeholder =
-            "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
-    }) {}
+        SpacerVertical(size = 24.dp)
+        Text700_14sp(step = "Description")
+        TextAreaWhite(FieldConfig.NEXT.apply {
+            placeholder =
+                "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
+        }) {}
+    }
+
 
     SpacerVertical(size = 40.dp)
     Text700_14sp(step = "Livestream cover image")
     Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
 
-    SpacerVertical(size = 128.dp)
+    SpacerVertical(size = 16.dp)
+    Image(
+        painter = painterResource(id = R.drawable.sample_cover_image),
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    SpacerVertical(size = 16.dp)
+    ShareDownloadButtons()
+
+    SpacerVertical(size = 140.dp)
+}
+
+@Composable
+fun ShareDownloadButtons() {
+    Row {
+        ButtonOutLinedIcon(
+            text = "Share",
+            icon = R.drawable.ic_eye_vec,
+            modifier = Modifier.weight(1f)
+        ) {}
+        SpacerHorizontal(size = 16.dp)
+        ButtonOutLinedIcon(
+            text = "Download",
+            icon = R.drawable.ic_download,
+            modifier = Modifier.weight(1f)
+        ) {}
+    }
 }
 
 @Composable
