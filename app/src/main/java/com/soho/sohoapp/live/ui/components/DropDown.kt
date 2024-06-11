@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.PlaceHolderGray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +32,7 @@ fun DropDownWhatForLiveStream(
     onValueChangedEvent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(true) }
+    var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
@@ -48,8 +49,8 @@ fun DropDownWhatForLiveStream(
             },
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White
+                unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
+                unfocusedPlaceholderColor = PlaceHolderGray
             ),
             modifier = Modifier
                 .menuAnchor()

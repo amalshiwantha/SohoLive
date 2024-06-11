@@ -26,6 +26,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.PlaceHolderGray
 
 @Composable
 fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
@@ -47,7 +49,10 @@ fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.colors(unfocusedContainerColor = Color.White)
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = PlaceHolderGray
+        )
     )
 }
 
@@ -84,12 +89,15 @@ fun PasswordTextFieldWhite(onTextChange: (String) -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.colors(unfocusedContainerColor = Color.White)
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = PlaceHolderGray
+        )
     )
 }
 
 @Preview
 @Composable
 private fun PreviewInputWhite() {
-    TextFieldWhite(FieldConfig.NEXT.apply { placeholder ="Test" }) {}
+    TextFieldWhite(FieldConfig.NEXT.apply { placeholder = "Test" }) {}
 }
