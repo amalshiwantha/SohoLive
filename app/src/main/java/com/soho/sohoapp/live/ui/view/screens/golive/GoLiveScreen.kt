@@ -1,10 +1,7 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.util.Size
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,6 +54,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
+import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
@@ -89,12 +87,22 @@ fun GoLiveScreen(
     val stepCount = 4
     var currentStepId by remember { mutableIntStateOf(3) }
 
+    //step #4
+    val optionList = mutableListOf("Option1", "Option 2", "Option 3")
+    var selectedOption by remember { mutableStateOf("") }
+
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             StepIndicator(totalSteps = stepCount, currentStep = currentStepId)
             SpacerVertical(16.dp)
             StepCountTitleInfo(currentStepId)
-            StepContents(currentStepId)
+            StepContents(
+                currentStepId = currentStepId,
+                optionList = optionList,
+                selectedOption = selectedOption,
+                onSelectOption = {
+                    selectedOption = it
+                })
         }
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
@@ -111,7 +119,12 @@ fun GoLiveScreen(
 }
 
 @Composable
-fun StepContents(currentStepId: Int) {
+fun StepContents(
+    currentStepId: Int,
+    optionList: MutableList<String>,
+    selectedOption: String,
+    onSelectOption: (String) -> Unit
+) {
     SpacerVertical(40.dp)
 
     when (currentStepId) {
@@ -131,13 +144,20 @@ fun StepContents(currentStepId: Int) {
         }
 
         3 -> {
-            Content4()
+            Content4(
+                optionList = optionList,
+                selectedOption = selectedOption,
+                onSelectOption = { onSelectOption(it) })
         }
     }
 }
 
 @Composable
-private fun Content4() {
+private fun Content4(
+    optionList: MutableList<String>,
+    selectedOption: String,
+    onSelectOption: (String) -> Unit
+) {
     Text700_14sp(step = "When do you want to go live?")
 
     SpacerVertical(size = 8.dp)
@@ -145,7 +165,13 @@ private fun Content4() {
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "What is this livestream for?")
-    TextFieldWhite(FieldConfig.NEXT.apply { placeholder = "Select an option" }) {}
+    DropDownWhatForLiveStream(
+        selectedValue = selectedOption,
+        options = optionList,
+        placeHolder = "Select an option",
+        onValueChangedEvent = {
+            onSelectOption(it)
+        })
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Stream title")
@@ -167,9 +193,8 @@ private fun Content4() {
     SpacerVertical(size = 128.dp)
 }
 
-
 @Composable
-fun SwipeableSwitch() {
+private fun SwipeableSwitch() {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val horizontalPadding = 16.dp
     val availableWidth = screenWidth - (horizontalPadding * 2)
@@ -733,7 +758,7 @@ private fun PreviewGoLiveScreen() {
             StepIndicator(totalSteps = 4, currentStep = currentStep)
             SpacerVertical(16.dp)
             StepCountTitleInfo(currentStep)
-            StepContents(currentStep)
+            StepContents(currentStep, mutableListOf(), ""){}
         }
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
