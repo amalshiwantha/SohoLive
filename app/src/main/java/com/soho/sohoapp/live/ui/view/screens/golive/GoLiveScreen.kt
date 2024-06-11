@@ -7,12 +7,15 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -27,7 +30,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,10 +47,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
@@ -66,11 +66,15 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextStarRating
+import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.AppWhiteGray
+import com.soho.sohoapp.live.ui.theme.BorderGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
 
@@ -135,6 +139,7 @@ private fun Content4() {
     Text700_14sp(step = "When do you want to go live?")
     SpacerVertical(size = 8.dp)
     SwipeableSwitch()
+    SpacerVertical(size = 128.dp)
 }
 
 
@@ -153,42 +158,40 @@ fun SwipeableSwitch() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .background(Color.Transparent, shape = MaterialTheme.shapes.small)
+            .height(50.dp)
+            .border(width = 1.dp, color = BorderGray, shape = RoundedCornerShape(16.dp))
+            .background(Color.Transparent)
     ) {
         //move selection
-        println("indicatorWidth $screenWidth $indicatorWidth")
         Box(
             modifier = Modifier
                 .offset(x = indicatorOffset)
                 .width(indicatorWidth)
-                .height(48.dp)
-                .background(Color.White, shape = MaterialTheme.shapes.small)
+                .padding(4.dp)
+                .fillMaxHeight()
+                .background(AppWhiteGray, shape = RoundedCornerShape(14.dp))
         )
 
+        //two options
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = "Now",
+            TextSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { isNowSelected = true }
-                    .padding(vertical = 15.dp),
-                textAlign = TextAlign.Center,
-                color = if (isNowSelected) Color(0xFF4B0082) else Color.White,
-                fontSize = 16.sp
+                    .clickable { isNowSelected = true },
+                title = "Now",
+                textColor = if (isNowSelected) TextDark else AppWhite
             )
-            Text(
-                text = "Schedule for later",
+
+            TextSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { isNowSelected = false }
-                    .padding(vertical = 15.dp),
-                textAlign = TextAlign.Center,
-                color = if (!isNowSelected) Color(0xFF4B0082) else Color.White,
-                fontSize = 16.sp
+                    .clickable { isNowSelected = false },
+                title = "Schedule for later",
+                textColor = if (!isNowSelected) TextDark else AppWhite
             )
         }
     }

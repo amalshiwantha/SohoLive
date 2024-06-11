@@ -1,10 +1,13 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
@@ -231,6 +234,26 @@ fun Text400_12sp(modifier: Modifier = Modifier, label: String) {
         fontWeight = FontWeight(400),
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
     )
+}
+
+@Composable
+fun TextSwipeSelection(modifier: Modifier, title: String, textColor: Color) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = title,
+            fontSize = 12.sp,
+            lineHeight = 16.8.sp,
+            fontFamily = FontFamily(Font(R.font.axiforma)),
+            fontWeight = FontWeight(800),
+            color = textColor,
+            textAlign = TextAlign.Center,
+            letterSpacing = 0.14.sp
+        )
+    }
 }
 
 
