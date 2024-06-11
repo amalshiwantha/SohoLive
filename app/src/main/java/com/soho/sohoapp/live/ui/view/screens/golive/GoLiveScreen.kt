@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
@@ -255,13 +256,47 @@ private fun Content4(
 
         SpacerVertical(size = 16.dp)
         ShareDownloadButtons()
+
+        SpacerVertical(size = 24.dp)
+        CustomizeCoverImageCard()
     }
 
-    SpacerVertical(size = 24.dp)
-    CustomizeCoverImageCard()
-
+    SpacerVertical(size = 16.dp)
+    CustomizeCoverOptionCards()
 
     SpacerVertical(size = 140.dp)
+}
+
+@Composable
+fun CustomizeCoverOptionCards() {
+    CustomCoverOption.entries.forEach {
+        CoverOptionItem(it)
+    }
+}
+
+@Composable
+fun CoverOptionItem(it: CustomCoverOption) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text700_14sp(step = it.title)
+            Spacer(modifier = Modifier.weight(1f))
+            Image(
+                painter = painterResource(id = if (it.isEnabled) R.drawable.toggle_on else R.drawable.toggle_off),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+            )
+        }
+    }
 }
 
 @Composable
@@ -284,7 +319,7 @@ fun CustomizeCoverImageCard() {
                 Image(
                     painter = painterResource(id = R.drawable.toggle_off),
                     contentDescription = null,
-                    contentScale = ContentScale.FillBounds
+                    contentScale = ContentScale.FillBounds,
                 )
             }
 
