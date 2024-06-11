@@ -1,8 +1,10 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -18,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,7 +31,7 @@ fun DropDownWhatForLiveStream(
     onValueChangedEvent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     ExposedDropdownMenuBox(
         expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
@@ -55,13 +58,25 @@ fun DropDownWhatForLiveStream(
         )
 
         //DropDown Menu
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            options.forEach { option: String ->
-                DropdownMenuItem(text = { Text(text = option) }, onClick = {
-                    expanded = false
-                    onValueChangedEvent(option)
-                })
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(AppWhite)
+                .exposedDropdownSize()
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    onClick = {
+                        expanded = false
+                        onValueChangedEvent(option)
+                    },
+                    text = {
+                        Text(option)
+                    }
+                )
             }
         }
+
     }
 }
