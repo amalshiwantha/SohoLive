@@ -213,6 +213,8 @@ private fun Content4(
     selectedOption: String,
     onSelectOption: (String) -> Unit
 ) {
+    var isOnCoverOption by remember { mutableStateOf(false) }
+
     Text700_14sp(step = "When do you want to go live?")
 
     SpacerVertical(size = 8.dp)
@@ -259,10 +261,14 @@ private fun Content4(
     }
 
     SpacerVertical(size = 24.dp)
-    CustomizeCoverImageCard()
+    CustomizeCoverImageCard(isOnCoverOption, onCheckedChange = {
+        isOnCoverOption = it
+    })
 
-    SpacerVertical(size = 16.dp)
-    CustomizeCoverOptionCards()
+    if (isOnCoverOption) {
+        SpacerVertical(size = 16.dp)
+        CustomizeCoverOptionCards()
+    }
 
     SpacerVertical(size = 140.dp)
 }
@@ -300,9 +306,7 @@ fun CoverOptionItem(it: CustomCoverOption) {
 }
 
 @Composable
-fun CustomizeCoverImageCard() {
-    var isChecked by remember { mutableStateOf(false) }
-
+fun CustomizeCoverImageCard(isOnCoverOption: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -317,13 +321,13 @@ fun CustomizeCoverImageCard() {
             ) {
                 Text700_14sp(step = "Customize cover image")
                 Spacer(modifier = Modifier.weight(1f))
-                SwitchCompo(isChecked, onCheckedChange = {
-                    isChecked = it
+                SwitchCompo(isOnCoverOption, onCheckedChange = {
+                    onCheckedChange(it)
                 })
             }
 
             //if true hide view plan button and show sub options
-            if(!isChecked){
+            if (!isOnCoverOption) {
                 SpacerVertical(size = 20.dp)
                 UpgradedPlansText()
 
