@@ -30,6 +30,33 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.PlaceHolderGray
 
 @Composable
+fun TextAreaWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
+    var txtInput by rememberSaveable { mutableStateOf("") }
+
+    TextField(
+        value = txtInput,
+        onValueChange = {
+            txtInput = it
+            onTextChange(txtInput)
+        },
+        placeholder = { Text(fieldConfig.placeholder) },
+        keyboardOptions = KeyboardOptions(
+            imeAction = fieldConfig.imeAction,
+            keyboardType = fieldConfig.keyboardType
+        ),
+        maxLines = 10,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = PlaceHolderGray, focusedIndicatorColor = Color.Transparent
+        )
+    )
+}
+
+@Composable
 fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
     var txtInput by rememberSaveable { mutableStateOf("") }
 
@@ -51,7 +78,7 @@ fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-            unfocusedPlaceholderColor = PlaceHolderGray
+            unfocusedPlaceholderColor = PlaceHolderGray, focusedIndicatorColor = Color.Transparent
         )
     )
 }
@@ -91,7 +118,7 @@ fun PasswordTextFieldWhite(onTextChange: (String) -> Unit) {
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-            unfocusedPlaceholderColor = PlaceHolderGray
+            unfocusedPlaceholderColor = PlaceHolderGray, focusedIndicatorColor = Color.Transparent
         )
     )
 }

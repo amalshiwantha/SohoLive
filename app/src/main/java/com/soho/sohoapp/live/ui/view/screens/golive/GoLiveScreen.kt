@@ -64,6 +64,7 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text950_20sp
+import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.TextSwipeSelection
@@ -181,7 +182,7 @@ private fun Content4(
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Description")
-    TextFieldWhite(FieldConfig.NEXT.apply {
+    TextAreaWhite(FieldConfig.NEXT.apply {
         placeholder =
             "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
     }) {}
