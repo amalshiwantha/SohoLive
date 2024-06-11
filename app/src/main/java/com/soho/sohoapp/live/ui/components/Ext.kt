@@ -11,6 +11,8 @@ import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.NextButtonBg
 import com.soho.sohoapp.live.ui.theme.NextButtonBgTrans
+import com.soho.sohoapp.live.ui.theme.PlanBtnGradientEnd
+import com.soho.sohoapp.live.ui.theme.PlanBtnGradientStart
 
 val brushMainGradientBg = Brush.verticalGradient(
     colors = listOf(BgGradientPurpleLight, BgGradientPurpleDark)
@@ -18,6 +20,10 @@ val brushMainGradientBg = Brush.verticalGradient(
 
 val brushBottomGradientBg = Brush.verticalGradient(
     colors = listOf(NextButtonBgTrans, NextButtonBg)
+)
+
+val brushPlanBtnGradientBg = Brush.horizontalGradient(
+    colors = listOf(PlanBtnGradientStart, PlanBtnGradientEnd)
 )
 
 @Composable

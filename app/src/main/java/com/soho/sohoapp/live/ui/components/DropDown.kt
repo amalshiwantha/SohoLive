@@ -20,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.ui.theme.AppWhite
-import com.soho.sohoapp.live.ui.theme.PlaceHolderGray
+import com.soho.sohoapp.live.ui.theme.HintGray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +49,7 @@ fun DropDownWhatForLiveStream(
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-                unfocusedPlaceholderColor = PlaceHolderGray
+                unfocusedPlaceholderColor = HintGray
             ),
             modifier = Modifier
                 .menuAnchor()

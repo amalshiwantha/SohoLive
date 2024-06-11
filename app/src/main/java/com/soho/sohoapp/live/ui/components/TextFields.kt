@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.ui.theme.AppWhite
-import com.soho.sohoapp.live.ui.theme.PlaceHolderGray
+import com.soho.sohoapp.live.ui.theme.HintGray
 
 @Composable
 fun TextAreaWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
@@ -51,7 +51,7 @@ fun TextAreaWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-            unfocusedPlaceholderColor = PlaceHolderGray, focusedIndicatorColor = Color.Transparent
+            unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent
         )
     )
 }
@@ -78,7 +78,7 @@ fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-            unfocusedPlaceholderColor = PlaceHolderGray, focusedIndicatorColor = Color.Transparent
+            unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent
         )
     )
 }
@@ -118,7 +118,7 @@ fun PasswordTextFieldWhite(onTextChange: (String) -> Unit) {
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-            unfocusedPlaceholderColor = PlaceHolderGray, focusedIndicatorColor = Color.Transparent
+            unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent
         )
     )
 }

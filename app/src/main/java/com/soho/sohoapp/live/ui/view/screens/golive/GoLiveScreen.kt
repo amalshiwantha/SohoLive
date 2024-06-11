@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,8 +45,16 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
@@ -54,6 +63,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
+import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
@@ -71,10 +81,12 @@ import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.BorderGray
+import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -228,25 +240,91 @@ private fun Content4(
             placeholder =
                 "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
         }) {}
+
+        SpacerVertical(size = 40.dp)
+        Text700_14sp(step = "Livestream cover image")
+        Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
+
+        SpacerVertical(size = 16.dp)
+        Image(
+            painter = painterResource(id = R.drawable.sample_cover_image),
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        SpacerVertical(size = 16.dp)
+        ShareDownloadButtons()
+    }
+
+    SpacerVertical(size = 24.dp)
+    CustomizeCoverImageCard()
+
+
+    SpacerVertical(size = 140.dp)
+}
+
+@Composable
+fun CustomizeCoverImageCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text700_14sp(step = "Customize cover image")
+                Spacer(modifier = Modifier.weight(1f))
+                Image(
+                    painter = painterResource(id = R.drawable.toggle_off),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+
+            SpacerVertical(size = 20.dp)
+            UpgradedPlansText()
+
+            SpacerVertical(size = 16.dp)
+            ButtonGradientIcon(
+                text = "View Plans",
+                icon = R.drawable.ic_upgrade,
+                gradientBrush = brushPlanBtnGradientBg,
+                onBtnClick = {}
+            )
+        }
     }
 
 
-    SpacerVertical(size = 40.dp)
-    Text700_14sp(step = "Livestream cover image")
-    Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
+}
 
-    SpacerVertical(size = 16.dp)
-    Image(
-        painter = painterResource(id = R.drawable.sample_cover_image),
-        contentDescription = "",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxWidth()
+
+@Composable
+fun UpgradedPlansText() {
+    val annotatedText = buildAnnotatedString {
+        append("Upgrade your plans to ")
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append("Multicast 30 ")
+        }
+        append("and above to enjoy this feature")
+    }
+
+    Text(
+        textAlign = TextAlign.Center,
+        text = annotatedText,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(700),
+        color = HintGray,
+        letterSpacing = 0.17.sp
     )
-
-    SpacerVertical(size = 16.dp)
-    ShareDownloadButtons()
-
-    SpacerVertical(size = 140.dp)
 }
 
 @Composable

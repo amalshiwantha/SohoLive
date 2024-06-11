@@ -2,18 +2,24 @@ package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -37,8 +43,15 @@ fun ButtonOutLinedIcon(
         shape = RoundedCornerShape(16.dp),
     ) {
 
-        Row(verticalAlignment = Alignment.CenterVertically,horizontalArrangement = Arrangement.SpaceBetween) {
-            Image(painter = painterResource(id = icon), contentDescription = "null", contentScale = ContentScale.Crop)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = "null",
+                contentScale = ContentScale.Crop
+            )
             SpacerHorizontal(size = 8.dp)
             Text800_12sp(label = text)
         }
@@ -67,6 +80,44 @@ fun ButtonColoured(
             TextWhite14Left(title = text)
         } else {
             TextWhite14(title = text)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ButtonGradientIcon(
+    text: String,
+    gradientBrush: Brush,
+    icon: Int,
+    onBtnClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+        onClick = { onBtnClick() }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .background(gradientBrush)
+                .padding(16.dp)
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            ) {
+                Image(
+                    painter = painterResource(id = icon),
+                    contentDescription = "null",
+                    contentScale = ContentScale.Crop
+                )
+                TextWhite14(title = text)
+            }
         }
     }
 }
