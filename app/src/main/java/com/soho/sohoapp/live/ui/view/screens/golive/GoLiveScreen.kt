@@ -1,6 +1,10 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.util.Size
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,11 +41,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
@@ -72,7 +81,7 @@ fun GoLiveScreen(
     netUtil: NetworkUtils = koinInject()
 ) {
     val stepCount = 4
-    var currentStepId by remember { mutableIntStateOf(0) }
+    var currentStepId by remember { mutableIntStateOf(3) }
 
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -116,13 +125,73 @@ fun StepContents(currentStepId: Int) {
         }
 
         3 -> {
-            Text700_14sp(step = "This is step#4")
+            Content4()
         }
     }
 }
 
-private fun changeStepView(currentStepId: Int) {
-    println("myStep old " + currentStepId)
+@Composable
+private fun Content4() {
+    Text700_14sp(step = "When do you want to go live?")
+    SpacerVertical(size = 8.dp)
+    SwipeableSwitch()
+}
+
+
+@Composable
+fun SwipeableSwitch() {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val horizontalPadding = 16.dp
+    val availableWidth = screenWidth - (horizontalPadding * 2)
+    val indicatorWidth = availableWidth / 2
+    var isNowSelected by remember { mutableStateOf(false) }
+    val indicatorOffset by animateDpAsState(
+        targetValue = if (isNowSelected) 0.dp else indicatorWidth,
+        label = "animateToMove"
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .background(Color.Transparent, shape = MaterialTheme.shapes.small)
+    ) {
+        //move selection
+        println("indicatorWidth $screenWidth $indicatorWidth")
+        Box(
+            modifier = Modifier
+                .offset(x = indicatorOffset)
+                .width(indicatorWidth)
+                .height(48.dp)
+                .background(Color.White, shape = MaterialTheme.shapes.small)
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Now",
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { isNowSelected = true }
+                    .padding(vertical = 15.dp),
+                textAlign = TextAlign.Center,
+                color = if (isNowSelected) Color(0xFF4B0082) else Color.White,
+                fontSize = 16.sp
+            )
+            Text(
+                text = "Schedule for later",
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { isNowSelected = false }
+                    .padding(vertical = 15.dp),
+                textAlign = TextAlign.Center,
+                color = if (!isNowSelected) Color(0xFF4B0082) else Color.White,
+                fontSize = 16.sp
+            )
+        }
+    }
 }
 
 @Composable
@@ -629,7 +698,7 @@ fun ConnectSwitch() {
 @Composable
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
-        val currentStep = 2
+        val currentStep = 3
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             SpacerVertical(40.dp)
