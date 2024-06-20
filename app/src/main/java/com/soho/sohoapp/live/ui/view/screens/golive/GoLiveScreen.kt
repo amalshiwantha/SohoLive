@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,6 +64,7 @@ import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
+import com.soho.sohoapp.live.ui.components.CenterProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
@@ -123,9 +123,7 @@ fun GoLiveScreen(
 
         if (isNetConnected) {
             if (stateVm.loadingState == ProgressBarState.Loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                CenterProgress(modifier = Modifier.align(Alignment.Center))
             } else {
 
                 //main steps content
