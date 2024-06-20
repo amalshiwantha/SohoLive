@@ -24,8 +24,9 @@ fun formValidation(
                 if (inputValue.isNullOrEmpty()) {
                     context.getString(R.string.email_empty)
                 } else {
-                    if (!inputValue.matches(emailPattern.toRegex()))
-                        context.getString(R.string.email_notvalid) else null
+                    /*if (!inputValue.matches(emailPattern.toRegex()))
+                        context.getString(R.string.email_notvalid) else null*/
+                    null
                 }
             }
 

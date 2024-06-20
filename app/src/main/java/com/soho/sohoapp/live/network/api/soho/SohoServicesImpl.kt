@@ -24,11 +24,13 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         }.body()
     }
 
-    override suspend fun signup(signupModel: String): AuthResponse {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun forgetPassword(email: String): AuthResponse {
-        TODO("Not yet implemented")
+    override suspend fun propertyListing(): AuthResponse {
+        return httpClient.post {
+            url {
+                takeFrom(BASE_URL)
+                encodedPath += SohoApiServices.PROPERTY_LISTING
+            }
+            contentType(ContentType.Application.Json)
+        }.body()
     }
 }

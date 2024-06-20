@@ -5,14 +5,12 @@ import com.soho.sohoapp.live.network.response.AuthResponse
 
 
 interface SohoApiServices {
+
     companion object {
         const val LOGIN = "sessions/login"
-        const val SIGNUP = "user/signup?key=?"
-        const val FORGET_PW = "user/forgetPw?key=?"
+        const val PROPERTY_LISTING = "property_listing/data"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
-    suspend fun signup(signupModel: String): AuthResponse
-    suspend fun forgetPassword(email: String): AuthResponse
-
+    suspend fun propertyListing(): AuthResponse
 }

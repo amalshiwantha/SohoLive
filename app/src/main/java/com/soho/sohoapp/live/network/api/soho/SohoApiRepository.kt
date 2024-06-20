@@ -28,4 +28,22 @@ class SohoApiRepository(private val service: SohoApiServices) {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
         }
     }
+
+    fun goLivePropertyListing(): Flow<ApiState<AuthResponse>> = flow {
+        try {
+            emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+
+            val apiResponse = service.propertyListing()
+            emit(ApiState.Data(data = apiResponse))
+
+        } catch (e: Exception) {
+            e.message?.let {
+                emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.SIGN_IN_ERROR.apply {
+                    message = it
+                })))
+            }
+        } finally {
+            emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+        }
+    }
 }
