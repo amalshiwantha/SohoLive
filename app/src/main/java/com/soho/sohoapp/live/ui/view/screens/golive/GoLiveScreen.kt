@@ -60,6 +60,7 @@ import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
@@ -97,10 +98,10 @@ import org.koin.compose.koinInject
 @Composable
 fun GoLiveScreen(
     navController: NavController,
-    isLoadedMainData: Boolean,
+    savedApiResults: DataGoLive? = null,
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
-    onDataLoad: (Boolean) -> Unit
+    onLoadApiResults: (DataGoLive) -> Unit
 ) {
 
     val stateVm = goLiveVm.mState.value
@@ -112,12 +113,13 @@ fun GoLiveScreen(
     var isNetConnected by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        if (isLoadedMainData) {
+        savedApiResults?.let {
             //load data From remember
-        } else {
+            println("goLive savedApiResults ${it}")
+        } ?: run {
             callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
                 isNetConnected = it
-                onDataLoad.invoke(true)
+                stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
             })
         }
     }
@@ -132,6 +134,11 @@ fun GoLiveScreen(
             if (stateVm.loadingState == ProgressBarState.Loading) {
                 CenterProgress(modifier = Modifier.align(Alignment.Center))
             } else {
+
+                //save apiResults
+                if (stateVm.isSuccess) {
+                    stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
+                }
 
                 //main steps content
                 LazyColumn(
@@ -175,7 +182,7 @@ fun GoLiveScreen(
             NoInternetScreen(onRetryClick = {
                 callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
                     isNetConnected = it
-                    onDataLoad.invoke(true)
+                    stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
                 })
             })
         }

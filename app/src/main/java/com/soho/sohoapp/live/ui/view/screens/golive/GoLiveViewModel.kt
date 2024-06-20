@@ -10,7 +10,6 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
-import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -27,6 +26,7 @@ class GoLiveViewModel(
             GoLiveEvent.CallLoadProperties -> {
                 loadProfile()
             }
+
             GoLiveEvent.DismissAlert -> {}
         }
     }
@@ -56,11 +56,12 @@ class GoLiveViewModel(
 
                         if (isSuccess) {
                             mState.value = mState.value.copy(isSuccess = true)
+                            mState.value = mState.value.copy(apiResults = result.data)
                         } else {
                             mState.value =
                                 mState.value.copy(
                                     alertState = AlertState.Display(
-                                        AlertConfig.SIGN_IN_ERROR.apply {
+                                        AlertConfig.GO_LIVE_ERROR.apply {
                                             result.response?.let {
                                                 message = it
                                             }
