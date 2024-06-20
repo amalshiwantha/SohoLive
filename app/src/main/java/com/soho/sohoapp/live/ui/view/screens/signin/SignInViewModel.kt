@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
+import com.soho.sohoapp.live.network.response.Data
 import com.soho.sohoapp.live.utility.formValidation
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -65,7 +66,7 @@ class SignInViewModel(
                         val isSuccessLogin = !result.responseType.equals("error")
 
                         if (isSuccessLogin) {
-                            setAsLoggedState()
+                            setAsLoggedState(result.data)
                             mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
                         } else {
                             mStateLogin.value =
@@ -94,9 +95,16 @@ class SignInViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun setAsLoggedState() {
+    private fun setAsLoggedState(profileData: Data?) {
         viewModelScope.launch {
-            userPref.setLoginState(true)
+            profileData?.let {
+                userPref.saveUserProfile(it)
+                userPref.setLoginState(true)
+
+                userPref.userProfile.collect { userProfile ->
+                    println("myProf "+userProfile)
+                }
+            }
         }
     }
 }
