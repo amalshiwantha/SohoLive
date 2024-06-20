@@ -18,13 +18,5 @@ class SplashViewModel(private val userPreferences: AppDataStoreManager) : ViewMo
                 _isLoggedIn.value = state
             }
         }
-
-        setLoginState(false)
-    }
-
-    fun setLoginState(isLoggedIn: Boolean) {
-        viewModelScope.launch {
-            userPreferences.setLoginState(isLoggedIn)
-        }
     }
 }

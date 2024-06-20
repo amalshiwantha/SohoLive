@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.model.SignInRequest
@@ -13,8 +14,12 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.utility.formValidation
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
-class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
+class SignInViewModel(
+    private val apiRepo: SohoApiRepository,
+    private val userPref: AppDataStoreManager
+) : ViewModel() {
     val mStateLogin: MutableState<SignInState> = mutableStateOf(SignInState())
 
     fun onTriggerEvent(signInEvent: SignInEvent) {
@@ -28,9 +33,6 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
     private fun dismissAlertState() {
         mStateLogin.value =
             mStateLogin.value.copy(alertState = AlertState.Idle)
-
-        //THIS IS FOR TEMP
-        //mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
     }
 
     private fun updateRequest(event: SignInRequest) {
@@ -63,6 +65,7 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
                         val isSuccessLogin = !result.responseType.equals("error")
 
                         if (isSuccessLogin) {
+                            setAsLoggedState()
                             mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
                         } else {
                             mStateLogin.value =
@@ -91,5 +94,9 @@ class SignInViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
         }.launchIn(viewModelScope)
     }
 
-
+    private fun setAsLoggedState() {
+        viewModelScope.launch {
+            userPref.setLoginState(true)
+        }
+    }
 }

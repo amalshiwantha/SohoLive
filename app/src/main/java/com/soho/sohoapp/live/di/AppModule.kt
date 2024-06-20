@@ -30,6 +30,6 @@ val appModule = module {
 
     //ViewModels
     viewModel { SplashViewModel(get()) }
-    viewModel { SignInViewModel(get()) }
+    viewModel { SignInViewModel(get(),get()) }
     viewModel { GoLiveViewModel(get()) }
 }
