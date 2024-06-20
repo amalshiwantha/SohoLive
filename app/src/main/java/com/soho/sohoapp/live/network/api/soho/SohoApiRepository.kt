@@ -34,7 +34,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
         try {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
-            val apiResponse = service.propertyListing()
+            val apiResponse = service.propertyListing(authToken = "43033e7d8f11390af3e5e478a2de1bb8")
             emit(ApiState.Data(data = apiResponse))
 
         } catch (e: Exception) {

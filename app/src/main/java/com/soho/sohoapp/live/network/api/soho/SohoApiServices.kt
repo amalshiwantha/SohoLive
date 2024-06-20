@@ -13,5 +13,5 @@ interface SohoApiServices {
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
-    suspend fun propertyListing(): GoLiveResponse
+    suspend fun propertyListing(authToken : String): GoLiveResponse
 }
