@@ -22,8 +22,13 @@ class GoLiveViewModel(
 
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
 
-    init {
-        loadProfile()
+    fun onTriggerEvent(event: GoLiveEvent) {
+        when (event) {
+            GoLiveEvent.CallLoadProperties -> {
+                loadProfile()
+            }
+            GoLiveEvent.DismissAlert -> {}
+        }
     }
 
     private fun loadProfile() {
@@ -36,14 +41,6 @@ class GoLiveViewModel(
                     loadPropertyListing(it.authenticationToken)
                 }
             }
-        }
-    }
-
-    fun onTriggerEvent(signInEvent: SignInEvent) {
-        when (signInEvent) {
-            SignInEvent.CallSignIn -> {}
-            is SignInEvent.OnUpdateRequest -> {}
-            SignInEvent.DismissAlert -> {}
         }
     }
 

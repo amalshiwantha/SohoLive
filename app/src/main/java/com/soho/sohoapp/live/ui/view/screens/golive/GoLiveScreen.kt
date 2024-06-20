@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -90,6 +91,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 @Composable
@@ -105,6 +107,10 @@ fun GoLiveScreen(
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        goLiveVm.onTriggerEvent(GoLiveEvent.CallLoadProperties)
+    }
 
     Box(
         modifier = Modifier
