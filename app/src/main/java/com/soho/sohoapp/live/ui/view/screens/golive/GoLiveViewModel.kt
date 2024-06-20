@@ -9,6 +9,7 @@ import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,6 +27,9 @@ class GoLiveViewModel(
     }
 
     private fun loadProfile() {
+        mState.value =
+            mState.value.copy(loadingState = ProgressBarState.Loading)
+
         viewModelScope.launch {
             userPref.userProfile.collect { profile ->
                 profile?.let {

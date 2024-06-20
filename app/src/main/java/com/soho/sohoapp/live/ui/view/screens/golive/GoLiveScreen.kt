@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -97,51 +98,64 @@ fun GoLiveScreen(
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject()
 ) {
+
+    val stateVm = goLiveVm.mState.value
     val stepCount = 4
     var currentStepId by remember { mutableIntStateOf(0) }
-
-    //step #4
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier.background(brushMainGradientBg)) {
+    Box(
+        modifier = Modifier
+            .background(brushMainGradientBg)
+            .fillMaxSize()
+    ) {
 
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            item {
-                TopContent(stepCount, currentStepId)
-            }
-            item {
-                StepContents(
-                    currentStepId = currentStepId,
-                    optionList = optionList,
-                    selectedOption = selectedOption,
-                    onSelectOption = {
-                        selectedOption = it
-                    })
-            }
-        }
+        if (!stateVm.isSuccess) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
+        } else {
 
-        NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
-            currentStepId = currentStepId,
-            isDateFixed = isDateFixed,
-            onClickedNext = {
-                if (currentStepId < stepCount - 1) {
-                    currentStepId++
+            //main steps content
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                item {
+                    TopContent(stepCount, currentStepId)
                 }
-            },
-            onClickedBack = {
-                currentStepId = (currentStepId - 1) % stepCount
-            },
-            onClickedDateTime = {
-                isDateFixed = true
-            },
-            onClickedLive = {
-                isDateFixed = false
+                item {
+                    StepContents(
+                        currentStepId = currentStepId,
+                        optionList = optionList,
+                        selectedOption = selectedOption,
+                        onSelectOption = {
+                            selectedOption = it
+                        })
+                }
             }
-        )
+
+            //bottom button
+            NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
+                currentStepId = currentStepId,
+                isDateFixed = isDateFixed,
+                onClickedNext = {
+                    if (currentStepId < stepCount - 1) {
+                        currentStepId++
+                    }
+                },
+                onClickedBack = {
+                    currentStepId = (currentStepId - 1) % stepCount
+                },
+                onClickedDateTime = {
+                    isDateFixed = true
+                },
+                onClickedLive = {
+                    isDateFixed = false
+                }
+            )
+        }
     }
 }
 
