@@ -2,9 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.home
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,11 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -45,6 +40,7 @@ import com.soho.sohoapp.live.ui.components.BottomNavigationBar
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 
 @Composable
@@ -117,37 +113,20 @@ fun GoLiveScreenActivity(uiState: UiState, context: Context) {
 
 @Composable
 fun HomeContent(navController: NavController, title: String) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+
+    Box(
+        modifier = Modifier
+            .background(brushMainGradientBg)
+            .fillMaxSize()
     ) {
-        Column(
+        Text(
+            title,
+            style = MaterialTheme.typography.titleLarge,
+            color = AppGreen,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(horizontal = 15.dp, vertical = 10.dp)
-                    .clip(MaterialTheme.shapes.large)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.inspection),
-                    contentDescription = "home_screen_bg",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            Text(
-                title,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(vertical = 20.dp)
-            )
-        }
+                .padding(vertical = 20.dp)
+                .align(Alignment.Center)
+        )
     }
 }
 

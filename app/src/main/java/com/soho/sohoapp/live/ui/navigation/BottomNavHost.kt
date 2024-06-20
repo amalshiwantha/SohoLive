@@ -13,7 +13,7 @@ import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 @Composable
 fun BottomNavHost(navController: NavHostController) {
     NavHost(
-        navController = navController, startDestination = NavigationPath.GO_LIVE.name
+        navController = navController, startDestination = NavigationPath.SCHEDULED.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
             HomeContent(navController, "SCHEDULED")
