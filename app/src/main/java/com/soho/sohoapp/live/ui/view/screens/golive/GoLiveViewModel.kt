@@ -9,13 +9,12 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
-import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class GoLiveViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
 
-    val mStateLogin: MutableState<SignInState> = mutableStateOf(SignInState())
+    val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
 
     init {
         loadPropertyListing()
@@ -36,13 +35,13 @@ class GoLiveViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        val isSuccessLogin = !result.responseType.equals("error")
+                        val isSuccess = !result.responseType.equals("error")
 
-                        if (isSuccessLogin) {
-                            mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
+                        if (isSuccess) {
+                            mState.value = mState.value.copy(isSuccess = true)
                         } else {
-                            mStateLogin.value =
-                                mStateLogin.value.copy(
+                            mState.value =
+                                mState.value.copy(
                                     alertState = AlertState.Display(
                                         AlertConfig.SIGN_IN_ERROR.apply {
                                             result.response?.let {
@@ -56,12 +55,12 @@ class GoLiveViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
                 }
 
                 is ApiState.Loading -> {
-                    mStateLogin.value =
-                        mStateLogin.value.copy(loadingState = apiState.progressBarState)
+                    mState.value =
+                        mState.value.copy(loadingState = apiState.progressBarState)
                 }
 
                 is ApiState.Alert -> {
-                    mStateLogin.value = mStateLogin.value.copy(alertState = apiState.alertState)
+                    mState.value = mState.value.copy(alertState = apiState.alertState)
                 }
             }
         }.launchIn(viewModelScope)

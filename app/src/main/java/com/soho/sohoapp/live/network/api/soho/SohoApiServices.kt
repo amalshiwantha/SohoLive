@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.network.api.soho
 
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
+import com.soho.sohoapp.live.network.response.GoLiveResponse
 
 
 interface SohoApiServices {
@@ -12,5 +13,5 @@ interface SohoApiServices {
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
-    suspend fun propertyListing(): AuthResponse
+    suspend fun propertyListing(): GoLiveResponse
 }

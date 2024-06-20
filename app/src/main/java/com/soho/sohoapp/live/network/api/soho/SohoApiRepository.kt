@@ -6,6 +6,7 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AuthResponse
+import com.soho.sohoapp.live.network.response.GoLiveResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -29,7 +30,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
         }
     }
 
-    fun goLivePropertyListing(): Flow<ApiState<AuthResponse>> = flow {
+    fun goLivePropertyListing(): Flow<ApiState<GoLiveResponse>> = flow {
         try {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
@@ -38,7 +39,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
 
         } catch (e: Exception) {
             e.message?.let {
-                emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.SIGN_IN_ERROR.apply {
+                emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.GO_LIVE_ERROR.apply {
                     message = it
                 })))
             }

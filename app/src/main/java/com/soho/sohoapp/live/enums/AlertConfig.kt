@@ -30,5 +30,10 @@ enum class AlertConfig(
         message = "Do you want to delete this item?",
         confirmBtnText = "Delete",
         dismissBtnText = "Cancel"
-    )
+    ),GO_LIVE_ERROR(
+        title = "Property Listing Problem",
+        message = "Something went wrong. Please re-try later",
+        confirmBtnText = "",
+        dismissBtnText = "OK",
+    ),
 }
