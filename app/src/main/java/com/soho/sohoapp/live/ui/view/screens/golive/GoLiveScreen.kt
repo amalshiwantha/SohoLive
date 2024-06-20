@@ -97,8 +97,10 @@ import org.koin.compose.koinInject
 @Composable
 fun GoLiveScreen(
     navController: NavController,
+    isLoadedMainData: Boolean,
     goLiveVm: GoLiveViewModel = koinInject(),
-    netUtil: NetworkUtils = koinInject()
+    netUtil: NetworkUtils = koinInject(),
+    onDataLoad: (Boolean) -> Unit
 ) {
 
     val stateVm = goLiveVm.mState.value
@@ -110,9 +112,14 @@ fun GoLiveScreen(
     var isNetConnected by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
-            isNetConnected = it
-        })
+        if (isLoadedMainData) {
+            //load data From remember
+        } else {
+            callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
+                isNetConnected = it
+                onDataLoad.invoke(true)
+            })
+        }
     }
 
     Box(
@@ -168,6 +175,7 @@ fun GoLiveScreen(
             NoInternetScreen(onRetryClick = {
                 callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
                     isNetConnected = it
+                    onDataLoad.invoke(true)
                 })
             })
         }
