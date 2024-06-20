@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -29,13 +27,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,6 +77,8 @@ import com.soho.sohoapp.live.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
+import com.soho.sohoapp.live.ui.components.brushGradientLive
+import com.soho.sohoapp.live.ui.components.brushGradientSetDateTime
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -100,11 +98,12 @@ fun GoLiveScreen(
     netUtil: NetworkUtils = koinInject()
 ) {
     val stepCount = 4
-    var currentStepId by remember { mutableIntStateOf(3) }
+    var currentStepId by remember { mutableIntStateOf(0) }
 
     //step #4
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
+    var isDateFixed by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.background(brushMainGradientBg)) {
 
@@ -127,6 +126,7 @@ fun GoLiveScreen(
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStepId,
+            isDateFixed = isDateFixed,
             onClickedNext = {
                 if (currentStepId < stepCount - 1) {
                     currentStepId++
@@ -134,35 +134,14 @@ fun GoLiveScreen(
             },
             onClickedBack = {
                 currentStepId = (currentStepId - 1) % stepCount
-            })
-    }
-}
-
-@Composable
-private fun ScrollableContentStep3a() {
-    val defaultPadding = 0.dp
-    val listState = rememberLazyListState()
-    var bottomPadding by remember { mutableStateOf(defaultPadding) }
-    val socialMediaItems = SocialMediaInfo.entries
-
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
-            bottomPadding =
-                if (visibleItems.isNotEmpty() && visibleItems.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1) {
-                    80.dp
-                } else {
-                    defaultPadding
-                }
-        }
-    }
-
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.padding(bottom = 16.dp)
-    ) {
-        items(socialMediaItems) { item ->
-            SocialMediaItemContent(item)
-        }
+            },
+            onClickedDateTime = {
+                isDateFixed = true
+            },
+            onClickedLive = {
+                isDateFixed = false
+            }
+        )
     }
 }
 
@@ -211,7 +190,7 @@ fun StepContents(
 private fun Content4(
     optionList: MutableList<String>,
     selectedOption: String,
-    onSelectOption: (String) -> Unit
+    onSelectOption: (String) -> Unit,
 ) {
     var isOnCoverOption by remember { mutableStateOf(false) }
 
@@ -220,45 +199,43 @@ private fun Content4(
     SpacerVertical(size = 8.dp)
     SwipeableSwitch()
 
-    if (false) {
-        SpacerVertical(size = 24.dp)
-        Text700_14sp(step = "What is this livestream for?")
-        DropDownWhatForLiveStream(
-            selectedValue = selectedOption,
-            options = optionList,
-            placeHolder = "Select an option",
-            onValueChangedEvent = {
-                onSelectOption(it)
-            })
+    SpacerVertical(size = 24.dp)
+    Text700_14sp(step = "What is this livestream for?")
+    DropDownWhatForLiveStream(
+        selectedValue = selectedOption,
+        options = optionList,
+        placeHolder = "Select an option",
+        onValueChangedEvent = {
+            onSelectOption(it)
+        })
 
-        SpacerVertical(size = 24.dp)
-        Text700_14sp(step = "Stream title")
-        TextFieldWhite(FieldConfig.NEXT.apply {
-            placeholder = "Address or title for your livestream"
-        }) {}
+    SpacerVertical(size = 24.dp)
+    Text700_14sp(step = "Stream title")
+    TextFieldWhite(FieldConfig.NEXT.apply {
+        placeholder = "Address or title for your livestream"
+    }) {}
 
-        SpacerVertical(size = 24.dp)
-        Text700_14sp(step = "Description")
-        TextAreaWhite(FieldConfig.NEXT.apply {
-            placeholder =
-                "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
-        }) {}
+    SpacerVertical(size = 24.dp)
+    Text700_14sp(step = "Description")
+    TextAreaWhite(FieldConfig.NEXT.apply {
+        placeholder =
+            "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
+    }) {}
 
-        SpacerVertical(size = 40.dp)
-        Text700_14sp(step = "Livestream cover image")
-        Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
+    SpacerVertical(size = 40.dp)
+    Text700_14sp(step = "Livestream cover image")
+    Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
 
-        SpacerVertical(size = 16.dp)
-        Image(
-            painter = painterResource(id = R.drawable.sample_cover_image),
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxWidth()
-        )
+    SpacerVertical(size = 16.dp)
+    Image(
+        painter = painterResource(id = R.drawable.sample_cover_image),
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxWidth()
+    )
 
-        SpacerVertical(size = 16.dp)
-        ShareDownloadButtons()
-    }
+    SpacerVertical(size = 16.dp)
+    ShareDownloadButtons()
 
     SpacerVertical(size = 24.dp)
     CustomizeCoverImageCard(isOnCoverOption, onCheckedChange = {
@@ -473,8 +450,11 @@ private fun StepIndicator(
 private fun NextBackButtons(
     modifier: Modifier,
     currentStepId: Int,
+    isDateFixed: Boolean,
     onClickedNext: () -> Unit,
-    onClickedBack: () -> Unit
+    onClickedBack: () -> Unit,
+    onClickedLive: () -> Unit,
+    onClickedDateTime: () -> Unit
 ) {
     Box(
         modifier = modifier.background(
@@ -502,11 +482,37 @@ private fun NextBackButtons(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
             }
-            ButtonColoured(
-                text = stringResource(R.string.next), color = AppGreen,
-                modifier = Modifier.weight(1f)
-            ) {
-                onClickedNext.invoke()
+
+            if (currentStepId == 3) {
+
+                if (!isDateFixed) {
+                    ButtonGradientIcon(
+                        text = "Set Date & Time",
+                        icon = R.drawable.ic_calender,
+                        gradientBrush = brushGradientSetDateTime,
+                        modifier = Modifier.weight(1f),
+                        onBtnClick = {
+                            onClickedDateTime.invoke()
+                        }
+                    )
+                } else {
+                    ButtonGradientIcon(
+                        text = "Preview Live",
+                        icon = R.drawable.ic_livestream,
+                        gradientBrush = brushGradientLive,
+                        modifier = Modifier.weight(1f),
+                        onBtnClick = {
+                            onClickedLive.invoke()
+                        }
+                    )
+                }
+            } else {
+                ButtonColoured(
+                    text = stringResource(R.string.next), color = AppGreen,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    onClickedNext.invoke()
+                }
             }
         }
     }
@@ -906,7 +912,10 @@ private fun PreviewGoLiveScreen() {
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStep,
+            isDateFixed = true,
             onClickedNext = {},
-            onClickedBack = {})
+            onClickedBack = {},
+            onClickedDateTime = {},
+            onClickedLive = {})
     }
 }

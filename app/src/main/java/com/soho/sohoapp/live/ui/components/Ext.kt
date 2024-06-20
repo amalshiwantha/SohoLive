@@ -9,10 +9,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Dp
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
+import com.soho.sohoapp.live.ui.theme.LiveBtnGradientStart
+import com.soho.sohoapp.live.ui.theme.LiveDateBtnGradientEnd
 import com.soho.sohoapp.live.ui.theme.NextButtonBg
 import com.soho.sohoapp.live.ui.theme.NextButtonBgTrans
 import com.soho.sohoapp.live.ui.theme.PlanBtnGradientEnd
 import com.soho.sohoapp.live.ui.theme.PlanBtnGradientStart
+import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientEnd
+import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientStart
 
 val brushMainGradientBg = Brush.verticalGradient(
     colors = listOf(BgGradientPurpleLight, BgGradientPurpleDark)
@@ -24,6 +28,14 @@ val brushBottomGradientBg = Brush.verticalGradient(
 
 val brushPlanBtnGradientBg = Brush.horizontalGradient(
     colors = listOf(PlanBtnGradientStart, PlanBtnGradientEnd)
+)
+
+val brushGradientSetDateTime = Brush.horizontalGradient(
+    colors = listOf(SetDateBtnGradientStart, SetDateBtnGradientEnd)
+)
+
+val brushGradientLive = Brush.horizontalGradient(
+    colors = listOf(LiveBtnGradientStart, LiveDateBtnGradientEnd)
 )
 
 @Composable

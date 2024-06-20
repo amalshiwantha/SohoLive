@@ -90,12 +90,11 @@ fun ButtonGradientIcon(
     text: String,
     gradientBrush: Brush,
     icon: Int,
+    modifier: Modifier = Modifier,
     onBtnClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(16.dp),
         onClick = { onBtnClick() }
     ) {
