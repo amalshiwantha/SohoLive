@@ -30,11 +30,11 @@ class SohoApiRepository(private val service: SohoApiServices) {
         }
     }
 
-    fun goLivePropertyListing(): Flow<ApiState<GoLiveResponse>> = flow {
+    fun goLivePropertyListing(authToken: String): Flow<ApiState<GoLiveResponse>> = flow {
         try {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
-            val apiResponse = service.propertyListing(authToken = "43033e7d8f11390af3e5e478a2de1bb8")
+            val apiResponse = service.propertyListing(authToken = authToken)
             emit(ApiState.Data(data = apiResponse))
 
         } catch (e: Exception) {

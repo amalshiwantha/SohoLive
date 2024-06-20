@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
@@ -11,13 +12,27 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
-class GoLiveViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
+class GoLiveViewModel(
+    private val apiRepo: SohoApiRepository,
+    private val userPref: AppDataStoreManager
+) : ViewModel() {
 
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
 
     init {
-        loadPropertyListing()
+        loadProfile()
+    }
+
+    private fun loadProfile() {
+        viewModelScope.launch {
+            userPref.userProfile.collect { profile ->
+                profile?.let {
+                    loadPropertyListing(it.authenticationToken)
+                }
+            }
+        }
     }
 
     fun onTriggerEvent(signInEvent: SignInEvent) {
@@ -28,8 +43,9 @@ class GoLiveViewModel(private val apiRepo: SohoApiRepository) : ViewModel() {
         }
     }
 
-    private fun loadPropertyListing() {
-        apiRepo.goLivePropertyListing().onEach { apiState ->
+    private fun loadPropertyListing(authToken: String) {
+
+        apiRepo.goLivePropertyListing(authToken).onEach { apiState ->
 
             when (apiState) {
 
