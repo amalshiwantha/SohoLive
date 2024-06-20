@@ -155,6 +155,12 @@ private fun LoginForm(
         val requestData = loginState.request
         val errorState = loginState.errorStates
 
+        //TODO this is for temp
+        requestData.apply {
+            email = "amal+adam.regan##at##raywhite.com@soho.com.au"
+            password = "soho123"
+        }
+
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
         TextFieldWhite(
