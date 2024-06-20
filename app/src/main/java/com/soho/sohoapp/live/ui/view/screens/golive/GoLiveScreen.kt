@@ -91,7 +91,6 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
-import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 @Composable
@@ -107,9 +106,12 @@ fun GoLiveScreen(
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
+    var isNetConnected by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        goLiveVm.onTriggerEvent(GoLiveEvent.CallLoadProperties)
+        callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
+            isNetConnected = it
+        })
     }
 
     Box(
@@ -118,50 +120,90 @@ fun GoLiveScreen(
             .fillMaxSize()
     ) {
 
-        if (!stateVm.isSuccess) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
+        if (isNetConnected) {
+            if (!stateVm.isSuccess) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {
 
-            //main steps content
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
-                item {
-                    TopContent(stepCount, currentStepId)
-                }
-                item {
-                    StepContents(
-                        currentStepId = currentStepId,
-                        optionList = optionList,
-                        selectedOption = selectedOption,
-                        onSelectOption = {
-                            selectedOption = it
-                        })
-                }
-            }
-
-            //bottom button
-            NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
-                currentStepId = currentStepId,
-                isDateFixed = isDateFixed,
-                onClickedNext = {
-                    if (currentStepId < stepCount - 1) {
-                        currentStepId++
+                //main steps content
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    item {
+                        TopContent(stepCount, currentStepId)
                     }
-                },
-                onClickedBack = {
-                    currentStepId = (currentStepId - 1) % stepCount
-                },
-                onClickedDateTime = {
-                    isDateFixed = true
-                },
-                onClickedLive = {
-                    isDateFixed = false
+                    item {
+                        StepContents(
+                            currentStepId = currentStepId,
+                            optionList = optionList,
+                            selectedOption = selectedOption,
+                            onSelectOption = {
+                                selectedOption = it
+                            })
+                    }
                 }
-            )
+
+                //bottom button
+                NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
+                    currentStepId = currentStepId,
+                    isDateFixed = isDateFixed,
+                    onClickedNext = {
+                        if (currentStepId < stepCount - 1) {
+                            currentStepId++
+                        }
+                    },
+                    onClickedBack = {
+                        currentStepId = (currentStepId - 1) % stepCount
+                    },
+                    onClickedDateTime = {
+                        isDateFixed = true
+                    },
+                    onClickedLive = {
+                        isDateFixed = false
+                    }
+                )
+            }
+        } else {
+            NoInternetScreen(onRetryClick = {
+                callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
+                    isNetConnected = it
+                })
+            })
         }
+    }
+}
+
+private fun callLoadPropertyApi(
+    goLiveVm: GoLiveViewModel,
+    netUtil: NetworkUtils,
+    onUpdateNetStatus: (Boolean) -> Unit
+) {
+    if (netUtil.isNetworkAvailable()) {
+        onUpdateNetStatus(true)
+        goLiveVm.onTriggerEvent(GoLiveEvent.CallLoadProperties)
+    } else {
+        onUpdateNetStatus(false)
+    }
+}
+
+@Composable
+fun NoInternetScreen(onRetryClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text950_20sp(title = "No Internet Connection")
+        SpacerVertical(size = 8.dp)
+        Text700_14sp(step = "Please check your internet connection and try again.")
+        SpacerVertical(size = 24.dp)
+        ButtonColoured(text = "Retry", color = AppGreen, onBtnClick = {
+            onRetryClick()
+        })
     }
 }
 
