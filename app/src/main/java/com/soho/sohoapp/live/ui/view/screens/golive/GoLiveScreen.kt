@@ -60,6 +60,7 @@ import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
@@ -121,7 +122,7 @@ fun GoLiveScreen(
     ) {
 
         if (isNetConnected) {
-            if (!stateVm.isSuccess) {
+            if (stateVm.loadingState == ProgressBarState.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
