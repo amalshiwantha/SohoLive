@@ -682,7 +682,8 @@ private fun PropertyListing(listings: List<Listing>) {
         mutableStateOf((1..listings.size * 5).map {
             PropertyItem(
                 it,
-                address = "308/50 Murray Street, Sydney NSW 200$it"
+                address = "308/50 Murray Street, Sydney NSW 200$it",
+                imageUrl = if (it == 1) "https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?cs=srgb&dl=pexels-binyaminmellish-186077.jpg&fm=jpg" else "https://images.pexels.com/photos/210617/pexels-photo-210617.jpeg?cs=srgb&dl=pexels-pixabay-210617.jpg&fm=jpg"
             )
         })
     }
@@ -872,8 +873,14 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
     ) {
         Row(modifier = Modifier.padding(14.dp)) {
             //image
+            val urlPainter = rememberAsyncImagePainter(
+                model = item.imageUrl,
+                placeholder = painterResource(id = R.drawable.property_placeholder),
+                error = painterResource(id = R.drawable.property_placeholder)
+            )
+
             Image(
-                painter = painterResource(id = R.drawable.prop_image),
+                painter = urlPainter,
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
@@ -1104,7 +1111,7 @@ private fun PreviewGoLiveScreen() {
     }
 }
 
-data class PropertyItem(val id: Int, var isChecked: Boolean = false, val address: String)
+data class PropertyItem(val id: Int, var isChecked: Boolean = false, val address: String, val imageUrl: String)
 data class AgencyItem(
     val id: Int,
     val name: String,
