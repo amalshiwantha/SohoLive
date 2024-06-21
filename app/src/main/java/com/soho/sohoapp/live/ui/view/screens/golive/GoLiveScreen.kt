@@ -256,10 +256,15 @@ fun StepContents(
         }
 
         1 -> {
-            ProfileHideItem()
-            ScrollableContentStep2()
-            //display from step#1 selection
-            //donty show == "" not 0 (agent_profile_id)
+
+            if (savedResults.agentProfiles.isEmpty()) {
+                DisplayNoData(message = "No Agency Information")
+            } else {
+                ProfileHideItem()
+                AgentListing()
+                //AgentListing display from step#1 selection
+                //donty show == "" not 0 (agent_profile_id)
+            }
         }
 
         2 -> {
@@ -643,7 +648,7 @@ private fun ScrollableContentStep3() {
 }
 
 @Composable
-private fun ScrollableContentStep2() {
+private fun AgentListing() {
     for (index in 1..3) {
         ProfileItemContent(index)
     }
@@ -895,8 +900,7 @@ private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite) {
 private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Unit = {}) {
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
