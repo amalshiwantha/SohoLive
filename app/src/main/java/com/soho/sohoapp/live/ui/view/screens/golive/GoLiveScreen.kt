@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -252,7 +250,7 @@ fun StepContents(
             } else {
                 SearchBar()
                 SpacerVertical(16.dp)
-                ScrollableContentStep1(savedResults.listings)
+                PropertyListing(savedResults.listings)
             }
         }
 
@@ -651,9 +649,9 @@ private fun ScrollableContentStep2() {
 }
 
 @Composable
-private fun ScrollableContentStep1(listings: List<Listing>) {
+private fun PropertyListing(listings: List<Listing>) {
     var propertyItemList by rememberSaveable {
-        mutableStateOf((1..listings.size).map {
+        mutableStateOf((1..listings.size*5).map {
             PropertyItem(
                 it,
                 address = "308/50 Murray Street, Sydney NSW 200$it"
