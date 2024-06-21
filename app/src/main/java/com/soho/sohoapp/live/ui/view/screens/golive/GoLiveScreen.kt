@@ -811,12 +811,15 @@ private fun getImageWidth(drawableResId: Int): Size {
 
 @Composable
 private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> Unit = {}) {
+    val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
+    val textColor = if (item.isChecked) ItemCardBg else AppWhite
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = ItemCardBg),
+        colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -835,9 +838,9 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
                     .padding(start = 14.dp)
                     .fillMaxWidth()
             ) {
-                ProfileNameCheckBox(item)
+                ProfileNameCheckBox(item,textColor)
                 SpacerVertical(size = 8.dp)
-                Text400_14sp(info = item.email)
+                Text400_14sp(info = item.email, color = textColor)
             }
         }
     }
@@ -966,7 +969,7 @@ private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Un
 }
 
 @Composable
-private fun ProfileNameCheckBox(info: AgencyItem) {
+private fun ProfileNameCheckBox(info: AgencyItem, textColor: Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -974,7 +977,7 @@ private fun ProfileNameCheckBox(info: AgencyItem) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Text700_14spBold(step = info.name)
+        Text700_14spBold(step = info.name, txtColor = textColor)
 
         Row(
             modifier = Modifier

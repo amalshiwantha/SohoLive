@@ -155,7 +155,7 @@ fun Text700_14sp(modifier: Modifier = Modifier, step: String, isCenter: Boolean 
 }
 
 @Composable
-fun Text700_14spBold(modifier: Modifier = Modifier, step: String) {
+fun Text700_14spBold(modifier: Modifier = Modifier, step: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,
         text = step,
@@ -163,7 +163,7 @@ fun Text700_14spBold(modifier: Modifier = Modifier, step: String) {
         lineHeight = 19.6.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(700),
-        color = AppWhite,
+        color = txtColor,
         letterSpacing = 0.17.sp
     )
 }
