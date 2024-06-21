@@ -817,7 +817,8 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .padding(bottom = 16.dp)
+            .clickable { onItemClicked(item) },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -838,7 +839,9 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
                     .padding(start = 14.dp)
                     .fillMaxWidth()
             ) {
-                ProfileNameCheckBox(item,textColor)
+                ProfileNameCheckBox(item, textColor, onCheckedChange = {
+                    onItemClicked(item)
+                })
                 SpacerVertical(size = 8.dp)
                 Text400_14sp(info = item.email, color = textColor)
             }
@@ -969,7 +972,11 @@ private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Un
 }
 
 @Composable
-private fun ProfileNameCheckBox(info: AgencyItem, textColor: Color) {
+private fun ProfileNameCheckBox(
+    info: AgencyItem,
+    textColor: Color,
+    onCheckedChange: (Boolean) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -995,7 +1002,7 @@ private fun ProfileNameCheckBox(info: AgencyItem, textColor: Color) {
             Box(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
-                    .clickable { !info.isChecked },
+                    .clickable { onCheckedChange(!info.isChecked) },
                 contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
