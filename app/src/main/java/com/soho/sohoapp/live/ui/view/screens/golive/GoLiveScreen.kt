@@ -119,6 +119,7 @@ fun GoLiveScreen(
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
     var isNetConnected by remember { mutableStateOf(true) }
+    var isNowSelected by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -153,15 +154,16 @@ fun GoLiveScreen(
                         TopContent(stepCount, currentStepId)
                     }
                     item {
-                        savedApiResults?.let {
+                        savedApiResults?.let { savedData ->
                             StepContents(
                                 currentStepId = currentStepId,
-                                savedResults = it,
+                                savedResults = savedData,
                                 optionList = optionList,
+                                isNowSelected = isNowSelected,
                                 selectedOption = selectedOption,
-                                onSelectOption = {
-                                    selectedOption = it
-                                })
+                                onSelectOption = { selectedOption = it },
+                                onSwipeIsNowSelected = { isNowSelected = it }
+                            )
                         }
                     }
                 }
@@ -241,9 +243,11 @@ fun TopContent(stepCount: Int, currentStepId: Int) {
 fun StepContents(
     currentStepId: Int,
     savedResults: DataGoLive,
+    isNowSelected: Boolean,
     optionList: MutableList<String>,
     selectedOption: String,
-    onSelectOption: (String) -> Unit
+    onSelectOption: (String) -> Unit,
+    onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
     SpacerVertical(40.dp)
 
@@ -281,7 +285,10 @@ fun StepContents(
             Content4(
                 optionList = optionList,
                 selectedOption = selectedOption,
-                onSelectOption = { onSelectOption(it) })
+                isNowSelected = isNowSelected,
+                onSelectOption = { onSelectOption(it) },
+                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) }
+            )
         }
     }
 }
@@ -313,14 +320,19 @@ fun DisplayNoData(message: String) {
 private fun Content4(
     optionList: MutableList<String>,
     selectedOption: String,
+    isNowSelected: Boolean,
     onSelectOption: (String) -> Unit,
+    onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
+
     var isOnCoverOption by remember { mutableStateOf(false) }
 
     Text700_14sp(step = "When do you want to go live?")
 
     SpacerVertical(size = 8.dp)
-    SwipeableSwitch()
+    SwipeableSwitch(isNowSelected, onSwipeChange = {
+        onSwipeIsNowSelected(it)
+    })
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "What is this livestream for?")
@@ -490,12 +502,11 @@ fun ShareDownloadButtons() {
 }
 
 @Composable
-private fun SwipeableSwitch() {
+private fun SwipeableSwitch(isNowSelected: Boolean, onSwipeChange: (Boolean) -> Unit) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val horizontalPadding = 16.dp
     val availableWidth = screenWidth - (horizontalPadding * 2)
     val indicatorWidth = availableWidth / 2
-    var isNowSelected by remember { mutableStateOf(false) }
     val indicatorOffset by animateDpAsState(
         targetValue = if (isNowSelected) 0.dp else indicatorWidth,
         label = "animateToMove"
@@ -527,7 +538,7 @@ private fun SwipeableSwitch() {
             TextSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { isNowSelected = true },
+                    .clickable { onSwipeChange(true) },
                 title = "Now",
                 textColor = if (isNowSelected) TextDark else AppWhite
             )
@@ -535,7 +546,7 @@ private fun SwipeableSwitch() {
             TextSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { isNowSelected = false },
+                    .clickable { onSwipeChange(false) },
                 title = "Schedule for later",
                 textColor = if (!isNowSelected) TextDark else AppWhite
             )
@@ -1109,7 +1120,7 @@ data class AgencyItem(
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         val countSteps = 4
-        val currentStep = 2
+        val currentStep = 3
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -1119,11 +1130,14 @@ private fun PreviewGoLiveScreen() {
             }
             item {
                 StepContents(
-                    currentStep,
-                    DataGoLive(emptyList(), emptyList()),
-                    mutableListOf(),
-                    ""
-                ) {}
+                    currentStepId = currentStep,
+                    savedResults = DataGoLive(emptyList(), emptyList()),
+                    optionList = mutableListOf(),
+                    isNowSelected = true,
+                    selectedOption = "",
+                    onSelectOption = { },
+                    onSwipeIsNowSelected = { }
+                )
             }
         }
 
