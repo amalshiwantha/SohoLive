@@ -34,79 +34,85 @@ fun BottomNavigationBar(
         containerColor = BottomBarBg
     ) {
         BottomNavigationItem().navigationItems().forEachIndexed { index, navigationItem ->
-                NavigationBarItem(colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = BottomBarSelect,
-                    selectedTextColor = BottomBarSelect,
-                    unselectedIconColor = BottomBarUnselect,
-                    unselectedTextColor = BottomBarUnselect,
-                    indicatorColor = BottomBarBg,
+            NavigationBarItem(colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = BottomBarSelect,
+                selectedTextColor = BottomBarSelect,
+                unselectedIconColor = BottomBarUnselect,
+                unselectedTextColor = BottomBarUnselect,
+                indicatorColor = BottomBarBg,
 
-                    ), selected = index == navigationSelectedItem, label = {
-                    if (navigationItem.label.isNotEmpty()) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                text = navigationItem.label,
-                            )
-
-                            Icon(
-                                modifier = Modifier.fillMaxWidth(),
-                                painter = painterResource(id = R.drawable.ic_red_dot),
-                                contentDescription = navigationItem.label,
-                                tint = if (index == navigationSelectedItem) {
-                                    AppRed
-                                } else {
-                                    BottomBarBg
-                                }
-                            )
-
-
-                        }
-                    }
-                }, icon = {
+                ), selected = index == navigationSelectedItem, label = {
+                if (navigationItem.label.isNotEmpty()) {
                     Column(
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            text = navigationItem.label,
+                        )
+
                         Icon(
-                            painter = painterResource(id = navigationItem.icon),
+                            modifier = Modifier.fillMaxWidth(),
+                            painter = painterResource(id = R.drawable.ic_red_dot),
                             contentDescription = navigationItem.label,
-                            modifier = if (navigationItem.label.isEmpty()) {
-                                Modifier.size(42.dp)
+                            tint = if (index == navigationSelectedItem) {
+                                AppRed
                             } else {
-                                Modifier.size(24.dp)
+                                BottomBarBg
                             }
                         )
 
-                        if (navigationItem.label.isEmpty()) {
-                            Icon(
-                                modifier = Modifier.fillMaxWidth(),
-                                painter = painterResource(id = R.drawable.ic_red_dot),
-                                contentDescription = navigationItem.label,
-                                tint = if (index == navigationSelectedItem) {
-                                    AppRed
-                                } else {
-                                    BottomBarBg
-                                }
-                            )
-                        }
+
                     }
-                }, onClick = {
-                    onTabClick(index)
-                    navigationSelectedItem = index
-                    navController.navigate(navigationItem.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                }
+            }, icon = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            id = if (index == navigationSelectedItem) {
+                                navigationItem.iconOn
+                            } else {
+                                navigationItem.iconOff
+                            }
+                        ),
+                        contentDescription = navigationItem.label,
+                        modifier = if (navigationItem.label.isEmpty()) {
+                            Modifier.size(42.dp)
+                        } else {
+                            Modifier.size(24.dp)
                         }
-                        launchSingleTop = true
-                        restoreState = true
+                    )
+
+                    if (navigationItem.label.isEmpty()) {
+                        Icon(
+                            modifier = Modifier.fillMaxWidth(),
+                            painter = painterResource(id = R.drawable.ic_red_dot),
+                            contentDescription = navigationItem.label,
+                            tint = if (index == navigationSelectedItem) {
+                                AppRed
+                            } else {
+                                BottomBarBg
+                            }
+                        )
                     }
-                })
-            }
+                }
+            }, onClick = {
+                onTabClick(index)
+                navigationSelectedItem = index
+                navController.navigate(navigationItem.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            })
+        }
     }
 }

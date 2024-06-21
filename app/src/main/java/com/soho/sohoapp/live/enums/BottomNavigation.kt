@@ -5,29 +5,34 @@ import com.soho.sohoapp.live.ui.navigation.NavigationPath
 
 data class BottomNavigationItem(
     val label: String = "",
-    val icon: Int = R.drawable.ic_bottom_schadule,
+    val iconOn: Int = R.drawable.ic_bottom_schadule,
+    val iconOff: Int = R.drawable.ic_bottom_schadule,
     val route: String = ""
 ) {
     fun navigationItems(): List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(
                 label = "Scheduled",
-                icon = R.drawable.ic_bottom_schadule,
+                iconOn = R.drawable.ic_bottom_schadule,
+                iconOff = R.drawable.ic_bottom_schadule_off,
                 route = NavigationPath.SCHEDULED.name
             ),
             BottomNavigationItem(
                 label = "Go Live",
-                icon = R.drawable.ic_bottom_live,
+                iconOn = R.drawable.ic_bottom_live,
+                iconOff = R.drawable.ic_bottom_live_off,
                 route = NavigationPath.GO_LIVE.name
             ),
             BottomNavigationItem(
                 label = "Video Library",
-                icon = R.drawable.ic_bottom_play,
+                iconOn = R.drawable.ic_bottom_play,
+                iconOff = R.drawable.ic_bottom_play_off,
                 route = NavigationPath.VIDEO_LIBRARY.name
             ),
             BottomNavigationItem(
                 label = "",
-                icon = R.drawable.ic_bottom_profile,
+                iconOn = R.drawable.ic_bottom_profile,
+                iconOff = R.drawable.ic_bottom_profile,
                 route = NavigationPath.PROFILE.name
             ),
         )
