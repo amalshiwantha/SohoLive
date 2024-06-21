@@ -62,6 +62,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.DataGoLive
+import com.soho.sohoapp.live.network.response.Listing
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
@@ -151,6 +152,7 @@ fun GoLiveScreen(
                     item {
                         StepContents(
                             currentStepId = currentStepId,
+                            savedResults = savedApiResults,
                             optionList = optionList,
                             selectedOption = selectedOption,
                             onSelectOption = {
@@ -232,6 +234,7 @@ fun TopContent(stepCount: Int, currentStepId: Int) {
 @Composable
 fun StepContents(
     currentStepId: Int,
+    savedResults: DataGoLive?,
     optionList: MutableList<String>,
     selectedOption: String,
     onSelectOption: (String) -> Unit
@@ -242,7 +245,15 @@ fun StepContents(
         0 -> {
             SearchBar()
             SpacerVertical(16.dp)
-            ScrollableContentStep1()
+            savedResults?.let {
+                if (it.listings.isEmpty()) {
+                    Text700_14sp(step = "No Properties")
+                } else {
+                    ScrollableContentStep1(it.listings)
+                }
+            } ?: run {
+                Text700_14sp(step = "Something went wrong on Properties")
+            }
         }
 
         1 -> {
@@ -610,9 +621,9 @@ private fun ScrollableContentStep2() {
 }
 
 @Composable
-private fun ScrollableContentStep1() {
+private fun ScrollableContentStep1(listings: List<Listing>) {
     var propertyItemList by rememberSaveable {
-        mutableStateOf((1..5).map {
+        mutableStateOf((1..listings.size).map {
             PropertyItem(
                 it,
                 1 % 2 == 0,
@@ -779,13 +790,8 @@ private fun ProfileItemContent(index: Int) {
     }
 }
 
-data class PropertyItem(val id: Int, var isChecked: Boolean, val address: String)
-
 @Composable
 private fun ItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
-
-    //var checked by remember { mutableStateOf(true) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -1007,7 +1013,7 @@ private fun PreviewGoLiveScreen() {
                 TopContent(countSteps, currentStep)
             }
             item {
-                StepContents(currentStep, mutableListOf(), "") {}
+                StepContents(currentStep, null, mutableListOf(), "") {}
             }
         }
 
@@ -1020,3 +1026,5 @@ private fun PreviewGoLiveScreen() {
             onClickedLive = {})
     }
 }
+
+data class PropertyItem(val id: Int, var isChecked: Boolean, val address: String)
