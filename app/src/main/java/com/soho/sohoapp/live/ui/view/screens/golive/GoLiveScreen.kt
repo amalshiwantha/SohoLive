@@ -171,6 +171,7 @@ fun GoLiveScreen(
                         }
                     },
                     onClickedBack = {
+                        //POST /api/soho_live/live_stream
                         currentStepId = (currentStepId - 1) % stepCount
                     },
                     onClickedDateTime = {
@@ -259,10 +260,14 @@ fun StepContents(
         1 -> {
             ProfileHideItem()
             ScrollableContentStep2()
+            //display from step#1 selection
+            //donty show == "" not 0 (agent_profile_id)
         }
 
         2 -> {
             ScrollableContentStep3()
+            //use soil mead sdks, have to display som popups
+            //soho = unlisted chanegt he toggle
         }
 
         3 -> {
@@ -310,29 +315,32 @@ private fun Content4(
             "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
     }) {}
 
-    SpacerVertical(size = 40.dp)
-    Text700_14sp(step = "Livestream cover image")
-    Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
 
-    SpacerVertical(size = 16.dp)
-    Image(
-        painter = painterResource(id = R.drawable.sample_cover_image),
-        contentDescription = "",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxWidth()
-    )
+    if (false) {
+        SpacerVertical(size = 40.dp)
+        Text700_14sp(step = "Livestream cover image")
+        Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
 
-    SpacerVertical(size = 16.dp)
-    ShareDownloadButtons()
-
-    SpacerVertical(size = 24.dp)
-    CustomizeCoverImageCard(isOnCoverOption, onCheckedChange = {
-        isOnCoverOption = it
-    })
-
-    if (isOnCoverOption) {
         SpacerVertical(size = 16.dp)
-        CustomizeCoverOptionCards()
+        Image(
+            painter = painterResource(id = R.drawable.sample_cover_image),
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        SpacerVertical(size = 16.dp)
+        ShareDownloadButtons()
+
+        SpacerVertical(size = 24.dp)
+        CustomizeCoverImageCard(isOnCoverOption, onCheckedChange = {
+            isOnCoverOption = it
+        })
+
+        if (isOnCoverOption) {
+            SpacerVertical(size = 16.dp)
+            CustomizeCoverOptionCards()
+        }
     }
 
     SpacerVertical(size = 140.dp)
