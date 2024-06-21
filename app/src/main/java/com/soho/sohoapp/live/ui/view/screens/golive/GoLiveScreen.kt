@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FieldConfig
@@ -656,7 +657,7 @@ private fun AgentListing(agentProfiles: List<AgentProfileGoLive>) {
                 id = it,
                 name = "Agent Name $it",
                 email = "agent@email$it",
-                imageUrl = "http",
+                imageUrl = if (it == 1) "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg" else "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
                 rating = 0f
             )
         })
@@ -825,8 +826,14 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
     ) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             //image
+            val urlPainter = rememberAsyncImagePainter(
+                model = item.imageUrl,
+                placeholder = painterResource(id = R.drawable.profile_placeholder),
+                error = painterResource(id = R.drawable.profile_placeholder)
+            )
+
             Image(
-                painter = painterResource(id = R.drawable.prop_image),
+                painter = urlPainter,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

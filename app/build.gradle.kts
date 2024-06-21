@@ -90,7 +90,11 @@ dependencies {
     //bottom nav
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    //constraintlayout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+    //cashe images
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
