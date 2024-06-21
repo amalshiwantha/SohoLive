@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -610,8 +611,26 @@ private fun ScrollableContentStep2() {
 
 @Composable
 private fun ScrollableContentStep1() {
-    for (i in 1..5) {
-        ItemContent(i)
+    var propertyItemList by rememberSaveable {
+        mutableStateOf((1..5).map {
+            PropertyItem(
+                it,
+                1 % 2 == 0,
+                "308/50 Murray Street, Sydney NSW 200$it"
+            )
+        })
+    }
+
+    propertyItemList.forEach {
+        ItemContent(it, onItemClicked = { selected ->
+            propertyItemList = propertyItemList.mapIndexed { index, item ->
+                if (index == selected.id - 1) {
+                    item.copy(isChecked = !item.isChecked)
+                } else {
+                    item
+                }
+            }
+        })
     }
 }
 
@@ -760,12 +779,18 @@ private fun ProfileItemContent(index: Int) {
     }
 }
 
+data class PropertyItem(val id: Int, var isChecked: Boolean, val address: String)
+
 @Composable
-private fun ItemContent(index: Int) {
+private fun ItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
+
+    //var checked by remember { mutableStateOf(true) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .padding(bottom = 16.dp)
+            .clickable { onItemClicked(item) },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = ItemCardBg),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -786,10 +811,12 @@ private fun ItemContent(index: Int) {
                     .padding(start = 14.dp)
                     .fillMaxWidth()
             ) {
-                val isChecked = index % 2 == 0
-                TypeAndCheckBox(isChecked)
+
+                TypeAndCheckBox(item.isChecked, onCheckedChange = {
+                    onItemClicked(item)
+                })
                 SpacerVertical(size = 8.dp)
-                Text700_14sp(step = "308/50 Murray Street, Sydney NSW 2000")
+                Text700_14sp(step = item.address)
                 SpacerVertical(size = 8.dp)
                 Text400_14sp(info = "3 scheduled livestream")
                 SpacerVertical(size = 8.dp)
@@ -827,9 +854,7 @@ private fun AmenitiesIcon(icon: Int) {
 }
 
 @Composable
-private fun TypeAndCheckBox(isChecked: Boolean) {
-
-    var checked by remember { mutableStateOf(isChecked) }
+private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Unit = {}) {
 
     Row(
         modifier = Modifier
@@ -852,12 +877,12 @@ private fun TypeAndCheckBox(isChecked: Boolean) {
         Box(
             modifier = Modifier
                 .padding(horizontal = 8.dp)
-                .clickable { checked = !checked },
+                .clickable { onCheckedChange(!isChecked) },
             contentAlignment = Alignment.Center
         ) {
             //CheckBox BG
             Image(
-                painter = if (checked) {
+                painter = if (isChecked) {
                     painterResource(id = R.drawable.check_box_chcked)
                 } else {
                     painterResource(id = R.drawable.cehck_box_uncheck)
@@ -865,7 +890,7 @@ private fun TypeAndCheckBox(isChecked: Boolean) {
             )
 
             //Tick Icon
-            if (checked) {
+            if (isChecked) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_tick),
                     contentDescription = null,
