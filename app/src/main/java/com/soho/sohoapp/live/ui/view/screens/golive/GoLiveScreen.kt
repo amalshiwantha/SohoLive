@@ -626,8 +626,7 @@ private fun ScrollableContentStep1(listings: List<Listing>) {
         mutableStateOf((1..listings.size).map {
             PropertyItem(
                 it,
-                1 % 2 == 0,
-                "308/50 Murray Street, Sydney NSW 200$it"
+                address = "308/50 Murray Street, Sydney NSW 200$it"
             )
         })
     }
@@ -1027,4 +1026,4 @@ private fun PreviewGoLiveScreen() {
     }
 }
 
-data class PropertyItem(val id: Int, var isChecked: Boolean, val address: String)
+data class PropertyItem(val id: Int, var isChecked: Boolean = false, val address: String)
