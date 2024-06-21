@@ -64,6 +64,7 @@ import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Listing
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -261,7 +262,7 @@ fun StepContents(
                 DisplayNoData(message = "No Agency Information")
             } else {
                 ProfileHideItem()
-                AgentListing()
+                AgentListing(savedResults.agentProfiles)
                 //AgentListing display from step#1 selection
                 //donty show == "" not 0 (agent_profile_id)
             }
@@ -648,9 +649,29 @@ private fun ScrollableContentStep3() {
 }
 
 @Composable
-private fun AgentListing() {
-    for (index in 1..3) {
-        ProfileItemContent(index)
+private fun AgentListing(agentProfiles: List<AgentProfileGoLive>) {
+    var agencyList by rememberSaveable {
+        mutableStateOf((1..agentProfiles.size).map {
+            AgencyItem(
+                id = it,
+                name = "Agent Name $it",
+                email = "agent@email$it",
+                imageUrl = "http",
+                rating = 0f
+            )
+        })
+    }
+
+    agencyList.forEach {
+        AgencyItemContent(it, onItemClicked = { selected ->
+            agencyList = agencyList.mapIndexed { index, item ->
+                if (index == selected.id - 1) {
+                    item.copy(isChecked = !item.isChecked)
+                } else {
+                    item
+                }
+            }
+        })
     }
 }
 
@@ -666,7 +687,7 @@ private fun PropertyListing(listings: List<Listing>) {
     }
 
     propertyItemList.forEach {
-        ItemContent(it, onItemClicked = { selected ->
+        PropertyItemContent(it, onItemClicked = { selected ->
             propertyItemList = propertyItemList.mapIndexed { index, item ->
                 if (index == selected.id - 1) {
                     item.copy(isChecked = !item.isChecked)
@@ -789,7 +810,7 @@ private fun getImageWidth(drawableResId: Int): Size {
 }
 
 @Composable
-private fun ProfileItemContent(index: Int) {
+private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -814,17 +835,16 @@ private fun ProfileItemContent(index: Int) {
                     .padding(start = 14.dp)
                     .fillMaxWidth()
             ) {
-                val isChecked = index % 2 == 0
-                ProfileNameCheckBox(isChecked)
+                ProfileNameCheckBox(item)
                 SpacerVertical(size = 8.dp)
-                Text400_14sp(info = "james@raywhite.com.au")
+                Text400_14sp(info = item.email)
             }
         }
     }
 }
 
 @Composable
-private fun ItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
+private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
 
@@ -946,10 +966,7 @@ private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Un
 }
 
 @Composable
-private fun ProfileNameCheckBox(isChecked: Boolean) {
-
-    var checked by remember { mutableStateOf(isChecked) }
-
+private fun ProfileNameCheckBox(info: AgencyItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -957,7 +974,7 @@ private fun ProfileNameCheckBox(isChecked: Boolean) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Text700_14spBold(step = "James Hiyashi")
+        Text700_14spBold(step = info.name)
 
         Row(
             modifier = Modifier
@@ -966,19 +983,21 @@ private fun ProfileNameCheckBox(isChecked: Boolean) {
             horizontalArrangement = Arrangement.Absolute.Right
         ) {
 
-            TextStarRating(rate = "* 5.0")
+            if (info.rating != 0f) {
+                TextStarRating(rate = "* ${info.rating}")
+            }
 
             SpacerHorizontal(size = 16.dp)
 
             Box(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
-                    .clickable { checked = !checked },
+                    .clickable { !info.isChecked },
                 contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
                 Image(
-                    painter = if (checked) {
+                    painter = if (info.isChecked) {
                         painterResource(id = R.drawable.check_box_chcked)
                     } else {
                         painterResource(id = R.drawable.cehck_box_uncheck)
@@ -986,7 +1005,7 @@ private fun ProfileNameCheckBox(isChecked: Boolean) {
                 )
 
                 //Tick Icon
-                if (checked) {
+                if (info.isChecked) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_tick),
                         contentDescription = null,
@@ -1069,3 +1088,11 @@ private fun PreviewGoLiveScreen() {
 }
 
 data class PropertyItem(val id: Int, var isChecked: Boolean = false, val address: String)
+data class AgencyItem(
+    val id: Int,
+    val name: String,
+    val imageUrl: String,
+    val email: String,
+    val rating: Float,
+    var isChecked: Boolean = false
+)
