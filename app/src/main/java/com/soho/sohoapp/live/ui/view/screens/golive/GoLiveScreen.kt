@@ -171,21 +171,20 @@ fun GoLiveScreen(
                 //bottom button
                 NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
                     currentStepId = currentStepId,
-                    isDateFixed = isDateFixed,
+                    isNowSelected = isNowSelected,
                     onClickedNext = {
                         if (currentStepId < stepCount - 1) {
                             currentStepId++
                         }
                     },
                     onClickedBack = {
-                        //POST /api/soho_live/live_stream
                         currentStepId = (currentStepId - 1) % stepCount
                     },
                     onClickedDateTime = {
-                        isDateFixed = true
+                        //POST /api/soho_live/live_stream
                     },
                     onClickedLive = {
-                        isDateFixed = false
+                        //POST /api/soho_live/live_stream
                     }
                 )
             }
@@ -587,7 +586,7 @@ private fun StepIndicator(
 private fun NextBackButtons(
     modifier: Modifier,
     currentStepId: Int,
-    isDateFixed: Boolean,
+    isNowSelected: Boolean,
     onClickedNext: () -> Unit,
     onClickedBack: () -> Unit,
     onClickedLive: () -> Unit,
@@ -621,18 +620,7 @@ private fun NextBackButtons(
             }
 
             if (currentStepId == 3) {
-
-                if (!isDateFixed) {
-                    ButtonGradientIcon(
-                        text = "Set Date & Time",
-                        icon = R.drawable.ic_calender,
-                        gradientBrush = brushGradientSetDateTime,
-                        modifier = Modifier.weight(1f),
-                        onBtnClick = {
-                            onClickedDateTime.invoke()
-                        }
-                    )
-                } else {
+                if (isNowSelected) {
                     ButtonGradientIcon(
                         text = "Preview Live",
                         icon = R.drawable.ic_livestream,
@@ -640,6 +628,16 @@ private fun NextBackButtons(
                         modifier = Modifier.weight(1f),
                         onBtnClick = {
                             onClickedLive.invoke()
+                        }
+                    )
+                } else {
+                    ButtonGradientIcon(
+                        text = "Set Date & Time",
+                        icon = R.drawable.ic_calender,
+                        gradientBrush = brushGradientSetDateTime,
+                        modifier = Modifier.weight(1f),
+                        onBtnClick = {
+                            onClickedDateTime.invoke()
                         }
                     )
                 }
@@ -1143,7 +1141,7 @@ private fun PreviewGoLiveScreen() {
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStep,
-            isDateFixed = true,
+            isNowSelected = true,
             onClickedNext = {},
             onClickedBack = {},
             onClickedDateTime = {},
