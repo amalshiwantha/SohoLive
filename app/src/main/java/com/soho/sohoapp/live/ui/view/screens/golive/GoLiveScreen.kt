@@ -22,8 +22,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -115,10 +119,7 @@ fun GoLiveScreen(
     var isNetConnected by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        savedApiResults?.let {
-            //load data From remember
-            println("goLive savedApiResults ${it}")
-        } ?: run {
+        if (savedApiResults == null) {
             callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
                 isNetConnected = it
                 stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
@@ -150,14 +151,16 @@ fun GoLiveScreen(
                         TopContent(stepCount, currentStepId)
                     }
                     item {
-                        StepContents(
-                            currentStepId = currentStepId,
-                            savedResults = savedApiResults,
-                            optionList = optionList,
-                            selectedOption = selectedOption,
-                            onSelectOption = {
-                                selectedOption = it
-                            })
+                        savedApiResults?.let {
+                            StepContents(
+                                currentStepId = currentStepId,
+                                savedResults = it,
+                                optionList = optionList,
+                                selectedOption = selectedOption,
+                                onSelectOption = {
+                                    selectedOption = it
+                                })
+                        }
                     }
                 }
 
@@ -235,7 +238,7 @@ fun TopContent(stepCount: Int, currentStepId: Int) {
 @Composable
 fun StepContents(
     currentStepId: Int,
-    savedResults: DataGoLive?,
+    savedResults: DataGoLive,
     optionList: MutableList<String>,
     selectedOption: String,
     onSelectOption: (String) -> Unit
@@ -244,16 +247,12 @@ fun StepContents(
 
     when (currentStepId) {
         0 -> {
-            SearchBar()
-            SpacerVertical(16.dp)
-            savedResults?.let {
-                if (it.listings.isEmpty()) {
-                    Text700_14sp(step = "No Properties")
-                } else {
-                    ScrollableContentStep1(it.listings)
-                }
-            } ?: run {
-                Text700_14sp(step = "Something went wrong on Properties")
+            if (savedResults.listings.isEmpty()) {
+                DisplayNoData(message = "No Property Information")
+            } else {
+                SearchBar()
+                SpacerVertical(16.dp)
+                ScrollableContentStep1(savedResults.listings)
             }
         }
 
@@ -276,6 +275,29 @@ fun StepContents(
                 selectedOption = selectedOption,
                 onSelectOption = { onSelectOption(it) })
         }
+    }
+}
+
+@Composable
+fun DisplayNoData(message: String) {
+    SpacerVertical(size = 150.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_no_data),
+            contentDescription = "No Data",
+            modifier = Modifier.size(64.dp),
+            tint = Color.White
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = message,
+            style = TextStyle(fontSize = 18.sp, color = Color.White)
+        )
     }
 }
 
@@ -1020,7 +1042,12 @@ private fun PreviewGoLiveScreen() {
                 TopContent(countSteps, currentStep)
             }
             item {
-                StepContents(currentStep, null, mutableListOf(), "") {}
+                StepContents(
+                    currentStep,
+                    DataGoLive(emptyList(), emptyList()),
+                    mutableListOf(),
+                    ""
+                ) {}
             }
         }
 
