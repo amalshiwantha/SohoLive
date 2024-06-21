@@ -13,6 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val BgGradientPurpleLight = Color(0xFF2B0235)
 val BgGradientPurpleDark = Color(0xFF32003E)
+val AppPrimaryDark = Color(0xFF00004D)
 val AppGreen = Color(0xFF00BFA8)
 val AppRed = Color(0xFFE63D3B)
 val AppWhite = Color(0xFFFFFFFF)

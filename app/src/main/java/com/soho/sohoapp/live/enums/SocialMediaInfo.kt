@@ -8,23 +8,23 @@ enum class SocialMediaInfo(
     var isConnect: Boolean
 ) {
     SOHO(
-        title = "Soho",
+        title = "Your listing on",
         icon = R.drawable.logo_soho,
-        isConnect = false
-    ),
-    FACEBOOK(
-        title = "FB",
-        icon = R.drawable.logo_facebook,
         isConnect = true
     ),
+    FACEBOOK(
+        title = "",
+        icon = R.drawable.logo_facebook,
+        isConnect = false
+    ),
     YOUTUBE(
-        title = "YouTube",
+        title = "",
         icon = R.drawable.logo_youtube,
         isConnect = false
     ),
     LINKEDIN(
-        title = "Linkedin",
+        title = "",
         icon = R.drawable.logo_linkedin,
-        isConnect = true
+        isConnect = false
     )
 }

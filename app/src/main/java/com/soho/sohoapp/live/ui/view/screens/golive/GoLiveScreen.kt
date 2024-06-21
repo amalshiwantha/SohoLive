@@ -93,6 +93,7 @@ import com.soho.sohoapp.live.ui.components.brushGradientSetDateTime
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.BorderGray
@@ -270,7 +271,8 @@ fun StepContents(
         }
 
         2 -> {
-            ScrollableContentStep3()
+            SocialMediaListing()
+            SpacerVertical(size = 70.dp)
             //use soil mead sdks, have to display som popups
             //soho = unlisted chanegt he toggle
         }
@@ -643,7 +645,7 @@ private fun NextBackButtons(
 }
 
 @Composable
-private fun ScrollableContentStep3() {
+private fun SocialMediaListing() {
     SocialMediaInfo.entries.forEach { item ->
         SocialMediaItemContent(item)
     }
@@ -767,17 +769,25 @@ private fun SocialMediaItemContent(info: SocialMediaInfo) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
 
             //logo
-            val imgSize = getImageWidth(info.icon)
-            Image(
-                painter = painterResource(id = info.icon),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = if (imgSize.width == 0) {
-                    Modifier
-                } else {
-                    Modifier.size(imgSize.width.dp, imgSize.height.dp)
+            Column {
+
+                if (info.title.isNotEmpty()) {
+                    Text400_14sp(info = info.title, color = AppPrimaryDark)
+                    SpacerVertical(size = 8.dp)
                 }
-            )
+
+                val imgSize = getImageWidth(info.icon)
+                Image(
+                    painter = painterResource(id = info.icon),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = if (imgSize.width == 0) {
+                        Modifier
+                    } else {
+                        Modifier.size(imgSize.width.dp, imgSize.height.dp)
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -1078,12 +1088,28 @@ fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) 
     }
 }
 
+data class PropertyItem(
+    val id: Int,
+    var isChecked: Boolean = false,
+    val address: String,
+    val imageUrl: String
+)
+
+data class AgencyItem(
+    val id: Int,
+    val name: String,
+    val imageUrl: String,
+    val email: String,
+    val rating: Float,
+    var isChecked: Boolean = false
+)
+
 @Preview
 @Composable
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         val countSteps = 4
-        val currentStep = 3
+        val currentStep = 2
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -1110,13 +1136,3 @@ private fun PreviewGoLiveScreen() {
             onClickedLive = {})
     }
 }
-
-data class PropertyItem(val id: Int, var isChecked: Boolean = false, val address: String, val imageUrl: String)
-data class AgencyItem(
-    val id: Int,
-    val name: String,
-    val imageUrl: String,
-    val email: String,
-    val rating: Float,
-    var isChecked: Boolean = false
-)
