@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -651,7 +652,7 @@ private fun ScrollableContentStep2() {
 @Composable
 private fun PropertyListing(listings: List<Listing>) {
     var propertyItemList by rememberSaveable {
-        mutableStateOf((1..listings.size*5).map {
+        mutableStateOf((1..listings.size * 5).map {
             PropertyItem(
                 it,
                 address = "308/50 Murray Street, Sydney NSW 200$it"
@@ -819,13 +820,16 @@ private fun ProfileItemContent(index: Int) {
 
 @Composable
 private fun ItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
+    val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
+    val textColor = if (item.isChecked) ItemCardBg else AppWhite
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
             .clickable { onItemClicked(item) },
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = ItemCardBg),
+        colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(modifier = Modifier.padding(14.dp)) {
@@ -849,40 +853,41 @@ private fun ItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Uni
                     onItemClicked(item)
                 })
                 SpacerVertical(size = 8.dp)
-                Text700_14sp(step = item.address)
+                Text700_14sp(step = item.address, color = textColor)
                 SpacerVertical(size = 8.dp)
-                Text400_14sp(info = "3 scheduled livestream")
+                Text400_14sp(info = "3 scheduled livestream", color = textColor)
                 SpacerVertical(size = 8.dp)
-                AmenitiesView()
+                AmenitiesView(textColor)
             }
         }
     }
 }
 
 @Composable
-private fun AmenitiesView() {
+private fun AmenitiesView(textColor: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text400_12sp(label = "3")
-        AmenitiesIcon(icon = R.drawable.ic_bedroom)
-        Text400_12sp(label = "2")
-        AmenitiesIcon(icon = R.drawable.ic_bathroom)
-        Text400_12sp(label = "1")
-        AmenitiesIcon(icon = R.drawable.ic_car_park)
-        Text400_12sp(label = "120 m²")
-        AmenitiesIcon(icon = R.drawable.ic_floor_size)
+        Text400_12sp(label = "3", txtColor = textColor)
+        AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor)
+        Text400_12sp(label = "2", txtColor = textColor)
+        AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor)
+        Text400_12sp(label = "1", txtColor = textColor)
+        AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor)
+        Text400_12sp(label = "120 m²", txtColor = textColor)
+        AmenitiesIcon(icon = R.drawable.ic_floor_size, iconColor = textColor)
     }
 }
 
 @Composable
-private fun AmenitiesIcon(icon: Int) {
+private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite) {
     Image(
         painter = painterResource(id = icon),
         contentDescription = null,
         modifier = Modifier.padding(start = 4.dp, end = 8.dp),
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.FillBounds,
+        colorFilter = ColorFilter.tint(iconColor)
     )
 }
 
