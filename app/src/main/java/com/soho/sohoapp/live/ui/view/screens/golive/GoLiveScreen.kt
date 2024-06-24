@@ -168,6 +168,9 @@ fun GoLiveScreen(
                     item {
                         savedApiResults?.let { savedData ->
 
+                            //Global ints for save click id and list
+
+                            //Step #1 property list
                             var propertyList by rememberSaveable {
                                 mutableStateOf(savedTsResults?.propertyList?.map {
                                     PropertyItem(
@@ -177,11 +180,26 @@ fun GoLiveScreen(
                                 })
                             }
 
+                            //Step #2 agency list. agency list load from step #1 selections
+                            val selectedAgentId =
+                                propertyList?.filter { it.isChecked }
+                                    ?.map { it.propInfo.apAgentsIds }
+
+                            var agencyList by rememberSaveable {
+                                mutableStateOf(
+                                    getAgencyItemsById(
+                                        savedData.agentProfiles,
+                                        selectedAgentId
+                                    )
+                                )
+                            }
+
                             StepContents(
                                 currentStepId = currentStepId,
                                 savedResults = savedData,
                                 tsResults = savedTsResults,
                                 propertyList = propertyList,
+                                mainAgencyList = agencyList,
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
                                 isNotShowProfile = isDontShowProfile,
@@ -200,6 +218,26 @@ fun GoLiveScreen(
                                         } else {
                                             item
                                         }
+                                    }
+                                },
+                                onAgentItemClicked = { selected ->
+                                    agencyList = agencyList.mapIndexed { index, item ->
+                                        val itemIndex =
+                                            agencyList.indexOfFirst { it.id == selected.id }
+
+                                        if (index == itemIndex) {
+                                            item.copy(isChecked = !item.isChecked)
+                                        } else {
+                                            item
+                                        }
+                                    }
+                                },
+                                onAgencyItemUpdate = {
+                                    if (agencyList.isEmpty()) {
+                                        agencyList = getAgencyItemsById(
+                                            savedData.agentProfiles,
+                                            selectedAgentId
+                                        )
                                     }
                                 }
                             )
@@ -280,6 +318,7 @@ fun StepContents(
     savedResults: DataGoLive,
     tsResults: TsPropertyResponse? = null,
     propertyList: List<PropertyItem>? = null,
+    mainAgencyList: List<AgencyItem>? = null,
     isNowSelected: Boolean,
     isNotShowProfile: Boolean,
     optionList: MutableList<String>,
@@ -287,7 +326,9 @@ fun StepContents(
     onSelectOption: (String) -> Unit,
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onNotShowProfileChange: (Boolean) -> Unit,
-    onPropertyItemClicked: (PropertyItem) -> Unit
+    onPropertyItemClicked: (PropertyItem) -> Unit,
+    onAgentItemClicked: (AgentProfileGoLive) -> Unit,
+    onAgencyItemUpdate: () -> Unit
 ) {
     SpacerVertical(40.dp)
 
@@ -313,31 +354,19 @@ fun StepContents(
         // step#2
         1 -> {
 
+            onAgencyItemUpdate.invoke()
+
             if (savedResults.agentProfiles.isEmpty()) {
                 DisplayNoData(message = "No Agency Information")
             } else {
-                val selectedAgentId =
-                    propertyList?.filter { it.isChecked }?.map { it.propInfo.apAgentsIds }
 
                 ProfileHideItem(isNotShowProfile, onCheckedChange = {
                     onNotShowProfileChange.invoke(it)
                 })
 
-                selectedAgentId?.get(0)?.let {
-                    var agencyList by rememberSaveable {
-                        mutableStateOf(getAgencyItemsById(savedResults.agentProfiles, it[0]))
-                    }
-                    AgentListing(agencyList, onAgentItemClicked = { selected ->
-                        agencyList = agencyList.mapIndexed { index, item ->
-
-                            val itemIndex = agencyList.indexOfFirst { it.id == selected.id }
-
-                            if (index == itemIndex) {
-                                item.copy(isChecked = !item.isChecked)
-                            } else {
-                                item
-                            }
-                        }
+                mainAgencyList?.let { it1 ->
+                    AgentListing(it1, onAgentItemClicked = { selected ->
+                        onAgentItemClicked.invoke(selected)
                     })
                 }
             }
@@ -716,9 +745,21 @@ private fun SocialMediaListing() {
     }
 }
 
-fun getAgencyItemsById(agentProfiles: List<AgentProfileGoLive>, id: Int): List<AgencyItem> {
-    return agentProfiles.filter { it.id == id }.map {
-        AgencyItem(id = it.id, agentProfile = it)
+fun getAgencyItemsById(
+    agentProfiles: List<AgentProfileGoLive>,
+    listIds: List<List<Int>>?
+): List<AgencyItem> {
+    return listIds?.let { lists ->
+        if (lists.isNotEmpty()) {
+            val id = lists[0][0]
+            agentProfiles.filter { it.id == id }.map {
+                AgencyItem(id = it.id, agentProfile = it)
+            }
+        } else {
+            emptyList()
+        }
+    } ?: run {
+        emptyList()
     }
 }
 
@@ -1196,7 +1237,9 @@ private fun PreviewGoLiveScreen() {
                     onSelectOption = { },
                     onSwipeIsNowSelected = { },
                     onNotShowProfileChange = {},
-                    onPropertyItemClicked = {})
+                    onPropertyItemClicked = {},
+                    onAgentItemClicked = {},
+                    onAgencyItemUpdate = {})
             }
         }
 
