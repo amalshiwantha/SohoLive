@@ -1,7 +1,10 @@
 package com.soho.sohoapp.live.network.api.soho
 
 import com.soho.sohoapp.live.model.SignInRequest
+import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.network.core.BASE_URL
+import com.soho.sohoapp.live.network.core.BASE_URL_TS
+import com.soho.sohoapp.live.network.core.TS_API_KEY
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import io.ktor.client.HttpClient
@@ -35,6 +38,24 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             }
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
+        }.body()
+    }
+
+    override suspend fun tsProperty(tsPropRequest: TsPropertyRequest): GoLiveResponse {
+        return httpClient.get {
+            url {
+                takeFrom(BASE_URL_TS)
+                encodedPath += SohoApiServices.TS_PROPERTY
+                parameters.apply {
+                    tsPropRequest.query?.let { append("q", "*") }
+                    tsPropRequest.queryBy?.let { append("query_by", it) }
+                    tsPropRequest.filterBy?.let { append("filter_by", it) }
+                    tsPropRequest.perPage?.let { append("per_page", it) }
+                    tsPropRequest.page?.let { append("page", it) }
+                }
+            }
+            contentType(ContentType.Application.Json)
+            header("X-TYPESENSE-API-KEY", TS_API_KEY)
         }.body()
     }
 }

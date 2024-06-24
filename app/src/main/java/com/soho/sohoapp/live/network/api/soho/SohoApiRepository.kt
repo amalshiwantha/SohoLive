@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.network.api.soho
 
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.SignInRequest
+import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -34,7 +35,20 @@ class SohoApiRepository(private val service: SohoApiServices) {
         try {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
+            //get property id list
             val apiResponse = service.propertyListing(authToken = authToken)
+
+            //get property info from typeseance
+            apiResponse.data?.listings.let {
+                val propIdList: List<Int>  = it?.map { it.id } ?: listOf()
+                val filterBy = "objectID:$propIdList"
+                val tsQueryBy = "address_1"
+                val tsReq = TsPropertyRequest(
+                    "*", tsQueryBy, filterBy, "20", "1"
+                )
+                val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
+            }
+
             emit(ApiState.Data(data = apiResponse))
 
         } catch (e: Exception) {
