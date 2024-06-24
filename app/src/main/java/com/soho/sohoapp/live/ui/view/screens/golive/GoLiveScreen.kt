@@ -660,22 +660,21 @@ private fun SocialMediaListing() {
 
 @Composable
 private fun AgentListing(agentProfiles: List<AgentProfileGoLive>) {
+
     var agencyList by rememberSaveable {
-        mutableStateOf((1..agentProfiles.size).map {
-            AgencyItem(
-                id = it,
-                name = "Agent Name $it",
-                email = "agent@email$it",
-                imageUrl = if (it == 1) "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg" else "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
-                rating = 0f
-            )
+        mutableStateOf(agentProfiles.map {
+            AgencyItem(id = it.id, agentProfile = it)
         })
     }
 
-    agencyList.forEach {
-        AgencyItemContent(it, onItemClicked = { selected ->
+    agencyList.forEach { agentItem ->
+        AgencyItemContent(agentItem, onItemClicked = { selected ->
+
             agencyList = agencyList.mapIndexed { index, item ->
-                if (index == selected.id - 1) {
+
+                val itemIndex = agencyList.indexOfFirst { it.id == selected.id }
+
+                if (index == itemIndex) {
                     item.copy(isChecked = !item.isChecked)
                 } else {
                     item
@@ -696,7 +695,6 @@ private fun PropertyListing(listings: List<Hit>) {
             )
         })
     }
-
 
     propertyItemList.forEach { item ->
         PropertyItemContent(item, onItemClicked = { selected ->
@@ -833,15 +831,16 @@ private fun getImageWidth(drawableResId: Int): Size {
 }
 
 @Composable
-private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> Unit = {}) {
+private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgentProfileGoLive) -> Unit = {}) {
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
+    val agent = item.agentProfile
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
-            .clickable { onItemClicked(item) },
+            .clickable { onItemClicked(agent) },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -849,7 +848,7 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             //image
             val urlPainter = rememberAsyncImagePainter(
-                model = item.imageUrl,
+                model = agent.imageUrl,
                 placeholder = painterResource(id = R.drawable.profile_placeholder),
                 error = painterResource(id = R.drawable.profile_placeholder)
             )
@@ -868,11 +867,14 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
                     .padding(start = 14.dp)
                     .fillMaxWidth()
             ) {
-                ProfileNameCheckBox(item, textColor, onCheckedChange = {
-                    onItemClicked(item)
+                ProfileNameCheckBox(agent, item.isChecked, textColor, onCheckedChange = {
+                    onItemClicked(agent)
                 })
+
                 SpacerVertical(size = 8.dp)
-                Text400_14sp(info = item.email, color = textColor)
+                agent.email?.let {
+                    Text400_14sp(info = it, color = textColor)
+                }
             }
         }
     }
@@ -1028,7 +1030,10 @@ private fun TypeAndCheckBox(
 
 @Composable
 private fun ProfileNameCheckBox(
-    info: AgencyItem, textColor: Color, onCheckedChange: (Boolean) -> Unit
+    profile: AgentProfileGoLive,
+    isChecked: Boolean,
+    textColor: Color,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -1036,7 +1041,7 @@ private fun ProfileNameCheckBox(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Text700_14spBold(step = info.name, txtColor = textColor)
+        profile.name?.let { Text700_14spBold(step = it, txtColor = textColor) }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -1044,8 +1049,8 @@ private fun ProfileNameCheckBox(
             horizontalArrangement = Arrangement.Absolute.Right
         ) {
 
-            if (info.rating != 0f) {
-                TextStarRating(rate = "* ${info.rating}")
+            if (profile.rating != 0f) {
+                TextStarRating(rate = "* ${profile.rating}")
             }
 
             SpacerHorizontal(size = 16.dp)
@@ -1053,12 +1058,12 @@ private fun ProfileNameCheckBox(
             Box(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
-                    .clickable { onCheckedChange(!info.isChecked) },
+                    .clickable { onCheckedChange(!isChecked) },
                 contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
                 Image(
-                    painter = if (info.isChecked) {
+                    painter = if (isChecked) {
                         painterResource(id = R.drawable.check_box_chcked)
                     } else {
                         painterResource(id = R.drawable.cehck_box_uncheck)
@@ -1066,7 +1071,7 @@ private fun ProfileNameCheckBox(
                 )
 
                 //Tick Icon
-                if (info.isChecked) {
+                if (isChecked) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_tick),
                         contentDescription = null,
@@ -1118,10 +1123,7 @@ data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Bool
 
 data class AgencyItem(
     val id: Int,
-    val name: String,
-    val imageUrl: String,
-    val email: String,
-    val rating: Float,
+    val agentProfile: AgentProfileGoLive,
     var isChecked: Boolean = false
 )
 

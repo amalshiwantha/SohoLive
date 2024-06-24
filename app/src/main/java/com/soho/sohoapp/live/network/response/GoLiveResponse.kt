@@ -25,9 +25,11 @@ data class Listing(
 
 @Serializable
 data class AgentProfileGoLive(
-    @SerialName("id") val id: Int,
-    @SerialName("name") val name: String,
-    @SerialName("profile_image_url") val profileImageUrl: String?,
+    @SerialName("id") val id: Int = 0,
+    @SerialName("name") val name: String?,
+    @SerialName("email") val email: String?,
+    @SerialName("rating") val rating: Float = 0f,
+    @SerialName("profile_image_url") val imageUrl: String?,
     @SerialName("sale_listing_count") val saleListingCount: Int,
     @SerialName("rent_listing_count") val rentListingCount: Int
 )
