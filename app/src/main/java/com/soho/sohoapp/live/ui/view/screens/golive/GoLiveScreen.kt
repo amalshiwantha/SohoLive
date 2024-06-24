@@ -173,11 +173,11 @@ fun GoLiveScreen(
                                 tsResults = savedTsResults,
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
-                                isDontShowProfile = isDontShowProfile,
+                                isNotShowProfile = isDontShowProfile,
                                 selectedOption = selectedOption,
                                 onSelectOption = { selectedOption = it },
                                 onSwipeIsNowSelected = { isNowSelected = it },
-                                onDontShowProfileChange = { isDontShowProfile = it })
+                                onNotShowProfileChange = { isDontShowProfile = it })
                         }
                     }
                 }
@@ -255,12 +255,12 @@ fun StepContents(
     savedResults: DataGoLive,
     tsResults: TsPropertyResponse? = null,
     isNowSelected: Boolean,
-    isDontShowProfile: Boolean,
+    isNotShowProfile: Boolean,
     optionList: MutableList<String>,
     selectedOption: String,
     onSelectOption: (String) -> Unit,
     onSwipeIsNowSelected: (Boolean) -> Unit,
-    onDontShowProfileChange: (Boolean) -> Unit
+    onNotShowProfileChange: (Boolean) -> Unit
 ) {
     SpacerVertical(40.dp)
 
@@ -285,8 +285,8 @@ fun StepContents(
             if (savedResults.agentProfiles.isEmpty()) {
                 DisplayNoData(message = "No Agency Information")
             } else {
-                ProfileHideItem(isDontShowProfile, onCheckedChange = {
-                    onDontShowProfileChange.invoke(it)
+                ProfileHideItem(isNotShowProfile, onCheckedChange = {
+                    onNotShowProfileChange.invoke(it)
                 })
                 AgentListing(savedResults.agentProfiles)
                 //AgentListing display from step#1 selection
@@ -1154,11 +1154,11 @@ private fun PreviewGoLiveScreen() {
                     savedResults = DataGoLive(emptyList(), emptyList()),
                     optionList = mutableListOf(),
                     isNowSelected = true,
-                    isDontShowProfile = true,
+                    isNotShowProfile = true,
                     selectedOption = "",
                     onSelectOption = { },
                     onSwipeIsNowSelected = { },
-                    onDontShowProfileChange = {})
+                    onNotShowProfileChange = {})
             }
         }
 
