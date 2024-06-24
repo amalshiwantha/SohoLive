@@ -880,7 +880,6 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
     val property = item.propInfo
-    println("myItem " + item.isChecked)
 
     Card(
         modifier = Modifier

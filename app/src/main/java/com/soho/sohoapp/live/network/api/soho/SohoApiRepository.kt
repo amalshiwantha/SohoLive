@@ -44,7 +44,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 val propIdList: List<Int> = it.map { prop -> prop.id }
                 val filterBy = "objectID:$propIdList"
                 val tsReq = TsPropertyRequest(
-                    "*", "address_1", "objectID:[91465,91438]", "20", "1"
+                    "*", "address_1", filterBy, "20", "1"
                 )
                 val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
                 val resPair = Pair(apiResponse,apiResponseTs)
