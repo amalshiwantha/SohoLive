@@ -893,7 +893,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
         Row(modifier = Modifier.padding(14.dp)) {
             //image
             val urlPainter = rememberAsyncImagePainter(
-                model = "https://assetsdev.soho.com.au/staging/uploads/property_photo/image/760668/large_image_8756d485-0b0f-45be-b00c-c083f29ec6ef.jpg",
+                model = property.getThumbnailUrl(),
                 placeholder = painterResource(id = R.drawable.property_placeholder),
                 error = painterResource(id = R.drawable.property_placeholder)
             )

@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.network.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 @Serializable
 data class TsPropertyResponse(
@@ -88,8 +89,13 @@ data class Document(
     @SerialName("updated_at_seconds") val updatedAtSeconds: Long = 0,
     @SerialName("videos") val videos: String? = null,
     @SerialName("vr_urls") val vrUrls: List<String> = emptyList(),
-    @SerialName("web_url") val webUrl: String? = null
-)
+    @SerialName("web_url") val webUrl: String? = null,
+) {
+    fun getThumbnailUrl(): String {
+        val photoList: List<Photo> = Json.decodeFromString(photos ?: "")
+        return photoList.firstNotNullOf { it.getImageUrl() }
+    }
+}
 
 @Serializable
 data class AreaDimensions(
@@ -128,3 +134,47 @@ data class RequestParams(
     @SerialName("per_page") val perPage: Int = 0,
     @SerialName("q") val query: String? = null
 )
+
+@Serializable
+data class Photo(
+    val url: String,
+    val floorplan: Boolean,
+    @SerialName("display_order") val displayOrder: Int
+) {
+    internal fun getImageUrl(): String? {
+        return listOfNotNull(
+            thumbnailUrl,
+            mediumSmallUrl,
+            mediumLargeUrl,
+            smallImageUrl,
+            mediumImageUrl,
+            largeImageUrl,
+            fullUrl,
+            imageUrl
+        ).firstOrNull()
+    }
+
+    private val imageUrl: String
+        get() = url
+
+    private val smallImageUrl: String
+        get() = "$url?size=small"
+
+    private val mediumImageUrl: String
+        get() = "$url?size=medium"
+
+    private val largeImageUrl: String
+        get() = "$url?size=large"
+
+    private val thumbnailUrl: String
+        get() = "$url?size=thumbnail"
+
+    private val mediumLargeUrl: String
+        get() = "$url?size=medium_large"
+
+    private val mediumSmallUrl: String
+        get() = "$url?size=medium_small"
+
+    private val fullUrl: String
+        get() = "$url?size=full"
+}
