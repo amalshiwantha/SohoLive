@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -31,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -67,7 +69,10 @@ import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
+import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.Hit
 import com.soho.sohoapp.live.network.response.Listing
+import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
@@ -107,9 +112,11 @@ import org.koin.compose.koinInject
 fun GoLiveScreen(
     navController: NavController,
     savedApiResults: DataGoLive? = null,
+    savedTsResults: TsPropertyResponse? = null,
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
-    onLoadApiResults: (DataGoLive) -> Unit
+    onLoadApiResults: (DataGoLive) -> Unit,
+    onLoadTSResults: (TsPropertyResponse) -> Unit
 ) {
 
     val stateVm = goLiveVm.mState.value
@@ -143,7 +150,13 @@ fun GoLiveScreen(
 
                 //save apiResults
                 if (stateVm.isSuccess) {
-                    stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
+                    stateVm.apiResults?.let { apiRes ->
+                        onLoadApiResults.invoke(apiRes)
+                    }
+
+                    stateVm.tsResults?.let { tsRes ->
+                        onLoadTSResults.invoke(tsRes)
+                    }
                 }
 
                 //main steps content
@@ -155,15 +168,14 @@ fun GoLiveScreen(
                     }
                     item {
                         savedApiResults?.let { savedData ->
-                            StepContents(
-                                currentStepId = currentStepId,
+                            StepContents(currentStepId = currentStepId,
                                 savedResults = savedData,
+                                tsResults = savedTsResults,
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
                                 selectedOption = selectedOption,
                                 onSelectOption = { selectedOption = it },
-                                onSwipeIsNowSelected = { isNowSelected = it }
-                            )
+                                onSwipeIsNowSelected = { isNowSelected = it })
                         }
                     }
                 }
@@ -185,8 +197,7 @@ fun GoLiveScreen(
                     },
                     onClickedLive = {
                         //POST /api/soho_live/live_stream
-                    }
-                )
+                    })
             }
         } else {
             NoInternetScreen(onRetryClick = {
@@ -200,9 +211,7 @@ fun GoLiveScreen(
 }
 
 private fun callLoadPropertyApi(
-    goLiveVm: GoLiveViewModel,
-    netUtil: NetworkUtils,
-    onUpdateNetStatus: (Boolean) -> Unit
+    goLiveVm: GoLiveViewModel, netUtil: NetworkUtils, onUpdateNetStatus: (Boolean) -> Unit
 ) {
     if (netUtil.isNetworkAvailable()) {
         onUpdateNetStatus(true)
@@ -242,6 +251,7 @@ fun TopContent(stepCount: Int, currentStepId: Int) {
 fun StepContents(
     currentStepId: Int,
     savedResults: DataGoLive,
+    tsResults: TsPropertyResponse? = null,
     isNowSelected: Boolean,
     optionList: MutableList<String>,
     selectedOption: String,
@@ -252,12 +262,16 @@ fun StepContents(
 
     when (currentStepId) {
         0 -> {
-            if (savedResults.listings.isEmpty()) {
-                DisplayNoData(message = "No Property Information")
-            } else {
-                SearchBar()
-                SpacerVertical(16.dp)
-                PropertyListing(savedResults.listings)
+            tsResults?.let { tsProp ->
+                if (tsProp.propertyList.isEmpty()) {
+                    DisplayNoData(message = "Not Found Properties")
+                } else {
+                    SearchBar()
+                    SpacerVertical(16.dp)
+                    PropertyListing(tsProp.propertyList)
+                }
+            } ?: run {
+                DisplayNoData(message = "Property Information Serves Failed")
             }
         }
 
@@ -281,13 +295,11 @@ fun StepContents(
         }
 
         3 -> {
-            Content4(
-                optionList = optionList,
+            Content4(optionList = optionList,
                 selectedOption = selectedOption,
                 isNowSelected = isNowSelected,
                 onSelectOption = { onSelectOption(it) },
-                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) }
-            )
+                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
     }
 }
@@ -296,8 +308,7 @@ fun StepContents(
 fun DisplayNoData(message: String) {
     SpacerVertical(size = 150.dp)
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -309,8 +320,7 @@ fun DisplayNoData(message: String) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = message,
-            style = TextStyle(fontSize = 18.sp, color = Color.White)
+            text = message, style = TextStyle(fontSize = 18.sp, color = Color.White)
         )
     }
 }
@@ -335,8 +345,7 @@ private fun Content4(
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "What is this livestream for?")
-    DropDownWhatForLiveStream(
-        selectedValue = selectedOption,
+    DropDownWhatForLiveStream(selectedValue = selectedOption,
         options = optionList,
         placeHolder = "Select an option",
         onValueChangedEvent = {
@@ -422,8 +431,7 @@ fun CoverOptionItem(it: CustomCoverOption) {
 @Composable
 fun CustomizeCoverImageCard(isOnCoverOption: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = ItemCardBg)
     ) {
@@ -446,12 +454,10 @@ fun CustomizeCoverImageCard(isOnCoverOption: Boolean, onCheckedChange: (Boolean)
                 UpgradedPlansText()
 
                 SpacerVertical(size = 16.dp)
-                ButtonGradientIcon(
-                    text = "View Plans",
+                ButtonGradientIcon(text = "View Plans",
                     icon = R.drawable.ic_upgrade,
                     gradientBrush = brushPlanBtnGradientBg,
-                    onBtnClick = {}
-                )
+                    onBtnClick = {})
             }
 
         }
@@ -487,15 +493,11 @@ fun UpgradedPlansText() {
 fun ShareDownloadButtons() {
     Row {
         ButtonOutLinedIcon(
-            text = "Share",
-            icon = R.drawable.ic_eye_vec,
-            modifier = Modifier.weight(1f)
+            text = "Share", icon = R.drawable.ic_eye_vec, modifier = Modifier.weight(1f)
         ) {}
         SpacerHorizontal(size = 16.dp)
         ButtonOutLinedIcon(
-            text = "Download",
-            icon = R.drawable.ic_download,
-            modifier = Modifier.weight(1f)
+            text = "Download", icon = R.drawable.ic_download, modifier = Modifier.weight(1f)
         ) {}
     }
 }
@@ -507,8 +509,7 @@ private fun SwipeableSwitch(isNowSelected: Boolean, onSwipeChange: (Boolean) -> 
     val availableWidth = screenWidth - (horizontalPadding * 2)
     val indicatorWidth = availableWidth / 2
     val indicatorOffset by animateDpAsState(
-        targetValue = if (isNowSelected) 0.dp else indicatorWidth,
-        label = "animateToMove"
+        targetValue = if (isNowSelected) 0.dp else indicatorWidth, label = "animateToMove"
     )
 
     Box(
@@ -561,8 +562,7 @@ private fun StepIndicator(
     inactiveColor: Color = Color.DarkGray
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
     ) {
         for (i in 0 until totalSteps) {
             Box(
@@ -610,7 +610,8 @@ private fun NextBackButtons(
 
             if (currentStepId > 0) {
                 ButtonColoured(
-                    text = stringResource(R.string.back), color = Color.Transparent,
+                    text = stringResource(R.string.back),
+                    color = Color.Transparent,
                     modifier = Modifier.weight(1f),
                     isBackButton = true
                 ) {
@@ -621,29 +622,26 @@ private fun NextBackButtons(
 
             if (currentStepId == 3) {
                 if (isNowSelected) {
-                    ButtonGradientIcon(
-                        text = "Preview Live",
+                    ButtonGradientIcon(text = "Preview Live",
                         icon = R.drawable.ic_livestream,
                         gradientBrush = brushGradientLive,
                         modifier = Modifier.weight(1f),
                         onBtnClick = {
                             onClickedLive.invoke()
-                        }
-                    )
+                        })
                 } else {
-                    ButtonGradientIcon(
-                        text = "Set Date & Time",
+                    ButtonGradientIcon(text = "Set Date & Time",
                         icon = R.drawable.ic_calender,
                         gradientBrush = brushGradientSetDateTime,
                         modifier = Modifier.weight(1f),
                         onBtnClick = {
                             onClickedDateTime.invoke()
-                        }
-                    )
+                        })
                 }
             } else {
                 ButtonColoured(
-                    text = stringResource(R.string.next), color = AppGreen,
+                    text = stringResource(R.string.next),
+                    color = AppGreen,
                     modifier = Modifier.weight(1f)
                 ) {
                     onClickedNext.invoke()
@@ -693,8 +691,7 @@ private fun PropertyListing(listings: List<Listing>) {
         mutableStateOf((1..listings.size * 5).map {
             PropertyItem(
                 it,
-                address = "308/50 Murray Street, Sydney NSW 200$it",
-                imageUrl = if (it == 1) "https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?cs=srgb&dl=pexels-binyaminmellish-186077.jpg&fm=jpg" else "https://images.pexels.com/photos/210617/pexels-photo-210617.jpeg?cs=srgb&dl=pexels-pixabay-210617.jpg&fm=jpg"
+                propInfo = "308/50 Murray Street, Sydney NSW 200$it",
             )
         })
     }
@@ -877,9 +874,10 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
 }
 
 @Composable
-private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
+private fun PropertyItemContent(item: Document, onItemClicked: (Document) -> Unit = {}) {
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
+    println("myItem " + item.isChecked)
 
     Card(
         modifier = Modifier
@@ -893,7 +891,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
         Row(modifier = Modifier.padding(14.dp)) {
             //image
             val urlPainter = rememberAsyncImagePainter(
-                model = item.imageUrl,
+                model = "https://assetsdev.soho.com.au/staging/uploads/property_photo/image/760668/large_image_8756d485-0b0f-45be-b00c-c083f29ec6ef.jpg",
                 placeholder = painterResource(id = R.drawable.property_placeholder),
                 error = painterResource(id = R.drawable.property_placeholder)
             )
@@ -917,7 +915,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
                     onItemClicked(item)
                 })
                 SpacerVertical(size = 8.dp)
-                Text700_14sp(step = item.address, color = textColor)
+                item.address1?.let { Text700_14sp(step = it, color = textColor) }
                 SpacerVertical(size = 8.dp)
                 Text400_14sp(info = "3 scheduled livestream", color = textColor)
                 SpacerVertical(size = 8.dp)
@@ -978,8 +976,7 @@ private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Un
         Box(
             modifier = Modifier
                 .padding(horizontal = 8.dp)
-                .clickable { onCheckedChange(!isChecked) },
-            contentAlignment = Alignment.Center
+                .clickable { onCheckedChange(!isChecked) }, contentAlignment = Alignment.Center
         ) {
             //CheckBox BG
             Image(
@@ -1006,13 +1003,10 @@ private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Un
 
 @Composable
 private fun ProfileNameCheckBox(
-    info: AgencyItem,
-    textColor: Color,
-    onCheckedChange: (Boolean) -> Unit
+    info: AgencyItem, textColor: Color, onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -1020,8 +1014,7 @@ private fun ProfileNameCheckBox(
         Text700_14spBold(step = info.name, txtColor = textColor)
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Absolute.Right
         ) {
@@ -1084,8 +1077,7 @@ fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) 
             .padding(horizontal = 8.dp)
             .clickable {
                 onCheckedChange(!isChecked)
-            },
-        contentAlignment = Alignment.Center
+            }, contentAlignment = Alignment.Center
     ) {
         Image(
             painter = if (isChecked) {
@@ -1097,12 +1089,7 @@ fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) 
     }
 }
 
-data class PropertyItem(
-    val id: Int,
-    var isChecked: Boolean = false,
-    val address: String,
-    val imageUrl: String
-)
+data class PropertyItem(val id: Int, val propInfo: String, var isChecked: Boolean = false)
 
 data class AgencyItem(
     val id: Int,
@@ -1127,15 +1114,13 @@ private fun PreviewGoLiveScreen() {
                 TopContent(countSteps, currentStep)
             }
             item {
-                StepContents(
-                    currentStepId = currentStep,
+                StepContents(currentStepId = currentStep,
                     savedResults = DataGoLive(emptyList(), emptyList()),
                     optionList = mutableListOf(),
                     isNowSelected = true,
                     selectedOption = "",
                     onSelectOption = { },
-                    onSwipeIsNowSelected = { }
-                )
+                    onSwipeIsNowSelected = { })
             }
         }
 
