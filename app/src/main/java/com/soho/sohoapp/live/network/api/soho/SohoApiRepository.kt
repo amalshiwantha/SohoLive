@@ -8,6 +8,7 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
+import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -31,7 +32,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
         }
     }
 
-    fun goLivePropertyListing(authToken: String): Flow<ApiState<GoLiveResponse>> = flow {
+    fun goLivePropertyListing(authToken: String): Flow<ApiState<Pair<GoLiveResponse, TsPropertyResponse>>> = flow {
         try {
             emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
@@ -39,16 +40,21 @@ class SohoApiRepository(private val service: SohoApiServices) {
             val apiResponse = service.propertyListing(authToken = authToken)
 
             //get property info from type-sense
-            apiResponse.data?.listings.let {
-                val propIdList: List<Int> = it?.map { prop -> prop.id } ?: listOf()
+            apiResponse.data?.listings?.let {
+                val propIdList: List<Int> = it.map { prop -> prop.id }
                 val filterBy = "objectID:$propIdList"
                 val tsReq = TsPropertyRequest(
                     "*", "address_1", filterBy, "20", "1"
                 )
                 val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
-            }
+                val resPair = Pair(apiResponse,apiResponseTs)
+                emit(ApiState.Data(data = resPair))
 
-            emit(ApiState.Data(data = apiResponse))
+            } ?: run {
+                emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.GO_LIVE_ERROR.apply {
+                    message = "No property found"
+                })))
+            }
 
         } catch (e: Exception) {
             e.message?.let {

@@ -2,7 +2,7 @@ package com.soho.sohoapp.live.network.common
 
 sealed class ApiState<T> {
 
-    data class Data<T>(val data: T? = null) : ApiState<T>()
+    data class Data<T>(val data: T? = null) : ApiState<T,>()
 
     data class Loading<T>(val progressBarState: ProgressBarState = ProgressBarState.Idle) :
         ApiState<T>()

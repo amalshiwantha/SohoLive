@@ -52,17 +52,20 @@ class GoLiveViewModel(
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        val isSuccess = !result.responseType.equals("error")
+                        val listingData = result.first
+                        val tsData = result.second
+                        val isSuccess = !listingData.equals("error")
 
                         if (isSuccess) {
                             mState.value = mState.value.copy(isSuccess = true)
-                            mState.value = mState.value.copy(apiResults = result.data)
+                            mState.value = mState.value.copy(apiResults = listingData.data)
+                            mState.value = mState.value.copy(tsResults = tsData)
                         } else {
                             mState.value =
                                 mState.value.copy(
                                     alertState = AlertState.Display(
                                         AlertConfig.GO_LIVE_ERROR.apply {
-                                            result.response?.let {
+                                            listingData.response?.let {
                                                 message = it
                                             }
                                         }

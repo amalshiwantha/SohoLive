@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TsPropertyResponse(
     @SerialName("found") val found: Int = 0,
-    @SerialName("hits") val hits: List<Hit> = emptyList(),
+    @SerialName("hits") val propertyList: List<Hit> = emptyList(),
     @SerialName("out_of") val outOf: Int = 0,
     @SerialName("page") val page: Int = 0,
     @SerialName("request_params") val requestParams: RequestParams = RequestParams(),
