@@ -157,8 +157,8 @@ private fun LoginForm(
 
         //TODO this is for temp
         requestData.apply {
-            email = "amal+adam.regan##at##raywhite.com@soho.com.au"
-            password = "soho123"
+            email = "virginia.byrne@sydneysir.com"
+            password = "password"
         }
 
         TextLabelWhite14(label = stringResource(R.string.email))

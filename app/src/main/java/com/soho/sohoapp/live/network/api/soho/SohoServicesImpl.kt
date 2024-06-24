@@ -7,6 +7,7 @@ import com.soho.sohoapp.live.network.core.BASE_URL_TS
 import com.soho.sohoapp.live.network.core.TS_API_KEY
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
+import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -41,13 +42,13 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         }.body()
     }
 
-    override suspend fun tsProperty(tsPropRequest: TsPropertyRequest): GoLiveResponse {
+    override suspend fun tsProperty(tsPropRequest: TsPropertyRequest): TsPropertyResponse {
         return httpClient.get {
             url {
                 takeFrom(BASE_URL_TS)
                 encodedPath += SohoApiServices.TS_PROPERTY
                 parameters.apply {
-                    tsPropRequest.query?.let { append("q", "*") }
+                    tsPropRequest.query?.let { append("q", it) }
                     tsPropRequest.queryBy?.let { append("query_by", it) }
                     tsPropRequest.filterBy?.let { append("filter_by", it) }
                     tsPropRequest.perPage?.let { append("per_page", it) }
