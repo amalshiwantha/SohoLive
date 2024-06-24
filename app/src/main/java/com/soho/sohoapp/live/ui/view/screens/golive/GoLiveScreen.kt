@@ -289,8 +289,6 @@ fun StepContents(
                     onNotShowProfileChange.invoke(it)
                 })
                 AgentListing(savedResults.agentProfiles)
-                //AgentListing display from step#1 selection
-                //donty show == "" not 0 (agent_profile_id)
             }
         }
 
@@ -665,13 +663,17 @@ private fun SocialMediaListing() {
     }
 }
 
+fun getAgencyItemsById(agentProfiles: List<AgentProfileGoLive>, id: Int): List<AgencyItem> {
+    return agentProfiles.filter { it.id == id }.map {
+        AgencyItem(id = it.id, agentProfile = it)
+    }
+}
+
 @Composable
 private fun AgentListing(agentProfiles: List<AgentProfileGoLive>) {
 
     var agencyList by rememberSaveable {
-        mutableStateOf(agentProfiles.map {
-            AgencyItem(id = it.id, agentProfile = it)
-        })
+        mutableStateOf(getAgencyItemsById(agentProfiles, 13552))
     }
 
     agencyList.forEach { agentItem ->
