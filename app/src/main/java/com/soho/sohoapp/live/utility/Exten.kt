@@ -60,3 +60,8 @@ fun String.toUppercaseFirst(): String {
     }
 }
 
+fun Double.visibleValue(): Pair<Boolean, String> {
+    val value = this.toInt()
+    return Pair(value > 0, value.toString())
+}
+

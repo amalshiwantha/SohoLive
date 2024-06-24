@@ -1,8 +1,12 @@
 package com.soho.sohoapp.live.network.response
 
+import com.soho.sohoapp.live.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 
 @Serializable
 data class TsPropertyResponse(
@@ -103,14 +107,38 @@ data class Document(
             "$address1, $address2"
         }
     }
+
+    fun areaSize(): Pair<String, Int> {
+        val sizeInfo = areaDimensions
+        var resPair = Pair("", 0)
+
+        val floorSize = sizeInfo.floorSize ?: 0.0
+        val floorSizeUnit = sizeInfo.floorSizeUnit
+        val landSize = sizeInfo.landSize ?: 0.0
+        val landSizeUnit = sizeInfo.landSizeUnit
+
+        if (floorSize > 0) {
+            resPair = Pair(
+                getFormatPropertySize(floorSize, floorSizeUnit),
+                R.drawable.ic_floor_sizes
+            )
+        } else if (landSize > 0) {
+            resPair = Pair(
+                getFormatPropertySize(landSize, landSizeUnit),
+                R.drawable.ic_land_size
+            )
+        }
+
+        return resPair
+    }
 }
 
 @Serializable
 data class AreaDimensions(
     @SerialName("floor_size") val floorSize: Double? = null,
-    @SerialName("floor_size_measurement") val floorSizeMeasurement: String? = null,
+    @SerialName("floor_size_measurement") val floorSizeUnit: String? = null,
     @SerialName("land_size") val landSize: Double? = null,
-    @SerialName("land_size_measurement") val landSizeMeasurement: String? = null
+    @SerialName("land_size_measurement") val landSizeUnit: String? = null
 )
 
 @Serializable
@@ -185,4 +213,20 @@ data class Photo(
 
     private val fullUrl: String
         get() = "$url?size=full"
+}
+
+fun getFormatPropertySize(size: Double?, unit: String?): String {
+    return if (size != null && unit != null) {
+        val decimalFormat = NumberFormat.getNumberInstance(Locale.US) as DecimalFormat
+        decimalFormat.applyPattern("###,###,##0.##")
+        val formattedSize = decimalFormat.format(size)
+
+        if (unit == "sqm") {
+            "$formattedSize m²"
+        } else {
+            "$formattedSize $unit"
+        }
+    } else {
+        ""
+    }
 }

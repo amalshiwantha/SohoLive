@@ -104,6 +104,7 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
+import com.soho.sohoapp.live.utility.visibleValue
 import org.koin.compose.koinInject
 
 @Composable
@@ -922,26 +923,46 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
                 SpacerVertical(size = 8.dp)
                 if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
                 SpacerVertical(size = 8.dp)
-                AmenitiesView(textColor)
+                AmenitiesView(property, textColor)
             }
         }
     }
 }
 
 @Composable
-private fun AmenitiesView(textColor: Color) {
+private fun AmenitiesView(doc: Document, textColor: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text400_12sp(label = "3", txtColor = textColor)
-        AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor)
-        Text400_12sp(label = "2", txtColor = textColor)
-        AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor)
-        Text400_12sp(label = "1", txtColor = textColor)
-        AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor)
-        Text400_12sp(label = "120 m²", txtColor = textColor)
-        AmenitiesIcon(icon = R.drawable.ic_floor_size, iconColor = textColor)
+
+        doc.bedroomCount.visibleValue().let {
+            if (it.first) {
+                Text400_12sp(label = it.second, txtColor = textColor)
+                AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor)
+            }
+        }
+
+        doc.bathroomCount.visibleValue().let {
+            if (it.first) {
+                Text400_12sp(label = it.second, txtColor = textColor)
+                AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor)
+            }
+        }
+
+        doc.carspotCount.visibleValue().let {
+            if (it.first) {
+                Text400_12sp(label = it.second, txtColor = textColor)
+                AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor)
+            }
+        }
+
+        doc.areaSize().let {
+            if (it.second > 0) {
+                Text400_12sp(label = it.first, txtColor = textColor)
+                AmenitiesIcon(icon = it.second, iconColor = textColor)
+            }
+        }
     }
 }
 
