@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -32,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -71,7 +69,6 @@ import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.Hit
-import com.soho.sohoapp.live.network.response.Listing
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -686,20 +683,25 @@ private fun AgentListing(agentProfiles: List<AgentProfileGoLive>) {
 }
 
 @Composable
-private fun PropertyListing(listings: List<Listing>) {
+private fun PropertyListing(listings: List<Hit>) {
+
     var propertyItemList by rememberSaveable {
-        mutableStateOf((1..listings.size * 5).map {
+        mutableStateOf(listings.map {
             PropertyItem(
-                it,
-                propInfo = "308/50 Murray Street, Sydney NSW 200$it",
+                id = it.document.propertyId,
+                propInfo = it.document
             )
         })
     }
 
-    propertyItemList.forEach {
-        PropertyItemContent(it, onItemClicked = { selected ->
+
+    propertyItemList.forEach { item ->
+        PropertyItemContent(item, onItemClicked = { selected ->
             propertyItemList = propertyItemList.mapIndexed { index, item ->
-                if (index == selected.id - 1) {
+
+                val itemIndex = propertyItemList.indexOfFirst { it.id == selected.id }
+
+                if (index == itemIndex) {
                     item.copy(isChecked = !item.isChecked)
                 } else {
                     item
@@ -874,9 +876,10 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
 }
 
 @Composable
-private fun PropertyItemContent(item: Document, onItemClicked: (Document) -> Unit = {}) {
+private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
+    val property = item.propInfo
     println("myItem " + item.isChecked)
 
     Card(
@@ -915,7 +918,7 @@ private fun PropertyItemContent(item: Document, onItemClicked: (Document) -> Uni
                     onItemClicked(item)
                 })
                 SpacerVertical(size = 8.dp)
-                item.address1?.let { Text700_14sp(step = it, color = textColor) }
+                property.address1?.let { Text700_14sp(step = it, color = textColor) }
                 SpacerVertical(size = 8.dp)
                 Text400_14sp(info = "3 scheduled livestream", color = textColor)
                 SpacerVertical(size = 8.dp)
@@ -1089,7 +1092,7 @@ fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) 
     }
 }
 
-data class PropertyItem(val id: Int, val propInfo: String, var isChecked: Boolean = false)
+data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
 
 data class AgencyItem(
     val id: Int,

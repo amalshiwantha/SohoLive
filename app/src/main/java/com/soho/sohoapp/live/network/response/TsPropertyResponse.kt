@@ -88,8 +88,7 @@ data class Document(
     @SerialName("updated_at_seconds") val updatedAtSeconds: Long = 0,
     @SerialName("videos") val videos: String? = null,
     @SerialName("vr_urls") val vrUrls: List<String> = emptyList(),
-    @SerialName("web_url") val webUrl: String? = null,
-    var isChecked: Boolean = false
+    @SerialName("web_url") val webUrl: String? = null
 )
 
 @Serializable
