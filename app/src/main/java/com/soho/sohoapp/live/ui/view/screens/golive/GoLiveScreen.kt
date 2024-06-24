@@ -894,7 +894,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
         Row(modifier = Modifier.padding(14.dp)) {
             //image
             val urlPainter = rememberAsyncImagePainter(
-                model = property.getThumbnailUrl(),
+                model = property.thumbnailUrl(),
                 placeholder = painterResource(id = R.drawable.property_placeholder),
                 error = painterResource(id = R.drawable.property_placeholder)
             )
@@ -918,7 +918,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
                     onItemClicked(item)
                 })
                 SpacerVertical(size = 8.dp)
-                property.address1?.let { Text700_14sp(step = it, color = textColor) }
+                Text700_14sp(step = property.fullAddress(), color = textColor)
                 SpacerVertical(size = 8.dp)
                 if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
                 SpacerVertical(size = 8.dp)

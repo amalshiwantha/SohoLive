@@ -91,9 +91,17 @@ data class Document(
     @SerialName("vr_urls") val vrUrls: List<String> = emptyList(),
     @SerialName("web_url") val webUrl: String? = null,
 ) {
-    fun getThumbnailUrl(): String {
+    fun thumbnailUrl(): String {
         val photoList: List<Photo> = Json.decodeFromString(photos ?: "")
         return photoList.firstNotNullOf { it.getImageUrl() }
+    }
+
+    fun fullAddress(): String {
+        return if (address2.isNullOrEmpty()) {
+            address1.orEmpty()
+        } else {
+            "$address1, $address2"
+        }
     }
 }
 
