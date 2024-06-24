@@ -292,6 +292,7 @@ fun StepContents(
     SpacerVertical(40.dp)
 
     when (currentStepId) {
+        // step#1
         0 -> {
             tsResults?.let { tsProp ->
                 if (tsProp.propertyList.isEmpty()) {
@@ -309,18 +310,40 @@ fun StepContents(
             }
         }
 
+        // step#2
         1 -> {
 
             if (savedResults.agentProfiles.isEmpty()) {
                 DisplayNoData(message = "No Agency Information")
             } else {
+                val selectedAgentId =
+                    propertyList?.filter { it.isChecked }?.map { it.propInfo.apAgentsIds }
+
                 ProfileHideItem(isNotShowProfile, onCheckedChange = {
                     onNotShowProfileChange.invoke(it)
                 })
-                AgentListing(savedResults.agentProfiles)
+
+                selectedAgentId?.get(0)?.let {
+                    var agencyList by rememberSaveable {
+                        mutableStateOf(getAgencyItemsById(savedResults.agentProfiles, it[0]))
+                    }
+                    AgentListing(agencyList, onAgentItemClicked = { selected ->
+                        agencyList = agencyList.mapIndexed { index, item ->
+
+                            val itemIndex = agencyList.indexOfFirst { it.id == selected.id }
+
+                            if (index == itemIndex) {
+                                item.copy(isChecked = !item.isChecked)
+                            } else {
+                                item
+                            }
+                        }
+                    })
+                }
             }
         }
 
+        // step#3
         2 -> {
             SocialMediaListing()
             SpacerVertical(size = 70.dp)
@@ -328,6 +351,7 @@ fun StepContents(
             //soho = unlisted chanegt he toggle
         }
 
+        // step#4
         3 -> {
             Content4(optionList = optionList,
                 selectedOption = selectedOption,
@@ -699,25 +723,13 @@ fun getAgencyItemsById(agentProfiles: List<AgentProfileGoLive>, id: Int): List<A
 }
 
 @Composable
-private fun AgentListing(agentProfiles: List<AgentProfileGoLive>) {
-
-    var agencyList by rememberSaveable {
-        mutableStateOf(getAgencyItemsById(agentProfiles, 13552))
-    }
-
+private fun AgentListing(
+    agencyList: List<AgencyItem>,
+    onAgentItemClicked: (AgentProfileGoLive) -> Unit
+) {
     agencyList.forEach { agentItem ->
         AgencyItemContent(agentItem, onItemClicked = { selected ->
-
-            agencyList = agencyList.mapIndexed { index, item ->
-
-                val itemIndex = agencyList.indexOfFirst { it.id == selected.id }
-
-                if (index == itemIndex) {
-                    item.copy(isChecked = !item.isChecked)
-                } else {
-                    item
-                }
-            }
+            onAgentItemClicked.invoke(selected)
         })
     }
 }
