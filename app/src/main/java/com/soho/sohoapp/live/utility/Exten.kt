@@ -5,6 +5,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
+import java.util.Locale
 
 fun formValidation(
     state: MutableState<SignInState>, mapList: MutableMap<FieldType, String?>
@@ -51,3 +52,11 @@ fun formValidation(
 
     return state.value
 }
+
+fun String.toUppercaseFirst(): String {
+    return this.replaceFirstChar {
+        if (it.isLowerCase())
+            it.titlecase(Locale.getDefault()) else it.toString()
+    }
+}
+

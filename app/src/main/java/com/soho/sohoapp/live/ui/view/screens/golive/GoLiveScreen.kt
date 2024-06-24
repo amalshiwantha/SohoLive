@@ -103,6 +103,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.toUppercaseFirst
 import org.koin.compose.koinInject
 
 @Composable
@@ -913,13 +914,13 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(item.isChecked, onCheckedChange = {
+                TypeAndCheckBox(item.isChecked, property, onCheckedChange = {
                     onItemClicked(item)
                 })
                 SpacerVertical(size = 8.dp)
                 property.address1?.let { Text700_14sp(step = it, color = textColor) }
                 SpacerVertical(size = 8.dp)
-                Text400_14sp(info = "3 scheduled livestream", color = textColor)
+                if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
                 SpacerVertical(size = 8.dp)
                 AmenitiesView(textColor)
             }
@@ -956,7 +957,11 @@ private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite) {
 }
 
 @Composable
-private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Unit = {}) {
+private fun TypeAndCheckBox(
+    isChecked: Boolean,
+    doc: Document,
+    onCheckedChange: (Boolean) -> Unit = {}
+) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -965,14 +970,18 @@ private fun TypeAndCheckBox(isChecked: Boolean, onCheckedChange: (Boolean) -> Un
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text700_12sp(label = "For Sale")
+            doc.apListingState?.toUppercaseFirst()?.let {
+                Text700_12sp(label = it)
+            }
             Image(
                 painter = painterResource(id = R.drawable.space_dot),
                 contentDescription = null,
                 modifier = Modifier.padding(horizontal = 8.dp),
                 contentScale = ContentScale.FillBounds
             )
-            Text400_12sp(label = "Apartment")
+            doc.propertyType?.toUppercaseFirst()?.let {
+                Text400_12sp(label = it)
+            }
         }
 
         Box(
