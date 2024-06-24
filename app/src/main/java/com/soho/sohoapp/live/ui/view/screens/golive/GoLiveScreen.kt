@@ -126,6 +126,7 @@ fun GoLiveScreen(
     var isDateFixed by remember { mutableStateOf(false) }
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected by remember { mutableStateOf(false) }
+    var isDontShowProfile by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -172,9 +173,11 @@ fun GoLiveScreen(
                                 tsResults = savedTsResults,
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
+                                isDontShowProfile = isDontShowProfile,
                                 selectedOption = selectedOption,
                                 onSelectOption = { selectedOption = it },
-                                onSwipeIsNowSelected = { isNowSelected = it })
+                                onSwipeIsNowSelected = { isNowSelected = it },
+                                onDontShowProfileChange = { isDontShowProfile = it })
                         }
                     }
                 }
@@ -252,10 +255,12 @@ fun StepContents(
     savedResults: DataGoLive,
     tsResults: TsPropertyResponse? = null,
     isNowSelected: Boolean,
+    isDontShowProfile: Boolean,
     optionList: MutableList<String>,
     selectedOption: String,
     onSelectOption: (String) -> Unit,
-    onSwipeIsNowSelected: (Boolean) -> Unit
+    onSwipeIsNowSelected: (Boolean) -> Unit,
+    onDontShowProfileChange: (Boolean) -> Unit
 ) {
     SpacerVertical(40.dp)
 
@@ -280,7 +285,9 @@ fun StepContents(
             if (savedResults.agentProfiles.isEmpty()) {
                 DisplayNoData(message = "No Agency Information")
             } else {
-                ProfileHideItem()
+                ProfileHideItem(isDontShowProfile, onCheckedChange = {
+                    onDontShowProfileChange.invoke(it)
+                })
                 AgentListing(savedResults.agentProfiles)
                 //AgentListing display from step#1 selection
                 //donty show == "" not 0 (agent_profile_id)
@@ -713,8 +720,10 @@ private fun PropertyListing(listings: List<Hit>) {
 }
 
 @Composable
-private fun ProfileHideItem() {
-    var checked by remember { mutableStateOf(false) }
+private fun ProfileHideItem(
+    isDontShowProfile: Boolean,
+    onCheckedChange: (Boolean) -> Unit = {}
+) {
 
     Card(
         modifier = Modifier
@@ -737,12 +746,12 @@ private fun ProfileHideItem() {
             Box(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
-                    .clickable { checked = !checked },
+                    .clickable { onCheckedChange(!isDontShowProfile) },
                 contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
                 Image(
-                    painter = if (checked) {
+                    painter = if (isDontShowProfile) {
                         painterResource(id = R.drawable.check_box_chcked)
                     } else {
                         painterResource(id = R.drawable.cehck_box_uncheck)
@@ -750,7 +759,7 @@ private fun ProfileHideItem() {
                 )
 
                 //Tick Icon
-                if (checked) {
+                if (isDontShowProfile) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_tick),
                         contentDescription = null,
@@ -1145,9 +1154,11 @@ private fun PreviewGoLiveScreen() {
                     savedResults = DataGoLive(emptyList(), emptyList()),
                     optionList = mutableListOf(),
                     isNowSelected = true,
+                    isDontShowProfile = true,
                     selectedOption = "",
                     onSelectOption = { },
-                    onSwipeIsNowSelected = { })
+                    onSwipeIsNowSelected = { },
+                    onDontShowProfileChange = {})
             }
         }
 
