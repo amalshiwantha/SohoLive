@@ -68,7 +68,6 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
-import com.soho.sohoapp.live.network.response.Hit
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -168,16 +167,42 @@ fun GoLiveScreen(
                     }
                     item {
                         savedApiResults?.let { savedData ->
-                            StepContents(currentStepId = currentStepId,
+
+                            var propertyList by rememberSaveable {
+                                mutableStateOf(savedTsResults?.propertyList?.map {
+                                    PropertyItem(
+                                        id = it.document.propertyId,
+                                        propInfo = it.document
+                                    )
+                                })
+                            }
+
+                            StepContents(
+                                currentStepId = currentStepId,
                                 savedResults = savedData,
                                 tsResults = savedTsResults,
+                                propertyList = propertyList,
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
                                 isNotShowProfile = isDontShowProfile,
                                 selectedOption = selectedOption,
                                 onSelectOption = { selectedOption = it },
                                 onSwipeIsNowSelected = { isNowSelected = it },
-                                onNotShowProfileChange = { isDontShowProfile = it })
+                                onNotShowProfileChange = { isDontShowProfile = it },
+                                onPropertyItemClicked = { selected ->
+                                    propertyList = propertyList?.mapIndexed { index, item ->
+
+                                        val itemIndex =
+                                            propertyList?.indexOfFirst { it.id == selected.id }
+
+                                        if (index == itemIndex) {
+                                            item.copy(isChecked = !item.isChecked)
+                                        } else {
+                                            item
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -254,13 +279,15 @@ fun StepContents(
     currentStepId: Int,
     savedResults: DataGoLive,
     tsResults: TsPropertyResponse? = null,
+    propertyList: List<PropertyItem>? = null,
     isNowSelected: Boolean,
     isNotShowProfile: Boolean,
     optionList: MutableList<String>,
     selectedOption: String,
     onSelectOption: (String) -> Unit,
     onSwipeIsNowSelected: (Boolean) -> Unit,
-    onNotShowProfileChange: (Boolean) -> Unit
+    onNotShowProfileChange: (Boolean) -> Unit,
+    onPropertyItemClicked: (PropertyItem) -> Unit
 ) {
     SpacerVertical(40.dp)
 
@@ -272,7 +299,9 @@ fun StepContents(
                 } else {
                     SearchBar()
                     SpacerVertical(16.dp)
-                    PropertyListing(tsProp.propertyList)
+                    PropertyListing(propertyList, onItemClicked = {
+                        onPropertyItemClicked.invoke(it)
+                    })
                     SpacerVertical(size = 70.dp)
                 }
             } ?: run {
@@ -694,29 +723,23 @@ private fun AgentListing(agentProfiles: List<AgentProfileGoLive>) {
 }
 
 @Composable
-private fun PropertyListing(listings: List<Hit>) {
+private fun PropertyListing(
+    listings: List<PropertyItem>?,
+    onItemClicked: (PropertyItem) -> Unit = {}
+) {
 
-    var propertyItemList by rememberSaveable {
+    /*var propertyItemList by rememberSaveable {
         mutableStateOf(listings.map {
             PropertyItem(
                 id = it.document.propertyId,
                 propInfo = it.document
             )
         })
-    }
+    }*/
 
-    propertyItemList.forEach { item ->
+    listings?.forEach { item ->
         PropertyItemContent(item, onItemClicked = { selected ->
-            propertyItemList = propertyItemList.mapIndexed { index, item ->
-
-                val itemIndex = propertyItemList.indexOfFirst { it.id == selected.id }
-
-                if (index == itemIndex) {
-                    item.copy(isChecked = !item.isChecked)
-                } else {
-                    item
-                }
-            }
+            onItemClicked.invoke(selected)
         })
     }
 }
@@ -1160,7 +1183,8 @@ private fun PreviewGoLiveScreen() {
                     selectedOption = "",
                     onSelectOption = { },
                     onSwipeIsNowSelected = { },
-                    onNotShowProfileChange = {})
+                    onNotShowProfileChange = {},
+                    onPropertyItemClicked = {})
             }
         }
 
