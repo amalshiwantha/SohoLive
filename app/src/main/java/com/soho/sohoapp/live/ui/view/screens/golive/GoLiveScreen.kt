@@ -268,6 +268,7 @@ fun StepContents(
                     SearchBar()
                     SpacerVertical(16.dp)
                     PropertyListing(tsProp.propertyList)
+                    SpacerVertical(size = 70.dp)
                 }
             } ?: run {
                 DisplayNoData(message = "Property Information Serves Failed")
