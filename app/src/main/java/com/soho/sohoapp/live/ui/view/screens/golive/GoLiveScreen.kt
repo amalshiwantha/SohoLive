@@ -936,32 +936,24 @@ private fun AmenitiesView(doc: Document, textColor: Color) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        doc.bedroomCount.visibleValue().let {
-            if (it.first) {
-                Text400_12sp(label = it.second, txtColor = textColor)
-                AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor)
-            }
+        doc.bedroomCount.visibleValue()?.let {
+            Text400_12sp(label = it, txtColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor)
         }
 
-        doc.bathroomCount.visibleValue().let {
-            if (it.first) {
-                Text400_12sp(label = it.second, txtColor = textColor)
-                AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor)
-            }
+        doc.bathroomCount.visibleValue()?.let {
+            Text400_12sp(label = it, txtColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor)
         }
 
-        doc.carspotCount.visibleValue().let {
-            if (it.first) {
-                Text400_12sp(label = it.second, txtColor = textColor)
-                AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor)
-            }
+        doc.carspotCount.visibleValue()?.let {
+            Text400_12sp(label = it, txtColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor)
         }
 
-        doc.areaSize().let {
-            if (it.second > 0) {
-                Text400_12sp(label = it.first, txtColor = textColor)
-                AmenitiesIcon(icon = it.second, iconColor = textColor)
-            }
+        doc.areaSize()?.let {
+            Text400_12sp(label = it.first, txtColor = textColor)
+            AmenitiesIcon(icon = it.second, iconColor = textColor)
         }
     }
 }

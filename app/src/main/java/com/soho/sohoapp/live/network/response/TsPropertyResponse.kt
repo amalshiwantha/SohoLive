@@ -108,9 +108,9 @@ data class Document(
         }
     }
 
-    fun areaSize(): Pair<String, Int> {
+    fun areaSize(): Pair<String, Int>? {
         val sizeInfo = areaDimensions
-        var resPair = Pair("", 0)
+        var resPair: Pair<String, Int>? = null
 
         val floorSize = sizeInfo.floorSize ?: 0.0
         val floorSizeUnit = sizeInfo.floorSizeUnit
