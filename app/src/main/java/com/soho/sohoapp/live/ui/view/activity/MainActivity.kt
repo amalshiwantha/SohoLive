@@ -8,7 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.cardview.widget.CardView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -30,15 +34,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -47,11 +56,13 @@ import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_16sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.navigation.AppNavHost
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
+import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
@@ -213,7 +224,44 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 SpacerVertical(size = 16.dp)
 
                 //profile card
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        //image
+                        val urlPainter = rememberAsyncImagePainter(
+                            model = smProfile.imageUrl,
+                            placeholder = painterResource(id = R.drawable.profile_placeholder),
+                            error = painterResource(id = R.drawable.profile_placeholder)
+                        )
 
+                        Image(
+                            painter = urlPainter,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(width = 70.dp, height = 68.dp)
+                                .clip(CircleShape)
+                        )
+                        //info
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text400_14sp(info = "Connected to ${smInfo.title.lowercase()} as")
+                            SpacerVertical(size = 8.dp)
+                            Text700_16sp(title = smProfile.fullName)
+                        }
+                    }
+                }
 
                 //Button buttons
                 SpacerVertical(size = 40.dp)
@@ -414,7 +462,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             smProfile = SocialMediaProfile(
                 SocialMediaInfo.FACEBOOK,
                 "Jhone Smith",
-                "http",
+                "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
                 "amalskr@gmail.com",
                 "ask123"
             ),

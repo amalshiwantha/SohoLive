@@ -140,7 +140,12 @@ fun Text950_20sp(modifier: Modifier = Modifier, title: String) {
 }
 
 @Composable
-fun Text700_14sp(modifier: Modifier = Modifier, step: String, isCenter: Boolean = false, color: Color = AppWhite) {
+fun Text700_14sp(
+    modifier: Modifier = Modifier,
+    step: String,
+    isCenter: Boolean = false,
+    color: Color = AppWhite
+) {
     Text(
         textAlign = if (isCenter) TextAlign.Center else TextAlign.Left,
         modifier = modifier,
@@ -151,6 +156,26 @@ fun Text700_14sp(modifier: Modifier = Modifier, step: String, isCenter: Boolean 
         fontWeight = FontWeight(700),
         color = color,
         letterSpacing = 0.17.sp
+    )
+}
+
+@Composable
+fun Text700_16sp(
+    modifier: Modifier = Modifier,
+    title: String,
+    isCenter: Boolean = false,
+    color: Color = AppWhite
+) {
+    Text(
+        textAlign = if (isCenter) TextAlign.Center else TextAlign.Left,
+        modifier = modifier,
+        text = title,
+        fontSize = 16.sp,
+        lineHeight = 25.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(700),
+        color = color,
+        letterSpacing = 0.19.sp
     )
 }
 
