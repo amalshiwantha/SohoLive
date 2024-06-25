@@ -119,7 +119,7 @@ fun GoLiveScreen(
 
     val stateVm = goLiveVm.mState.value
     val stepCount = 4
-    var currentStepId by remember { mutableIntStateOf(0) }
+    var currentStepId by remember { mutableIntStateOf(2) }
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
@@ -374,10 +374,16 @@ fun StepContents(
 
         // step#3
         2 -> {
-            SocialMediaListing()
+            SocialMediaListing(onSMItemClicked = { selectedSM ->
+                when (selectedSM) {
+                    SocialMediaInfo.FACEBOOK.name -> {
+                        connectFacebook()
+                    }
+                    SocialMediaInfo.YOUTUBE.name -> {}
+                    SocialMediaInfo.LINKEDIN.name -> {}
+                }
+            })
             SpacerVertical(size = 70.dp)
-            //use soil mead sdks, have to display som popups
-            //soho = unlisted chanegt he toggle
         }
 
         // step#4
@@ -389,6 +395,10 @@ fun StepContents(
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
     }
+}
+
+private fun connectFacebook() {
+
 }
 
 @Composable
@@ -739,9 +749,11 @@ private fun NextBackButtons(
 }
 
 @Composable
-private fun SocialMediaListing() {
+private fun SocialMediaListing(onSMItemClicked: (String) -> Unit) {
     SocialMediaInfo.entries.forEach { item ->
-        SocialMediaItemContent(item)
+        SocialMediaItemContent(item, onSMItemClicked = {
+            onSMItemClicked.invoke(it)
+        })
     }
 }
 
@@ -851,7 +863,10 @@ private fun ProfileHideItem(
 }
 
 @Composable
-private fun SocialMediaItemContent(info: SocialMediaInfo) {
+private fun SocialMediaItemContent(
+    info: SocialMediaInfo,
+    onSMItemClicked: (String) -> Unit
+) {
     var isChecked by remember { mutableStateOf(false) }
 
     Card(
@@ -895,7 +910,7 @@ private fun SocialMediaItemContent(info: SocialMediaInfo) {
             } else {
                 //button
                 ButtonConnect(text = "Connect Now", color = AppGreen) {
-                    println("ConnectNow ${info.title}")
+                    onSMItemClicked.invoke(info.name)
                 }
             }
         }
