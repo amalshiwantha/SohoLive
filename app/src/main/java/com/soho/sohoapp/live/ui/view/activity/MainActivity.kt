@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -114,7 +115,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun SocialMediaConnectBottomSheet(
-        smInfoConnect: SocialMediaInfo, onConnect: (SocialMediaInfo) -> Unit, onReset: () -> Unit
+        smInfoConnect: SocialMediaInfo,
+        onConnect: (SocialMediaInfo) -> Unit,
+        onReset: () -> Unit
     ) {
         val bottomSheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(true) }
@@ -124,30 +127,39 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = bottomSheetState
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "This is some text inside the bottom sheet.",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-                    Button(onClick = {
-                        onConnect(smInfoConnect)
-                        showBottomSheet = false
-                    }) {
-                        Text("Connect")
-                    }
-                }
+                ContentBottomSheet(smInfoConnect, onConnect = {
+                    onConnect.invoke(smInfoConnect)
+                    showBottomSheet = false
+                })
             }
         } else {
             onReset()
         }
     }
 
+    @Composable
+    private fun ContentBottomSheet(
+        smInfoConnect: SocialMediaInfo,
+        onConnect: (SocialMediaInfo) -> Unit
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "This is some text inside the bottom sheet.",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Button(onClick = {
+                onConnect(smInfoConnect)
+            }) {
+                Text("Connect")
+            }
+        }
+    }
 
     @Composable
     private fun ChangeSystemTrayColor() {
@@ -282,4 +294,12 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         val adde = linkedInEmailAddress?.emailAddress
     }
     //LinkedIn End
+
+    @Preview
+    @Composable
+    private fun PreviewBottomSheetSMConnect() {
+        ContentBottomSheet(
+            smInfoConnect = SocialMediaInfo.FACEBOOK,
+            onConnect = {})
+    }
 }
