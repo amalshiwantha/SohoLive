@@ -49,6 +49,7 @@ import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.SMProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -134,24 +135,31 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     SocialMediaInfo.FACEBOOK -> {
                         //facebookLogin()
 
-                        val profile = SocialMediaProfile(
-                            SocialMediaInfo.FACEBOOK,
+                        val smProfile = SMProfile(
                             "Face Borker",
                             "https://design-assets.adobeprojectm.com/content/download/express/public/urn:aaid:sc:VA6C2:e88fad34-6940-5552-91ac-b45c41168d43/component?assetType=TEMPLATE&etag=f9b270fe49cf46a2b3686e8df866ee76&revision=613eebe7-dc06-4992-86c8-f031e98d09ea&component_id=44c6e3bc-f057-427c-a844-580c12fda50e",
                             "amalskr@facebook.com",
                             "fbask123"
                         )
+                        val profile = SocialMediaProfile(
+                            SocialMediaInfo.FACEBOOK,
+                            mutableListOf(smProfile)
+                        )
+
                         viewMMain.saveSocialMediaProfile(profile)
                         onShowProfile()
                     }
 
                     SocialMediaInfo.YOUTUBE -> {
-                        val profile = SocialMediaProfile(
-                            SocialMediaInfo.YOUTUBE,
+                        val smProfile = SMProfile(
                             "Yo Tube",
                             "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-in-the-style-of-bold-character-designs-image_2697064.jpg",
                             "amalskr@youtube.com",
                             "youask123"
+                        )
+                        val profile = SocialMediaProfile(
+                            SocialMediaInfo.YOUTUBE,
+                            mutableListOf(smProfile)
                         )
                         viewMMain.saveSocialMediaProfile(profile)
                         onShowProfile()
@@ -159,12 +167,15 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     SocialMediaInfo.LINKEDIN -> {
                         //linkedInLogin()
-                        val profile = SocialMediaProfile(
-                            SocialMediaInfo.LINKEDIN,
+                        val smProfile = SMProfile(
                             "Jhon Smith",
                             "https://media.licdn.com/dms/image/D4D12AQGsWiQQo-hEew/article-cover_image-shrink_720_1280/0/1705940048112?e=2147483647&v=beta&t=Dm3TYa8aaImrrYHEksUYyCuPe0mRjKNlrKcNMnKjlXc",
                             "amalskr@live.com",
                             "liveask123"
+                        )
+                        val profile = SocialMediaProfile(
+                            SocialMediaInfo.LINKEDIN,
+                            mutableListOf(smProfile)
                         )
                         viewMMain.saveSocialMediaProfile(profile)
                         onShowProfile()
@@ -257,43 +268,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 SpacerVertical(size = 16.dp)
 
                 //profile card
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    shape = MaterialTheme.shapes.large,
-                    colors = CardDefaults.cardColors(containerColor = ItemCardBg)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        //image
-                        val urlPainter = rememberAsyncImagePainter(
-                            model = smProfile.imageUrl,
-                            placeholder = painterResource(id = R.drawable.profile_placeholder),
-                            error = painterResource(id = R.drawable.profile_placeholder)
-                        )
-
-                        Image(
-                            painter = urlPainter,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(width = 70.dp, height = 68.dp)
-                                .clip(CircleShape)
-                        )
-                        //info
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text400_14sp(info = "Connected to ${smInfo.title.lowercase()} as")
-                            SpacerVertical(size = 8.dp)
-                            Text700_16sp(title = smProfile.fullName)
-                        }
-                    }
+                smProfile.profiles.forEach {profile->
+                    ProfileCard(profile, smInfo.title.lowercase())
                 }
 
                 //Button buttons
@@ -310,6 +286,48 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         color = AppGreen,
                         modifier = Modifier.weight(1f),
                         onBtnClick = { onDone() })
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun ProfileCard(smProfile: SMProfile, socialMediaName: String) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+        ) {
+            Row(
+                modifier = Modifier.padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                //image
+                val urlPainter = rememberAsyncImagePainter(
+                    model = smProfile.imageUrl,
+                    placeholder = painterResource(id = R.drawable.profile_placeholder),
+                    error = painterResource(id = R.drawable.profile_placeholder)
+                )
+
+                Image(
+                    painter = urlPainter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(width = 70.dp, height = 68.dp)
+                        .clip(CircleShape)
+                )
+                //info
+                Column(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text400_14sp(info = "Connected to $socialMediaName as")
+                    SpacerVertical(size = 8.dp)
+                    Text700_16sp(title = smProfile.fullName)
                 }
             }
         }
@@ -480,16 +498,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
     //LinkedIn End
 
-    private fun getProfileNone(): SocialMediaProfile {
-        return SocialMediaProfile(
-            SocialMediaInfo.NONE,
-            "Jhone",
-            "https",
-            "gmail.com",
-            "123"
-        )
-    }
-
     @Preview
     @Composable
     private fun PreviewBottomSheetSMConnect() {
@@ -501,13 +509,16 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @Preview
     @Composable
     private fun PreviewBottomSheetSMProfile() {
+        val profile = SMProfile(
+            "Jhone Smith",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
+            "amalskr@gmail.com",
+            "ask123"
+        )
         ProfileContentBottomSheet(
             smProfile = SocialMediaProfile(
                 SocialMediaInfo.FACEBOOK,
-                "Jhone Smith",
-                "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
-                "amalskr@gmail.com",
-                "ask123"
+                mutableListOf(profile)
             ),
             onDisconnect = {}, onDone = {})
     }

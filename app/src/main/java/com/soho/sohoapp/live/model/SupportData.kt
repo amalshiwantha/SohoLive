@@ -4,6 +4,10 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 
 data class SocialMediaProfile(
     val smInfo: SocialMediaInfo,
+    val profiles: MutableList<SMProfile>
+)
+
+data class SMProfile(
     val fullName: String,
     val imageUrl: String,
     val email: String,

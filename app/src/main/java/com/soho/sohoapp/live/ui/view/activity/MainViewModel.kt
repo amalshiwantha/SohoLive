@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.facebook.Profile
 import com.facebook.ProfileTracker
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.SMProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +31,7 @@ class MainViewModel : ViewModel() {
     private val _isCallSMConnect = MutableStateFlow(SocialMediaInfo.NONE)
     val isCallSMConnect: StateFlow<SocialMediaInfo> = _isCallSMConnect.asStateFlow()
 
-    private val _isSMConnected = MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, "", "", "", ""))
+    private val _isSMConnected = MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()))
     val isSMConnected: StateFlow<SocialMediaProfile> = _isSMConnected.asStateFlow()
 
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
