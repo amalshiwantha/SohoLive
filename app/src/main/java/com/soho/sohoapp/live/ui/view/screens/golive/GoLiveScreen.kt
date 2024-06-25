@@ -765,7 +765,12 @@ private fun NextBackButtons(
 
 @Composable
 private fun SocialMediaListing(onSMItemClicked: (String) -> Unit) {
-    SocialMediaInfo.entries.forEach { item ->
+
+    val visibleSMList = SocialMediaInfo.entries.filter {
+        it.name != SocialMediaInfo.NONE.name
+    }
+
+    visibleSMList.forEach { item ->
         SocialMediaItemContent(item, onSMItemClicked = {
             onSMItemClicked.invoke(it)
         })

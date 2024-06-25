@@ -89,8 +89,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     private fun openSmConnection(smInfoConnect: SocialMediaInfo, onReset :()->Unit) {
-        onReset()
-
         when (smInfoConnect) {
             SocialMediaInfo.SOHO -> {}
             SocialMediaInfo.FACEBOOK -> {
@@ -104,6 +102,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
             else -> {}
         }
+
+        onReset()
     }
 
     //SocialMedia callback actions
