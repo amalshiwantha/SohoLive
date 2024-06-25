@@ -22,5 +22,6 @@ data class FbTypeView(
     val type: FBListType,
     val title: String,
     val url: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val isSelect: Boolean = false
 )

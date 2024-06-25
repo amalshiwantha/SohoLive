@@ -8,16 +8,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,6 +38,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,12 +72,17 @@ import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_16sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
+import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.navigation.AppNavHost
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.AppWhiteGray
+import com.soho.sohoapp.live.ui.theme.BorderGray
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
+import com.soho.sohoapp.live.ui.theme.TextDark
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -137,18 +153,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     SocialMediaInfo.FACEBOOK -> {
                         //facebookLogin()
 
-                        val smProfile = SMProfile(
-                            "Face Borker",
-                            "https://design-assets.adobeprojectm.com/content/download/express/public/urn:aaid:sc:VA6C2:e88fad34-6940-5552-91ac-b45c41168d43/component?assetType=TEMPLATE&etag=f9b270fe49cf46a2b3686e8df866ee76&revision=613eebe7-dc06-4992-86c8-f031e98d09ea&component_id=44c6e3bc-f057-427c-a844-580c12fda50e",
-                            "amalskr@facebook.com",
-                            "fbask123"
-                        )
-                        val profile = SocialMediaProfile(
-                            SocialMediaInfo.FACEBOOK,
-                            mutableListOf(smProfile)
-                        )
-
-                        viewMMain.saveSocialMediaProfile(profile)
+                        val smProfile = getSampleFbProfile()
+                        viewMMain.saveSocialMediaProfile(smProfile)
                         onShowProfile()
                     }
 
@@ -250,6 +256,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     ) {
         val smInfo = smProfile.smInfo
         var fbViewType by remember { mutableStateOf(FBListType.TIMELINE) }
+        var selectedOption by remember { mutableIntStateOf(0) }
 
         Column(
             modifier = Modifier
@@ -273,24 +280,60 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 //if fb add custom tab view for pages,groups etc...
                 if (smInfo.name == SocialMediaInfo.FACEBOOK.name) {
                     //FB tab view
-                    //fbViewType = FBListType.PAGES
+                    SwipeSwitchFb(selectedOption = selectedOption, onSwipeChange = {
+                        selectedOption = it
+                        fbViewType = when (selectedOption) {
+                            0 -> {
+                                FBListType.TIMELINE
+                            }
 
+                            1 -> {
+                                FBListType.PAGES
+                            }
+
+                            2 -> {
+                                FBListType.GROUPS
+                            }
+
+                            else -> {
+                                FBListType.TIMELINE
+                            }
+                        }
+                    })
+                    SpacerVertical(size = 16.dp)
+
+                    //Display Content for each tab
                     when (fbViewType) {
                         FBListType.TIMELINE -> {
                             smProfile.timelines?.forEach { fbInfo ->
-                                FbTypeInfoCard(fbInfo)
+                                FbTypeInfoCard(fbInfo, onItemClick = { updated ->
+                                    val found =
+                                        smProfile.timelines.find { it.title == updated.title }.let {
+                                            it?.copy(isSelect = updated.isSelect)
+                                        }
+                                })
                             }
                         }
 
                         FBListType.PAGES -> {
                             smProfile.pages?.forEach { fbInfo ->
-                                FbTypeInfoCard(fbInfo)
+                                FbTypeInfoCard(fbInfo, onItemClick = { updated ->
+                                    val found =
+                                        smProfile.pages.find { it.title == updated.title }.let {
+                                            it?.copy(isSelect = updated.isSelect)
+                                        }
+                                })
                             }
                         }
 
                         FBListType.GROUPS -> {
                             smProfile.groups?.forEach { fbInfo ->
-                                FbTypeInfoCard(fbInfo)
+                                FbTypeInfoCard(fbInfo, onItemClick = { updated ->
+                                    val found =
+                                        smProfile.groups.find { it.title == updated.title }.let {
+                                            it?.copy(isSelect = updated.isSelect)
+                                        }
+                                })
                             }
                         }
                     }
@@ -316,6 +359,70 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         modifier = Modifier.weight(1f),
                         onBtnClick = { onDone() })
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun SwipeSwitchFb(selectedOption: Int, onSwipeChange: (Int) -> Unit) {
+        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+        val horizontalPadding = 16.dp
+        val availableWidth = screenWidth - (horizontalPadding * 2)
+        val indicatorWidth = availableWidth / 3
+        val indicatorOffset by animateDpAsState(
+            targetValue = when (selectedOption) {
+                0 -> 0.dp
+                1 -> indicatorWidth
+                else -> indicatorWidth * 2
+            }, label = "animateToMove"
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .border(width = 1.dp, color = BorderGray, shape = RoundedCornerShape(16.dp))
+                .background(Color.Transparent)
+        ) {
+            // Move selection
+            Box(
+                modifier = Modifier
+                    .offset(x = indicatorOffset)
+                    .width(indicatorWidth)
+                    .padding(4.dp)
+                    .fillMaxHeight()
+                    .background(AppWhiteGray, shape = RoundedCornerShape(14.dp))
+            )
+
+            // Three options
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextSwipeSelection(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onSwipeChange(0) },
+                    title = "Timeline",
+                    textColor = if (selectedOption == 0) TextDark else AppWhite
+                )
+
+                TextSwipeSelection(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onSwipeChange(1) },
+                    title = "Pages",
+                    textColor = if (selectedOption == 1) TextDark else AppWhite
+                )
+
+                TextSwipeSelection(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onSwipeChange(2) },
+                    title = "Group",
+                    textColor = if (selectedOption == 2) TextDark else AppWhite
+                )
             }
         }
     }
@@ -363,7 +470,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     @Composable
-    private fun FbTypeInfoCard(fbView: FbTypeView) {
+    private fun FbTypeInfoCard(fbView: FbTypeView, onItemClick: (FbTypeView) -> Unit) {
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -391,12 +499,20 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         .clip(CircleShape)
                 )
                 //info
-                Column(
+                Row(
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .fillMaxWidth()
                 ) {
-                    Text700_16sp(title = fbView.title)
+                    Text700_16sp(title = fbView.title, modifier = Modifier.weight(1f))
+                    SpacerHorizontal(size = 8.dp)
+                    Image(
+                        modifier = Modifier.clickable {
+                            onItemClick(fbView.copy(isSelect = !fbView.isSelect))
+                        },
+                        painter = painterResource(id = if (fbView.isSelect) R.drawable.fb_item_active else R.drawable.fb_item_inactive),
+                        contentDescription = ""
+                    )
                 }
             }
         }
@@ -575,6 +691,52 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             onConnect = {})
     }
 
+
+    private fun getSampleFbProfile(): SocialMediaProfile {
+        val profile = SMProfile(
+            "Jhone Smith",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
+            "amalskr@gmail.com",
+            "ask123"
+        )
+
+        val timeline1 = FbTypeView(
+            FBListType.TIMELINE,
+            "TimeLine 1",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+        val timeline2 = FbTypeView(
+            FBListType.TIMELINE,
+            "TimeLine 2",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+
+        val page1 = FbTypeView(
+            FBListType.PAGES,
+            "MyPage",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+
+        val group1 = FbTypeView(
+            FBListType.GROUPS,
+            "My Group",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+
+        return SocialMediaProfile(
+            smInfo = SocialMediaInfo.FACEBOOK,
+            profiles = mutableListOf(profile),
+            timelines = mutableListOf(timeline1, timeline2),
+            pages = mutableListOf(page1),
+            groups = mutableListOf(group1)
+        )
+    }
+
+
     @Preview
     @Composable
     private fun PreviewBottomSheetSMProfile() {
@@ -613,13 +775,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         )
 
         ProfileContentBottomSheet(
-            smProfile = SocialMediaProfile(
-                smInfo = SocialMediaInfo.FACEBOOK,
-                profiles = mutableListOf(profile),
-                timelines = mutableListOf(timeline1, timeline2),
-                pages = mutableListOf(page1),
-                groups = mutableListOf(group1)
-            ),
+            smProfile = getSampleFbProfile(),
             onDisconnect = {}, onDone = {})
     }
 }
