@@ -20,7 +20,7 @@ fun BottomNavHost(navController: NavHostController) {
     var onGoLiveTsResult by remember { mutableStateOf<TsPropertyResponse?>(null) }
 
     NavHost(
-        navController = navController, startDestination = NavigationPath.SCHEDULED.name
+        navController = navController, startDestination = NavigationPath.GO_LIVE.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
             HomeContent(navController, "SCHEDULED")

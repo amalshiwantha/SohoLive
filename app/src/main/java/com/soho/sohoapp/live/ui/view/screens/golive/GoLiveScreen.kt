@@ -984,7 +984,6 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
     ) {
         Row(modifier = Modifier.padding(14.dp)) {
             //image
-            println("mypho "+property.thumbnailUrl())
             val urlPainter = rememberAsyncImagePainter(
                 model = property.thumbnailUrl(),
                 placeholder = painterResource(id = R.drawable.property_placeholder),
