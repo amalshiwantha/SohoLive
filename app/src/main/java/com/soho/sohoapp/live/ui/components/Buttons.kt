@@ -121,6 +121,43 @@ fun ButtonGradientIcon(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ButtonColoredIcon(
+    title: String,
+    btnColor: Color,
+    icon: Int,
+    modifier: Modifier = Modifier,
+    onBtnClick: () -> Unit
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        onClick = { onBtnClick() }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .background(btnColor)
+                .padding(16.dp)
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            ) {
+                Image(
+                    painter = painterResource(id = icon),
+                    contentDescription = "null",
+                    contentScale = ContentScale.Crop
+                )
+                Text800_14sp(label = title)
+            }
+        }
+    }
+}
+
 @Composable
 fun ButtonConnect(
     modifier: Modifier = Modifier,

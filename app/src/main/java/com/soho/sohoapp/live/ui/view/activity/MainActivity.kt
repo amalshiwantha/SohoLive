@@ -8,17 +8,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,13 +37,12 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.navigation.AppNavHost
-import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
-import com.soho.sohoapp.live.ui.theme.BottomSheetDark
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
@@ -153,6 +151,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     ) {
         Column(
             modifier = Modifier
+                .background(BottomBarBg)
                 .fillMaxWidth()
                 .padding(vertical = 12.dp, horizontal = 16.dp)
         ) {
@@ -168,9 +167,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             ) {
                 Text400_14sp(info = smInfoConnect.info)
                 SpacerVertical(size = 40.dp)
-                Button(onClick = { onConnect(smInfoConnect) }) {
-                    Text("Connect")
-                }
+                ButtonColoredIcon(title = smInfoConnect.btnTitle,
+                    icon = smInfoConnect.btnIcon,
+                    btnColor = smInfoConnect.btnColor,
+                    onBtnClick = { onConnect(smInfoConnect) })
             }
         }
     }
