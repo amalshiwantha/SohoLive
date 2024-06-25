@@ -752,8 +752,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         return SocialMediaProfile(
             smInfo = SocialMediaInfo.FACEBOOK,
             profiles = mutableListOf(profile),
-            timelines = mutableListOf(),//timeline1, timeline2
-            pages = mutableListOf(page1),
+            timelines = mutableListOf(timeline1, timeline2),
+            pages = mutableListOf(),
             groups = mutableListOf(group1)
         )
     }
