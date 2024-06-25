@@ -902,7 +902,7 @@ private fun SocialMediaItemContent(
             //logo
             Column {
 
-                if (info.title.isNotEmpty()) {
+                if (info == SocialMediaInfo.SOHO) {
                     Text400_14sp(info = info.title, color = AppPrimaryDark)
                     SpacerVertical(size = 8.dp)
                 }
