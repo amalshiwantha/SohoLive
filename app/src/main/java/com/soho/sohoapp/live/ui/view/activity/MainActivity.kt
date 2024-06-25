@@ -8,14 +8,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -32,7 +46,6 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
-
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
@@ -59,9 +72,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         setContent {
             SohoLiveTheme {
                 Surface(
-                    color = MaterialTheme.colorScheme.background,
-                    modifier = Modifier.fillMaxSize()
+                    color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
+
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
 
                     ChangeSystemTrayColor()
@@ -69,13 +82,72 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     //PreSetup for Social Media
                     setupFBLogin()
-                    openSmConnection(smInfoConnect, onReset = {
-                        viewMMain.updateSocialMediaState(SocialMediaInfo.NONE)
-                    })
+                    OpenSMConnectModel(viewMMain, smInfoConnect)
                 }
             }
         }
     }
+
+    @Composable
+    private fun OpenSMConnectModel(viewMMain: MainViewModel, smInfoConnect: SocialMediaInfo) {
+        if (smInfoConnect.name != SocialMediaInfo.NONE.name) {
+            SocialMediaConnectBottomSheet(smInfoConnect, onConnect = { askConnectInfo ->
+                when (askConnectInfo) {
+                    SocialMediaInfo.SOHO -> {}
+                    SocialMediaInfo.FACEBOOK -> {
+                        facebookLogin()
+                    }
+
+                    SocialMediaInfo.YOUTUBE -> {}
+                    SocialMediaInfo.LINKEDIN -> {
+                        linkedInLogin()
+                    }
+
+                    else -> {}
+                }
+            }, onReset = {
+                viewMMain.updateSocialMediaState(SocialMediaInfo.NONE)
+            })
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun SocialMediaConnectBottomSheet(
+        smInfoConnect: SocialMediaInfo, onConnect: (SocialMediaInfo) -> Unit, onReset: () -> Unit
+    ) {
+        val bottomSheetState = rememberModalBottomSheetState()
+        var showBottomSheet by remember { mutableStateOf(true) }
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = bottomSheetState
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "This is some text inside the bottom sheet.",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    Button(onClick = {
+                        onConnect(smInfoConnect)
+                        showBottomSheet = false
+                    }) {
+                        Text("Connect")
+                    }
+                }
+            }
+        } else {
+            onReset()
+        }
+    }
+
 
     @Composable
     private fun ChangeSystemTrayColor() {
@@ -83,27 +155,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         val useDarkIcons = false
 
         systemUiController.setSystemBarsColor(
-            color = Color.Transparent,
-            darkIcons = useDarkIcons
+            color = Color.Transparent, darkIcons = useDarkIcons
         )
-    }
-
-    private fun openSmConnection(smInfoConnect: SocialMediaInfo, onReset :()->Unit) {
-        when (smInfoConnect) {
-            SocialMediaInfo.SOHO -> {}
-            SocialMediaInfo.FACEBOOK -> {
-                facebookLogin()
-            }
-
-            SocialMediaInfo.YOUTUBE -> {}
-            SocialMediaInfo.LINKEDIN -> {
-                linkedInLogin()
-            }
-
-            else -> {}
-        }
-
-        onReset()
     }
 
     //SocialMedia callback actions
@@ -121,20 +174,17 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         LoginManager.getInstance()
             .registerCallback(fbCallbackManager, callback = object : FacebookCallback<LoginResult> {
                 override fun onCancel() {
-                    Log.d("myFBData", "facebook login cancelled")
-                    /*setResult(RESULT_CANCELED)
+                    Log.d("myFBData", "facebook login cancelled")/*setResult(RESULT_CANCELED)
                     finish()*/
                 }
 
                 override fun onError(error: FacebookException) {
-                    Log.d("myFBData", "facebook login error")
-                    /*setResult(RESULT_ERROR)
+                    Log.d("myFBData", "facebook login error")/*setResult(RESULT_ERROR)
                     finish()*/
                 }
 
                 override fun onSuccess(result: LoginResult) {
-                    Log.d("myFBData", "facebook login success")
-                    /*val intent = Intent().apply {
+                    Log.d("myFBData", "facebook login success")/*val intent = Intent().apply {
                         putExtra(EXTRA_DATA_FB, result.accessToken)
                     }
                     setResult(RESULT_OK, intent)
@@ -145,8 +195,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     private fun facebookLogin() {
         LoginManager.getInstance().logInWithReadPermissions(
-            this,
-            listOf("email", "public_profile")
+            this, listOf("email", "public_profile")
         )
     }
 
