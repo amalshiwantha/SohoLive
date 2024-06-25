@@ -100,6 +100,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
 
+                    var showProfileBottomSheet by remember { mutableStateOf(true) }
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     val isConnectedSM by viewMMain.isSMConnected.collectAsState()
 
@@ -108,15 +109,24 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     //PreSetup for Social Media
                     setupFBLogin()
-                    OpenSMConnectModel(viewMMain, smInfoConnect)
-                    SocialMediaProfileBottomSheet(isConnectedSM)
+                    OpenSMConnectModel(viewMMain, smInfoConnect, onShowProfile = {
+                        showProfileBottomSheet = true
+                    })
+
+                    if (showProfileBottomSheet) {
+                        SocialMediaProfileBottomSheet(isConnectedSM)
+                    }
                 }
             }
         }
     }
 
     @Composable
-    private fun OpenSMConnectModel(viewMMain: MainViewModel, smInfoConnect: SocialMediaInfo) {
+    private fun OpenSMConnectModel(
+        viewMMain: MainViewModel,
+        smInfoConnect: SocialMediaInfo,
+        onShowProfile: () -> Unit
+    ) {
         if (smInfoConnect.name != SocialMediaInfo.NONE.name) {
             SocialMediaConnectBottomSheet(smInfoConnect, onConnect = { askConnectInfo ->
                 when (askConnectInfo) {
@@ -132,7 +142,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             "fbask123"
                         )
                         viewMMain.saveSocialMediaProfile(profile)
-                        //viewMMain.saveSocialMediaProfile(getProfileNone())
+                        onShowProfile()
                     }
 
                     SocialMediaInfo.YOUTUBE -> {
@@ -144,7 +154,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             "youask123"
                         )
                         viewMMain.saveSocialMediaProfile(profile)
-                        //viewMMain.saveSocialMediaProfile(getProfileNone())
+                        onShowProfile()
                     }
 
                     SocialMediaInfo.LINKEDIN -> {
@@ -157,7 +167,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             "liveask123"
                         )
                         viewMMain.saveSocialMediaProfile(profile)
-                        //viewMMain.saveSocialMediaProfile(getProfileNone())
+                        onShowProfile()
                     }
 
                     else -> {}
