@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.facebook.CallbackManager
@@ -38,7 +38,14 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.navigation.AppNavHost
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
+import com.soho.sohoapp.live.ui.theme.BottomBarBg
+import com.soho.sohoapp.live.ui.theme.BottomSheetDark
+import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
@@ -124,6 +131,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
         if (showBottomSheet) {
             ModalBottomSheet(
+                containerColor = BottomBarBg,
+                dragHandle = { DragHandle(color = BottomSheetDrag) },
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = bottomSheetState
             ) {
@@ -145,18 +154,23 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(vertical = 24.dp, horizontal = 16.dp)
         ) {
-            Text(
-                text = "This is some text inside the bottom sheet.",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-            Button(onClick = {
-                onConnect(smInfoConnect)
-            }) {
-                Text("Connect")
+
+            Text800_20sp(label = smInfoConnect.title)
+            SpacerVertical(size = 8.dp)
+
+            //Connect Button
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text400_14sp(info = smInfoConnect.info)
+                SpacerVertical(size = 40.dp)
+                Button(onClick = { onConnect(smInfoConnect) }) {
+                    Text("Connect")
+                }
             }
         }
     }
