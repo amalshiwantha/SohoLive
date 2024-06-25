@@ -32,4 +32,5 @@
     <string name="search_address">Search for an address</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
+    <string name="not_admin">You are not an admin on any Facebook pages</string>
 </resources>

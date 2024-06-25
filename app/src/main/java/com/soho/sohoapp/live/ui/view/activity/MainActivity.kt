@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -305,35 +306,56 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //Display Content for each tab
                     when (fbViewType) {
                         FBListType.TIMELINE -> {
-                            smProfile.timelines?.forEach { fbInfo ->
-                                FbTypeInfoCard(fbInfo, onItemClick = { updated ->
-                                    val found =
-                                        smProfile.timelines.find { it.title == updated.title }.let {
-                                            it?.copy(isSelect = updated.isSelect)
-                                        }
-                                })
+                            smProfile.timelines?.let { info ->
+                                if (info.isNotEmpty()) {
+                                    info.forEach { fbInfo ->
+                                        FbTypeInfoCard(fbInfo, onItemClick = { updated ->
+                                            val found =
+                                                smProfile.timelines.find { it.title == updated.title }
+                                                    .let {
+                                                        it?.copy(isSelect = updated.isSelect)
+                                                    }
+                                        })
+                                    }
+                                } else {
+                                    Text400_14sp(info = stringResource(R.string.not_admin))
+                                }
                             }
                         }
 
                         FBListType.PAGES -> {
-                            smProfile.pages?.forEach { fbInfo ->
-                                FbTypeInfoCard(fbInfo, onItemClick = { updated ->
-                                    val found =
-                                        smProfile.pages.find { it.title == updated.title }.let {
-                                            it?.copy(isSelect = updated.isSelect)
-                                        }
-                                })
+                            smProfile.pages?.let { info ->
+                                if (info.isNotEmpty()) {
+                                    info.forEach { fbInfo ->
+                                        FbTypeInfoCard(fbInfo, onItemClick = { updated ->
+                                            val found =
+                                                smProfile.pages.find { it.title == updated.title }
+                                                    .let {
+                                                        it?.copy(isSelect = updated.isSelect)
+                                                    }
+                                        })
+                                    }
+                                } else {
+                                    Text400_14sp(info = stringResource(R.string.not_admin))
+                                }
                             }
                         }
 
                         FBListType.GROUPS -> {
-                            smProfile.groups?.forEach { fbInfo ->
-                                FbTypeInfoCard(fbInfo, onItemClick = { updated ->
-                                    val found =
-                                        smProfile.groups.find { it.title == updated.title }.let {
-                                            it?.copy(isSelect = updated.isSelect)
-                                        }
-                                })
+                            smProfile.groups?.let { info ->
+                                if (info.isNotEmpty()) {
+                                    info.forEach { fbInfo ->
+                                        FbTypeInfoCard(fbInfo, onItemClick = { updated ->
+                                            val found =
+                                                smProfile.groups.find { it.title == updated.title }
+                                                    .let {
+                                                        it?.copy(isSelect = updated.isSelect)
+                                                    }
+                                        })
+                                    }
+                                } else {
+                                    Text400_14sp(info = stringResource(R.string.not_admin))
+                                }
                             }
                         }
                     }
@@ -730,7 +752,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         return SocialMediaProfile(
             smInfo = SocialMediaInfo.FACEBOOK,
             profiles = mutableListOf(profile),
-            timelines = mutableListOf(timeline1, timeline2),
+            timelines = mutableListOf(),//timeline1, timeline2
             pages = mutableListOf(page1),
             groups = mutableListOf(group1)
         )
@@ -740,40 +762,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @Preview
     @Composable
     private fun PreviewBottomSheetSMProfile() {
-        val profile = SMProfile(
-            "Jhone Smith",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
-            "amalskr@gmail.com",
-            "ask123"
-        )
-
-        val timeline1 = FbTypeView(
-            FBListType.TIMELINE,
-            "TimeLine 1",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-        val timeline2 = FbTypeView(
-            FBListType.TIMELINE,
-            "TimeLine 2",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-
-        val page1 = FbTypeView(
-            FBListType.PAGES,
-            "MyPage",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-
-        val group1 = FbTypeView(
-            FBListType.GROUPS,
-            "My Group",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-
         ProfileContentBottomSheet(
             smProfile = getSampleFbProfile(),
             onDisconnect = {}, onDone = {})
