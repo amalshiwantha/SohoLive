@@ -398,7 +398,6 @@ fun StepContents(
 }
 
 private fun connectFacebook() {
-
 }
 
 @Composable
