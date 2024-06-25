@@ -6,6 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.facebook.Profile
 import com.facebook.ProfileTracker
+import com.soho.sohoapp.live.enums.SocialMediaInfo
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class MainViewModel : ViewModel() {
     private val profileTracker =
@@ -20,8 +24,14 @@ class MainViewModel : ViewModel() {
         }
 
     private val _profileViewState = MutableLiveData(ProfileViewState(Profile.getCurrentProfile()))
-
     val profileViewState: LiveData<ProfileViewState> = _profileViewState
+
+    private val _isCallSMConnect = MutableStateFlow(SocialMediaInfo.NONE)
+    val isCallSMConnect: StateFlow<SocialMediaInfo> = _isCallSMConnect.asStateFlow()
+
+    fun updateSocialMediaState(smInfo: SocialMediaInfo) {
+        _isCallSMConnect.value = smInfo
+    }
 
     override fun onCleared() {
         profileTracker.stopTracking()

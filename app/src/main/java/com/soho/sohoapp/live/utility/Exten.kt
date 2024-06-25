@@ -1,10 +1,16 @@
 package com.soho.sohoapp.live.utility
 
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.util.Base64
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.util.Locale
 
 fun formValidation(
@@ -66,6 +72,23 @@ fun Double.visibleValue(): String? {
         value.toString()
     } else {
         null
+    }
+}
+
+fun printHashKey() {
+    try {
+        val info: PackageInfo = context.packageManager
+            .getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
+        for (signature in info.signatures) {
+            val md: MessageDigest = MessageDigest.getInstance("SHA")
+            md.update(signature.toByteArray())
+            val hashKey: String = String(Base64.encode(md.digest(), 0))
+            Log.d("hashkey", "Hash Key: $hashKey")
+        }
+    } catch (e: NoSuchAlgorithmException) {
+        Log.e("Error", "${e.localizedMessage}")
+    } catch (e: Exception) {
+        Log.e("Exception", "${e.localizedMessage}")
     }
 }
 

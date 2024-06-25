@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
-import android.app.Activity
 import android.util.Size
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -102,17 +101,17 @@ import com.soho.sohoapp.live.ui.theme.BorderGray
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
-import com.ssw.linkedinmanager.events.LinkedInManagerResponse
-import com.ssw.linkedinmanager.ui.LinkedInRequestManager
 import org.koin.compose.koinInject
 
 
 @Composable
 fun GoLiveScreen(
     navController: NavController,
+    viewMMain: MainViewModel,
     savedApiResults: DataGoLive? = null,
     savedTsResults: TsPropertyResponse? = null,
     goLiveVm: GoLiveViewModel = koinInject(),
@@ -243,6 +242,9 @@ fun GoLiveScreen(
                                             selectedAgentId
                                         )
                                     }
+                                },
+                                onSMItemClicked = { selectedSM ->
+                                    viewMMain.updateSocialMediaState(selectedSM)
                                 }
                             )
                         }
@@ -332,7 +334,8 @@ fun StepContents(
     onNotShowProfileChange: (Boolean) -> Unit,
     onPropertyItemClicked: (PropertyItem) -> Unit,
     onAgentItemClicked: (AgentProfileGoLive) -> Unit,
-    onAgencyItemUpdate: () -> Unit
+    onAgencyItemUpdate: () -> Unit,
+    onSMItemClicked: (SocialMediaInfo) -> Unit
 ) {
     SpacerVertical(40.dp)
 
@@ -381,11 +384,15 @@ fun StepContents(
             SocialMediaListing(onSMItemClicked = { selectedSM ->
                 when (selectedSM) {
                     SocialMediaInfo.FACEBOOK.name -> {
-                        connectFacebook()
+                        onSMItemClicked.invoke(SocialMediaInfo.FACEBOOK)
                     }
-                    SocialMediaInfo.YOUTUBE.name -> {}
+
+                    SocialMediaInfo.YOUTUBE.name -> {
+                        onSMItemClicked.invoke(SocialMediaInfo.YOUTUBE)
+                    }
+
                     SocialMediaInfo.LINKEDIN.name -> {
-                        connectLinkedIn()
+                        onSMItemClicked.invoke(SocialMediaInfo.LINKEDIN)
                     }
                 }
             })
@@ -1263,7 +1270,8 @@ private fun PreviewGoLiveScreen() {
                     onNotShowProfileChange = {},
                     onPropertyItemClicked = {},
                     onAgentItemClicked = {},
-                    onAgencyItemUpdate = {})
+                    onAgencyItemUpdate = {},
+                    onSMItemClicked = {})
             }
         }
 

@@ -26,5 +26,10 @@ enum class SocialMediaInfo(
         title = "",
         icon = R.drawable.logo_linkedin,
         isConnect = false
+    ),
+    NONE(
+        title = "",
+        icon = R.drawable.logo_soho,
+        isConnect = false
     )
 }

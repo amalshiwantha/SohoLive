@@ -42,9 +42,10 @@ import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
+import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 
 @Composable
-fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = viewModel()) {
+fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = viewModel(), viewMMain: MainViewModel) {
 
     val context = LocalContext.current
     val uiState by homeVm.uiState.collectAsState()
@@ -84,7 +85,7 @@ fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = vie
                 .background(brushMainGradientBg)
                 .padding(innerPadding)
         ) {
-            BottomNavHost(navController)
+            BottomNavHost(navController, viewMMain)
         }
     }
 }
@@ -133,5 +134,5 @@ fun HomeContent(navController: NavController, title: String) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHome() {
-    HomeScreen(navControllerHome = NavHostController(LocalContext.current))
+    HomeScreen(navControllerHome = NavHostController(LocalContext.current), viewMMain = MainViewModel())
 }
