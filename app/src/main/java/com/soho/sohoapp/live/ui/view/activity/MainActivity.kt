@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //PreSetup for Social Media
                     setupFBLogin()
                     OpenSMConnectModel(viewMMain, smInfoConnect)
-                    SocialMediaProfileBottomSheet(isConnectedSM, onDone = {}, onDisconnect = {})
+                    SocialMediaProfileBottomSheet(isConnectedSM)
                 }
             }
         }
@@ -122,12 +122,42 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 when (askConnectInfo) {
                     SocialMediaInfo.SOHO -> {}
                     SocialMediaInfo.FACEBOOK -> {
-                        facebookLogin()
+                        //facebookLogin()
+
+                        val profile = SocialMediaProfile(
+                            SocialMediaInfo.FACEBOOK,
+                            "Face Borker",
+                            "https://design-assets.adobeprojectm.com/content/download/express/public/urn:aaid:sc:VA6C2:e88fad34-6940-5552-91ac-b45c41168d43/component?assetType=TEMPLATE&etag=f9b270fe49cf46a2b3686e8df866ee76&revision=613eebe7-dc06-4992-86c8-f031e98d09ea&component_id=44c6e3bc-f057-427c-a844-580c12fda50e",
+                            "amalskr@facebook.com",
+                            "fbask123"
+                        )
+                        viewMMain.saveSocialMediaProfile(profile)
+                        //viewMMain.saveSocialMediaProfile(getProfileNone())
                     }
 
-                    SocialMediaInfo.YOUTUBE -> {}
+                    SocialMediaInfo.YOUTUBE -> {
+                        val profile = SocialMediaProfile(
+                            SocialMediaInfo.YOUTUBE,
+                            "Yo Tube",
+                            "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-in-the-style-of-bold-character-designs-image_2697064.jpg",
+                            "amalskr@youtube.com",
+                            "youask123"
+                        )
+                        viewMMain.saveSocialMediaProfile(profile)
+                        //viewMMain.saveSocialMediaProfile(getProfileNone())
+                    }
+
                     SocialMediaInfo.LINKEDIN -> {
-                        linkedInLogin()
+                        //linkedInLogin()
+                        val profile = SocialMediaProfile(
+                            SocialMediaInfo.LINKEDIN,
+                            "Jhon Smith",
+                            "https://media.licdn.com/dms/image/D4D12AQGsWiQQo-hEew/article-cover_image-shrink_720_1280/0/1705940048112?e=2147483647&v=beta&t=Dm3TYa8aaImrrYHEksUYyCuPe0mRjKNlrKcNMnKjlXc",
+                            "amalskr@live.com",
+                            "liveask123"
+                        )
+                        viewMMain.saveSocialMediaProfile(profile)
+                        //viewMMain.saveSocialMediaProfile(getProfileNone())
                     }
 
                     else -> {}
@@ -167,13 +197,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun SocialMediaProfileBottomSheet(
-        smProfile: SocialMediaProfile,
-        onDisconnect: () -> Unit,
-        onDone: () -> Unit
-    ) {
+    private fun SocialMediaProfileBottomSheet(smProfile: SocialMediaProfile) {
         if (smProfile.smInfo.name != SocialMediaInfo.NONE.name) {
-
             val bottomSheetState = rememberModalBottomSheetState()
             var showBottomSheet by remember { mutableStateOf(true) }
 
@@ -186,10 +211,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 ) {
                     ProfileContentBottomSheet(smProfile, onDone = {
                         showBottomSheet = false
-                        onDone()
                     }, onDisconnect = {
                         showBottomSheet = false
-                        onDisconnect()
                     })
                 }
             }
@@ -270,13 +293,13 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     ButtonOutlineWhite(text = "Disconnect",
-                        modifier = Modifier.weight(1f), onBtnClick = {})
+                        modifier = Modifier.weight(1f), onBtnClick = { onDisconnect() })
                     SpacerHorizontal(size = 8.dp)
                     ButtonColoured(
                         text = "Done",
                         color = AppGreen,
                         modifier = Modifier.weight(1f),
-                        onBtnClick = {})
+                        onBtnClick = { onDone() })
                 }
             }
         }
@@ -446,6 +469,16 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         val adde = linkedInEmailAddress?.emailAddress
     }
     //LinkedIn End
+
+    private fun getProfileNone(): SocialMediaProfile {
+        return SocialMediaProfile(
+            SocialMediaInfo.NONE,
+            "Jhone",
+            "https",
+            "gmail.com",
+            "123"
+        )
+    }
 
     @Preview
     @Composable
