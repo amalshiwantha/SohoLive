@@ -154,7 +154,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal = 16.dp)
+                .padding(vertical = 12.dp, horizontal = 16.dp)
         ) {
 
             Text800_20sp(label = smInfoConnect.title)
