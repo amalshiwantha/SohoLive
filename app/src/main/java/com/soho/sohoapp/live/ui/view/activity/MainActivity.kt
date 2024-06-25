@@ -8,8 +8,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.cardview.widget.CardView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,11 +40,16 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
+import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
+import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.navigation.AppNavHost
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
@@ -82,6 +90,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 ) {
 
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
+                    val isConnectedSM by viewMMain.isSMConnected.collectAsState()
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
@@ -89,6 +98,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //PreSetup for Social Media
                     setupFBLogin()
                     OpenSMConnectModel(viewMMain, smInfoConnect)
+                    SocialMediaProfileBottomSheet(isConnectedSM, onDone = {}, onDisconnect = {})
                 }
             }
         }
@@ -141,6 +151,86 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             }
         } else {
             onReset()
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun SocialMediaProfileBottomSheet(
+        smProfile: SocialMediaProfile,
+        onDisconnect: () -> Unit,
+        onDone: () -> Unit
+    ) {
+        if (smProfile.smInfo.name != SocialMediaInfo.NONE.name) {
+
+            val bottomSheetState = rememberModalBottomSheetState()
+            var showBottomSheet by remember { mutableStateOf(true) }
+
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    containerColor = BottomBarBg,
+                    dragHandle = { DragHandle(color = BottomSheetDrag) },
+                    onDismissRequest = { showBottomSheet = false },
+                    sheetState = bottomSheetState
+                ) {
+                    ProfileContentBottomSheet(smProfile, onDone = {
+                        showBottomSheet = false
+                        onDone()
+                    }, onDisconnect = {
+                        showBottomSheet = false
+                        onDisconnect()
+                    })
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun ProfileContentBottomSheet(
+        smProfile: SocialMediaProfile,
+        onDisconnect: () -> Unit,
+        onDone: () -> Unit
+    ) {
+        val smInfo = smProfile.smInfo
+
+        Column(
+            modifier = Modifier
+                .background(BottomBarBg)
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 16.dp)
+        ) {
+
+            Text800_20sp(label = smInfo.title)
+            SpacerVertical(size = 8.dp)
+
+            //Connect Button
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text400_14sp(info = smInfo.info)
+                SpacerVertical(size = 16.dp)
+
+                //profile card
+
+
+                //Button buttons
+                SpacerVertical(size = 40.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ButtonOutlineWhite(text = "Disconnect",
+                        modifier = Modifier.weight(1f), onBtnClick = {})
+                    SpacerHorizontal(size = 8.dp)
+                    ButtonColoured(
+                        text = "Done",
+                        color = AppGreen,
+                        modifier = Modifier.weight(1f),
+                        onBtnClick = {})
+                }
+            }
         }
     }
 
@@ -315,5 +405,19 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         ContentBottomSheet(
             smInfoConnect = SocialMediaInfo.FACEBOOK,
             onConnect = {})
+    }
+
+    @Preview
+    @Composable
+    private fun PreviewBottomSheetSMProfile() {
+        ProfileContentBottomSheet(
+            smProfile = SocialMediaProfile(
+                SocialMediaInfo.FACEBOOK,
+                "Jhone Smith",
+                "http",
+                "amalskr@gmail.com",
+                "ask123"
+            ),
+            onDisconnect = {}, onDone = {})
     }
 }

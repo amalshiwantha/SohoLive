@@ -178,10 +178,10 @@ fun ButtonConnect(
 }
 
 @Composable
-fun ButtonOutlineWhite(text: String, onBtnClick: () -> Unit) {
+fun ButtonOutlineWhite(text: String, modifier: Modifier = Modifier, onBtnClick: () -> Unit) {
     OutlinedButton(
         onClick = { onBtnClick() },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(48.dp),
         border = BorderStroke(2.dp, Color.White),
