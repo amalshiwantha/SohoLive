@@ -325,7 +325,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(bottom = 8.dp),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(containerColor = ItemCardBg)
         ) {
@@ -367,7 +367,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(bottom = 8.dp),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(containerColor = ItemCardBg)
         ) {
