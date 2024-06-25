@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
+import android.app.Activity
 import android.util.Size
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -104,7 +105,10 @@ import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
+import com.ssw.linkedinmanager.events.LinkedInManagerResponse
+import com.ssw.linkedinmanager.ui.LinkedInRequestManager
 import org.koin.compose.koinInject
+
 
 @Composable
 fun GoLiveScreen(
@@ -380,7 +384,9 @@ fun StepContents(
                         connectFacebook()
                     }
                     SocialMediaInfo.YOUTUBE.name -> {}
-                    SocialMediaInfo.LINKEDIN.name -> {}
+                    SocialMediaInfo.LINKEDIN.name -> {
+                        connectLinkedIn()
+                    }
                 }
             })
             SpacerVertical(size = 70.dp)
@@ -395,6 +401,9 @@ fun StepContents(
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
     }
+}
+
+fun connectLinkedIn() {
 }
 
 private fun connectFacebook() {

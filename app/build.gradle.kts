@@ -99,6 +99,9 @@ dependencies {
     //Facebook
     implementation("com.facebook.android:facebook-login:13.2.0")
 
+    //LinkedIn SDK
+    implementation("com.github.Sumudu-Sahan:LinkedInManager:1.01.00")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

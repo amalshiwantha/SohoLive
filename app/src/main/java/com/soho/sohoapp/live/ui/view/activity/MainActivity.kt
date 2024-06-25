@@ -42,10 +42,18 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
+import com.ssw.linkedinmanager.dto.LinkedInAccessToken
+import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
+import com.ssw.linkedinmanager.dto.LinkedInUserProfile
+import com.ssw.linkedinmanager.events.LinkedInManagerResponse
+import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
+import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
+import com.ssw.linkedinmanager.ui.LinkedInRequestManager
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-class MainActivity : ComponentActivity() {
+
+class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     companion object {
 
@@ -135,7 +143,8 @@ class MainActivity : ComponentActivity() {
             OutlinedButton(
                 onClick = {
                     //facebookSignRequest.launch(getInstance(context))
-                    doLogin()
+                    //doLogin()
+                    doLinkedIn()
                 },
                 shape = RoundedCornerShape(20),
                 border = BorderStroke(1.dp, color = Color.Red),
@@ -194,4 +203,84 @@ class MainActivity : ComponentActivity() {
             Log.e("Exception", "${e.localizedMessage}")
         }
     }
+
+    //LinkedIn
+    private fun doLinkedIn() {
+        val linkedInRequestManager = LinkedInRequestManager(
+            this,
+            this,
+            "8670uh4gz1gbbp",
+            "9xaiOv3ibWwsqCXi",
+            "https://lakveggie.ceylonapz.com",
+            true
+        )
+
+        linkedInRequestManager.isLoggedIn(object : LinkedInUserLoginValidationResponse {
+            override fun activeLogin() {
+                //Session token is active. can use to get data from linkedin
+            }
+
+            override fun tokenExpired() {
+                //token has been expired. need to obtain a new code
+            }
+
+            override fun notLogged() {
+                //user is not logged into the application
+            }
+        })
+
+        linkedInRequestManager.getLoggedRequestedMode(object : LinkedInUserLoginDetailsResponse {
+            override fun loggedMode(mode: Int) {
+                //user is already logged in. active token. mode is available
+                when (mode) {
+                    LinkedInRequestManager.MODE_LITE_PROFILE_ONLY -> {}
+                    LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY -> {}
+                    LinkedInRequestManager.MODE_BOTH_OPTIONS -> {}
+                }
+            }
+
+            override fun tokenExpired() {
+                //token has been expired. need to obtain a new code
+            }
+
+            override fun notLogged() {
+                //user is not logged into the application
+            }
+        })
+
+        linkedInRequestManager.showAuthenticateView(LinkedInRequestManager.MODE_BOTH_OPTIONS)
+    }
+
+    override fun onGetAccessTokenFailed() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGetAccessTokenSuccess(linkedInAccessToken: LinkedInAccessToken?) {
+        val linkedinAccessToken = linkedInAccessToken?.access_token
+    }
+
+    override fun onGetCodeFailed() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGetCodeSuccess(code: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGetProfileDataFailed() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGetProfileDataSuccess(linkedInUserProfile: LinkedInUserProfile?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGetEmailAddressFailed() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGetEmailAddressSuccess(linkedInEmailAddress: LinkedInEmailAddress?) {
+        val adde = linkedInEmailAddress?.emailAddress
+    }
+    //LinkedIn End
 }
