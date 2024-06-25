@@ -96,6 +96,9 @@ dependencies {
     //cashe images
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    //Facebook
+    implementation("com.facebook.android:facebook-login:13.2.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,4 +1,10 @@
 <resources>
+    <!--facebook-->
+    <string name="facebook_app_id">[APP_ID]</string>
+    <string name="fb_login_protocol_scheme">fb[APP_ID]</string>
+    <string name="fb_client_token">[TOKEN]</string>
+
+    <!--MainApp-->
     <string name="app_name">SohoLive</string>
     <string name="pre_access_msg">Multi-stream live auctions and home inspections on your socials</string>
     <string name="log_in">Log In</string>
