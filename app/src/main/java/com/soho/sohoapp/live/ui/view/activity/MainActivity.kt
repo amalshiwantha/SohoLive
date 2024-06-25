@@ -48,7 +48,9 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.FbTypeView
 import com.soho.sohoapp.live.model.SMProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -247,6 +249,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         onDone: () -> Unit
     ) {
         val smInfo = smProfile.smInfo
+        var fbViewType by remember { mutableStateOf(FBListType.TIMELINE) }
 
         Column(
             modifier = Modifier
@@ -267,9 +270,35 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 Text400_14sp(info = smInfo.info)
                 SpacerVertical(size = 16.dp)
 
-                //profile card
-                smProfile.profiles.forEach {profile->
-                    ProfileCard(profile, smInfo.title.lowercase())
+                //if fb add custom tab view for pages,groups etc...
+                if (smInfo.name == SocialMediaInfo.FACEBOOK.name) {
+                    //FB tab view
+                    //fbViewType = FBListType.PAGES
+
+                    when (fbViewType) {
+                        FBListType.TIMELINE -> {
+                            smProfile.timelines?.forEach { fbInfo ->
+                                FbTypeInfoCard(fbInfo)
+                            }
+                        }
+
+                        FBListType.PAGES -> {
+                            smProfile.pages?.forEach { fbInfo ->
+                                FbTypeInfoCard(fbInfo)
+                            }
+                        }
+
+                        FBListType.GROUPS -> {
+                            smProfile.groups?.forEach { fbInfo ->
+                                FbTypeInfoCard(fbInfo)
+                            }
+                        }
+                    }
+                } else {
+                    //profile card
+                    smProfile.profiles.forEach { profile ->
+                        ProfileCard(profile, smInfo.title.lowercase())
+                    }
                 }
 
                 //Button buttons
@@ -328,6 +357,46 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     Text400_14sp(info = "Connected to $socialMediaName as")
                     SpacerVertical(size = 8.dp)
                     Text700_16sp(title = smProfile.fullName)
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun FbTypeInfoCard(fbView: FbTypeView) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+        ) {
+            Row(
+                modifier = Modifier.padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                //image
+                val urlPainter = rememberAsyncImagePainter(
+                    model = fbView.imageUrl,
+                    placeholder = painterResource(id = R.drawable.profile_placeholder),
+                    error = painterResource(id = R.drawable.profile_placeholder)
+                )
+
+                Image(
+                    painter = urlPainter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(width = 48.dp, height = 48.dp)
+                        .clip(CircleShape)
+                )
+                //info
+                Column(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text700_16sp(title = fbView.title)
                 }
             }
         }
@@ -515,10 +584,41 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             "amalskr@gmail.com",
             "ask123"
         )
+
+        val timeline1 = FbTypeView(
+            FBListType.TIMELINE,
+            "TimeLine 1",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+        val timeline2 = FbTypeView(
+            FBListType.TIMELINE,
+            "TimeLine 2",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+
+        val page1 = FbTypeView(
+            FBListType.PAGES,
+            "MyPage",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+
+        val group1 = FbTypeView(
+            FBListType.GROUPS,
+            "My Group",
+            "http:www.facebook.com",
+            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+        )
+
         ProfileContentBottomSheet(
             smProfile = SocialMediaProfile(
-                SocialMediaInfo.FACEBOOK,
-                mutableListOf(profile)
+                smInfo = SocialMediaInfo.FACEBOOK,
+                profiles = mutableListOf(profile),
+                timelines = mutableListOf(timeline1, timeline2),
+                pages = mutableListOf(page1),
+                groups = mutableListOf(group1)
             ),
             onDisconnect = {}, onDone = {})
     }
