@@ -42,7 +42,9 @@ class SohoApiRepository(private val service: SohoApiServices) {
             //get property info from type-sense
             apiResponse.data?.listings?.let {
                 val propIdList: List<Int> = it.map { prop -> prop.id }
-                val filterBy = "objectID:$propIdList"
+                //[91497, 91496, 91465, 91441, 91416, 91297]
+                //val filterBy = "objectID:$propIdList"
+                val filterBy = "objectID:[91497]"
                 val tsReq = TsPropertyRequest(
                     "*", "address_1", filterBy, "20", "1"
                 )

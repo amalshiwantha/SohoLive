@@ -95,9 +95,13 @@ data class Document(
     @SerialName("vr_urls") val vrUrls: List<String> = emptyList(),
     @SerialName("web_url") val webUrl: String? = null,
 ) {
-    fun thumbnailUrl(): String {
-        val photoList: List<Photo> = Json.decodeFromString(photos ?: "")
-        return photoList.firstNotNullOf { it.getImageUrl() }
+    fun thumbnailUrl(): String? {
+        if (photos.isNullOrEmpty() || photos == "[]") {
+            return null
+        } else {
+            val photoList: List<Photo> = Json.decodeFromString(photos ?: "")
+            return photoList.firstNotNullOf { it.getImageUrl() }
+        }
     }
 
     fun fullAddress(): String {
