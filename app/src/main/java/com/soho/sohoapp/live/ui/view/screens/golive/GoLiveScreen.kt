@@ -1005,7 +1005,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(item.isChecked, property, onCheckedChange = {
+                TypeAndCheckBox(item.isChecked, property, txtColor = textColor, onCheckedChange = {
                     onItemClicked(item)
                 })
                 SpacerVertical(size = 8.dp)
@@ -1063,6 +1063,7 @@ private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite) {
 private fun TypeAndCheckBox(
     isChecked: Boolean,
     doc: Document,
+    txtColor: Color = AppWhite,
     onCheckedChange: (Boolean) -> Unit = {}
 ) {
 
@@ -1083,7 +1084,7 @@ private fun TypeAndCheckBox(
                 contentScale = ContentScale.FillBounds
             )
             doc.propertyType?.toUppercaseFirst()?.let {
-                Text400_12sp(label = it)
+                Text400_12sp(label = it, txtColor = txtColor)
             }
         }
 
