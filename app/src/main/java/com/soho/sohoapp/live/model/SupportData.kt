@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.model
 
-import androidx.compose.runtime.mutableStateListOf
 import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 
@@ -20,6 +19,7 @@ data class SMProfile(
 )
 
 data class FbTypeView(
+    val index : Int = 0,
     val type: FBListType,
     val title: String,
     val url: String,

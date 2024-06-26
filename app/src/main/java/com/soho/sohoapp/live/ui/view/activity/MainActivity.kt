@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
@@ -256,33 +258,57 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
-
     @Composable
-    fun ListView(items: MutableList<FbTypeView>) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(items) { item ->
-                ListItemView(item) { updatedItem ->
-                    val index = items.indexOfFirst { it.title == updatedItem.title }
-                    if (index != -1) {
-                        items[index] = updatedItem
-                    }
+    private fun SingleSelectionList(myList: SnapshotStateList<FbTypeView>) {
+        val selectedId = myList.indexOfFirst { it.isSelect }
+        var selectedIndex by remember { mutableIntStateOf(selectedId) }
+
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+                .selectableGroup()
+        ) {
+            items(myList) { item ->
+                ListItemView(item, selectedIndex) { updatedItem ->
+                    selectedIndex = updatedItem.index
+                    updateState(myList, updatedItem)
                 }
             }
         }
     }
 
-    @Composable
-    fun ListItemView(fbView: FbTypeView, onItemUpdated: (FbTypeView) -> Unit) {
+    private fun updateState(
+        mListItems: SnapshotStateList<FbTypeView>,
+        updatedItem: FbTypeView
+    ) {
+        // Update all items, isSelect as false
+        mListItems.forEachIndexed { index, fbTypeView ->
+            mListItems[index] = fbTypeView.copy(isSelect = false)
+        }
 
-        var isSelected by remember { mutableStateOf(fbView.isSelect) }
+        //update selected item
+        val selectedIndex =
+            mListItems.indexOfFirst { it.title == updatedItem.title }
+        if (selectedIndex != -1) {
+            mListItems[selectedIndex] = updatedItem.copy(isSelect = true)
+        }
+    }
+
+    @Composable
+    fun ListItemView(fbView: FbTypeView, selectedIndex: Int, onItemUpdated: (FbTypeView) -> Unit) {
+        val index = fbView.index
 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    isSelected = !isSelected
-                    onItemUpdated(fbView.copy(isSelect = isSelected))
-                }
+                .selectable(
+                    selected = selectedIndex == index,
+                    onClick = {
+                        if (!fbView.isSelect) {
+                            onItemUpdated(fbView.copy(isSelect = true))
+                        }
+                    }
+                )
                 .padding(bottom = 8.dp),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(containerColor = ItemCardBg)
@@ -316,7 +342,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     Text700_16sp(title = fbView.title, modifier = Modifier.weight(1f))
                     SpacerHorizontal(size = 8.dp)
                     Image(
-                        painter = painterResource(id = if (fbView.isSelect) R.drawable.fb_item_active else R.drawable.fb_item_inactive),
+                        painter = painterResource(id = if (selectedIndex == index) R.drawable.fb_item_active else R.drawable.fb_item_inactive),
                         contentDescription = ""
                     )
                 }
@@ -361,70 +387,34 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //FB tab view
                     SwipeSwitchFb(selectedOption = selectedOption, onSwipeChange = {
                         selectedOption = it
-                        fbViewType = when (selectedOption) {
-                            0 -> {
-                                FBListType.TIMELINE
-                            }
-
-                            1 -> {
-                                FBListType.PAGES
-                            }
-
-                            2 -> {
-                                FBListType.GROUPS
-                            }
-
-                            else -> {
-                                FBListType.TIMELINE
-                            }
-                        }
+                        fbViewType = getSelectedTab(selectedOption)
                     })
                     SpacerVertical(size = 16.dp)
 
                     //Display Content for each tab
-                    when (fbViewType) {
+                    val fbSubList = when (fbViewType) {
                         FBListType.TIMELINE -> {
-                            if (mListTimelines.isNotEmpty()) {
-                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                                    items(mListTimelines) { item ->
-                                        ListItemView(item) { updatedItem ->
-                                            updateState(mListTimelines, updatedItem)
-                                        }
-                                    }
-                                }
-                            } else {
-                                Text400_14sp(info = stringResource(R.string.not_admin))
-                            }
+                            val str = stringResource(R.string.not_admin)
+                            Pair(mListTimelines, str)
                         }
 
                         FBListType.PAGES -> {
-                            if (mListPages.isNotEmpty()) {
-                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                                    items(mListPages) { item ->
-                                        ListItemView(item) { updatedItem ->
-                                            updateState(mListPages, updatedItem)
-                                        }
-                                    }
-                                }
-                            } else {
-                                Text400_14sp(info = stringResource(R.string.not_admin))
-                            }
+                            val str = stringResource(R.string.not_admin)
+                            Pair(mListPages, str)
                         }
 
                         FBListType.GROUPS -> {
-                            if (mListGroup.isNotEmpty()) {
-                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                                    items(mListGroup) { item ->
-                                        ListItemView(item) { updatedItem ->
-                                            updateState(mListGroup, updatedItem)
-                                        }
-                                    }
-                                }
-                            } else {
-                                Text400_14sp(info = stringResource(R.string.not_admin))
-                            }
+                            val str = stringResource(R.string.not_admin)
+                            Pair(mListGroup, str)
                         }
                     }
+
+                    if (fbSubList.first.isNotEmpty()) {
+                        SingleSelectionList(fbSubList.first)
+                    } else {
+                        Text400_14sp(info = fbSubList.second)
+                    }
+
                 } else {
                     //profile card
                     smProfile.profiles.forEach { profile ->
@@ -451,14 +441,23 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
-    private fun updateState(
-        mListItems: SnapshotStateList<FbTypeView>,
-        updatedItem: FbTypeView
-    ) {
-        val index =
-            mListItems.indexOfFirst { it.title == updatedItem.title }
-        if (index != -1) {
-            mListItems[index] = updatedItem
+    private fun getSelectedTab(selectedOption: Int): FBListType {
+        return when (selectedOption) {
+            0 -> {
+                FBListType.TIMELINE
+            }
+
+            1 -> {
+                FBListType.PAGES
+            }
+
+            2 -> {
+                FBListType.GROUPS
+            }
+
+            else -> {
+                FBListType.TIMELINE
+            }
         }
     }
 
@@ -751,12 +750,14 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         )
 
         val timeline1 = FbTypeView(
+            0,
             FBListType.TIMELINE,
             "TimeLine 1",
             "http:www.facebook.com",
             "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
         )
         val timeline2 = FbTypeView(
+            1,
             FBListType.TIMELINE,
             "TimeLine 2",
             "http:www.facebook.com",
@@ -764,6 +765,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         )
 
         val page1 = FbTypeView(
+            0,
             FBListType.PAGES,
             "MyPage",
             "http:www.facebook.com",
@@ -771,6 +773,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         )
 
         val group1 = FbTypeView(
+            0,
             FBListType.GROUPS,
             "My Group",
             "http:www.facebook.com",
