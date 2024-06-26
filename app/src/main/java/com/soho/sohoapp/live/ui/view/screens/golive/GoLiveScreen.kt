@@ -33,7 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,6 +102,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.screens.home.FacebookProfileButton
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
@@ -122,7 +123,7 @@ fun GoLiveScreen(
 
     val stateVm = goLiveVm.mState.value
     val stepCount = 4
-    var currentStepId by remember { mutableIntStateOf(2) }
+    var currentStepId by remember { mutableIntStateOf(0) }
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
@@ -130,13 +131,33 @@ fun GoLiveScreen(
     var isNowSelected by remember { mutableStateOf(false) }
     var isDontShowProfile by remember { mutableStateOf(false) }
 
+    var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
+    val openSmConnectorState by rememberUpdatedState(openSmConnector)
+
     LaunchedEffect(Unit) {
+        println("myFB Reloaded " + savedApiResults)
         if (savedApiResults == null) {
             callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
                 isNetConnected = it
                 stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
             })
         }
+    }
+
+    //state change for clickEvents
+    LaunchedEffect(openSmConnectorState) {
+        openSmConnector = SocialMediaInfo.NONE
+    }
+
+    when (openSmConnector) {
+        SocialMediaInfo.SOHO -> {}
+        SocialMediaInfo.FACEBOOK -> {
+            FacebookProfileButton()
+        }
+
+        SocialMediaInfo.YOUTUBE -> {}
+        SocialMediaInfo.LINKEDIN -> {}
+        SocialMediaInfo.NONE -> {}
     }
 
     Box(
@@ -174,17 +195,17 @@ fun GoLiveScreen(
                             //Global ints for save click id and list
 
                             //Step #1 property list
-                            var propertyList by rememberSaveable {
+                            /*var propertyList by rememberSaveable {
                                 mutableStateOf(savedTsResults?.propertyList?.map {
                                     PropertyItem(
                                         id = it.document.propertyId,
                                         propInfo = it.document
                                     )
                                 })
-                            }
+                            }*/
 
                             //Step #2 agency list. agency list load from step #1 selections
-                            val selectedAgentId =
+                            /*val selectedAgentId =
                                 propertyList?.filter { it.isChecked }
                                     ?.map { it.propInfo.apAgentsIds }
 
@@ -195,14 +216,14 @@ fun GoLiveScreen(
                                         selectedAgentId
                                     )
                                 )
-                            }
+                            }*/
 
                             StepContents(
                                 currentStepId = currentStepId,
                                 savedResults = savedData,
                                 tsResults = savedTsResults,
-                                propertyList = propertyList,
-                                mainAgencyList = agencyList,
+                                propertyList = mutableListOf(),
+                                mainAgencyList = mutableListOf(),
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
                                 isNotShowProfile = isDontShowProfile,
@@ -211,7 +232,7 @@ fun GoLiveScreen(
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
                                 onPropertyItemClicked = { selected ->
-                                    propertyList = propertyList?.mapIndexed { index, item ->
+                                    /*propertyList = propertyList?.mapIndexed { index, item ->
 
                                         val itemIndex =
                                             propertyList?.indexOfFirst { it.id == selected.id }
@@ -221,10 +242,10 @@ fun GoLiveScreen(
                                         } else {
                                             item
                                         }
-                                    }
+                                    }*/
                                 },
                                 onAgentItemClicked = { selected ->
-                                    agencyList = agencyList.mapIndexed { index, item ->
+                                    /*agencyList = agencyList.mapIndexed { index, item ->
                                         val itemIndex =
                                             agencyList.indexOfFirst { it.id == selected.id }
 
@@ -233,18 +254,19 @@ fun GoLiveScreen(
                                         } else {
                                             item
                                         }
-                                    }
+                                    }*/
                                 },
                                 onAgencyItemUpdate = {
-                                    if (agencyList.isEmpty()) {
+                                    /*if (agencyList.isEmpty()) {
                                         agencyList = getAgencyItemsById(
                                             savedData.agentProfiles,
                                             selectedAgentId
                                         )
-                                    }
+                                    }*/
                                 },
                                 onSMItemClicked = { selectedSM ->
-                                    viewMMain.updateSocialMediaState(selectedSM)
+                                    openSmConnector = selectedSM
+                                    //viewMMain.updateSocialMediaState(selectedSM)
                                 }
                             )
                         }

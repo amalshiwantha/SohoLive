@@ -37,14 +37,15 @@ class FacebookProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_facebook_profile)
 
         printHashKey()
-        setupFirebaseFB()
-    }
 
-    private fun setupFirebaseFB() {
         auth = Firebase.auth
         callbackManager = CallbackManager.Factory.create()
         loginInstant = LoginManager.getInstance()
 
+        setupFirebaseFB()
+    }
+
+    private fun setupFirebaseFB() {
         loginInstant
             .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
@@ -97,18 +98,11 @@ class FacebookProfileActivity : AppCompatActivity() {
             }
         }
 
-// Here we put the requested fields to be returned from the JSONObject
         val parameters = Bundle().apply {
             putString("fields", "id, first_name, last_name, email, birthday, gender")
         }
         request.parameters = parameters
         request.executeAsync()
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

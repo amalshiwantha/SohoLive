@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.activity
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.SocialMediaProfile
@@ -15,6 +16,8 @@ class MainViewModel : ViewModel() {
         MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()))
     val isSMConnected: StateFlow<SocialMediaProfile> = _isSMConnected.asStateFlow()
 
+    var isOpenFbConnect = MutableLiveData(false)
+
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
         _isCallSMConnect.value = smInfo
     }
@@ -22,4 +25,5 @@ class MainViewModel : ViewModel() {
     fun saveSocialMediaProfile(smProfile: SocialMediaProfile) {
         _isSMConnected.value = smProfile
     }
+
 }

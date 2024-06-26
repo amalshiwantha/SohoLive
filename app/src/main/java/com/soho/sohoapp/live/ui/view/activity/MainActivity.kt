@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.viewModels
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -52,11 +53,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
@@ -84,6 +91,7 @@ import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.screens.home.FacebookProfileButton
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -106,7 +114,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
 
-                    var showProfileBottomSheet by remember { mutableStateOf(true) }
+                    var showProfileBottomSheet by remember { mutableStateOf(false) }
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     val isConnectedSM by viewMMain.isSMConnected.collectAsState()
 
@@ -119,17 +127,24 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     })
 
                     if (showProfileBottomSheet) {
+                        //FacebookProfileButton()
                         SocialMediaProfileBottomSheet(isConnectedSM)
                     }
                 }
             }
         }
 
-        val intent = Intent(context, FacebookProfileActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        //CALL THIS INSIDE THE ANDROID VIEW IN JETPACK COMPOSE
+        viewMMain.isOpenFbConnect.observe(this) {
+            /*if (it) {
+                val intent = Intent(context, FacebookProfileActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(intent)
+            }*/
         }
-        context.startActivity(intent)
     }
+
 
     @Composable
     private fun OpenSMConnectModel(
@@ -144,10 +159,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     SocialMediaInfo.FACEBOOK -> {
                         //facebookLogin()
 
-                        val intent = Intent(context, FacebookProfileActivity::class.java).apply {
+                        /*val intent = Intent(context, FacebookProfileActivity::class.java).apply {
                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         }
-                        context.startActivity(intent)
+                        context.startActivity(intent)*/
 
                         /*val smProfile = getSampleFbProfile()
                         viewMMain.saveSocialMediaProfile(smProfile)

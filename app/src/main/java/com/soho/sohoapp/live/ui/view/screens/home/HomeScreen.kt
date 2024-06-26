@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.home
 
 import android.content.Context
 import android.content.Intent
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +35,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.UiState
 import com.soho.sohoapp.live.ui.components.AppTopBar
@@ -45,7 +52,11 @@ import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 
 @Composable
-fun HomeScreen(navControllerHome: NavHostController, homeVm: HomeViewModel = viewModel(), viewMMain: MainViewModel) {
+fun HomeScreen(
+    navControllerHome: NavHostController,
+    homeVm: HomeViewModel = viewModel(),
+    viewMMain: MainViewModel
+) {
 
     val context = LocalContext.current
     val uiState by homeVm.uiState.collectAsState()
@@ -113,26 +124,75 @@ fun GoLiveScreenActivity(uiState: UiState, context: Context) {
 }
 
 @Composable
+fun FacebookProfileButton() {
+    println("myFB openDialog")
+    val callbackManager = CallbackManager.Factory.create()
+    val loginManager = LoginManager.getInstance()
+    val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        loginManager.registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onCancel() {
+                    println("myFB onCancel")
+                }
+
+                override fun onError(error: FacebookException) {
+                    println("myFB onErr " + error)
+                }
+
+                override fun onSuccess(result: LoginResult) {
+                    println("myFB onSucc " + result)
+                }
+            })
+        onDispose {
+            println("myFB unregisterCallback")
+            //loginManager.unregisterCallback(callbackManager)
+        }
+    }
+
+    loginManager.logIn(
+        context as ActivityResultRegistryOwner,
+        callbackManager,
+        listOf("email")
+    )
+}
+
+@Composable
 fun HomeContent(navController: NavController, title: String) {
+
+    val doFbLogin = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .background(brushMainGradientBg)
             .fillMaxSize()
     ) {
-        Text(
-            title,
-            style = MaterialTheme.typography.titleLarge,
-            color = AppGreen,
-            modifier = Modifier
-                .padding(vertical = 20.dp)
-                .align(Alignment.Center)
-        )
+        Column(modifier = Modifier.align(Alignment.Center)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleLarge,
+                color = AppGreen,
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+            )
+            Button(onClick = { doFbLogin.value = true }) {
+                Text(text = "Connect FB")
+            }
+        }
+    }
+
+    if (doFbLogin.value) {
+        FacebookProfileButton()
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewHome() {
-    HomeScreen(navControllerHome = NavHostController(LocalContext.current), viewMMain = MainViewModel())
+    HomeScreen(
+        navControllerHome = NavHostController(LocalContext.current),
+        viewMMain = MainViewModel()
+    )
 }
