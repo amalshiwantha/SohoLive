@@ -175,6 +175,12 @@ class GoLiveViewModel(
     }
 
     fun saveFbProfile(profile: SMProfile) {
-        println("myFB "+profile)
+        viewModelScope.launch {
+            userPref.saveFBProfile(profile)
+
+            userPref.facebookProfile.collect { userProfile ->
+                println("myFB savedProfile "+userProfile)
+            }
+        }
     }
 }

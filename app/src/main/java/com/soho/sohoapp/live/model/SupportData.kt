@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.model
 
 import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import kotlinx.serialization.Serializable
 
 data class SocialMediaProfile(
     val smInfo: SocialMediaInfo,
@@ -11,6 +12,7 @@ data class SocialMediaProfile(
     val groups: MutableList<FbTypeView> = mutableListOf()
 )
 
+@Serializable
 data class SMProfile(
     val fullName: String,
     val imageUrl: String,
