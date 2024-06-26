@@ -44,6 +44,25 @@ class GoLiveViewModel(
         }
     }
 
+    fun updatePropertyList(updatedItem: PropertyItem) {
+        val propertyList = mState.value.propertyListState?.value
+
+        propertyList?.let {
+            propertyList.map { prop ->
+                prop.copy(
+                    id = updatedItem.id,
+                    propInfo = updatedItem.propInfo,
+                    isChecked = !updatedItem.isChecked
+                )
+            }
+
+            mState.value =
+                mState.value.copy(propertyListState = mutableStateOf(propertyList))
+        }
+
+
+    }
+
     private fun loadPropertyListing(authToken: String) {
 
         apiRepo.goLivePropertyListing(authToken).onEach { apiState ->
@@ -57,9 +76,18 @@ class GoLiveViewModel(
                         val isSuccess = !listingData.equals("error")
 
                         if (isSuccess) {
+                            val foundPropList = tsData.propertyList.map {
+                                PropertyItem(
+                                    id = it.document.propertyId,
+                                    propInfo = it.document
+                                )
+                            }
+
                             mState.value = mState.value.copy(isSuccess = true)
                             mState.value = mState.value.copy(apiResults = listingData.data)
                             mState.value = mState.value.copy(tsResults = tsData)
+                            mState.value =
+                                mState.value.copy(propertyListState = mutableStateOf(foundPropList))
                         } else {
                             mState.value =
                                 mState.value.copy(
@@ -86,4 +114,6 @@ class GoLiveViewModel(
             }
         }.launchIn(viewModelScope)
     }
+
+
 }

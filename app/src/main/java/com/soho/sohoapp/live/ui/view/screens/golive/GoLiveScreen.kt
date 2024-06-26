@@ -34,7 +34,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -196,14 +195,17 @@ fun GoLiveScreen(
                             //Global ints for save click id and list
 
                             //Step #1 property list
-                            var propertyList by rememberSaveable {
+                            val propertyList = stateVm.propertyListState?.value
+
+                            // Update propertyList when needed
+                            /*var propertyList by rememberSaveable {
                                 mutableStateOf(savedTsResults?.propertyList?.map {
                                     PropertyItem(
                                         id = it.document.propertyId,
                                         propInfo = it.document
                                     )
                                 })
-                            }
+                            }*/
 
                             //Step #2 agency list. agency list load from step #1 selections
                             /*val selectedAgentId =
@@ -223,7 +225,7 @@ fun GoLiveScreen(
                                 currentStepId = currentStepId,
                                 savedResults = savedData,
                                 tsResults = savedTsResults,
-                                propertyList = mutableListOf(),
+                                propertyList = propertyList,
                                 mainAgencyList = mutableListOf(),
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
@@ -233,6 +235,9 @@ fun GoLiveScreen(
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
                                 onPropertyItemClicked = { selected ->
+
+                                    goLiveVm.updatePropertyList(selected)
+
                                     /*propertyList = propertyList?.mapIndexed { index, item ->
 
                                         val itemIndex =
@@ -1035,7 +1040,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
-            .clickable { onItemClicked(item) },
+            .clickable { onItemClicked(item.apply { isChecked = !isChecked }) },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)

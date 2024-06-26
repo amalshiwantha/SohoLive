@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
+import androidx.compose.runtime.MutableState
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -12,5 +13,6 @@ data class GoLiveState(
     val alertState: AlertState = AlertState.Idle,
     val errorStates: Map<FieldType, String> = emptyMap(),
     val apiResults: DataGoLive? = null,
-    val tsResults: TsPropertyResponse? = null
+    val tsResults: TsPropertyResponse? = null,
+    var propertyListState : MutableState<List<PropertyItem>>? = null
 )
