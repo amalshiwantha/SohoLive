@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
@@ -42,6 +44,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,6 +88,7 @@ import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.utility.printHashKey
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -113,6 +118,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
         val viewMMain: MainViewModel by viewModels()
         enableEdgeToEdge()
+
+        printHashKey()
 
         setContent {
             SohoLiveTheme {
@@ -249,6 +256,74 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
+
+    @Composable
+    fun ListView(items: MutableList<FbTypeView>) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(items) { item ->
+                ListItemView(item) { updatedItem ->
+                    val index = items.indexOfFirst { it.title == updatedItem.title }
+                    if (index != -1) {
+                        items[index] = updatedItem
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ListItemView(fbView: FbTypeView, onItemUpdated: (FbTypeView) -> Unit) {
+
+        var isSelected by remember { mutableStateOf(fbView.isSelect) }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    isSelected = !isSelected
+                    onItemUpdated(fbView.copy(isSelect = isSelected))
+                }
+                .padding(bottom = 8.dp),
+            shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+        ) {
+            Row(
+                modifier = Modifier.padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                //image
+                val urlPainter = rememberAsyncImagePainter(
+                    model = fbView.imageUrl,
+                    placeholder = painterResource(id = R.drawable.profile_placeholder),
+                    error = painterResource(id = R.drawable.profile_placeholder)
+                )
+
+                Image(
+                    painter = urlPainter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(width = 48.dp, height = 48.dp)
+                        .clip(CircleShape)
+                )
+                //info
+                Row(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text700_16sp(title = fbView.title, modifier = Modifier.weight(1f))
+                    SpacerHorizontal(size = 8.dp)
+                    Image(
+                        painter = painterResource(id = if (fbView.isSelect) R.drawable.fb_item_active else R.drawable.fb_item_inactive),
+                        contentDescription = ""
+                    )
+                }
+            }
+        }
+    }
+
     @Composable
     private fun ProfileContentBottomSheet(
         smProfile: SocialMediaProfile,
@@ -258,6 +333,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         val smInfo = smProfile.smInfo
         var fbViewType by remember { mutableStateOf(FBListType.TIMELINE) }
         var selectedOption by remember { mutableIntStateOf(0) }
+        val mListTimelines = remember { smProfile.timelines.toMutableStateList() }
+        val mListPages = remember { smProfile.pages.toMutableStateList() }
+        val mListGroup = remember { smProfile.groups.toMutableStateList() }
 
         Column(
             modifier = Modifier
@@ -306,56 +384,44 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //Display Content for each tab
                     when (fbViewType) {
                         FBListType.TIMELINE -> {
-                            smProfile.timelines?.let { info ->
-                                if (info.isNotEmpty()) {
-                                    info.forEach { fbInfo ->
-                                        FbTypeInfoCard(fbInfo, onItemClick = { updated ->
-                                            val found =
-                                                smProfile.timelines.find { it.title == updated.title }
-                                                    .let {
-                                                        it?.copy(isSelect = updated.isSelect)
-                                                    }
-                                        })
+                            if (mListTimelines.isNotEmpty()) {
+                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                                    items(mListTimelines) { item ->
+                                        ListItemView(item) { updatedItem ->
+                                            updateState(mListTimelines, updatedItem)
+                                        }
                                     }
-                                } else {
-                                    Text400_14sp(info = stringResource(R.string.not_admin))
                                 }
+                            } else {
+                                Text400_14sp(info = stringResource(R.string.not_admin))
                             }
                         }
 
                         FBListType.PAGES -> {
-                            smProfile.pages?.let { info ->
-                                if (info.isNotEmpty()) {
-                                    info.forEach { fbInfo ->
-                                        FbTypeInfoCard(fbInfo, onItemClick = { updated ->
-                                            val found =
-                                                smProfile.pages.find { it.title == updated.title }
-                                                    .let {
-                                                        it?.copy(isSelect = updated.isSelect)
-                                                    }
-                                        })
+                            if (mListPages.isNotEmpty()) {
+                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                                    items(mListPages) { item ->
+                                        ListItemView(item) { updatedItem ->
+                                            updateState(mListPages, updatedItem)
+                                        }
                                     }
-                                } else {
-                                    Text400_14sp(info = stringResource(R.string.not_admin))
                                 }
+                            } else {
+                                Text400_14sp(info = stringResource(R.string.not_admin))
                             }
                         }
 
                         FBListType.GROUPS -> {
-                            smProfile.groups?.let { info ->
-                                if (info.isNotEmpty()) {
-                                    info.forEach { fbInfo ->
-                                        FbTypeInfoCard(fbInfo, onItemClick = { updated ->
-                                            val found =
-                                                smProfile.groups.find { it.title == updated.title }
-                                                    .let {
-                                                        it?.copy(isSelect = updated.isSelect)
-                                                    }
-                                        })
+                            if (mListGroup.isNotEmpty()) {
+                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                                    items(mListGroup) { item ->
+                                        ListItemView(item) { updatedItem ->
+                                            updateState(mListGroup, updatedItem)
+                                        }
                                     }
-                                } else {
-                                    Text400_14sp(info = stringResource(R.string.not_admin))
                                 }
+                            } else {
+                                Text400_14sp(info = stringResource(R.string.not_admin))
                             }
                         }
                     }
@@ -382,6 +448,17 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         onBtnClick = { onDone() })
                 }
             }
+        }
+    }
+
+    private fun updateState(
+        mListItems: SnapshotStateList<FbTypeView>,
+        updatedItem: FbTypeView
+    ) {
+        val index =
+            mListItems.indexOfFirst { it.title == updatedItem.title }
+        if (index != -1) {
+            mListItems[index] = updatedItem
         }
     }
 
@@ -486,55 +563,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     Text400_14sp(info = "Connected to $socialMediaName as")
                     SpacerVertical(size = 8.dp)
                     Text700_16sp(title = smProfile.fullName)
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun FbTypeInfoCard(fbView: FbTypeView, onItemClick: (FbTypeView) -> Unit) {
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            shape = MaterialTheme.shapes.large,
-            colors = CardDefaults.cardColors(containerColor = ItemCardBg)
-        ) {
-            Row(
-                modifier = Modifier.padding(14.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                //image
-                val urlPainter = rememberAsyncImagePainter(
-                    model = fbView.imageUrl,
-                    placeholder = painterResource(id = R.drawable.profile_placeholder),
-                    error = painterResource(id = R.drawable.profile_placeholder)
-                )
-
-                Image(
-                    painter = urlPainter,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(width = 48.dp, height = 48.dp)
-                        .clip(CircleShape)
-                )
-                //info
-                Row(
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text700_16sp(title = fbView.title, modifier = Modifier.weight(1f))
-                    SpacerHorizontal(size = 8.dp)
-                    Image(
-                        modifier = Modifier.clickable {
-                            onItemClick(fbView.copy(isSelect = !fbView.isSelect))
-                        },
-                        painter = painterResource(id = if (fbView.isSelect) R.drawable.fb_item_active else R.drawable.fb_item_inactive),
-                        contentDescription = ""
-                    )
                 }
             }
         }
