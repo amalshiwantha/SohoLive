@@ -197,16 +197,6 @@ fun GoLiveScreen(
                             //Step #1 property list
                             val propertyList = stateVm.propertyListState?.value
 
-                            // Update propertyList when needed
-                            /*var propertyList by rememberSaveable {
-                                mutableStateOf(savedTsResults?.propertyList?.map {
-                                    PropertyItem(
-                                        id = it.document.propertyId,
-                                        propInfo = it.document
-                                    )
-                                })
-                            }*/
-
                             //Step #2 agency list. agency list load from step #1 selections
                             /*val selectedAgentId =
                                 propertyList?.filter { it.isChecked }
@@ -235,20 +225,7 @@ fun GoLiveScreen(
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
                                 onPropertyItemClicked = { selected ->
-
                                     goLiveVm.updatePropertyList(selected)
-
-                                    /*propertyList = propertyList?.mapIndexed { index, item ->
-
-                                        val itemIndex =
-                                            propertyList?.indexOfFirst { it.id == selected.id }
-
-                                        if (index == itemIndex) {
-                                            item.copy(isChecked = !item.isChecked)
-                                        } else {
-                                            item
-                                        }
-                                    }*/
                                 },
                                 onAgentItemClicked = { selected ->
                                     /*agencyList = agencyList.mapIndexed { index, item ->
@@ -840,16 +817,6 @@ private fun PropertyListing(
     listings: List<PropertyItem>?,
     onItemClicked: (PropertyItem) -> Unit = {}
 ) {
-
-    /*var propertyItemList by rememberSaveable {
-        mutableStateOf(listings.map {
-            PropertyItem(
-                id = it.document.propertyId,
-                propInfo = it.document
-            )
-        })
-    }*/
-
     listings?.forEach { item ->
         PropertyItemContent(item, onItemClicked = { selected ->
             onItemClicked.invoke(selected)

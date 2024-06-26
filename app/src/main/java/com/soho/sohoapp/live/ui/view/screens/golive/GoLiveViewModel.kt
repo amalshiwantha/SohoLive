@@ -48,7 +48,7 @@ class GoLiveViewModel(
         val propertyList = mState.value.propertyListState?.value
 
         propertyList?.let {
-            propertyList.map { prop ->
+            it.map { prop ->
                 prop.copy(
                     id = updatedItem.id,
                     propInfo = updatedItem.propInfo,
