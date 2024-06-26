@@ -198,25 +198,14 @@ fun GoLiveScreen(
                             val propertyList = stateVm.propertyListState?.value
 
                             //Step #2 agency list. agency list load from step #1 selections
-                            /*val selectedAgentId =
-                                propertyList?.filter { it.isChecked }
-                                    ?.map { it.propInfo.apAgentsIds }
-
-                            var agencyList by rememberSaveable {
-                                mutableStateOf(
-                                    getAgencyItemsById(
-                                        savedData.agentProfiles,
-                                        selectedAgentId
-                                    )
-                                )
-                            }*/
+                            val agencyList = stateVm.agencyListState?.value
 
                             StepContents(
                                 currentStepId = currentStepId,
                                 savedResults = savedData,
                                 tsResults = savedTsResults,
                                 propertyList = propertyList,
-                                mainAgencyList = mutableListOf(),
+                                mainAgencyList = agencyList,
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
                                 isNotShowProfile = isDontShowProfile,
@@ -224,28 +213,11 @@ fun GoLiveScreen(
                                 onSelectOption = { selectedOption = it },
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
-                                onPropertyItemClicked = { selected ->
-                                    goLiveVm.updatePropertyList(selected)
+                                onPropertyItemClicked = { selectedProperty ->
+                                    goLiveVm.updatePropertyList(selectedProperty)
                                 },
-                                onAgentItemClicked = { selected ->
-                                    /*agencyList = agencyList.mapIndexed { index, item ->
-                                        val itemIndex =
-                                            agencyList.indexOfFirst { it.id == selected.id }
-
-                                        if (index == itemIndex) {
-                                            item.copy(isChecked = !item.isChecked)
-                                        } else {
-                                            item
-                                        }
-                                    }*/
-                                },
-                                onAgencyItemUpdate = {
-                                    /*if (agencyList.isEmpty()) {
-                                        agencyList = getAgencyItemsById(
-                                            savedData.agentProfiles,
-                                            selectedAgentId
-                                        )
-                                    }*/
+                                onAgentItemClicked = { selectedAgent ->
+                                    goLiveVm.updateAgentSelectionList(selectedAgent)
                                 },
                                 onSMItemClicked = { selectedSM ->
                                     openSmConnector = selectedSM
@@ -338,8 +310,7 @@ fun StepContents(
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onNotShowProfileChange: (Boolean) -> Unit,
     onPropertyItemClicked: (PropertyItem) -> Unit,
-    onAgentItemClicked: (AgentProfileGoLive) -> Unit,
-    onAgencyItemUpdate: () -> Unit,
+    onAgentItemClicked: (AgencyItem) -> Unit,
     onSMItemClicked: (SocialMediaInfo) -> Unit
 ) {
     SpacerVertical(40.dp)
@@ -365,9 +336,6 @@ fun StepContents(
 
         // step#2
         1 -> {
-
-            onAgencyItemUpdate.invoke()
-
             if (savedResults.agentProfiles.isEmpty()) {
                 DisplayNoData(message = "No Agency Information")
             } else {
@@ -413,12 +381,6 @@ fun StepContents(
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
     }
-}
-
-fun connectLinkedIn() {
-}
-
-private fun connectFacebook() {
 }
 
 @Composable
@@ -782,28 +744,10 @@ private fun SocialMediaListing(onSMItemClicked: (String) -> Unit) {
     }
 }
 
-fun getAgencyItemsById(
-    agentProfiles: List<AgentProfileGoLive>,
-    listIds: List<List<Int>>?
-): List<AgencyItem> {
-    return listIds?.let { lists ->
-        if (lists.isNotEmpty()) {
-            val id = lists[0][0]
-            agentProfiles.filter { it.id == id }.map {
-                AgencyItem(id = it.id, agentProfile = it)
-            }
-        } else {
-            emptyList()
-        }
-    } ?: run {
-        emptyList()
-    }
-}
-
 @Composable
 private fun AgentListing(
     agencyList: List<AgencyItem>,
-    onAgentItemClicked: (AgentProfileGoLive) -> Unit
+    onAgentItemClicked: (AgencyItem) -> Unit
 ) {
     agencyList.forEach { agentItem ->
         AgencyItemContent(agentItem, onItemClicked = { selected ->
@@ -948,7 +892,7 @@ private fun getImageWidth(drawableResId: Int): Size {
 }
 
 @Composable
-private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgentProfileGoLive) -> Unit = {}) {
+private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> Unit = {}) {
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
     val agent = item.agentProfile
@@ -957,7 +901,7 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgentProfileGoLi
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
-            .clickable { onItemClicked(agent) },
+            .clickable { onItemClicked(item.apply { isChecked = !isChecked }) },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -984,10 +928,7 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgentProfileGoLi
                     .padding(start = 14.dp)
                     .fillMaxWidth()
             ) {
-                ProfileNameCheckBox(agent, item.isChecked, textColor, onCheckedChange = {
-                    onItemClicked(agent)
-                })
-
+                ProfileNameCheckBox(agent, item.isChecked, textColor)
                 SpacerVertical(size = 8.dp)
                 agent.email?.let {
                     Text400_14sp(info = it, color = textColor)
@@ -1150,8 +1091,7 @@ private fun TypeAndCheckBox(
 private fun ProfileNameCheckBox(
     profile: AgentProfileGoLive,
     isChecked: Boolean,
-    textColor: Color,
-    onCheckedChange: (Boolean) -> Unit
+    textColor: Color
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -1175,8 +1115,7 @@ private fun ProfileNameCheckBox(
 
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clickable { onCheckedChange(!isChecked) },
+                    .padding(horizontal = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
@@ -1270,7 +1209,6 @@ private fun PreviewGoLiveScreen() {
                     onNotShowProfileChange = {},
                     onPropertyItemClicked = {},
                     onAgentItemClicked = {},
-                    onAgencyItemUpdate = {},
                     onSMItemClicked = {})
             }
         }

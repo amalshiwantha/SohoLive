@@ -10,6 +10,7 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -52,15 +53,72 @@ class GoLiveViewModel(
                 prop.copy(
                     id = updatedItem.id,
                     propInfo = updatedItem.propInfo,
-                    isChecked = !updatedItem.isChecked
+                    isChecked = updatedItem.isChecked
                 )
             }
 
             mState.value =
                 mState.value.copy(propertyListState = mutableStateOf(propertyList))
+
+            updateAgentList(it)
         }
+    }
 
+    fun updateAgentSelectionList(updatedAgent: AgencyItem) {
+        val agentList = mState.value.agencyListState?.value
 
+        agentList?.let {
+            it.map { prop ->
+                prop.copy(
+                    id = updatedAgent.id,
+                    agentProfile = updatedAgent.agentProfile,
+                    isChecked = updatedAgent.isChecked
+                )
+            }
+
+            mState.value =
+                mState.value.copy(agencyListState = mutableStateOf(agentList))
+        }
+    }
+
+    private fun updateAgentList(propertyList: List<PropertyItem>) {
+
+        val agentProfiles = mState.value.apiResults?.agentProfiles
+
+        agentProfiles?.let { agent ->
+            val selectedAgentId =
+                propertyList.filter { it.isChecked }
+                    .map { it.propInfo.apAgentsIds }
+
+            val agentList = getAgencyItemsById(agent, selectedAgentId)
+
+            //this is for temp
+            val agentLst = mutableListOf<AgencyItem>()
+            agentProfiles.forEach {
+                agentLst.add(AgencyItem(id = it.id, agentProfile = it))
+            }
+
+            mState.value =
+                mState.value.copy(agencyListState = mutableStateOf(agentLst))
+        }
+    }
+
+    private fun getAgencyItemsById(
+        agentProfiles: List<AgentProfileGoLive>,
+        listIds: List<List<Int>>?
+    ): List<AgencyItem> {
+        return listIds?.let { lists ->
+            if (lists.isNotEmpty()) {
+                val id = lists[0][0]
+                agentProfiles.filter { it.id == id }.map {
+                    AgencyItem(id = it.id, agentProfile = it)
+                }
+            } else {
+                emptyList()
+            }
+        } ?: run {
+            emptyList()
+        }
     }
 
     private fun loadPropertyListing(authToken: String) {
