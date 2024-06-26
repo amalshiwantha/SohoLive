@@ -2,7 +2,6 @@ package com.soho.sohoapp.live.ui.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -58,20 +57,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.GraphRequest
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.FbTypeView
@@ -96,7 +84,6 @@ import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.utility.printHashKey
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -104,24 +91,14 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
-import org.json.JSONException
-import java.net.MalformedURLException
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
-
-    private lateinit var auth: FirebaseAuth
-    private lateinit var callbackManager: CallbackManager
-    private lateinit var loginInstant: LoginManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val viewMMain: MainViewModel by viewModels()
         enableEdgeToEdge()
-
-        printHashKey()
-
-        setupFirebaseFB()
 
         setContent {
             SohoLiveTheme {
@@ -139,7 +116,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //PreSetup for Social Media
                     OpenSMConnectModel(viewMMain, smInfoConnect, onShowProfile = {
                         showProfileBottomSheet = true
-                        openPro()
                     })
 
                     if (showProfileBottomSheet) {
@@ -148,99 +124,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
             }
         }
-    }
 
-    private fun openPro() {
-
-    }
-
-    private fun setupFirebaseFB() {
-        auth = Firebase.auth
-        callbackManager = CallbackManager.Factory.create()
-        loginInstant = LoginManager.getInstance()
-
-        loginInstant
-            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
-                    Log.d("myFb", "facebook:onSuccess:${loginResult}")
-                    Log.v("myFb", "Token::" + loginResult.accessToken.token)
-                    getFBProfileData(loginResult)
-                    handleFacebookAccessToken(loginResult.accessToken)
-                }
-
-                override fun onCancel() {
-                    Log.d("myFb", "facebook:onCancel")
-                }
-
-                override fun onError(error: FacebookException) {
-                    Log.d("myFb", "facebook:onError", error)
-                }
-            })
-
-        facebookLogin()
-    }
-
-    private fun getFBProfileData(loginResult: LoginResult) {
-        val request = GraphRequest.newMeRequest(loginResult.accessToken) { info, response ->
-            Log.e("myFb info", info.toString())
-
-            try {
-                info?.let {
-                    val userId = it.getString("id")
-                    val profilePicture =
-                        "https://graph.facebook.com/$userId/picture?width=500&height=500"
-                    val firstName = if (it.has("first_name")) it.getString("first_name") else null
-                    val lastName = if (it.has("last_name")) it.getString("last_name") else null
-
-                    println("myFb bio : " + firstName)
-                    println("myFb bio : " + lastName)
-                    println("myFb bio : " + profilePicture)
-                }
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            } catch (e: MalformedURLException) {
-                e.printStackTrace()
-            }
+        val intent = Intent(context, FacebookProfileActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-
-// Here we put the requested fields to be returned from the JSONObject
-        val parameters = Bundle().apply {
-            putString("fields", "id, first_name, last_name, email, birthday, gender")
-        }
-        request.parameters = parameters
-        request.executeAsync()
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun handleFacebookAccessToken(token: AccessToken) {
-        val credential = FacebookAuthProvider.getCredential(token.token)
-
-        auth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                // Sign in success, update UI with the signed-in user's information
-                Log.d("myFb", "signInWithCredential:success")
-                val user = auth.currentUser
-                updateUI(user)
-            } else {
-                // If sign in fails, display a message to the user.
-                Log.w("myFb", "signInWithCredential:failure", task.exception)
-                updateUI(null)
-            }
-        }
-    }
-
-    private fun updateUI(user: FirebaseUser?) {
-        Log.d("myFb", "FirebaseUser:$user")
+        context.startActivity(intent)
     }
 
     @Composable
@@ -255,9 +143,15 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     SocialMediaInfo.SOHO -> {}
                     SocialMediaInfo.FACEBOOK -> {
                         //facebookLogin()
-                        val smProfile = getSampleFbProfile()
+
+                        val intent = Intent(context, FacebookProfileActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        context.startActivity(intent)
+
+                        /*val smProfile = getSampleFbProfile()
                         viewMMain.saveSocialMediaProfile(smProfile)
-                        onShowProfile()
+                        onShowProfile()*/
                     }
 
                     SocialMediaInfo.YOUTUBE -> {
@@ -700,49 +594,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         )
     }
 
-    //SocialMedia callback actions
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        fbCallbackManager.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
-    }*/
-
     /*
     * All of social media connection action will fire on Here, called from step #3 GoLive Screen to here
     * */
-
-    //FaceBook
-    /*private fun setupFBLogin() {
-        LoginManager.getInstance()
-            .registerCallback(fbCallbackManager, callback = object : FacebookCallback<LoginResult> {
-                override fun onCancel() {
-                    Log.d("myFBData", "facebook login cancelled")*//*setResult(RESULT_CANCELED)
-                    finish()*//*
-                }
-
-                override fun onError(error: FacebookException) {
-                    Log.d("myFBData", "facebook login error")*//*setResult(RESULT_ERROR)
-                    finish()*//*
-                }
-
-                override fun onSuccess(result: LoginResult) {
-                    Log.d("myFBData", "facebook login success")*//*val intent = Intent().apply {
-                        putExtra(EXTRA_DATA_FB, result.accessToken)
-                    }
-                    setResult(RESULT_OK, intent)
-                    finish()*//*
-                }
-            })
-    }
-
-
-
-    private fun facebookLogout() {
-        LoginManager.getInstance().logOut()
-    }*/
-
-    private fun facebookLogin() {
-        loginInstant.logInWithReadPermissions(this, listOf("email", "public_profile"))
-    }
 
     //LinkedIn
     private fun linkedInLogin() {

@@ -6,7 +6,6 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -23,6 +22,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SohoLive"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.view.activity.FacebookProfileActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SohoLiveInside"/>
         <activity
             android:name=".ui.view.activity.HaishinActivity"
             android:exported="false"
@@ -43,7 +46,7 @@
             </intent-filter>
         </activity>
 
-        <!--facebook-->
+        <!-- facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -68,6 +71,6 @@
                     tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
-        <!--facebook End-->
     </application>
+
 </manifest>

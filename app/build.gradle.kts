@@ -103,6 +103,8 @@ dependencies {
     //LinkedIn SDK
     implementation("com.github.Sumudu-Sahan:LinkedInManager:1.01.00")
     implementation(libs.firebase.auth)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
