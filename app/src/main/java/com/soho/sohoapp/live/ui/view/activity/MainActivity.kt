@@ -59,11 +59,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FBListType
@@ -100,21 +95,6 @@ import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
-
-    companion object {
-
-        const val RESULT_ERROR = 102
-        const val EXTRA_DATA_FB = "extraDataFb"
-
-        fun getInstance(context: Context): Intent {
-            return Intent(context, MainActivity::class.java)
-        }
-    }
-
-    private val fbCallbackManager: CallbackManager by lazy {
-        CallbackManager.Factory.create()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -137,7 +117,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     AppNavHost(viewMMain)
 
                     //PreSetup for Social Media
-                    setupFBLogin()
                     OpenSMConnectModel(viewMMain, smInfoConnect, onShowProfile = {
                         showProfileBottomSheet = true
                     })
@@ -609,35 +588,35 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     //SocialMedia callback actions
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         fbCallbackManager.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
-    }
+    }*/
 
     /*
     * All of social media connection action will fire on Here, called from step #3 GoLive Screen to here
     * */
 
     //FaceBook
-    private fun setupFBLogin() {
+    /*private fun setupFBLogin() {
         LoginManager.getInstance()
             .registerCallback(fbCallbackManager, callback = object : FacebookCallback<LoginResult> {
                 override fun onCancel() {
-                    Log.d("myFBData", "facebook login cancelled")/*setResult(RESULT_CANCELED)
-                    finish()*/
+                    Log.d("myFBData", "facebook login cancelled")*//*setResult(RESULT_CANCELED)
+                    finish()*//*
                 }
 
                 override fun onError(error: FacebookException) {
-                    Log.d("myFBData", "facebook login error")/*setResult(RESULT_ERROR)
-                    finish()*/
+                    Log.d("myFBData", "facebook login error")*//*setResult(RESULT_ERROR)
+                    finish()*//*
                 }
 
                 override fun onSuccess(result: LoginResult) {
-                    Log.d("myFBData", "facebook login success")/*val intent = Intent().apply {
+                    Log.d("myFBData", "facebook login success")*//*val intent = Intent().apply {
                         putExtra(EXTRA_DATA_FB, result.accessToken)
                     }
                     setResult(RESULT_OK, intent)
-                    finish()*/
+                    finish()*//*
                 }
             })
     }
@@ -650,7 +629,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     private fun facebookLogout() {
         LoginManager.getInstance().logOut()
-    }
+    }*/
 
     //LinkedIn
     private fun linkedInLogin() {

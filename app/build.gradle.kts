@@ -97,7 +97,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     //Facebook
-    implementation("com.facebook.android:facebook-login:13.2.0")
+    //implementation("com.facebook.android:facebook-login:13.2.0")
 
     //LinkedIn SDK
     implementation("com.github.Sumudu-Sahan:LinkedInManager:1.01.00")
