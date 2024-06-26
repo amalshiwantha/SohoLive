@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -97,10 +98,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     //Facebook
-    //implementation("com.facebook.android:facebook-login:13.2.0")
+    implementation("com.facebook.android:facebook-android-sdk:14.1.1")
 
     //LinkedIn SDK
     implementation("com.github.Sumudu-Sahan:LinkedInManager:1.01.00")
+    implementation(libs.firebase.auth)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -1,8 +1,8 @@
 <resources>
     <!--facebook-->
-    <string name="facebook_app_id">900347966816846</string>
-    <string name="fb_login_protocol_scheme">fb900347966816846</string>
-    <string name="fb_client_token">749142c61f3ea12c7caf7e60a505316f</string>
+    <string name="facebook_app_id">821779222947839</string>
+    <string name="fb_login_protocol_scheme">fb821779222947839</string>
+    <string name="fb_client_token">3de6e9cba4cf3e1367c5b3479028150d</string>
 
     <!--MainApp-->
     <string name="app_name">SohoLive</string>

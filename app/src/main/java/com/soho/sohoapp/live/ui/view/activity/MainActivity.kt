@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.ui.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -59,7 +58,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.FacebookSdk
+import com.facebook.LoggingBehavior
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.auth
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -95,6 +107,11 @@ import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var callbackManager: CallbackManager
+    private lateinit var loginInstant: LoginManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -102,6 +119,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         enableEdgeToEdge()
 
         printHashKey()
+
+        setupFirebaseFB()
 
         setContent {
             SohoLiveTheme {
@@ -119,6 +138,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //PreSetup for Social Media
                     OpenSMConnectModel(viewMMain, smInfoConnect, onShowProfile = {
                         showProfileBottomSheet = true
+                        openPro()
                     })
 
                     if (showProfileBottomSheet) {
@@ -127,6 +147,67 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
             }
         }
+    }
+
+    private fun openPro() {
+
+    }
+
+    private fun setupFirebaseFB() {
+        auth = Firebase.auth
+        callbackManager = CallbackManager.Factory.create()
+        loginInstant = LoginManager.getInstance()
+
+        loginInstant
+            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+                override fun onSuccess(loginResult: LoginResult) {
+                    Log.d("myFb", "facebook:onSuccess:${loginResult}")
+                    Log.v("myFb", "Token::" + loginResult.accessToken.token)
+                    handleFacebookAccessToken(loginResult.accessToken)
+                }
+
+                override fun onCancel() {
+                    Log.d("myFb", "facebook:onCancel")
+                }
+
+                override fun onError(error: FacebookException) {
+                    Log.d("myFb", "facebook:onError", error)
+                }
+            })
+
+        facebookLogin()
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        updateUI(currentUser)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleFacebookAccessToken(token: AccessToken) {
+        val credential = FacebookAuthProvider.getCredential(token.token)
+
+        auth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("myFb", "signInWithCredential:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("myFb", "signInWithCredential:failure", task.exception)
+                    updateUI(null)
+                }
+            }
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        Log.d("myFb", "FirebaseUser:$user")
     }
 
     @Composable
@@ -141,7 +222,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     SocialMediaInfo.SOHO -> {}
                     SocialMediaInfo.FACEBOOK -> {
                         //facebookLogin()
-
                         val smProfile = getSampleFbProfile()
                         viewMMain.saveSocialMediaProfile(smProfile)
                         onShowProfile()
@@ -621,15 +701,15 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             })
     }
 
-    private fun facebookLogin() {
-        LoginManager.getInstance().logInWithReadPermissions(
-            this, listOf("email", "public_profile")
-        )
-    }
+
 
     private fun facebookLogout() {
         LoginManager.getInstance().logOut()
     }*/
+
+    private fun facebookLogin() {
+        loginInstant.logInWithReadPermissions(this, listOf("email", "public_profile"))
+    }
 
     //LinkedIn
     private fun linkedInLogin() {
