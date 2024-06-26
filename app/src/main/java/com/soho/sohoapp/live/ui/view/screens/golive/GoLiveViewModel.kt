@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.model.SMProfile
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
@@ -173,5 +174,7 @@ class GoLiveViewModel(
         }.launchIn(viewModelScope)
     }
 
-
+    fun saveFbProfile(profile: SMProfile) {
+        println("myFB "+profile)
+    }
 }

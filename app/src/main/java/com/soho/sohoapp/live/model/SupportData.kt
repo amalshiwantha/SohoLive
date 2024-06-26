@@ -15,11 +15,12 @@ data class SMProfile(
     val fullName: String,
     val imageUrl: String,
     val email: String,
-    val token: String
+    val token: String,
+    val type: SocialMediaInfo = SocialMediaInfo.NONE
 )
 
 data class FbTypeView(
-    val index : Int = 0,
+    val index: Int = 0,
     val type: FBListType,
     val title: String,
     val url: String,
