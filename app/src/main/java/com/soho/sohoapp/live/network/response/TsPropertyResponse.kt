@@ -32,7 +32,7 @@ data class Document(
     @SerialName("agency_id") val agencyId: Int = 0,
     @SerialName("agency_name") val agencyName: String? = null,
     @SerialName("agency_slug") val agencySlug: String? = null,
-    @SerialName("agents") val agents: String? = null, // Consider parsing this JSON string into a proper list of objects
+    @SerialName("agents") val agents: String? = null,
     @SerialName("ap_agents_ids") val apAgentsIds: List<Int> = emptyList(),
     @SerialName("ap_listing_state") val apListingState: String? = null,
     @SerialName("ap_property_type") val apPropertyType: String? = null,
@@ -135,6 +135,15 @@ data class Document(
 
         return resPair
     }
+
+    fun getAgents(): List<Agent> {
+        return agents?.let {
+            val json = Json { ignoreUnknownKeys = true }
+            return json.decodeFromString(agents)
+        } ?: run {
+            emptyList()
+        }
+    }
 }
 
 @Serializable
@@ -173,6 +182,17 @@ data class RequestParams(
     @SerialName("collection_name") val collectionName: String? = null,
     @SerialName("per_page") val perPage: Int = 0,
     @SerialName("q") val query: String? = null
+)
+
+data class Agent(
+    val id: Int,
+    val slug: String,
+    val full_name: String,
+    val avatar_url: String?,
+    val agent_bg_colour: String,
+    val banner_image: String?,
+    val rating_count: Int?,
+    val reviews_count: Int?
 )
 
 @Serializable
