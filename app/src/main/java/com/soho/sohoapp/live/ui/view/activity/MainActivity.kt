@@ -62,8 +62,7 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.FacebookSdk
-import com.facebook.LoggingBehavior
+import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -105,6 +104,8 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
+import org.json.JSONException
+import java.net.MalformedURLException
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
@@ -163,6 +164,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 override fun onSuccess(loginResult: LoginResult) {
                     Log.d("myFb", "facebook:onSuccess:${loginResult}")
                     Log.v("myFb", "Token::" + loginResult.accessToken.token)
+                    getFBProfileData(loginResult)
                     handleFacebookAccessToken(loginResult.accessToken)
                 }
 
@@ -176,6 +178,37 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             })
 
         facebookLogin()
+    }
+
+    private fun getFBProfileData(loginResult: LoginResult) {
+        val request = GraphRequest.newMeRequest(loginResult.accessToken) { info, response ->
+            Log.e("myFb info", info.toString())
+
+            try {
+                info?.let {
+                    val userId = it.getString("id")
+                    val profilePicture =
+                        "https://graph.facebook.com/$userId/picture?width=500&height=500"
+                    val firstName = if (it.has("first_name")) it.getString("first_name") else null
+                    val lastName = if (it.has("last_name")) it.getString("last_name") else null
+
+                    println("myFb bio : " + firstName)
+                    println("myFb bio : " + lastName)
+                    println("myFb bio : " + profilePicture)
+                }
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            } catch (e: MalformedURLException) {
+                e.printStackTrace()
+            }
+        }
+
+// Here we put the requested fields to be returned from the JSONObject
+        val parameters = Bundle().apply {
+            putString("fields", "id, first_name, last_name, email, birthday, gender")
+        }
+        request.parameters = parameters
+        request.executeAsync()
     }
 
     public override fun onStart() {
@@ -193,17 +226,17 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         val credential = FacebookAuthProvider.getCredential(token.token)
 
         auth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("myFb", "signInWithCredential:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w("myFb", "signInWithCredential:failure", task.exception)
-                    updateUI(null)
-                }
+            if (task.isSuccessful) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d("myFb", "signInWithCredential:success")
+                val user = auth.currentUser
+                updateUI(user)
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w("myFb", "signInWithCredential:failure", task.exception)
+                updateUI(null)
             }
+        }
     }
 
     private fun updateUI(user: FirebaseUser?) {
