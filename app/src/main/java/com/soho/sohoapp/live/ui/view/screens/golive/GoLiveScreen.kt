@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,9 +62,13 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CustomCoverOption
+import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
+import com.soho.sohoapp.live.model.FbTypeView
+import com.soho.sohoapp.live.model.SMProfile
+import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
@@ -148,6 +153,7 @@ fun GoLiveScreen(
         openSmConnector = SocialMediaInfo.NONE
     }
 
+    //open social media connector
     when (openSmConnector) {
         SocialMediaInfo.SOHO -> {}
         SocialMediaInfo.FACEBOOK -> {
@@ -157,6 +163,12 @@ fun GoLiveScreen(
         SocialMediaInfo.YOUTUBE -> {}
         SocialMediaInfo.LINKEDIN -> {}
         SocialMediaInfo.NONE -> {}
+    }
+
+    //if SM connect success then open model
+    val smFbProfile by goLiveVm.updatedFbProfile.collectAsState()
+    if (smFbProfile.type == SocialMediaInfo.FACEBOOK) {
+        viewMMain.saveSocialMediaProfile(getSampleFbProfile())
     }
 
     Box(
@@ -255,6 +267,54 @@ fun GoLiveScreen(
             })
         }
     }
+}
+
+fun getSampleFbProfile(): SocialMediaProfile {
+    val profile = SMProfile(
+        "Jhone Smith",
+        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
+        "amalskr@gmail.com",
+        "ask123"
+    )
+
+    val timeline1 = FbTypeView(
+        0,
+        FBListType.TIMELINE,
+        "TimeLine 1",
+        "http:www.facebook.com",
+        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+    )
+    val timeline2 = FbTypeView(
+        1,
+        FBListType.TIMELINE,
+        "TimeLine 2",
+        "http:www.facebook.com",
+        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+    )
+
+    val page1 = FbTypeView(
+        3,
+        FBListType.PAGES,
+        "MyPage",
+        "http:www.facebook.com",
+        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+    )
+
+    val group1 = FbTypeView(
+        4,
+        FBListType.GROUPS,
+        "My Group",
+        "http:www.facebook.com",
+        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
+    )
+
+    return SocialMediaProfile(
+        smInfo = SocialMediaInfo.FACEBOOK,
+        profiles = mutableListOf(profile),
+        timelines = mutableListOf(timeline1, timeline2),
+        pages = mutableListOf(),
+        groups = mutableListOf(group1)
+    )
 }
 
 private fun callLoadPropertyApi(

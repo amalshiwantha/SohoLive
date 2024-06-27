@@ -19,7 +19,14 @@ data class SMProfile(
     val email: String,
     val token: String,
     val type: SocialMediaInfo = SocialMediaInfo.NONE
-)
+) {
+    constructor() : this(
+        fullName = "",
+        imageUrl = "",
+        email = "",
+        token = ""
+    )
+}
 
 data class FbTypeView(
     val index: Int = 0,

@@ -12,6 +12,10 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,6 +26,34 @@ class GoLiveViewModel(
 ) : ViewModel() {
 
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
+
+    private val _updatedFbProfile = MutableStateFlow(SMProfile())
+    val updatedFbProfile: StateFlow<SMProfile> = _updatedFbProfile
+
+    init {
+        appEventObserver()
+    }
+
+    private fun appEventObserver() {
+        viewModelScope.launch {
+            AppEventBus.events.collect { event ->
+                when (event) {
+                    is AppEvent.SaveSMProfile -> {
+                        userPref.saveFBProfile(event.smProfile)
+
+                        userPref.facebookProfile.collect { fbProfile ->
+                            fbProfile?.let {
+                                println("myFB "+it)
+                                _updatedFbProfile.value = it
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
 
     fun onTriggerEvent(event: GoLiveEvent) {
         when (event) {
@@ -172,15 +204,5 @@ class GoLiveViewModel(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    fun saveFbProfile(profile: SMProfile) {
-        viewModelScope.launch {
-            userPref.saveFBProfile(profile)
-
-            userPref.facebookProfile.collect { userProfile ->
-                println("myFB savedProfile "+userProfile)
-            }
-        }
     }
 }

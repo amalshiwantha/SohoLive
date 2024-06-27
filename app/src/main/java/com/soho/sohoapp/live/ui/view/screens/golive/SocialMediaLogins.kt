@@ -14,12 +14,15 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.SMProfile
-import org.koin.compose.koinInject
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun FacebookProfileButton() {
-    val goLiveVm: GoLiveViewModel = koinInject()
     val callbackManager = CallbackManager.Factory.create()
     val loginManager = LoginManager.getInstance()
     val context = LocalContext.current
@@ -37,7 +40,7 @@ fun FacebookProfileButton() {
                 }
 
                 override fun onSuccess(result: LoginResult) {
-                    getFBProfileData(result,goLiveVm)
+                    getFBProfileData(result)
                 }
             })
         onDispose {
@@ -46,14 +49,15 @@ fun FacebookProfileButton() {
         }
     }
 
+    //listOf("email","public_profile","publish_video","pages_read_engagement","pages_manage_posts","pages_show_list")
     loginManager.logIn(
         context as ActivityResultRegistryOwner,
         callbackManager,
-        listOf("email")
+        listOf("email","public_profile")
     )
 }
 
-private fun getFBProfileData(loginResult: LoginResult, goLiveVm: GoLiveViewModel) {
+private fun getFBProfileData(loginResult: LoginResult) {
     val request = GraphRequest.newMeRequest(loginResult.accessToken) { info, response ->
         Log.e("myFb info", info.toString())
 
@@ -67,8 +71,21 @@ private fun getFBProfileData(loginResult: LoginResult, goLiveVm: GoLiveViewModel
                 val email = if (it.has("email")) it.getString("email") else ""
                 val fullName = "$firstName $lastName"
 
-                val profile = SMProfile(fullName, profilePicture, email, loginResult.accessToken.token, SocialMediaInfo.FACEBOOK)
-                goLiveVm.saveFbProfile(profile)
+                val profile = SMProfile(
+                    fullName,
+                    profilePicture,
+                    email,
+                    loginResult.accessToken.token,
+                    SocialMediaInfo.FACEBOOK
+                )
+
+                // get refresh token if expire
+                // get pages using accessToken
+
+                // Send an event
+                CoroutineScope(Dispatchers.Main).launch {
+                    AppEventBus.sendEvent(AppEvent.SaveSMProfile(profile))
+                }
             }
         } catch (e: Exception) {
             Log.e("myFb infoError", e.toString())

@@ -117,9 +117,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     })
 
                     if (showProfileBottomSheet) {
-                        //FacebookProfileButton()
                         SocialMediaProfileBottomSheet(isConnectedSM)
                     }
+
+                    SocialMediaProfileBottomSheet(isConnectedSM)
                 }
             }
         }
@@ -147,16 +148,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 when (askConnectInfo) {
                     SocialMediaInfo.SOHO -> {}
                     SocialMediaInfo.FACEBOOK -> {
-                        //facebookLogin()
-
-                        /*val intent = Intent(context, FacebookProfileActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        }
-                        context.startActivity(intent)*/
-
-                        /*val smProfile = getSampleFbProfile()
+                        val smProfile = getSampleFbProfile()
                         viewMMain.saveSocialMediaProfile(smProfile)
-                        onShowProfile()*/
+                        onShowProfile()
                     }
 
                     SocialMediaInfo.YOUTUBE -> {
@@ -692,7 +686,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
 
-    private fun getSampleFbProfile(): SocialMediaProfile {
+    fun getSampleFbProfile(): SocialMediaProfile {
         val profile = SMProfile(
             "Jhone Smith",
             "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
