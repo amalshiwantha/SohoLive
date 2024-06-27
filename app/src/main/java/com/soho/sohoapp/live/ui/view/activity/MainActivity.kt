@@ -2,8 +2,10 @@ package com.soho.sohoapp.live.ui.view.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -37,11 +39,14 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
@@ -51,13 +56,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp
 import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.FbTypeView
@@ -82,6 +95,7 @@ import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.screens.golive.DoConnectFacebook
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -89,6 +103,8 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
@@ -108,80 +124,151 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     val isConnectedSM by viewMMain.isSMConnected.collectAsState()
 
+                    var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
+                    val openSmConnectorState by rememberUpdatedState(openSmConnector)
+
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
 
-                    //PreSetup for Social Media
-                    OpenSMConnectModel(viewMMain, smInfoConnect, onShowProfile = {
-                        showProfileBottomSheet = true
+                    /*
+                    * open SM connect button bottomSheet and
+                    * click action -> open connectApi
+                    * */
+                    OpenSMConnectModel(viewMMain, smInfoConnect, doConnectNow = { goConnect ->
+                        when (goConnect) {
+                            SocialMediaInfo.FACEBOOK -> {
+                                openSmConnector = SocialMediaInfo.FACEBOOK
+                            }
+
+                            SocialMediaInfo.YOUTUBE -> {
+                                openSmConnector = SocialMediaInfo.YOUTUBE
+                            }
+
+                            SocialMediaInfo.LINKEDIN -> {
+                                openSmConnector = SocialMediaInfo.LINKEDIN
+                            }
+
+                            else -> {}
+                        }
                     })
 
+                    //Connect SM api
+                    //state change for clickEvents
+                    LaunchedEffect(openSmConnectorState) {
+                        openSmConnector = SocialMediaInfo.NONE
+                    }
+
+                    //open social media connector
+                    when (openSmConnector) {
+                        SocialMediaInfo.SOHO -> {}
+                        SocialMediaInfo.FACEBOOK -> {
+                            DoConnectFacebook()
+
+                            /*val smProfile = getSampleFbProfile()
+                            viewMMain.saveSocialMediaProfile(smProfile)*/
+                        }
+
+                        SocialMediaInfo.YOUTUBE -> {
+                            rememberOnGoogleAuthAction(onTokenReceived = {
+                                println("myGoogle " + it)
+
+                                val smProfile = SMProfile(
+                                    "Yo Tube",
+                                    "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-in-the-style-of-bold-character-designs-image_2697064.jpg",
+                                    "amalskr@youtube.com",
+                                    it
+                                )
+                                val profile = SocialMediaProfile(
+                                    SocialMediaInfo.YOUTUBE,
+                                    mutableListOf(smProfile)
+                                )
+                                viewMMain.saveSocialMediaProfile(profile)
+                                showProfileBottomSheet = true
+                            })
+                        }
+
+                        SocialMediaInfo.LINKEDIN -> {
+                            linkedInLogin()
+
+                            /*val smProfile = SMProfile(
+                                "Jhon Smith",
+                                "https://media.licdn.com/dms/image/D4D12AQGsWiQQo-hEew/article-cover_image-shrink_720_1280/0/1705940048112?e=2147483647&v=beta&t=Dm3TYa8aaImrrYHEksUYyCuPe0mRjKNlrKcNMnKjlXc",
+                                "amalskr@live.com",
+                                "liveask123"
+                            )
+                            val profile = SocialMediaProfile(
+                                SocialMediaInfo.LINKEDIN,
+                                mutableListOf(smProfile)
+                            )
+                            viewMMain.saveSocialMediaProfile(profile)*/
+                        }
+
+                        SocialMediaInfo.NONE -> {}
+                    }
+
+                    //Show Profile BottomSheet for SM connected
                     if (showProfileBottomSheet) {
                         SocialMediaProfileBottomSheet(isConnectedSM)
                     }
-
-                    SocialMediaProfileBottomSheet(isConnectedSM)
                 }
             }
         }
-
-        //CALL THIS INSIDE THE ANDROID VIEW IN JETPACK COMPOSE
-        viewMMain.isOpenFbConnect.observe(this) {
-            /*if (it) {
-                val intent = Intent(context, FacebookProfileActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                context.startActivity(intent)
-            }*/
-        }
     }
 
+    @Composable
+    private fun rememberOnGoogleAuthAction(onTokenReceived: (String) -> Unit): () -> Unit {
+        val launcher = rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            onResult = { result ->
+                val idToken = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    .getResult(ApiException::class.java)
+                    .idToken!!
+                onTokenReceived(idToken)
+            }
+        )
+        val context = LocalContext.current
+        val client = remember {
+            GoogleSignIn.getClient(
+                context,
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestIdToken(SohoLiveApp.context.getString(R.string.gcp_id))
+                    .requestProfile()
+                    .build()
+            )
+        }
+        val coroutineScope = rememberCoroutineScope()
+        return remember {
+            {
+                coroutineScope
+                    .launch {
+                        client.signOut().await()
+                        launcher.launch(client.signInIntent)
+                    }
+            }
+        }
+    }
 
     @Composable
     private fun OpenSMConnectModel(
         viewMMain: MainViewModel,
         smInfoConnect: SocialMediaInfo,
-        onShowProfile: () -> Unit
+        doConnectNow: (SocialMediaInfo) -> Unit
     ) {
         if (smInfoConnect.name != SocialMediaInfo.NONE.name) {
             SocialMediaConnectBottomSheet(smInfoConnect, onConnect = { askConnectInfo ->
                 when (askConnectInfo) {
                     SocialMediaInfo.SOHO -> {}
                     SocialMediaInfo.FACEBOOK -> {
-                        val smProfile = getSampleFbProfile()
-                        viewMMain.saveSocialMediaProfile(smProfile)
-                        onShowProfile()
+                        doConnectNow(SocialMediaInfo.FACEBOOK)
                     }
 
                     SocialMediaInfo.YOUTUBE -> {
-                        val smProfile = SMProfile(
-                            "Yo Tube",
-                            "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-in-the-style-of-bold-character-designs-image_2697064.jpg",
-                            "amalskr@youtube.com",
-                            "youask123"
-                        )
-                        val profile = SocialMediaProfile(
-                            SocialMediaInfo.YOUTUBE,
-                            mutableListOf(smProfile)
-                        )
-                        viewMMain.saveSocialMediaProfile(profile)
-                        onShowProfile()
+                        doConnectNow(SocialMediaInfo.YOUTUBE)
                     }
 
                     SocialMediaInfo.LINKEDIN -> {
-                        //linkedInLogin()
-                        val smProfile = SMProfile(
-                            "Jhon Smith",
-                            "https://media.licdn.com/dms/image/D4D12AQGsWiQQo-hEew/article-cover_image-shrink_720_1280/0/1705940048112?e=2147483647&v=beta&t=Dm3TYa8aaImrrYHEksUYyCuPe0mRjKNlrKcNMnKjlXc",
-                            "amalskr@live.com",
-                            "liveask123"
-                        )
-                        val profile = SocialMediaProfile(
-                            SocialMediaInfo.LINKEDIN,
-                            mutableListOf(smProfile)
-                        )
-                        viewMMain.saveSocialMediaProfile(profile)
-                        onShowProfile()
+                        doConnectNow(SocialMediaInfo.LINKEDIN)
                     }
 
                     else -> {}
@@ -190,6 +277,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 viewMMain.updateSocialMediaState(SocialMediaInfo.NONE)
             })
         }
+    }
+
+    private fun handleSignInResult(task: Task<GoogleSignInAccount>) {
+        TODO("Not yet implemented")
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -596,6 +687,17 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     /*
     * All of social media connection action will fire on Here, called from step #3 GoLive Screen to here
     * */
+
+    //Google
+    private fun getGoogleLoginAuth(): GoogleSignInClient {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestIdToken(getString(R.string.gcp_id))
+            .requestId()
+            .requestProfile()
+            .build()
+        return GoogleSignIn.getClient(this, gso)
+    }
 
     //LinkedIn
     private fun linkedInLogin() {

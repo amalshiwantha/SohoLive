@@ -4,6 +4,9 @@
     <string name="fb_login_protocol_scheme">fb821779222947839</string>
     <string name="fb_client_token">3de6e9cba4cf3e1367c5b3479028150d</string>
 
+    <!--google-->
+    <string name="gcp_id">553313394578–6uuv2ohetikvrqkb6nekri7en4qbca74.example.com</string>
+
     <!--MainApp-->
     <string name="app_name">SohoLive</string>
     <string name="pre_access_msg">Multi-stream live auctions and home inspections on your socials</string>

@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun FacebookProfileButton() {
+fun DoConnectFacebook() {
     val callbackManager = CallbackManager.Factory.create()
     val loginManager = LoginManager.getInstance()
     val context = LocalContext.current

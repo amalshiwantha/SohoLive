@@ -105,6 +105,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation("com.google.android.gms:play-services-auth:19.2.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

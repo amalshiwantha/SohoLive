@@ -135,9 +135,6 @@ fun GoLiveScreen(
     var isNowSelected by remember { mutableStateOf(false) }
     var isDontShowProfile by remember { mutableStateOf(false) }
 
-    var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
-    val openSmConnectorState by rememberUpdatedState(openSmConnector)
-
     LaunchedEffect(Unit) {
         println("myFB Reloaded " + savedApiResults)
         if (savedApiResults == null) {
@@ -146,23 +143,6 @@ fun GoLiveScreen(
                 stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
             })
         }
-    }
-
-    //state change for clickEvents
-    LaunchedEffect(openSmConnectorState) {
-        openSmConnector = SocialMediaInfo.NONE
-    }
-
-    //open social media connector
-    when (openSmConnector) {
-        SocialMediaInfo.SOHO -> {}
-        SocialMediaInfo.FACEBOOK -> {
-            FacebookProfileButton()
-        }
-
-        SocialMediaInfo.YOUTUBE -> {}
-        SocialMediaInfo.LINKEDIN -> {}
-        SocialMediaInfo.NONE -> {}
     }
 
     //if SM connect success then open model
@@ -231,8 +211,7 @@ fun GoLiveScreen(
                                     goLiveVm.updateAgentSelectionList(selectedAgent)
                                 },
                                 onSMItemClicked = { selectedSM ->
-                                    openSmConnector = selectedSM
-                                    //viewMMain.updateSocialMediaState(selectedSM)
+                                    viewMMain.updateSocialMediaState(selectedSM)
                                 }
                             )
                         }
