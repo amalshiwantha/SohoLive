@@ -2,10 +2,8 @@ package com.soho.sohoapp.live.ui.view.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -45,7 +43,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -56,21 +53,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.SohoLiveApp
 import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.FbTypeView
@@ -103,8 +92,6 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
@@ -169,10 +156,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
 
                         SocialMediaInfo.YOUTUBE -> {
-                            rememberOnGoogleAuthAction(onTokenReceived = {
-                                println("myGoogle " + it)
-
-                                val smProfile = SMProfile(
+                            /*val smProfile = SMProfile(
                                     "Yo Tube",
                                     "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-in-the-style-of-bold-character-designs-image_2697064.jpg",
                                     "amalskr@youtube.com",
@@ -183,8 +167,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                                     mutableListOf(smProfile)
                                 )
                                 viewMMain.saveSocialMediaProfile(profile)
-                                showProfileBottomSheet = true
-                            })
+                                showProfileBottomSheet = true*/
                         }
 
                         SocialMediaInfo.LINKEDIN -> {
@@ -207,44 +190,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     }
 
                     //Show Profile BottomSheet for SM connected
-                    if(isConnectedSM.smInfo.name != SocialMediaInfo.NONE.name){
+                    if (isConnectedSM.smInfo.name != SocialMediaInfo.NONE.name) {
                         SocialMediaProfileBottomSheet(isConnectedSM)
                     }
                 }
-            }
-        }
-    }
-
-    @Composable
-    private fun rememberOnGoogleAuthAction(onTokenReceived: (String) -> Unit): () -> Unit {
-        val launcher = rememberLauncherForActivityResult(
-            ActivityResultContracts.StartActivityForResult(),
-            onResult = { result ->
-                val idToken = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    .getResult(ApiException::class.java)
-                    .idToken!!
-                onTokenReceived(idToken)
-            }
-        )
-        val context = LocalContext.current
-        val client = remember {
-            GoogleSignIn.getClient(
-                context,
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .requestIdToken(SohoLiveApp.context.getString(R.string.gcp_id))
-                    .requestProfile()
-                    .build()
-            )
-        }
-        val coroutineScope = rememberCoroutineScope()
-        return remember {
-            {
-                coroutineScope
-                    .launch {
-                        client.signOut().await()
-                        launcher.launch(client.signInIntent)
-                    }
             }
         }
     }
@@ -279,9 +228,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
-    private fun handleSignInResult(task: Task<GoogleSignInAccount>) {
-        TODO("Not yet implemented")
-    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -689,15 +635,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     * */
 
     //Google
-    private fun getGoogleLoginAuth(): GoogleSignInClient {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .requestIdToken(getString(R.string.gcp_id))
-            .requestId()
-            .requestProfile()
-            .build()
-        return GoogleSignIn.getClient(this, gso)
-    }
 
     //LinkedIn
     private fun linkedInLogin() {
