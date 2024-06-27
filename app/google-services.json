@@ -133,6 +133,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "929774443290-9n4pen2ntfq98a3detothoddfvc5krsv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.soho.sohoapp.live",
+            "certificate_hash": "cae827ed18dcf2268d1944076d3ee7abc4c133e1"
+          }
+        },
+        {
           "client_id": "929774443290-2b426hk5p3l3620dnuo1j9kfivl8l7gh.apps.googleusercontent.com",
           "client_type": 3
         }

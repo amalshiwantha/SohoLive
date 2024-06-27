@@ -99,6 +99,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         super.onCreate(savedInstanceState)
 
         val viewMMain: MainViewModel by viewModels()
+        //val viewMSignIn: SignInViewModel by viewModels()
         enableEdgeToEdge()
 
         setContent {

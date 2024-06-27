@@ -10,5 +10,7 @@ data class SignInState(
     val isLoginSuccess: Boolean = false,
     val loadingState: ProgressBarState = ProgressBarState.Idle,
     val alertState: AlertState = AlertState.Idle,
-    val errorStates: Map<FieldType, String> = emptyMap()
+    val errorStates: Map<FieldType, String> = emptyMap(),
+    val isSignInSuccessful: Boolean = false,
+    val signInError: String? = null
 )

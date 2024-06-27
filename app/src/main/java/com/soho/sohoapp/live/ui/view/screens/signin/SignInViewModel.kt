@@ -102,7 +102,7 @@ class SignInViewModel(
                 userPref.setLoginState(true)
 
                 userPref.userProfile.collect { userProfile ->
-                    println("myProf "+userProfile)
+                    println("myProf " + userProfile)
                 }
             }
         }
