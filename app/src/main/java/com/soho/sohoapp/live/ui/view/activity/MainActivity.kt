@@ -207,7 +207,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     }
 
                     //Show Profile BottomSheet for SM connected
-                    if (showProfileBottomSheet) {
+                    if(isConnectedSM.smInfo.name != SocialMediaInfo.NONE.name){
                         SocialMediaProfileBottomSheet(isConnectedSM)
                     }
                 }
