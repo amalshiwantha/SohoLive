@@ -38,7 +38,8 @@ fun AuthScreen() {
         rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
             try {
                 val gsa = task?.getResult(ApiException::class.java)
-                println("myGuser "+gsa)
+                println("myGuser "+gsa?.photoUrl)
+                println("myGuser "+gsa?.email)
 
                 if (gsa != null) {
                     mSignInViewModel.fetchSignInUser(gsa.email, gsa.displayName)
