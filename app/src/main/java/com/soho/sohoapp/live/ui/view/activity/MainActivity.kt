@@ -110,13 +110,13 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
 
-
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
-                    val isConnectedSM by viewMMain.isSMConnected.collectAsState()
-                    val state by viewMMain.state.collectAsStateWithLifecycle()
-
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
+
+                    val state by viewMMain.state.collectAsStateWithLifecycle()
+                    val stateSmConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
+                    var isShowSMConnectedModel by remember { mutableStateOf(false) }
 
 
                     ChangeSystemTrayColor()
@@ -169,19 +169,32 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                                 mutableListOf(smProfile)
                             )
 
-                            viewMMain.resetState()
                             viewMMain.saveSocialMediaProfile(profile)
+                            viewMMain.resetState()
                         }
                     }
+
+                    //Show Profile BottomSheet for SM connected
+                    LaunchedEffect(stateSmConnected) {
+                        if (stateSmConnected.smInfo.name != SocialMediaInfo.NONE.name) {
+                            isShowSMConnectedModel = true
+                        }
+                    }
+
+                    SocialMediaProfileBottomSheet(
+                        stateSmConnected,
+                        isShowSMConnectedModel,
+                        onClose = {
+                            isShowSMConnectedModel = it
+                            viewMMain.resetViewModelState()
+                        })
+
 
                     //open social media connector
                     when (openSmConnector) {
                         SocialMediaInfo.SOHO -> {}
                         SocialMediaInfo.FACEBOOK -> {
                             DoConnectFacebook()
-
-                            /*val smProfile = getSampleFbProfile()
-                            viewMMain.saveSocialMediaProfile(smProfile)*/
                         }
 
                         SocialMediaInfo.YOUTUBE -> {
@@ -208,9 +221,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                         SocialMediaInfo.NONE -> {}
                     }
-
-                    //Show Profile BottomSheet for SM connected
-                    SocialMediaProfileBottomSheet(isConnectedSM)
                 }
             }
         }
@@ -276,24 +286,25 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun SocialMediaProfileBottomSheet(smProfile: SocialMediaProfile) {
-        if (smProfile.smInfo.name != SocialMediaInfo.NONE.name) {
-            val bottomSheetState = rememberModalBottomSheetState()
-            var showBottomSheet by remember { mutableStateOf(true) }
+    private fun SocialMediaProfileBottomSheet(
+        smProfile: SocialMediaProfile,
+        isShow: Boolean,
+        onClose: (Boolean) -> Unit
+    ) {
+        val bottomSheetState = rememberModalBottomSheetState()
 
-            if (showBottomSheet) {
-                ModalBottomSheet(
-                    containerColor = BottomBarBg,
-                    dragHandle = { DragHandle(color = BottomSheetDrag) },
-                    onDismissRequest = { showBottomSheet = false },
-                    sheetState = bottomSheetState
-                ) {
-                    ProfileContentBottomSheet(smProfile, onDone = {
-                        showBottomSheet = false
-                    }, onDisconnect = {
-                        showBottomSheet = false
-                    })
-                }
+        if (isShow) {
+            ModalBottomSheet(
+                containerColor = BottomBarBg,
+                dragHandle = { DragHandle(color = BottomSheetDrag) },
+                onDismissRequest = { onClose.invoke(false) },
+                sheetState = bottomSheetState
+            ) {
+                ProfileContentBottomSheet(smProfile, onDone = {
+                    onClose.invoke(false)
+                }, onDisconnect = {
+                    onClose.invoke(false)
+                })
             }
         }
     }

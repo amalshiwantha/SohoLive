@@ -1,7 +1,5 @@
 package com.soho.sohoapp.live.ui.view.activity
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,12 +22,9 @@ class MainViewModel : ViewModel() {
         MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()))
     val isSMConnected: StateFlow<SocialMediaProfile> = _isSMConnected.asStateFlow()
 
-    private var _userStateGoogle = MutableLiveData<GoogleUserModel>()
-    val googleUser: LiveData<GoogleUserModel> = _userStateGoogle
-
-    private val _isGoogleConnected = MutableStateFlow(false)
-    val isGoogleConnected: StateFlow<Boolean> = _isGoogleConnected.asStateFlow()
-
+    private val _stateIsSMConnected =
+        MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()))
+    val stateIsSMConnected = _stateIsSMConnected.asStateFlow()
 
     private val _state = MutableStateFlow(GoogleUserModel())
     val state = _state.asStateFlow()
@@ -40,7 +35,9 @@ class MainViewModel : ViewModel() {
     }
 
     fun saveSocialMediaProfile(smProfile: SocialMediaProfile) {
-        _isSMConnected.value = smProfile
+        viewModelScope.launch {
+            _stateIsSMConnected.update { smProfile }
+        }
     }
 
     //Google
@@ -62,7 +59,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun resetViewModelState() {
-        _isSMConnected.update { SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()) }
+        _stateIsSMConnected.update { SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()) }
     }
 
     fun googleSignOut() {
