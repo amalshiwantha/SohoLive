@@ -114,8 +114,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
 
-                    val state by viewMMain.stateConnectedProfile.collectAsStateWithLifecycle()
-                    val stateSmConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
+                    val stateSMProfile by viewMMain.stateConnectedProfile.collectAsStateWithLifecycle()
+                    val stateSMConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
 
 
@@ -154,28 +154,22 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //Google Sign In
                     val gAuth = doConnectGoogle(viewMMain)
 
-                    LaunchedEffect(key1 = state.isConnected) {
-                        if (state.isConnected) {
-
-                            val profile = SocialMediaProfile(
-                                state.type,
-                                state
-                            )
-
-                            viewMMain.saveSocialMediaProfile(profile)
+                    LaunchedEffect(key1 = stateSMProfile) {
+                        if (stateSMProfile.profile.isConnected) {
+                            viewMMain.saveSocialMediaProfile(stateSMProfile)
                             viewMMain.resetState()
                         }
                     }
 
                     //Show Profile BottomSheet for SM connected
-                    LaunchedEffect(stateSmConnected) {
-                        if (stateSmConnected.smInfo.name != SocialMediaInfo.NONE.name) {
+                    LaunchedEffect(stateSMConnected) {
+                        if (stateSMConnected.smInfo.name != SocialMediaInfo.NONE.name) {
                             isShowSMConnectedModel = true
                         }
                     }
 
                     SocialMediaProfileBottomSheet(
-                        stateSmConnected,
+                        stateSMConnected,
                         isShowSMConnectedModel,
                         onClose = {
                             isShowSMConnectedModel = it
