@@ -74,11 +74,22 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
 
     //save SM profiles in Local
     private fun saveSMProfileList(smProfile: SocialMediaProfile) {
-        /*viewModelScope.launch {
-            dataStore.saveConnectedSMProfile(it)
-            dataStore.connectedSMProfile.collect { savedSmProfile ->
-                println("savedSMProfile " + savedSmProfile)
+        viewModelScope.launch {
+
+            dataStore.connectedSMProfile.collect { profileList ->
+                profileList?.let {
+                    println("myProfile bfr " + it)
+
+                    val list = it.smProfileList
+                    list.add(smProfile)
+                    it.copy(smProfileList = list)
+
+                    println("myProfile end " + it)
+                }
             }
-        }*/
+
+            //dataStore.saveConnectedSMProfile(it)
+
+        }
     }
 }
