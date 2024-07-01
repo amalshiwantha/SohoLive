@@ -7,10 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -35,39 +31,29 @@ import kotlinx.coroutines.launch
 //Google Auth
 @Composable
 fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int, Task<GoogleSignInAccount>?> {
-    val state = viewMMain.googleUser.observeAsState()
-    val user = state.value
-
-    val isError = rememberSaveable { mutableStateOf(false) }
 
     val authResultLauncher =
         rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
             try {
                 val gsa = task?.getResult(ApiException::class.java)
-                println("myGuser " + gsa?.photoUrl)
-                println("myGuser " + gsa?.email)
 
                 if (gsa != null) {
-                    viewMMain.fetchGoogleUser(gsa.email, gsa.displayName)
+                    val gUser = GoogleUserModel(
+                        gsa.displayName,
+                        gsa.email,
+                        gsa.photoUrl.toString(),
+                        gsa.idToken,
+                        true
+                    )
+                    viewMMain.fetchGoogleUser(gUser)
                     viewMMain.googleSignOut()
                 } else {
-                    isError.value = true
+                    //show error on gAuth
                 }
             } catch (e: ApiException) {
                 println("myGuser error " + e.toString())
             }
         }
-
-    //Check onLoad Google Auth state
-    if (viewMMain.googleUser.value != null) {
-        LaunchedEffect(key1 = Unit) {
-            val guser = GoogleUserModel(
-                email = user?.email,
-                name = user?.name,
-            )
-            println("myGuser Done SignedIn " + guser)
-        }
-    }
 
     return authResultLauncher
 }

@@ -40,7 +40,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
@@ -110,9 +110,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
 
-                    var showProfileBottomSheet by remember { mutableStateOf(false) }
+
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     val isConnectedSM by viewMMain.isSMConnected.collectAsState()
+                    val state by viewMMain.state.collectAsStateWithLifecycle()
 
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
@@ -120,6 +121,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
+
 
                     /*
                     * open SM connect button bottomSheet and
@@ -152,6 +154,26 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //Google Sign In
                     val gAuth = doConnectGoogle(viewMMain)
 
+                    LaunchedEffect(key1 = state.isLoggedIn) {
+                        if (state.isLoggedIn) {
+
+                            val smProfile = SMProfile(
+                                fullName = state.name,
+                                imageUrl = state.image,
+                                email = state.email,
+                                token = state.token
+                            )
+
+                            val profile = SocialMediaProfile(
+                                SocialMediaInfo.YOUTUBE,
+                                mutableListOf(smProfile)
+                            )
+
+                            viewMMain.resetState()
+                            viewMMain.saveSocialMediaProfile(profile)
+                        }
+                    }
+
                     //open social media connector
                     when (openSmConnector) {
                         SocialMediaInfo.SOHO -> {}
@@ -166,19 +188,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             LaunchedEffect(key1 = gAuth) {
                                 gAuth.launch(1)
                             }
-
-                            /*val smProfile = SMProfile(
-                                    "Yo Tube",
-                                    "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-in-the-style-of-bold-character-designs-image_2697064.jpg",
-                                    "amalskr@youtube.com",
-                                    it
-                                )
-                                val profile = SocialMediaProfile(
-                                    SocialMediaInfo.YOUTUBE,
-                                    mutableListOf(smProfile)
-                                )
-                                viewMMain.saveSocialMediaProfile(profile)
-                                showProfileBottomSheet = true*/
                         }
 
                         SocialMediaInfo.LINKEDIN -> {
@@ -201,9 +210,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     }
 
                     //Show Profile BottomSheet for SM connected
-                    if (isConnectedSM.smInfo.name != SocialMediaInfo.NONE.name) {
-                        SocialMediaProfileBottomSheet(isConnectedSM)
-                    }
+                    SocialMediaProfileBottomSheet(isConnectedSM)
                 }
             }
         }
@@ -594,7 +601,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 ) {
                     Text400_14sp(info = "Connected to $socialMediaName as")
                     SpacerVertical(size = 8.dp)
-                    Text700_16sp(title = smProfile.fullName)
+                    smProfile.fullName?.let { Text700_16sp(title = it) }
                 }
             }
         }

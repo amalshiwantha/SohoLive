@@ -105,6 +105,7 @@ dependencies {
 
     //Google
     implementation("com.google.android.gms:play-services-auth:20.4.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
 
     /*implementation(libs.androidx.appcompat)
     implementation(libs.material)*/

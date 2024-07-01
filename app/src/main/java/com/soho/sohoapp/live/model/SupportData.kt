@@ -14,10 +14,10 @@ data class SocialMediaProfile(
 
 @Serializable
 data class SMProfile(
-    val fullName: String,
-    val imageUrl: String,
-    val email: String,
-    val token: String,
+    val fullName: String? = null,
+    val imageUrl: String? = null,
+    val email: String? = null,
+    val token: String? = null,
     val type: SocialMediaInfo = SocialMediaInfo.NONE
 ) {
     constructor() : this(

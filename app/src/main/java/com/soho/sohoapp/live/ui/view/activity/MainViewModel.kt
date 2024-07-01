@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.soho.sohoapp.live.SohoLiveApp
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.SocialMediaProfile
@@ -14,6 +13,7 @@ import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleUserModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -27,6 +27,12 @@ class MainViewModel : ViewModel() {
     private var _userStateGoogle = MutableLiveData<GoogleUserModel>()
     val googleUser: LiveData<GoogleUserModel> = _userStateGoogle
 
+    private val _isGoogleConnected = MutableStateFlow(false)
+    val isGoogleConnected: StateFlow<Boolean> = _isGoogleConnected.asStateFlow()
+
+
+    private val _state = MutableStateFlow(GoogleUserModel())
+    val state = _state.asStateFlow()
 
     //update LiveData
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
@@ -38,23 +44,25 @@ class MainViewModel : ViewModel() {
     }
 
     //Google
-    fun fetchGoogleUser(email: String?, name: String?) {
+    fun fetchGoogleUser(gUser: GoogleUserModel) {
         viewModelScope.launch {
-            _userStateGoogle.value = GoogleUserModel(
-                email = email,
-                name = name,
-            )
+            _state.update {
+                it.copy(
+                    name = gUser.name,
+                    email = gUser.email,
+                    image = gUser.image,
+                    isLoggedIn = gUser.isLoggedIn
+                )
+            }
         }
     }
 
-    private fun checkGoogleSigned() {
-        val gsa = GoogleSignIn.getLastSignedInAccount(SohoLiveApp.context)
-        if (gsa != null) {
-            _userStateGoogle.value = GoogleUserModel(
-                email = gsa.email,
-                name = gsa.displayName,
-            )
-        }
+    fun resetState() {
+        _state.update { GoogleUserModel() }
+    }
+
+    fun resetViewModelState() {
+        _isSMConnected.update { SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()) }
     }
 
     fun googleSignOut() {
@@ -62,6 +70,7 @@ class MainViewModel : ViewModel() {
         val googleSignInClient = GoogleSignIn.getClient(context, gso)
         googleSignInClient.signOut().addOnCompleteListener { task ->
             if (task.isSuccessful) {
+                //_isGoogleConnected.value = false
                 println("myGuser signed out successfully.")
             } else {
                 println("myGuser Sign out failed.")
