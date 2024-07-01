@@ -19,9 +19,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.Profile
+import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
-import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleUserModel
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import kotlinx.coroutines.CoroutineScope
@@ -38,14 +38,15 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
                 val gsa = task?.getResult(ApiException::class.java)
 
                 if (gsa != null) {
-                    val gUser = GoogleUserModel(
-                        gsa.displayName,
-                        gsa.email,
-                        gsa.photoUrl.toString(),
-                        gsa.idToken,
-                        true
+                    val profileGoogle = Profile(
+                        fullName = gsa.displayName,
+                        imageUrl = gsa.photoUrl.toString(),
+                        email = gsa.email,
+                        token = gsa.idToken,
+                        type = SocialMediaInfo.YOUTUBE
                     )
-                    viewMMain.fetchGoogleUser(gUser)
+                    val smProfile = SocialMediaProfile(SocialMediaInfo.YOUTUBE, profileGoogle)
+                    viewMMain.fetchGoogleUser(smProfile)
                     viewMMain.googleSignOut()
                 } else {
                     //show error on gAuth
