@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -85,6 +86,7 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.DoConnectFacebook
+import com.soho.sohoapp.live.ui.view.screens.golive.doConnectGoogle
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -99,7 +101,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         super.onCreate(savedInstanceState)
 
         val viewMMain: MainViewModel by viewModels()
-        //val viewMSignIn: SignInViewModel by viewModels()
+
         enableEdgeToEdge()
 
         setContent {
@@ -114,6 +116,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
+
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
@@ -146,6 +149,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         openSmConnector = SocialMediaInfo.NONE
                     }
 
+                    //Google Sign In
+                    val gAuth = doConnectGoogle(viewMMain)
+
                     //open social media connector
                     when (openSmConnector) {
                         SocialMediaInfo.SOHO -> {}
@@ -157,6 +163,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
 
                         SocialMediaInfo.YOUTUBE -> {
+                            LaunchedEffect(key1 = gAuth) {
+                                gAuth.launch(1)
+                            }
+
                             /*val smProfile = SMProfile(
                                     "Yo Tube",
                                     "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-in-the-style-of-bold-character-designs-image_2697064.jpg",

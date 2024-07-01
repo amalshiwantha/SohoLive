@@ -2,9 +2,15 @@ package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -12,15 +18,61 @@ import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.SMProfile
+import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
+import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleUserModel
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+//Google Auth
+@Composable
+fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int, Task<GoogleSignInAccount>?> {
+    val state = viewMMain.googleUser.observeAsState()
+    val user = state.value
 
+    val isError = rememberSaveable { mutableStateOf(false) }
+
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
+            try {
+                val gsa = task?.getResult(ApiException::class.java)
+                println("myGuser " + gsa?.photoUrl)
+                println("myGuser " + gsa?.email)
+
+                if (gsa != null) {
+                    viewMMain.fetchGoogleUser(gsa.email, gsa.displayName)
+                    viewMMain.googleSignOut()
+                } else {
+                    isError.value = true
+                }
+            } catch (e: ApiException) {
+                println("myGuser error " + e.toString())
+            }
+        }
+
+    //Check onLoad Google Auth state
+    if (viewMMain.googleUser.value != null) {
+        LaunchedEffect(key1 = Unit) {
+            val guser = GoogleUserModel(
+                email = user?.email,
+                name = user?.name,
+            )
+            println("myGuser Done SignedIn " + guser)
+        }
+    }
+
+    return authResultLauncher
+}
+
+//Facebook
 @Composable
 fun DoConnectFacebook() {
     val callbackManager = CallbackManager.Factory.create()
@@ -53,7 +105,7 @@ fun DoConnectFacebook() {
     loginManager.logIn(
         context as ActivityResultRegistryOwner,
         callbackManager,
-        listOf("email","public_profile")
+        listOf("email", "public_profile")
     )
 }
 

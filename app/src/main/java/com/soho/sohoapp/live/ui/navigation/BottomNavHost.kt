@@ -13,7 +13,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
-import com.soho.sohoapp.live.ui.view.screens.signin.gauth.AuthScreen
+
 
 @Composable
 fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel) {
@@ -25,8 +25,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         navController = navController, startDestination = NavigationPath.SCHEDULED.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
-            //HomeContent(navController, "SCHEDULED")
-            AuthScreen()
+            HomeContent(navController, "SCHEDULED")
         }
         composable(route = NavigationPath.GO_LIVE.name) {
             GoLiveScreen(navController, mainViewModel, onGoLiveResult, onGoLiveTsResult,
