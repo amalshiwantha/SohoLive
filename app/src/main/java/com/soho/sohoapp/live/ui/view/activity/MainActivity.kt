@@ -94,13 +94,12 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
+import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val viewMMain: MainViewModel by viewModels()
 
         enableEdgeToEdge()
 
@@ -109,6 +108,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 Surface(
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
+
+                    val viewMMain: MainViewModel = koinInject()
 
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }

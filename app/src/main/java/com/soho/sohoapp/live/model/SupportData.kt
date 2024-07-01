@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 //this if for save in local
 @Serializable
-data class ConnectedSocialProfile(val smProfile: SocialMediaProfile)
+data class ConnectedSocialProfile(val smProfileList: MutableList<SocialMediaProfile>)
 
 @Serializable
 data class SocialMediaProfile(

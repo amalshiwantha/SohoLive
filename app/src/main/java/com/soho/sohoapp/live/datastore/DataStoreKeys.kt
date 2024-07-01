@@ -7,4 +7,5 @@ object DataStoreKeys {
     val PREF_KEY_LOGIN_STATE = booleanPreferencesKey("login_state")
     val PREF_KEY_USER_PROFILE = stringPreferencesKey("user_profile")
     val PREF_KEY_USER_PROFILE_FB = stringPreferencesKey("user_fb_profile")
+    val PREF_KEY_USER_SM_PROFILES = stringPreferencesKey("social_media_user_profiles")
 }

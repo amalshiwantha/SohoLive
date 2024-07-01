@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
+import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleUserModel
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _isCallSMConnect = MutableStateFlow(SocialMediaInfo.NONE)
     val isCallSMConnect: StateFlow<SocialMediaInfo> = _isCallSMConnect.asStateFlow()
 

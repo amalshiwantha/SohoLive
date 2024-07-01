@@ -33,5 +33,5 @@ val appModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { SignInViewModel(get(),get()) }
     viewModel { GoLiveViewModel(get(),get()) }
-    viewModel { MainViewModel() }
+    viewModel { MainViewModel(get()) }
 }

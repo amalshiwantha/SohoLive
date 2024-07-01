@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.model.UiState
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
@@ -144,6 +145,6 @@ fun HomeContent(navController: NavController, title: String) {
 fun PreviewHome() {
     HomeScreen(
         navControllerHome = NavHostController(LocalContext.current),
-        viewMMain = MainViewModel()
+        viewMMain = MainViewModel(dataStore = AppDataStoreManager(LocalContext.current))
     )
 }
