@@ -68,20 +68,37 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
 
     //save SM profiles in Local
     private fun saveSMProfileList(smProfile: SocialMediaProfile) {
+        var isFirstItem = false
+
         viewModelScope.launch {
             dataStore.connectedSMProfile.collect { profileList ->
                 profileList?.let { profList ->
                     val list = profList.smProfileList
-                    val hasStored = list.find { it.smInfo == smProfile.smInfo }
+                    //val hasStored = list.find { it.smInfo == smProfile.smInfo }
+                    val index = list.indexOfFirst { it.smInfo == smProfile.smInfo }
 
-                    if (hasStored == null) {
-                        list.add(smProfile)
-                        profList.copy(smProfileList = list)
+                    /*
+                    * if hasStored have to remove current item and add new  smProfile
+                    * else have to add new item
+                    * */
+
+                    if (!isFirstItem) {
+                        isFirstItem = false
+                        if (index == -1) {
+                            list.add(smProfile)
+                            profList.copy(smProfileList = list)
+                        } else {
+                            list.removeAt(index)
+                            list.add(smProfile)
+                            profileList.copy(smProfileList = list)
+                        }
                     }
 
-                    getSavedSMProfile(smProfile,profList)
+
+                    getSavedSMProfile(smProfile, profList)
 
                 } ?: run {
+                    isFirstItem = true
                     val freshList = mutableListOf<SocialMediaProfile>()
                     freshList.add(smProfile)
 

@@ -17,7 +17,9 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.CategoryInfo
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
@@ -69,10 +71,28 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                 override fun onSuccess(result: LoginResult) {
                     getFBProfileData(result, onProfileFound = { fbProfile ->
                         fbProfile?.let {
-                            val smProfile = SocialMediaProfile(SocialMediaInfo.FACEBOOK, it)
+                            val timeLine = getFBTimeLine(it)
+                            val smProfile = SocialMediaProfile(
+                                smInfo = SocialMediaInfo.FACEBOOK,
+                                profile = it,
+                                timelines = timeLine
+                            )
                             viewMMain.fetchGoogleUser(smProfile)
+                        } ?: run {
+                            println("myFB Logged but Error")
                         }
                     })
+                }
+
+                private fun getFBTimeLine(it: Profile): MutableList<CategoryInfo> {
+
+                    return mutableListOf(
+                        CategoryInfo(
+                            1, CategoryType.TIMELINE,
+                            it.fullName ?: "", "", it.imageUrl ?: ""
+                        )
+                    )
+
                 }
 
                 override fun onCancel() {
@@ -124,11 +144,6 @@ private fun getFBProfileData(loginResult: LoginResult, onProfileFound: (Profile?
 
                 // get refresh token if expire
                 // get pages using accessToken
-
-                // Send an event
-                /*CoroutineScope(Dispatchers.Main).launch {
-                    AppEventBus.sendEvent(AppEvent.SaveSMProfile(profile))
-                }*/
             }
         } catch (e: Exception) {
             Log.e("myFb infoError", e.toString())
