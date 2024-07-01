@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
-import com.soho.sohoapp.live.model.SMProfile
+import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
@@ -27,8 +27,8 @@ class GoLiveViewModel(
 
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
 
-    private val _updatedFbProfile = MutableStateFlow(SMProfile())
-    val updatedFbProfile: StateFlow<SMProfile> = _updatedFbProfile
+    private val _updatedFbProfile = MutableStateFlow(Profile())
+    val updatedFbProfile: StateFlow<Profile> = _updatedFbProfile
 
     init {
         appEventObserver()
@@ -39,7 +39,7 @@ class GoLiveViewModel(
             AppEventBus.events.collect { event ->
                 when (event) {
                     is AppEvent.SaveSMProfile -> {
-                        userPref.saveFBProfile(event.smProfile)
+                        userPref.saveFBProfile(event.profile)
 
                         userPref.facebookProfile.collect { fbProfile ->
                             fbProfile?.let {

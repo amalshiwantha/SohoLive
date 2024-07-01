@@ -18,7 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.soho.sohoapp.live.enums.SocialMediaInfo
-import com.soho.sohoapp.live.model.SMProfile
+import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleUserModel
@@ -109,7 +109,7 @@ private fun getFBProfileData(loginResult: LoginResult) {
                 val email = if (it.has("email")) it.getString("email") else ""
                 val fullName = "$firstName $lastName"
 
-                val profile = SMProfile(
+                val profile = Profile(
                     fullName,
                     profilePicture,
                     email,

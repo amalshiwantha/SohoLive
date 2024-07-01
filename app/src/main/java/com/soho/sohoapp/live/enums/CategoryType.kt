@@ -1,5 +1,5 @@
 package com.soho.sohoapp.live.enums
 
-enum class FBListType{
+enum class CategoryType{
     TIMELINE, PAGES, GROUPS
 }

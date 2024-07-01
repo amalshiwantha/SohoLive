@@ -71,4 +71,14 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     }
     //Google End
 
+
+    //save SM profiles in Local
+    private fun saveSMProfileList(smProfile: SocialMediaProfile) {
+        /*viewModelScope.launch {
+            dataStore.saveConnectedSMProfile(it)
+            dataStore.connectedSMProfile.collect { savedSmProfile ->
+                println("savedSMProfile " + savedSmProfile)
+            }
+        }*/
+    }
 }

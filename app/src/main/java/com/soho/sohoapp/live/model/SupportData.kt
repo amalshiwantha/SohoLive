@@ -1,6 +1,6 @@
 package com.soho.sohoapp.live.model
 
-import com.soho.sohoapp.live.enums.FBListType
+import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import kotlinx.serialization.Serializable
 
@@ -11,19 +11,19 @@ data class ConnectedSocialProfile(val smProfileList: MutableList<SocialMediaProf
 @Serializable
 data class SocialMediaProfile(
     val smInfo: SocialMediaInfo,
-    val profiles: SMProfile,
-    val timelines: MutableList<FbTypeView> = mutableListOf(),
-    val pages: MutableList<FbTypeView> = mutableListOf(),
-    val groups: MutableList<FbTypeView> = mutableListOf()
+    val profile: Profile,
+    val timelines: MutableList<CategoryInfo> = mutableListOf(),
+    val pages: MutableList<CategoryInfo> = mutableListOf(),
+    val groups: MutableList<CategoryInfo> = mutableListOf()
 ) {
     constructor() : this(
         smInfo = SocialMediaInfo.NONE,
-        profiles = SMProfile()
+        profile = Profile()
     )
 }
 
 @Serializable
-data class SMProfile(
+data class Profile(
     val fullName: String? = null,
     val imageUrl: String? = null,
     val email: String? = null,
@@ -39,9 +39,9 @@ data class SMProfile(
 }
 
 @Serializable
-data class FbTypeView(
+data class CategoryInfo(
     val index: Int = 0,
-    val type: FBListType,
+    val type: CategoryType,
     val title: String,
     val url: String,
     val imageUrl: String,

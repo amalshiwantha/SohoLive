@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.soho.sohoapp.live.datastore.DataStoreKeys.PREF_KEY_LOGIN_STATE
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
-import com.soho.sohoapp.live.model.SMProfile
+import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.network.response.Data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -45,17 +45,17 @@ class AppDataStoreManager(private val context: Context) {
         }
 
     //get and set FaceBook Profile
-    suspend fun saveFBProfile(profile: SMProfile) {
+    suspend fun saveFBProfile(profile: Profile) {
         val jsonString = Json.encodeToString(profile)
         context.dataStore.edit { preferences ->
             preferences[DataStoreKeys.PREF_KEY_USER_PROFILE_FB] = jsonString
         }
     }
 
-    val facebookProfile: Flow<SMProfile?>
+    val facebookProfile: Flow<Profile?>
         get() = context.dataStore.data.map { preferences ->
             preferences[DataStoreKeys.PREF_KEY_USER_PROFILE_FB]?.let { jsonString ->
-                Json.decodeFromString<SMProfile>(jsonString)
+                Json.decodeFromString<Profile>(jsonString)
             }
         }
 

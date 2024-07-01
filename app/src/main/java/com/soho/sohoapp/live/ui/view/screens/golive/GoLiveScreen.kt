@@ -34,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,12 +61,12 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CustomCoverOption
-import com.soho.sohoapp.live.enums.FBListType
+import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
-import com.soho.sohoapp.live.model.FbTypeView
-import com.soho.sohoapp.live.model.SMProfile
+import com.soho.sohoapp.live.model.CategoryInfo
+import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
@@ -249,39 +248,39 @@ fun GoLiveScreen(
 }
 
 fun getSampleFbProfile(): SocialMediaProfile {
-    val profile = SMProfile(
+    val profile = Profile(
         "Jhone Smith",
         "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
         "amalskr@gmail.com",
         "ask123"
     )
 
-    val timeline1 = FbTypeView(
+    val timeline1 = CategoryInfo(
         0,
-        FBListType.TIMELINE,
+        CategoryType.TIMELINE,
         "TimeLine 1",
         "http:www.facebook.com",
         "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
     )
-    val timeline2 = FbTypeView(
+    val timeline2 = CategoryInfo(
         1,
-        FBListType.TIMELINE,
+        CategoryType.TIMELINE,
         "TimeLine 2",
         "http:www.facebook.com",
         "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
     )
 
-    val page1 = FbTypeView(
+    val page1 = CategoryInfo(
         3,
-        FBListType.PAGES,
+        CategoryType.PAGES,
         "MyPage",
         "http:www.facebook.com",
         "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
     )
 
-    val group1 = FbTypeView(
+    val group1 = CategoryInfo(
         4,
-        FBListType.GROUPS,
+        CategoryType.GROUPS,
         "My Group",
         "http:www.facebook.com",
         "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
@@ -289,7 +288,7 @@ fun getSampleFbProfile(): SocialMediaProfile {
 
     return SocialMediaProfile(
         smInfo = SocialMediaInfo.FACEBOOK,
-        profiles = profile,
+        profile = profile,
         timelines = mutableListOf(timeline1, timeline2),
         pages = mutableListOf(),
         groups = mutableListOf(group1)

@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,10 +60,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.FBListType
+import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
-import com.soho.sohoapp.live.model.FbTypeView
-import com.soho.sohoapp.live.model.SMProfile
+import com.soho.sohoapp.live.model.CategoryInfo
+import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -158,7 +157,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     LaunchedEffect(key1 = state.isLoggedIn) {
                         if (state.isLoggedIn) {
 
-                            val smProfile = SMProfile(
+                            val smProfile = Profile(
                                 fullName = state.name,
                                 imageUrl = state.image,
                                 email = state.email,
@@ -311,7 +310,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     @Composable
-    private fun SingleSelectionList(myList: SnapshotStateList<FbTypeView>) {
+    private fun SingleSelectionList(myList: SnapshotStateList<CategoryInfo>) {
         val selectedId = myList.indexOfFirst { it.isSelect }
         var selectedIndex by remember { mutableIntStateOf(selectedId) }
 
@@ -330,8 +329,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     private fun updateState(
-        mListItems: SnapshotStateList<FbTypeView>,
-        updatedItem: FbTypeView
+        mListItems: SnapshotStateList<CategoryInfo>,
+        updatedItem: CategoryInfo
     ) {
         // Update all items, isSelect as false
         mListItems.forEachIndexed { index, fbTypeView ->
@@ -347,7 +346,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     @Composable
-    fun ListItemView(fbView: FbTypeView, selectedIndex: Int, onItemUpdated: (FbTypeView) -> Unit) {
+    fun ListItemView(fbView: CategoryInfo, selectedIndex: Int, onItemUpdated: (CategoryInfo) -> Unit) {
         val index = fbView.index
 
         Card(
@@ -409,7 +408,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         onDone: () -> Unit
     ) {
         val smInfo = smProfile.smInfo
-        var fbViewType by remember { mutableStateOf(FBListType.TIMELINE) }
+        var fbViewType by remember { mutableStateOf(CategoryType.TIMELINE) }
         var selectedOption by remember { mutableIntStateOf(0) }
         val mListTimelines = remember { smProfile.timelines.toMutableStateList() }
         val mListPages = remember { smProfile.pages.toMutableStateList() }
@@ -445,17 +444,17 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     //Display Content for each tab
                     val fbSubList = when (fbViewType) {
-                        FBListType.TIMELINE -> {
+                        CategoryType.TIMELINE -> {
                             val str = stringResource(R.string.not_admin)
                             Pair(mListTimelines, str)
                         }
 
-                        FBListType.PAGES -> {
+                        CategoryType.PAGES -> {
                             val str = stringResource(R.string.not_admin)
                             Pair(mListPages, str)
                         }
 
-                        FBListType.GROUPS -> {
+                        CategoryType.GROUPS -> {
                             val str = stringResource(R.string.not_admin)
                             Pair(mListGroup, str)
                         }
@@ -469,7 +468,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                 } else {
                     //profile card
-                    ProfileCard(smProfile.profiles, smInfo.title.lowercase())
+                    ProfileCard(smProfile.profile, smInfo.title.lowercase())
                 }
 
                 //Button buttons
@@ -491,22 +490,22 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
-    private fun getSelectedTab(selectedOption: Int): FBListType {
+    private fun getSelectedTab(selectedOption: Int): CategoryType {
         return when (selectedOption) {
             0 -> {
-                FBListType.TIMELINE
+                CategoryType.TIMELINE
             }
 
             1 -> {
-                FBListType.PAGES
+                CategoryType.PAGES
             }
 
             2 -> {
-                FBListType.GROUPS
+                CategoryType.GROUPS
             }
 
             else -> {
-                FBListType.TIMELINE
+                CategoryType.TIMELINE
             }
         }
     }
@@ -576,7 +575,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     @Composable
-    private fun ProfileCard(smProfile: SMProfile, socialMediaName: String) {
+    private fun ProfileCard(profile: Profile, socialMediaName: String) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -590,7 +589,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             ) {
                 //image
                 val urlPainter = rememberAsyncImagePainter(
-                    model = smProfile.imageUrl,
+                    model = profile.imageUrl,
                     placeholder = painterResource(id = R.drawable.profile_placeholder),
                     error = painterResource(id = R.drawable.profile_placeholder)
                 )
@@ -611,7 +610,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 ) {
                     Text400_14sp(info = "Connected to $socialMediaName as")
                     SpacerVertical(size = 8.dp)
-                    smProfile.fullName?.let { Text700_16sp(title = it) }
+                    profile.fullName?.let { Text700_16sp(title = it) }
                 }
             }
         }
@@ -754,39 +753,39 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
 
     fun getSampleFbProfile(): SocialMediaProfile {
-        val profile = SMProfile(
+        val profile = Profile(
             "Jhone Smith",
             "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
             "amalskr@gmail.com",
             "ask123"
         )
 
-        val timeline1 = FbTypeView(
+        val timeline1 = CategoryInfo(
             0,
-            FBListType.TIMELINE,
+            CategoryType.TIMELINE,
             "TimeLine 1",
             "http:www.facebook.com",
             "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
         )
-        val timeline2 = FbTypeView(
+        val timeline2 = CategoryInfo(
             1,
-            FBListType.TIMELINE,
+            CategoryType.TIMELINE,
             "TimeLine 2",
             "http:www.facebook.com",
             "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
         )
 
-        val page1 = FbTypeView(
+        val page1 = CategoryInfo(
             0,
-            FBListType.PAGES,
+            CategoryType.PAGES,
             "MyPage",
             "http:www.facebook.com",
             "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
         )
 
-        val group1 = FbTypeView(
+        val group1 = CategoryInfo(
             0,
-            FBListType.GROUPS,
+            CategoryType.GROUPS,
             "My Group",
             "http:www.facebook.com",
             "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
@@ -794,7 +793,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
         return SocialMediaProfile(
             smInfo = SocialMediaInfo.FACEBOOK,
-            profiles = profile,
+            profile = profile,
             timelines = mutableListOf(timeline1, timeline2),
             pages = mutableListOf(),
             groups = mutableListOf(group1)
