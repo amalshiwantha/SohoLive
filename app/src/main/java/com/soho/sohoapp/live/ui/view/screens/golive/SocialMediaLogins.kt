@@ -88,8 +88,11 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
 
                     return mutableListOf(
                         CategoryInfo(
-                            1, CategoryType.TIMELINE,
-                            it.fullName ?: "", "", it.imageUrl ?: ""
+                            1001, CategoryType.TIMELINE,
+                            it.fullName ?: "FB User", "", it.imageUrl ?: ""
+                        ),CategoryInfo(
+                            1002, CategoryType.TIMELINE,
+                            "FB User", "", it.imageUrl ?: ""
                         )
                     )
 

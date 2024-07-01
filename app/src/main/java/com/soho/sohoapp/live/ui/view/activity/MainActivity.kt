@@ -297,9 +297,12 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     @Composable
-    private fun SingleSelectionList(myList: SnapshotStateList<CategoryInfo>) {
-        val selectedId = myList.indexOfFirst { it.isSelect }
-        var selectedIndex by remember { mutableIntStateOf(selectedId) }
+    private fun SingleSelectionList(
+        myList: SnapshotStateList<CategoryInfo>,
+        onItemClick: (CategoryInfo) -> Unit
+    ) {
+        val selVal = myList.find { it.isSelect }
+        var selectedIndex by remember { mutableIntStateOf(selVal?.index ?: 0) }
 
         LazyColumn(
             Modifier
@@ -309,26 +312,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             items(myList) { item ->
                 ListItemView(item, selectedIndex) { updatedItem ->
                     selectedIndex = updatedItem.index
-                    updateState(myList, updatedItem)
+                    onItemClick(updatedItem)
                 }
             }
-        }
-    }
-
-    private fun updateState(
-        mListItems: SnapshotStateList<CategoryInfo>,
-        updatedItem: CategoryInfo
-    ) {
-        // Update all items, isSelect as false
-        mListItems.forEachIndexed { index, fbTypeView ->
-            mListItems[index] = fbTypeView.copy(isSelect = false)
-        }
-
-        //update selected item
-        val selectedIndex =
-            mListItems.indexOfFirst { it.title == updatedItem.title }
-        if (selectedIndex != -1) {
-            mListItems[selectedIndex] = updatedItem.copy(isSelect = true)
         }
     }
 
@@ -452,7 +438,13 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     }
 
                     if (fbSubList.first.isNotEmpty()) {
-                        SingleSelectionList(fbSubList.first)
+                        SingleSelectionList(fbSubList.first, onItemClick = {
+                            when (it.type) {
+                                CategoryType.TIMELINE -> updateState(mListTimelines, it)
+                                CategoryType.PAGES -> updateState(mListPages, it)
+                                CategoryType.GROUPS -> updateState(mListGroup, it)
+                            }
+                        })
                     } else {
                         Text400_14sp(info = fbSubList.second)
                     }
@@ -478,6 +470,23 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         onBtnClick = { onDone() })
                 }
             }
+        }
+    }
+
+    private fun updateState(
+        mListItems: SnapshotStateList<CategoryInfo>,
+        updatedItem: CategoryInfo
+    ) {
+        // Update all items, isSelect as false
+        mListItems.forEachIndexed { index, fbTypeView ->
+            mListItems[index] = fbTypeView.copy(isSelect = false)
+        }
+
+        //update selected item
+        val selectedIndex =
+            mListItems.indexOfFirst { it.title == updatedItem.title }
+        if (selectedIndex != -1) {
+            mListItems[selectedIndex] = updatedItem.copy(isSelect = true)
         }
     }
 
