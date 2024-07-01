@@ -22,11 +22,6 @@ import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
-import com.soho.sohoapp.live.utility.AppEvent
-import com.soho.sohoapp.live.utility.AppEventBus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 //Google Auth
 @Composable
@@ -62,7 +57,7 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
 
 //Facebook
 @Composable
-fun DoConnectFacebook() {
+fun DoConnectFacebook(viewMMain: MainViewModel) {
     val callbackManager = CallbackManager.Factory.create()
     val loginManager = LoginManager.getInstance()
     val context = LocalContext.current
@@ -71,16 +66,21 @@ fun DoConnectFacebook() {
         loginManager.registerCallback(
             callbackManager,
             object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+                    getFBProfileData(result, onProfileFound = { fbProfile ->
+                        fbProfile?.let {
+                            val smProfile = SocialMediaProfile(SocialMediaInfo.FACEBOOK, it)
+                            viewMMain.fetchGoogleUser(smProfile)
+                        }
+                    })
+                }
+
                 override fun onCancel() {
                     println("myFB onCancel")
                 }
 
                 override fun onError(error: FacebookException) {
                     println("myFB onErr " + error)
-                }
-
-                override fun onSuccess(result: LoginResult) {
-                    getFBProfileData(result)
                 }
             })
         onDispose {
@@ -97,7 +97,7 @@ fun DoConnectFacebook() {
     )
 }
 
-private fun getFBProfileData(loginResult: LoginResult) {
+private fun getFBProfileData(loginResult: LoginResult, onProfileFound: (Profile?) -> Unit) {
     val request = GraphRequest.newMeRequest(loginResult.accessToken) { info, response ->
         Log.e("myFb info", info.toString())
 
@@ -112,24 +112,28 @@ private fun getFBProfileData(loginResult: LoginResult) {
                 val fullName = "$firstName $lastName"
 
                 val profile = Profile(
-                    fullName,
-                    profilePicture,
-                    email,
-                    loginResult.accessToken.token,
-                    SocialMediaInfo.FACEBOOK
+                    fullName = fullName,
+                    imageUrl = profilePicture,
+                    email = email,
+                    token = loginResult.accessToken.token,
+                    type = SocialMediaInfo.FACEBOOK,
+                    isConnected = true
                 )
+
+                onProfileFound(profile)
 
                 // get refresh token if expire
                 // get pages using accessToken
 
                 // Send an event
-                CoroutineScope(Dispatchers.Main).launch {
+                /*CoroutineScope(Dispatchers.Main).launch {
                     AppEventBus.sendEvent(AppEvent.SaveSMProfile(profile))
-                }
+                }*/
             }
         } catch (e: Exception) {
             Log.e("myFb infoError", e.toString())
             e.printStackTrace()
+            onProfileFound(null)
         }
     }
 

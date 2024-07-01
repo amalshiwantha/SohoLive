@@ -79,7 +79,7 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
                         profList.copy(smProfileList = list)
                     }
 
-                    getSavedSMProfile(smProfile)
+                    getSavedSMProfile(smProfile,profList)
 
                 } ?: run {
                     val freshList = mutableListOf<SocialMediaProfile>()
@@ -92,16 +92,12 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
         }
     }
 
-    private fun getSavedSMProfile(smProfile: SocialMediaProfile) {
+    private fun getSavedSMProfile(smProfile: SocialMediaProfile, profList: ConnectedSocialProfile) {
         viewModelScope.launch {
-            dataStore.connectedSMProfile.collect { profileList ->
-                profileList?.let { profList ->
-                    val list = profList.smProfileList
-                    val foundProfile = list.find { it.smInfo == smProfile.smInfo }
-                    if (foundProfile != null) {
-                        _stateConnectedProfile.update { foundProfile.profile }
-                    }
-                }
+            val list = profList.smProfileList
+            val foundProfile = list.find { it.smInfo == smProfile.smInfo }
+            if (foundProfile != null) {
+                _stateConnectedProfile.update { foundProfile.profile }
             }
         }
     }

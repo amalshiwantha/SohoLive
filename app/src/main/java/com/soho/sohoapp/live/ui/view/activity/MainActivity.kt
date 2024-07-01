@@ -158,7 +158,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         if (state.isConnected) {
 
                             val profile = SocialMediaProfile(
-                                SocialMediaInfo.YOUTUBE,
+                                state.type,
                                 state
                             )
 
@@ -187,7 +187,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     when (openSmConnector) {
                         SocialMediaInfo.SOHO -> {}
                         SocialMediaInfo.FACEBOOK -> {
-                            DoConnectFacebook()
+                            DoConnectFacebook(viewMMain)
                         }
 
                         SocialMediaInfo.YOUTUBE -> {
@@ -339,7 +339,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     @Composable
-    fun ListItemView(fbView: CategoryInfo, selectedIndex: Int, onItemUpdated: (CategoryInfo) -> Unit) {
+    fun ListItemView(
+        fbView: CategoryInfo,
+        selectedIndex: Int,
+        onItemUpdated: (CategoryInfo) -> Unit
+    ) {
         val index = fbView.index
 
         Card(
