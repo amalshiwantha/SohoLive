@@ -18,16 +18,12 @@ class MainViewModel : ViewModel() {
     private val _isCallSMConnect = MutableStateFlow(SocialMediaInfo.NONE)
     val isCallSMConnect: StateFlow<SocialMediaInfo> = _isCallSMConnect.asStateFlow()
 
-    private val _isSMConnected =
-        MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()))
-    val isSMConnected: StateFlow<SocialMediaProfile> = _isSMConnected.asStateFlow()
-
     private val _stateIsSMConnected =
         MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()))
     val stateIsSMConnected = _stateIsSMConnected.asStateFlow()
 
-    private val _state = MutableStateFlow(GoogleUserModel())
-    val state = _state.asStateFlow()
+    private val _stateGoogleAuth = MutableStateFlow(GoogleUserModel())
+    val stateGoogleAuth = _stateGoogleAuth.asStateFlow()
 
     //update LiveData
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
@@ -43,7 +39,7 @@ class MainViewModel : ViewModel() {
     //Google
     fun fetchGoogleUser(gUser: GoogleUserModel) {
         viewModelScope.launch {
-            _state.update {
+            _stateGoogleAuth.update {
                 it.copy(
                     name = gUser.name,
                     email = gUser.email,
@@ -55,7 +51,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun resetState() {
-        _state.update { GoogleUserModel() }
+        _stateGoogleAuth.update { GoogleUserModel() }
     }
 
     fun resetViewModelState() {
@@ -67,7 +63,6 @@ class MainViewModel : ViewModel() {
         val googleSignInClient = GoogleSignIn.getClient(context, gso)
         googleSignInClient.signOut().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                //_isGoogleConnected.value = false
                 println("myGuser signed out successfully.")
             } else {
                 println("myGuser Sign out failed.")

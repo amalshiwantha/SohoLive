@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
 
-                    val state by viewMMain.state.collectAsStateWithLifecycle()
+                    val state by viewMMain.stateGoogleAuth.collectAsStateWithLifecycle()
                     val stateSmConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
 
