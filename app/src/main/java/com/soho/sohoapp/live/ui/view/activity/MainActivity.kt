@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                             val profile = SocialMediaProfile(
                                 SocialMediaInfo.YOUTUBE,
-                                mutableListOf(smProfile)
+                                smProfile
                             )
 
                             viewMMain.saveSocialMediaProfile(profile)
@@ -468,9 +468,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                 } else {
                     //profile card
-                    smProfile.profiles.forEach { profile ->
-                        ProfileCard(profile, smInfo.title.lowercase())
-                    }
+                    ProfileCard(smProfile.profiles, smInfo.title.lowercase())
                 }
 
                 //Button buttons
@@ -795,7 +793,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
         return SocialMediaProfile(
             smInfo = SocialMediaInfo.FACEBOOK,
-            profiles = mutableListOf(profile),
+            profiles = profile,
             timelines = mutableListOf(timeline1, timeline2),
             pages = mutableListOf(),
             groups = mutableListOf(group1)

@@ -4,13 +4,23 @@ import com.soho.sohoapp.live.enums.FBListType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import kotlinx.serialization.Serializable
 
+//this if for save in local
+@Serializable
+data class ConnectedSocialProfile(val smProfile: SocialMediaProfile)
+
+@Serializable
 data class SocialMediaProfile(
     val smInfo: SocialMediaInfo,
-    val profiles: MutableList<SMProfile>,
+    val profiles: SMProfile,
     val timelines: MutableList<FbTypeView> = mutableListOf(),
     val pages: MutableList<FbTypeView> = mutableListOf(),
     val groups: MutableList<FbTypeView> = mutableListOf()
-)
+) {
+    constructor() : this(
+        smInfo = SocialMediaInfo.NONE,
+        profiles = SMProfile()
+    )
+}
 
 @Serializable
 data class SMProfile(
@@ -28,6 +38,7 @@ data class SMProfile(
     )
 }
 
+@Serializable
 data class FbTypeView(
     val index: Int = 0,
     val type: FBListType,

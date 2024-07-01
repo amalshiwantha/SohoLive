@@ -6,6 +6,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.SMProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleUserModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,7 @@ class MainViewModel : ViewModel() {
     val isCallSMConnect: StateFlow<SocialMediaInfo> = _isCallSMConnect.asStateFlow()
 
     private val _stateIsSMConnected =
-        MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()))
+        MutableStateFlow(SocialMediaProfile(SocialMediaInfo.NONE, SMProfile()))
     val stateIsSMConnected = _stateIsSMConnected.asStateFlow()
 
     private val _stateGoogleAuth = MutableStateFlow(GoogleUserModel())
@@ -55,7 +56,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun resetViewModelState() {
-        _stateIsSMConnected.update { SocialMediaProfile(SocialMediaInfo.NONE, mutableListOf()) }
+        _stateIsSMConnected.update { SocialMediaProfile(SocialMediaInfo.NONE, SMProfile()) }
     }
 
     fun googleSignOut() {

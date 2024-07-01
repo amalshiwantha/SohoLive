@@ -289,7 +289,7 @@ fun getSampleFbProfile(): SocialMediaProfile {
 
     return SocialMediaProfile(
         smInfo = SocialMediaInfo.FACEBOOK,
-        profiles = mutableListOf(profile),
+        profiles = profile,
         timelines = mutableListOf(timeline1, timeline2),
         pages = mutableListOf(),
         groups = mutableListOf(group1)
