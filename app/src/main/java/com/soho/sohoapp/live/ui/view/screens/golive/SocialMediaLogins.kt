@@ -43,7 +43,8 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
                         imageUrl = gsa.photoUrl.toString(),
                         email = gsa.email,
                         token = gsa.idToken,
-                        type = SocialMediaInfo.YOUTUBE
+                        type = SocialMediaInfo.YOUTUBE,
+                        isConnected = true
                     )
                     val smProfile = SocialMediaProfile(SocialMediaInfo.YOUTUBE, profileGoogle)
                     viewMMain.fetchGoogleUser(smProfile)

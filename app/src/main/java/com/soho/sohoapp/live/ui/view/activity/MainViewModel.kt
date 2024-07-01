@@ -8,8 +8,8 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
+import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
-import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleUserModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,8 +23,8 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _stateIsSMConnected = MutableStateFlow(SocialMediaProfile())
     val stateIsSMConnected = _stateIsSMConnected.asStateFlow()
 
-    private val _stateGoogleAuth = MutableStateFlow(GoogleUserModel())
-    val stateGoogleAuth = _stateGoogleAuth.asStateFlow()
+    private val _stateConnectedProfile = MutableStateFlow(Profile())
+    val stateConnectedProfile = _stateConnectedProfile.asStateFlow()
 
     //update LiveData
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
@@ -40,23 +40,12 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     //Google
     fun fetchGoogleUser(smProfile: SocialMediaProfile) {
         viewModelScope.launch {
-            val gUser = smProfile.profile
-
-            _stateGoogleAuth.update {
-                it.copy(
-                    name = gUser.fullName,
-                    email = gUser.email,
-                    image = gUser.imageUrl,
-                    isLoggedIn = gUser.token != null
-                )
-            }
-
             saveSMProfileList(smProfile)
         }
     }
 
     fun resetState() {
-        _stateGoogleAuth.update { GoogleUserModel() }
+        _stateConnectedProfile.update { Profile() }
     }
 
     fun resetViewModelState() {
@@ -89,6 +78,9 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
                         list.add(smProfile)
                         profList.copy(smProfileList = list)
                     }
+
+                    getSavedSMProfile(smProfile)
+
                 } ?: run {
                     val freshList = mutableListOf<SocialMediaProfile>()
                     freshList.add(smProfile)
@@ -99,4 +91,20 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             }
         }
     }
+
+    private fun getSavedSMProfile(smProfile: SocialMediaProfile) {
+        viewModelScope.launch {
+            dataStore.connectedSMProfile.collect { profileList ->
+                profileList?.let { profList ->
+                    val list = profList.smProfileList
+                    val foundProfile = list.find { it.smInfo == smProfile.smInfo }
+                    if (foundProfile != null) {
+                        _stateConnectedProfile.update { foundProfile.profile }
+                    }
+                }
+            }
+        }
+    }
+
+
 }

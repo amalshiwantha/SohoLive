@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
 
-                    val state by viewMMain.stateGoogleAuth.collectAsStateWithLifecycle()
+                    val state by viewMMain.stateConnectedProfile.collectAsStateWithLifecycle()
                     val stateSmConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
 
@@ -154,19 +154,12 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //Google Sign In
                     val gAuth = doConnectGoogle(viewMMain)
 
-                    LaunchedEffect(key1 = state.isLoggedIn) {
-                        if (state.isLoggedIn) {
-
-                            val smProfile = Profile(
-                                fullName = state.name,
-                                imageUrl = state.image,
-                                email = state.email,
-                                token = state.token
-                            )
+                    LaunchedEffect(key1 = state.isConnected) {
+                        if (state.isConnected) {
 
                             val profile = SocialMediaProfile(
                                 SocialMediaInfo.YOUTUBE,
-                                smProfile
+                                state
                             )
 
                             viewMMain.saveSocialMediaProfile(profile)
