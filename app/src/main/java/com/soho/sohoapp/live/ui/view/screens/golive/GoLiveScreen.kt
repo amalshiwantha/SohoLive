@@ -137,7 +137,7 @@ fun GoLiveScreen(
     var isConnectedYouTube by remember { mutableStateOf(false) }
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
-    val stateSMConnected by goLiveVm.stateConnectedSM.collectAsStateWithLifecycle()
+    val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -148,14 +148,18 @@ fun GoLiveScreen(
         }
     }
 
-    if (stateSMConnected.smList.isNotEmpty()) {
-        val list = stateSMConnected.smList
+
+
+    if (stateSMConnected.isNotEmpty()) {
+        val list = stateSMConnected
         val isHasYouTube = list.indexOfFirst { it.name == SocialMediaInfo.YOUTUBE.name }
         val isHasFaceBook = list.indexOfFirst { it.name == SocialMediaInfo.FACEBOOK.name }
         val isHasLinkedIn = list.indexOfFirst { it.name == SocialMediaInfo.LINKEDIN.name }
         isConnectedYouTube = isHasYouTube != -1
         isConnectedFacebook = isHasFaceBook != -1
         isConnectedLinkedIn = isHasLinkedIn != -1
+
+        println("smProfile onView ${list.size}")
     }
 
     Box(

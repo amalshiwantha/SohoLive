@@ -8,11 +8,11 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
-import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -38,9 +38,9 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     }
 
     //Google
-    fun fetchGoogleUser(smProfile: SocialMediaProfile) {
+    fun saveSMProfile(smProfile: SocialMediaProfile) {
         viewModelScope.launch {
-            saveSMProfileList(smProfile)
+            saveConnectedSMProfileList(smProfile)
         }
     }
 
@@ -66,45 +66,20 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     //Google End
 
 
-    //save SM profiles in Local
-    private fun saveSMProfileList(smProfile: SocialMediaProfile) {
-        var isFirstItem = false
-
+    //add or replace a connected social media profile
+    private fun saveConnectedSMProfileList(newProfile: SocialMediaProfile) {
         viewModelScope.launch {
-            dataStore.connectedSMProfile.collect { profileList ->
-                profileList?.let { profList ->
-                    val list = profList.smProfileList
-                    //val hasStored = list.find { it.smInfo == smProfile.smInfo }
-                    val index = list.indexOfFirst { it.smInfo == smProfile.smInfo }
+            val currentList =
+                dataStore.connectedSMProfile.first() ?: ConnectedSocialProfile(mutableListOf())
 
-                    /*
-                    * if hasStored have to remove current item and add new  smProfile
-                    * else have to add new item
-                    * */
+            currentList.smProfileList.removeAll { it.smInfo == newProfile.smInfo }
+            currentList.smProfileList.add(newProfile)
 
-                    if (!isFirstItem) {
-                        isFirstItem = false
-                        if (index == -1) {
-                            list.add(smProfile)
-                            profList.copy(smProfileList = list)
-                        } else {
-                            list.removeAt(index)
-                            list.add(smProfile)
-                            profileList.copy(smProfileList = list)
-                        }
-                    }
+            println("smProfile onSave ${currentList.smProfileList.size}")
 
-                    getSavedSMProfile(smProfile, profList)
-
-                } ?: run {
-                    isFirstItem = true
-                    val freshList = mutableListOf<SocialMediaProfile>()
-                    freshList.add(smProfile)
-
-                    val connectedSMProfile = ConnectedSocialProfile(freshList)
-                    dataStore.saveConnectedSMProfile(connectedSMProfile)
-                }
-            }
+            // Save the updated profile list
+            dataStore.saveConnectedSMProfile(currentList)
+            getSavedSMProfile(newProfile, currentList)
         }
     }
 

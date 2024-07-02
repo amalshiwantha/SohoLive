@@ -44,7 +44,7 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
                         isConnected = true
                     )
                     val smProfile = SocialMediaProfile(SocialMediaInfo.YOUTUBE, profileGoogle)
-                    viewMMain.fetchGoogleUser(smProfile)
+                    viewMMain.saveSMProfile(smProfile)
                     viewMMain.googleSignOut()
                 } else {
                     //show error on gAuth
@@ -77,7 +77,7 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                                 profile = it,
                                 timelines = timeLine
                             )
-                            viewMMain.fetchGoogleUser(smProfile)
+                            viewMMain.saveSMProfile(smProfile)
                         } ?: run {
                             println("myFB Logged but Error")
                         }

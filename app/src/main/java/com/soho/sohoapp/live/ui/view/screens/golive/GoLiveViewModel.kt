@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialMedia
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
@@ -13,6 +14,7 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -24,8 +26,9 @@ class GoLiveViewModel(
 
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
 
-    private val _stateConnectedSM = MutableStateFlow(ConnectedSocialMedia(mutableListOf()))
-    val stateConnectedSM = _stateConnectedSM.asStateFlow()
+    private val _connectedProfileNames = MutableStateFlow<MutableList<SocialMediaInfo>>(mutableListOf())
+    val connectedProfileNames = _connectedProfileNames.asStateFlow()
+
 
     init {
         checkSMConnectionStatus()
@@ -171,16 +174,15 @@ class GoLiveViewModel(
     }
 
     private fun checkSMConnectionStatus() {
-        val currentList = stateConnectedSM.value.smList
+        var currentList: MutableList<SocialMediaInfo>
 
         viewModelScope.launch {
-            dataStore.connectedSMProfile.collect { connectedList ->
-                connectedList?.let { list ->
-                    list.smProfileList.forEach { smProfile ->
-                        currentList.add(smProfile.smInfo)
-                    }
-                }
-                _stateConnectedSM.value.copy(smList = currentList)
+
+            dataStore.connectedSMProfile.collect { profileList ->
+                currentList = profileList?.smProfileList?.map { it.smInfo }?.toMutableList()
+                    ?: mutableListOf()
+
+                _connectedProfileNames.value = currentList
                 println("smProfile onLoad $currentList")
             }
         }
