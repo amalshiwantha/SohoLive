@@ -1,7 +1,9 @@
 package com.soho.sohoapp.live.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -9,21 +11,23 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.soho.sohoapp.live.network.response.DataGoLive
+import com.soho.sohoapp.live.network.response.ScheduleSlots
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveAssets
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
-import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveState
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel) {
 
     var onGoLiveResult by remember { mutableStateOf<DataGoLive?>(null) }
     var onGoLiveTsResult by remember { mutableStateOf<TsPropertyResponse?>(null) }
     var mState by remember { mutableStateOf(GoLiveAssets()) }
+    var scheduleSlots = remember { mutableStateListOf<ScheduleSlots>() }
 
     NavHost(
         navController = navController, startDestination = NavigationPath.GO_LIVE.name
@@ -44,7 +48,10 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
             HomeContent(navController, "PROFILE")
         }
         composable(route = NavigationPath.SET_SCHEDULE.name) {
-            ScheduleScreen(navController = navController)
+            ScheduleScreen(
+                navController = navController,
+                scheduleSlots,
+                onUpdateSlots = {  })
         }
     }
 }

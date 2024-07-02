@@ -9,6 +9,13 @@ import java.text.NumberFormat
 import java.util.Locale
 
 @Serializable
+data class ScheduleSlots(
+    val id: Int = 0,
+    val date: String? = null,
+    val time: String? = null
+)
+
+@Serializable
 data class TsPropertyResponse(
     @SerialName("found") val found: Int = 0,
     @SerialName("hits") val propertyList: List<Hit> = emptyList(),

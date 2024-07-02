@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Card
@@ -17,6 +17,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.network.response.ScheduleSlots
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -48,8 +51,21 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 
 @Composable
-fun ScheduleScreen(navController: NavController) {
-    val scrollState = rememberScrollState()
+fun ScheduleScreen(
+    navController: NavController,
+    scheduleSlots: MutableList<ScheduleSlots>,
+    onUpdateSlots: (MutableState<ScheduleSlots>) -> Unit
+) {
+
+    LaunchedEffect(Unit) {
+        scheduleSlots.addAll(
+            listOf(
+                ScheduleSlots(1, "3 July 2024, Friday", "10:00am"),
+                ScheduleSlots(2, "4 July 2024, Friday", "12:00pm"),
+                ScheduleSlots(3, "5 July 2024, Friday", "01:00pm")
+            )
+        )
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -89,10 +105,12 @@ fun ScheduleScreen(navController: NavController) {
                             .padding(16.dp)
                     ) {
                         item {
-                            TopContent()
+                            TopContent(scheduleSlots.isEmpty())
                         }
-                        items(5) { index ->
-                            ScheduleItemView(onItemClick = { /* Handle item click */ })
+                        items(scheduleSlots) { slot ->
+                            ScheduleItemView(slot = slot, onItemClick = {
+                                println("myItem Delete $it")
+                            })
                         }
                     }
 
@@ -114,7 +132,7 @@ fun ScheduleScreen(navController: NavController) {
 }
 
 @Composable
-fun ScheduleItemView(onItemClick: () -> Unit) {
+fun ScheduleItemView(slot: ScheduleSlots, onItemClick: (Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,9 +150,9 @@ fun ScheduleItemView(onItemClick: () -> Unit) {
                     .padding(16.dp)
                     .weight(1f)
             ) {
-                Text800_14sp(label = "5 July 2024, Friday")
+                Text800_14sp(label = slot.date.orEmpty())
                 SpacerVertical(size = 8.dp)
-                Text400_14sp(info = "10:00am")
+                Text400_14sp(info = slot.time.orEmpty())
             }
 
             //Delete button
@@ -142,14 +160,14 @@ fun ScheduleItemView(onItemClick: () -> Unit) {
                 text = "Delete",
                 color = Color.Transparent,
                 txtColor = DeleteRed,
-                onBtnClick = { onItemClick() }
+                onBtnClick = { onItemClick(slot.id) }
             )
         }
     }
 }
 
 @Composable
-fun TopContent() {
+fun TopContent(isSlotsEmpty: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -180,15 +198,17 @@ fun TopContent() {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text400_14sp(
-                info = "No scheduled livecast streams yet",
-                color = HintGray,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+        if (isSlotsEmpty) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text400_14sp(
+                    info = "No scheduled livecast streams yet",
+                    color = HintGray,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
         }
     }
 }
@@ -197,5 +217,8 @@ fun TopContent() {
 @Preview
 @Composable
 private fun ScheduleScreenPreview() {
-    ScheduleScreen(navController = NavHostController(LocalContext.current))
+    ScheduleScreen(
+        navController = NavHostController(LocalContext.current),
+        scheduleSlots = mutableListOf(),
+        onUpdateSlots = { })
 }
