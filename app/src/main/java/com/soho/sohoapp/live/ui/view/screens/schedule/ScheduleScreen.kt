@@ -70,6 +70,7 @@ fun ScheduleScreen(
     var isShowDialog by remember { mutableStateOf(false) }
     var isShowDateTimePicker by remember { mutableStateOf(false) }
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
+    var slotToSave by remember { mutableStateOf<ScheduleSlots?>(null) }
 
     if (isShowDialog) {
         ShowDeleteAlert(
@@ -82,8 +83,7 @@ fun ScheduleScreen(
 
     if (isShowDateTimePicker) {
         DateTimePicker(onDismissed = { isShowDateTimePicker = !it }, onDateTimeSelect = {
-            println("myItem $it")
-            scheduleSlots.add(ScheduleSlots(scheduleSlots.size + 1, it.first, it.second))
+            slotToSave = it
         })
     }
 
@@ -125,7 +125,9 @@ fun ScheduleScreen(
                             .padding(16.dp)
                     ) {
                         item {
-                            TopContent(scheduleSlots.isEmpty(), onClickAdd = { },
+                            TopContent(scheduleSlots.isEmpty(), slotToSave, onClickAdd = {
+                                slotToSave?.let { scheduleSlots.add(it) }
+                            },
                                 onClickShowDateTimePicker = {
                                     isShowDateTimePicker = it
                                 })
@@ -134,7 +136,6 @@ fun ScheduleScreen(
                             ScheduleItemView(slot = slot, onItemClick = { deleteSlot ->
                                 isShowDialog = true
                                 slotToDelete = deleteSlot
-                                println("myItem Delete $deleteSlot")
                             })
                         }
                     }
@@ -225,9 +226,12 @@ fun ScheduleItemView(slot: ScheduleSlots, onItemClick: (ScheduleSlots) -> Unit) 
 @Composable
 fun TopContent(
     isSlotsEmpty: Boolean,
+    slotToSave: ScheduleSlots?,
     onClickShowDateTimePicker: (Boolean) -> Unit,
     onClickAdd: () -> Unit
 ) {
+    val input = slotToSave?.display.orEmpty()
+
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -243,6 +247,7 @@ fun TopContent(
                 trailingIcon = Icons.Filled.ArrowDropDown
                 clickable = true
             },
+            inputTxt = input,
             onTextChange = {}, onClick = {
                 onClickShowDateTimePicker(true)
             })
@@ -280,12 +285,14 @@ fun TopContent(
 @Composable
 fun DateTimePicker(
     onDismissed: (Boolean) -> Unit,
-    onDateTimeSelect: (Pair<String, String>) -> Unit
+    onDateTimeSelect: (ScheduleSlots) -> Unit
 ) {
+    val slot = ScheduleSlots()
     val context = LocalContext.current
 
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
+    var displayDateTime by remember { mutableStateOf("") }
     var isShowDatePicker by remember { mutableStateOf(true) }
     var isShowTimePicker by remember { mutableStateOf(false) }
 
@@ -300,6 +307,7 @@ fun DateTimePicker(
     // DateRime format
     val dateFormat = SimpleDateFormat("d MMMM yyyy, EEEE", Locale.getDefault())
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    val displayFormat = SimpleDateFormat("d/M/yyyy, hh:mma", Locale.getDefault())
 
     // Open DatePickerDialog
     if (isShowDatePicker) {
@@ -321,12 +329,18 @@ fun DateTimePicker(
         val timePickerDialog = TimePickerDialog(context, { _, selectedHour, selectedMinute ->
             calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
             calendar.set(Calendar.MINUTE, selectedMinute)
+
+            displayDateTime = displayFormat.format(calendar.time)
             selectedTime = timeFormat.format(calendar.time)
         }, hour, minute, false)
 
         timePickerDialog.setOnDismissListener {
             !isShowTimePicker
-            onDateTimeSelect(Pair(selectedDate, selectedTime))
+            onDateTimeSelect(slot.apply {
+                date = selectedDate
+                time = selectedTime
+                display = displayDateTime
+            })
             onDismissed(true)
         }
         timePickerDialog.show()
@@ -342,9 +356,9 @@ private fun ScheduleScreenPreview() {
     LaunchedEffect(Unit) {
         scheduleSlots.addAll(
             listOf(
-                ScheduleSlots(1, "3 July 2024, Friday", "10:00am"),
-                ScheduleSlots(2, "4 July 2024, Friday", "12:00pm"),
-                ScheduleSlots(3, "5 July 2024, Friday", "01:00pm")
+                ScheduleSlots("3 July 2024, Friday", "10:00am"),
+                ScheduleSlots("4 July 2024, Friday", "12:00pm"),
+                ScheduleSlots("5 July 2024, Friday", "01:00pm")
             )
         )
     }

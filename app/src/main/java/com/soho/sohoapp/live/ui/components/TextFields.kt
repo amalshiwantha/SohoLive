@@ -61,13 +61,14 @@ fun TextAreaWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
 @Composable
 fun TextFieldWhiteIcon(
     fieldConfig: FieldConfig,
+    inputTxt : String = "",
     onTextChange: (String) -> Unit,
     onClick: () -> Unit
 ) {
-    var txtInput by rememberSaveable { mutableStateOf("") }
+    var txtInput by rememberSaveable { mutableStateOf(inputTxt) }
 
     TextField(
-        value = txtInput,
+        value = inputTxt,
         onValueChange = {
             txtInput = it
             onTextChange(txtInput)

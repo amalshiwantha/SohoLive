@@ -10,10 +10,16 @@ import java.util.Locale
 
 @Serializable
 data class ScheduleSlots(
-    val id: Int = 0,
-    val date: String? = null,
-    val time: String? = null
-)
+    var date: String? = null,
+    var time: String? = null,
+    var display: String? = null
+) {
+    constructor() : this(
+        date = null,
+        time = null,
+        display = null
+    )
+}
 
 @Serializable
 data class TsPropertyResponse(
