@@ -122,20 +122,23 @@ fun GoLiveScreen(
     viewMMain: MainViewModel,
     savedApiResults: DataGoLive? = null,
     savedTsResults: TsPropertyResponse? = null,
+    savedState: GoLiveAssets? = null,
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
     onLoadApiResults: (DataGoLive) -> Unit,
-    onLoadTSResults: (TsPropertyResponse) -> Unit
+    onLoadTSResults: (TsPropertyResponse) -> Unit,
+    onUpdateState: (GoLiveAssets) -> Unit
 ) {
 
     val stateVm = goLiveVm.mState.value
+    val assetsState = savedState ?: goLiveVm.assetsState.value
     val stepCount = 4
     var currentStepId by remember { mutableIntStateOf(0) }
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
     var isNetConnected by remember { mutableStateOf(true) }
-    var isNowSelected by remember { mutableStateOf(false) }
+    var isNowSelected: Boolean by remember { mutableStateOf(false) }
     var isDontShowProfile by remember { mutableStateOf(false) }
     var isConnectedYouTube by remember { mutableStateOf(false) }
     var isConnectedFacebook by remember { mutableStateOf(false) }
@@ -144,22 +147,13 @@ fun GoLiveScreen(
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
 
-    ComposableLifecycle { _, event ->
-        when (event) {
-            Lifecycle.Event.ON_CREATE -> println("myApp ON_CREATE")
-            Lifecycle.Event.ON_RESUME -> println("myApp ON_RESUME")
-            Lifecycle.Event.ON_PAUSE -> println("myApp ON_PAUSE")
-            else -> {
-                println("myApp $event")
-            }
-        }
-    }
-
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
             callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
                 isNetConnected = it
-                stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
+                stateVm.apiResults?.let { apiRes ->
+                    onLoadApiResults.invoke(apiRes)
+                }
             })
         }
     }
@@ -203,6 +197,8 @@ fun GoLiveScreen(
                     stateVm.tsResults?.let { tsRes ->
                         onLoadTSResults.invoke(tsRes)
                     }
+
+                    onUpdateState(goLiveVm.assetsState.value)
                 }
 
                 //main steps content
@@ -215,13 +211,11 @@ fun GoLiveScreen(
                     item {
                         savedApiResults?.let { savedData ->
 
-                            //Global ints for save click id and list
-
                             //Step #1 property list
-                            val propertyList = stateVm.propertyListState?.value
+                            val propertyList = assetsState.propertyListState?.value
 
                             //Step #2 agency list. agency list load from step #1 selections
-                            val agencyList = stateVm.agencyListState?.value
+                            val agencyList = assetsState.agencyListState?.value
 
                             //All Steps
                             StepContents(currentStepId = currentStepId,

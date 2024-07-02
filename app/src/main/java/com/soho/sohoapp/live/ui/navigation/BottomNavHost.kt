@@ -11,7 +11,9 @@ import androidx.navigation.compose.composable
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveAssets
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveState
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 
@@ -21,6 +23,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
 
     var onGoLiveResult by remember { mutableStateOf<DataGoLive?>(null) }
     var onGoLiveTsResult by remember { mutableStateOf<TsPropertyResponse?>(null) }
+    var mState by remember { mutableStateOf(GoLiveAssets()) }
 
     NavHost(
         navController = navController, startDestination = NavigationPath.SCHEDULED.name
@@ -29,9 +32,10 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
             HomeContent(navController, "SCHEDULED")
         }
         composable(route = NavigationPath.GO_LIVE.name) {
-            GoLiveScreen(navController, mainViewModel, onGoLiveResult, onGoLiveTsResult,
+            GoLiveScreen(navController, mainViewModel, onGoLiveResult, onGoLiveTsResult, mState,
                 onLoadApiResults = { onGoLiveResult = it },
-                onLoadTSResults = { onGoLiveTsResult = it })
+                onLoadTSResults = { onGoLiveTsResult = it },
+                onUpdateState = { mState = it })
         }
         composable(route = NavigationPath.VIDEO_LIBRARY.name) {
             HomeContent(navController, "VIDEO LIBRARY")

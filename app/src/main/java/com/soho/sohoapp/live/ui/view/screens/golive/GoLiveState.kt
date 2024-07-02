@@ -14,6 +14,9 @@ data class GoLiveState(
     val errorStates: Map<FieldType, String> = emptyMap(),
     val apiResults: DataGoLive? = null,
     val tsResults: TsPropertyResponse? = null,
-    var propertyListState : MutableState<List<PropertyItem>>? = null,
-    var agencyListState : MutableState<List<AgencyItem>>? = null
+)
+
+data class GoLiveAssets(
+    var propertyListState: MutableState<List<PropertyItem>>? = null,
+    var agencyListState: MutableState<List<AgencyItem>>? = null
 )

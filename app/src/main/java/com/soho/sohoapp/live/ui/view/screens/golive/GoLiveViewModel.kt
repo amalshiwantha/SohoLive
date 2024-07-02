@@ -22,6 +22,7 @@ class GoLiveViewModel(
     private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager,
 ) : ViewModel() {
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
+    val assetsState: MutableState<GoLiveAssets> = mutableStateOf(GoLiveAssets())
 
     private val _connectedProfileNames =
         MutableStateFlow<MutableList<SocialMediaInfo>>(mutableListOf())
@@ -55,7 +56,7 @@ class GoLiveViewModel(
     }
 
     fun updatePropertyList(updatedItem: PropertyItem) {
-        val propertyList = mState.value.propertyListState?.value
+        val propertyList = assetsState.value.propertyListState?.value
 
         propertyList?.let {
             it.map { prop ->
@@ -66,14 +67,15 @@ class GoLiveViewModel(
                 )
             }
 
-            mState.value = mState.value.copy(propertyListState = mutableStateOf(propertyList))
+            assetsState.value =
+                assetsState.value.copy(propertyListState = mutableStateOf(propertyList))
 
             updateAgentList(it)
         }
     }
 
     fun updateAgentSelectionList(updatedAgent: AgencyItem) {
-        val agentList = mState.value.agencyListState?.value
+        val agentList = assetsState.value.agencyListState?.value
 
         agentList?.let {
             it.map { prop ->
@@ -84,7 +86,7 @@ class GoLiveViewModel(
                 )
             }
 
-            mState.value = mState.value.copy(agencyListState = mutableStateOf(agentList))
+            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentList))
         }
     }
 
@@ -104,7 +106,7 @@ class GoLiveViewModel(
                 agentLst.add(AgencyItem(id = it.id, agentProfile = it))
             }
 
-            mState.value = mState.value.copy(agencyListState = mutableStateOf(agentLst))
+            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
         }
     }
 
@@ -144,11 +146,16 @@ class GoLiveViewModel(
                                 )
                             }
 
-                            mState.value = mState.value.copy(isSuccess = true)
                             mState.value = mState.value.copy(apiResults = listingData.data)
                             mState.value = mState.value.copy(tsResults = tsData)
-                            mState.value =
-                                mState.value.copy(propertyListState = mutableStateOf(foundPropList))
+                            assetsState.value =
+                                assetsState.value.copy(
+                                    propertyListState = mutableStateOf(
+                                        foundPropList
+                                    )
+                                )
+                            mState.value = mState.value.copy(isSuccess = true)
+
                         } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_ERROR.apply {
