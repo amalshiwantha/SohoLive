@@ -6,59 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
-import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
-import com.soho.sohoapp.live.utility.AppEvent
-import com.soho.sohoapp.live.utility.AppEventBus
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class GoLiveViewModel(
-    private val apiRepo: SohoApiRepository,
-    private val userPref: AppDataStoreManager
+    private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager
 ) : ViewModel() {
 
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
-
-    private val _updatedFbProfile = MutableStateFlow(Profile())
-    val updatedFbProfile: StateFlow<Profile> = _updatedFbProfile
-
-    init {
-        appEventObserver()
-    }
-
-    private fun appEventObserver() {
-        viewModelScope.launch {
-            AppEventBus.events.collect { event ->
-                when (event) {
-                    is AppEvent.SaveSMProfile -> {
-                        userPref.saveFBProfile(event.profile)
-
-                        userPref.facebookProfile.collect { fbProfile ->
-                            fbProfile?.let {
-                                println("myFB "+it)
-                                _updatedFbProfile.value = it
-                            }
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        }
-    }
 
     fun onTriggerEvent(event: GoLiveEvent) {
         when (event) {
             GoLiveEvent.CallLoadProperties -> {
                 loadProfile()
+                checkSMConnectionStatus()
             }
 
             GoLiveEvent.DismissAlert -> {}
@@ -66,11 +33,10 @@ class GoLiveViewModel(
     }
 
     private fun loadProfile() {
-        mState.value =
-            mState.value.copy(loadingState = ProgressBarState.Loading)
+        mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
 
         viewModelScope.launch {
-            userPref.userProfile.collect { profile ->
+            dataStore.userProfile.collect { profile ->
                 profile?.let {
                     loadPropertyListing(it.authenticationToken)
                 }
@@ -90,8 +56,7 @@ class GoLiveViewModel(
                 )
             }
 
-            mState.value =
-                mState.value.copy(propertyListState = mutableStateOf(propertyList))
+            mState.value = mState.value.copy(propertyListState = mutableStateOf(propertyList))
 
             updateAgentList(it)
         }
@@ -109,8 +74,7 @@ class GoLiveViewModel(
                 )
             }
 
-            mState.value =
-                mState.value.copy(agencyListState = mutableStateOf(agentList))
+            mState.value = mState.value.copy(agencyListState = mutableStateOf(agentList))
         }
     }
 
@@ -120,8 +84,7 @@ class GoLiveViewModel(
 
         agentProfiles?.let { agent ->
             val selectedAgentId =
-                propertyList.filter { it.isChecked }
-                    .map { it.propInfo.apAgentsIds }
+                propertyList.filter { it.isChecked }.map { it.propInfo.apAgentsIds }
 
             val agentList = getAgencyItemsById(agent, selectedAgentId)
 
@@ -131,14 +94,12 @@ class GoLiveViewModel(
                 agentLst.add(AgencyItem(id = it.id, agentProfile = it))
             }
 
-            mState.value =
-                mState.value.copy(agencyListState = mutableStateOf(agentLst))
+            mState.value = mState.value.copy(agencyListState = mutableStateOf(agentLst))
         }
     }
 
     private fun getAgencyItemsById(
-        agentProfiles: List<AgentProfileGoLive>,
-        listIds: List<List<Int>>?
+        agentProfiles: List<AgentProfileGoLive>, listIds: List<List<Int>>?
     ): List<AgencyItem> {
         return listIds?.let { lists ->
             if (lists.isNotEmpty()) {
@@ -169,8 +130,7 @@ class GoLiveViewModel(
                         if (isSuccess) {
                             val foundPropList = tsData.propertyList.map {
                                 PropertyItem(
-                                    id = it.document.propertyId,
-                                    propInfo = it.document
+                                    id = it.document.propertyId, propInfo = it.document
                                 )
                             }
 
@@ -181,22 +141,17 @@ class GoLiveViewModel(
                                 mState.value.copy(propertyListState = mutableStateOf(foundPropList))
                         } else {
                             mState.value =
-                                mState.value.copy(
-                                    alertState = AlertState.Display(
-                                        AlertConfig.GO_LIVE_ERROR.apply {
-                                            listingData.response?.let {
-                                                message = it
-                                            }
-                                        }
-                                    )
-                                )
+                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_ERROR.apply {
+                                    listingData.response?.let {
+                                        message = it
+                                    }
+                                }))
                         }
                     }
                 }
 
                 is ApiState.Loading -> {
-                    mState.value =
-                        mState.value.copy(loadingState = apiState.progressBarState)
+                    mState.value = mState.value.copy(loadingState = apiState.progressBarState)
                 }
 
                 is ApiState.Alert -> {
@@ -205,4 +160,16 @@ class GoLiveViewModel(
             }
         }.launchIn(viewModelScope)
     }
+
+    fun checkSMConnectionStatus() {
+        viewModelScope.launch {
+            dataStore.connectedSMProfile.collect {smProfiles->
+                smProfiles?.let {
+                    println("myProfileList "+it)
+                }
+            }
+        }
+    }
+
+
 }

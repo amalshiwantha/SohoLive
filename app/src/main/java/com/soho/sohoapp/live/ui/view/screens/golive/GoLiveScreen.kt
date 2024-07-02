@@ -135,19 +135,12 @@ fun GoLiveScreen(
     var isDontShowProfile by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        println("myFB Reloaded " + savedApiResults)
         if (savedApiResults == null) {
             callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
                 isNetConnected = it
                 stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
             })
         }
-    }
-
-    //if SM connect success then open model
-    val smFbProfile by goLiveVm.updatedFbProfile.collectAsState()
-    if (smFbProfile.type == SocialMediaInfo.FACEBOOK) {
-        viewMMain.saveSocialMediaProfile(getSampleFbProfile())
     }
 
     Box(

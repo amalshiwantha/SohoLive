@@ -44,22 +44,6 @@ class AppDataStoreManager(private val context: Context) {
             }
         }
 
-    //get and set FaceBook Profile
-    suspend fun saveFBProfile(profile: Profile) {
-        val jsonString = Json.encodeToString(profile)
-        context.dataStore.edit { preferences ->
-            preferences[DataStoreKeys.PREF_KEY_USER_PROFILE_FB] = jsonString
-        }
-    }
-
-    val facebookProfile: Flow<Profile?>
-        get() = context.dataStore.data.map { preferences ->
-            preferences[DataStoreKeys.PREF_KEY_USER_PROFILE_FB]?.let { jsonString ->
-                Json.decodeFromString<Profile>(jsonString)
-            }
-        }
-
-
     //Save Connected SocialMedia Profile List
     suspend fun saveConnectedSMProfile(profileList: ConnectedSocialProfile) {
         val jsonString = Json.encodeToString(profileList)
