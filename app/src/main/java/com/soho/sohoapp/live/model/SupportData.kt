@@ -4,7 +4,9 @@ import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import kotlinx.serialization.Serializable
 
-//this if for save in local
+@Serializable
+data class ConnectedSocialMedia(val smList: MutableList<SocialMediaInfo>)
+
 @Serializable
 data class ConnectedSocialProfile(val smProfileList: MutableList<SocialMediaProfile>)
 

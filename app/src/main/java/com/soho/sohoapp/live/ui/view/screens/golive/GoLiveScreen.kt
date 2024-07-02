@@ -29,11 +29,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,11 +57,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.CategoryType
+import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
@@ -133,6 +134,10 @@ fun GoLiveScreen(
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected by remember { mutableStateOf(false) }
     var isDontShowProfile by remember { mutableStateOf(false) }
+    var isConnectedYouTube by remember { mutableStateOf(false) }
+    var isConnectedFacebook by remember { mutableStateOf(false) }
+    var isConnectedLinkedIn by remember { mutableStateOf(false) }
+    val stateSMConnected by goLiveVm.stateConnectedSM.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -141,6 +146,16 @@ fun GoLiveScreen(
                 stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
             })
         }
+    }
+
+    if (stateSMConnected.smList.isNotEmpty()) {
+        val list = stateSMConnected.smList
+        val isHasYouTube = list.indexOfFirst { it.name == SocialMediaInfo.YOUTUBE.name }
+        val isHasFaceBook = list.indexOfFirst { it.name == SocialMediaInfo.FACEBOOK.name }
+        val isHasLinkedIn = list.indexOfFirst { it.name == SocialMediaInfo.LINKEDIN.name }
+        isConnectedYouTube = isHasYouTube != -1
+        isConnectedFacebook = isHasFaceBook != -1
+        isConnectedLinkedIn = isHasLinkedIn != -1
     }
 
     Box(
@@ -183,6 +198,7 @@ fun GoLiveScreen(
                             //Step #2 agency list. agency list load from step #1 selections
                             val agencyList = stateVm.agencyListState?.value
 
+                            //All Steps
                             StepContents(
                                 currentStepId = currentStepId,
                                 savedResults = savedData,
@@ -193,6 +209,9 @@ fun GoLiveScreen(
                                 isNowSelected = isNowSelected,
                                 isNotShowProfile = isDontShowProfile,
                                 selectedOption = selectedOption,
+                                isConnectYT = isConnectedYouTube,
+                                isConnectFB = isConnectedFacebook,
+                                isConnectLI = isConnectedLinkedIn,
                                 onSelectOption = { selectedOption = it },
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
@@ -336,6 +355,9 @@ fun StepContents(
     isNotShowProfile: Boolean,
     optionList: MutableList<String>,
     selectedOption: String,
+    isConnectYT: Boolean,
+    isConnectFB: Boolean,
+    isConnectLI: Boolean,
     onSelectOption: (String) -> Unit,
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onNotShowProfileChange: (Boolean) -> Unit,
@@ -384,21 +406,25 @@ fun StepContents(
 
         // step#3
         2 -> {
-            SocialMediaListing(onSMItemClicked = { selectedSM ->
-                when (selectedSM) {
-                    SocialMediaInfo.FACEBOOK.name -> {
-                        onSMItemClicked.invoke(SocialMediaInfo.FACEBOOK)
-                    }
+            SocialMediaListing(
+                isConnectYoutube = isConnectYT,
+                isConnectFaceBook = isConnectFB,
+                isConnectLinkedIn = isConnectLI,
+                onSMItemClicked = { selectedSM ->
+                    when (selectedSM) {
+                        SocialMediaInfo.FACEBOOK.name -> {
+                            onSMItemClicked.invoke(SocialMediaInfo.FACEBOOK)
+                        }
 
-                    SocialMediaInfo.YOUTUBE.name -> {
-                        onSMItemClicked.invoke(SocialMediaInfo.YOUTUBE)
-                    }
+                        SocialMediaInfo.YOUTUBE.name -> {
+                            onSMItemClicked.invoke(SocialMediaInfo.YOUTUBE)
+                        }
 
-                    SocialMediaInfo.LINKEDIN.name -> {
-                        onSMItemClicked.invoke(SocialMediaInfo.LINKEDIN)
+                        SocialMediaInfo.LINKEDIN.name -> {
+                            onSMItemClicked.invoke(SocialMediaInfo.LINKEDIN)
+                        }
                     }
-                }
-            })
+                })
             SpacerVertical(size = 70.dp)
         }
 
@@ -761,13 +787,29 @@ private fun NextBackButtons(
 }
 
 @Composable
-private fun SocialMediaListing(onSMItemClicked: (String) -> Unit) {
+private fun SocialMediaListing(
+    isConnectYoutube: Boolean,
+    isConnectFaceBook: Boolean,
+    isConnectLinkedIn: Boolean,
+    onSMItemClicked: (String) -> Unit
+) {
 
     val visibleSMList = SocialMediaInfo.entries.filter {
         it.name != SocialMediaInfo.NONE.name
     }
 
-    visibleSMList.forEach { item ->
+    val smList by rememberSaveable { mutableStateOf(visibleSMList) }
+    smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
+        isConnect = isConnectYoutube
+    }
+    smList.first { it.name == SocialMediaInfo.FACEBOOK.name }.apply {
+        isConnect = isConnectFaceBook
+    }
+    smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
+        isConnect = isConnectLinkedIn
+    }
+
+    smList.forEach { item ->
         SocialMediaItemContent(item, onSMItemClicked = {
             onSMItemClicked.invoke(it)
         })
@@ -1235,6 +1277,9 @@ private fun PreviewGoLiveScreen() {
                     isNotShowProfile = true,
                     selectedOption = "",
                     onSelectOption = { },
+                    isConnectYT = true,
+                    isConnectFB = true,
+                    isConnectLI = true,
                     onSwipeIsNowSelected = { },
                     onNotShowProfileChange = {},
                     onPropertyItemClicked = {},

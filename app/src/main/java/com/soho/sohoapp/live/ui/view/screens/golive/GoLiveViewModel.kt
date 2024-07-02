@@ -6,11 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.model.ConnectedSocialMedia
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -21,11 +24,17 @@ class GoLiveViewModel(
 
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
 
+    private val _stateConnectedSM = MutableStateFlow(ConnectedSocialMedia(mutableListOf()))
+    val stateConnectedSM = _stateConnectedSM.asStateFlow()
+
+    init {
+        checkSMConnectionStatus()
+    }
+
     fun onTriggerEvent(event: GoLiveEvent) {
         when (event) {
             GoLiveEvent.CallLoadProperties -> {
                 loadProfile()
-                checkSMConnectionStatus()
             }
 
             GoLiveEvent.DismissAlert -> {}
@@ -161,12 +170,18 @@ class GoLiveViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun checkSMConnectionStatus() {
+    private fun checkSMConnectionStatus() {
+        val currentList = stateConnectedSM.value.smList
+
         viewModelScope.launch {
-            dataStore.connectedSMProfile.collect {smProfiles->
-                smProfiles?.let {
-                    println("myProfileList "+it)
+            dataStore.connectedSMProfile.collect { connectedList ->
+                connectedList?.let { list ->
+                    list.smProfileList.forEach { smProfile ->
+                        currentList.add(smProfile.smInfo)
+                    }
                 }
+                _stateConnectedSM.value.copy(smList = currentList)
+                println("smProfile onLoad $currentList")
             }
         }
     }
