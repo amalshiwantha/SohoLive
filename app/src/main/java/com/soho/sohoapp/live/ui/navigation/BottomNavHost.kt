@@ -26,7 +26,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
     var mState by remember { mutableStateOf(GoLiveAssets()) }
 
     NavHost(
-        navController = navController, startDestination = NavigationPath.SCHEDULED.name
+        navController = navController, startDestination = NavigationPath.GO_LIVE.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
             HomeContent(navController, "SCHEDULED")

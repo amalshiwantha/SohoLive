@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 
@@ -52,6 +54,53 @@ fun TextAreaWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
             unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent
+        )
+    )
+}
+
+@Composable
+fun TextFieldWhiteIcon(
+    fieldConfig: FieldConfig,
+    onTextChange: (String) -> Unit,
+    onClick: () -> Unit
+) {
+    var txtInput by rememberSaveable { mutableStateOf("") }
+
+    TextField(
+        value = txtInput,
+        onValueChange = {
+            txtInput = it
+            onTextChange(txtInput)
+        },
+        trailingIcon = {
+            fieldConfig.trailingIcon?.let {
+                Icon(
+                    imageVector = it,
+                    contentDescription = null
+                )
+            }
+        },
+        singleLine = fieldConfig.isSingleLine,
+        placeholder = { Text(fieldConfig.placeholder) },
+        keyboardOptions = KeyboardOptions(
+            imeAction = fieldConfig.imeAction,
+            keyboardType = fieldConfig.keyboardType
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable {
+                if (fieldConfig.clickable) {
+                    onClick()
+                }
+            },
+        enabled = !fieldConfig.clickable,
+        shape = RoundedCornerShape(16.dp),
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent,
+            disabledContainerColor = AppWhite,
+            disabledTrailingIconColor = AppPrimaryDark
         )
     )
 }
