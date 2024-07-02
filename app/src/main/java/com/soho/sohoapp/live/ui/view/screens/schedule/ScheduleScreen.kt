@@ -1,5 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.schedule
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,6 +58,9 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.DeleteRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun ScheduleScreen(
@@ -63,6 +68,7 @@ fun ScheduleScreen(
     scheduleSlots: MutableList<ScheduleSlots>
 ) {
     var isShowDialog by remember { mutableStateOf(false) }
+    var isShowDateTimePicker by remember { mutableStateOf(false) }
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
 
     if (isShowDialog) {
@@ -72,6 +78,13 @@ fun ScheduleScreen(
             onDismiss = { isShowDialog = it },
             onDelete = { scheduleSlots.remove(it) }
         )
+    }
+
+    if (isShowDateTimePicker) {
+        DateTimePicker(onDismissed = { isShowDateTimePicker = !it }, onDateTimeSelect = {
+            println("myItem $it")
+            scheduleSlots.add(ScheduleSlots(scheduleSlots.size + 1, it.first, it.second))
+        })
     }
 
     Scaffold(
@@ -112,7 +125,10 @@ fun ScheduleScreen(
                             .padding(16.dp)
                     ) {
                         item {
-                            TopContent(scheduleSlots.isEmpty())
+                            TopContent(scheduleSlots.isEmpty(), onClickAdd = { },
+                                onClickShowDateTimePicker = {
+                                    isShowDateTimePicker = it
+                                })
                         }
                         items(scheduleSlots) { slot ->
                             ScheduleItemView(slot = slot, onItemClick = { deleteSlot ->
@@ -207,7 +223,11 @@ fun ScheduleItemView(slot: ScheduleSlots, onItemClick: (ScheduleSlots) -> Unit) 
 }
 
 @Composable
-fun TopContent(isSlotsEmpty: Boolean) {
+fun TopContent(
+    isSlotsEmpty: Boolean,
+    onClickShowDateTimePicker: (Boolean) -> Unit,
+    onClickAdd: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -223,13 +243,16 @@ fun TopContent(isSlotsEmpty: Boolean) {
                 trailingIcon = Icons.Filled.ArrowDropDown
                 clickable = true
             },
-            onTextChange = {}, onClick = {})
+            onTextChange = {}, onClick = {
+                onClickShowDateTimePicker(true)
+            })
         SpacerVertical(size = 24.dp)
 
         ButtonOutLinedIcon(
             text = "Add to Schedule",
             icon = R.drawable.ic_add,
             onBtnClick = {
+                onClickAdd()
             })
         SpacerVertical(size = 40.dp)
 
@@ -250,6 +273,63 @@ fun TopContent(isSlotsEmpty: Boolean) {
                 )
             }
         }
+    }
+}
+
+
+@Composable
+fun DateTimePicker(
+    onDismissed: (Boolean) -> Unit,
+    onDateTimeSelect: (Pair<String, String>) -> Unit
+) {
+    val context = LocalContext.current
+
+    var selectedDate by remember { mutableStateOf("") }
+    var selectedTime by remember { mutableStateOf("") }
+    var isShowDatePicker by remember { mutableStateOf(true) }
+    var isShowTimePicker by remember { mutableStateOf(false) }
+
+    // Get current date
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+
+    // DateRime format
+    val dateFormat = SimpleDateFormat("d MMMM yyyy, EEEE", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+
+    // Open DatePickerDialog
+    if (isShowDatePicker) {
+        val datePickerDialog =
+            DatePickerDialog(context, { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                selectedDate = dateFormat.format(calendar.time)
+            }, year, month, day)
+
+        datePickerDialog.setOnDismissListener {
+            isShowDatePicker = false
+            isShowTimePicker = true
+        }
+        datePickerDialog.show()
+    }
+
+    // Open TimePickerDialog
+    if (isShowTimePicker) {
+        val timePickerDialog = TimePickerDialog(context, { _, selectedHour, selectedMinute ->
+            calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+            calendar.set(Calendar.MINUTE, selectedMinute)
+            selectedTime = timeFormat.format(calendar.time)
+        }, hour, minute, false)
+
+        timePickerDialog.setOnDismissListener {
+            !isShowTimePicker
+            onDateTimeSelect(Pair(selectedDate, selectedTime))
+            onDismissed(true)
+        }
+        timePickerDialog.show()
     }
 }
 
