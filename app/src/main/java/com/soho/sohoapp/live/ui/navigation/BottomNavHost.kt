@@ -13,6 +13,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
+import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 
 
 @Composable
@@ -37,6 +38,9 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         }
         composable(route = NavigationPath.PROFILE.name) {
             HomeContent(navController, "PROFILE")
+        }
+        composable(route = NavigationPath.SET_SCHEDULE.name) {
+            ScheduleScreen(navController = navController)
         }
     }
 }

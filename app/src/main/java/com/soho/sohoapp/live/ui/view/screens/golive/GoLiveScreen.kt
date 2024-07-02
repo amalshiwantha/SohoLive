@@ -151,7 +151,12 @@ fun GoLiveScreen(
         }
     }
 
-
+    LaunchedEffect(isShowScheduleScreen) {
+        if (isShowScheduleScreen) {
+            navController.navigate(NavigationPath.SET_SCHEDULE.name)
+            isShowScheduleScreen = false
+        }
+    }
 
     if (stateSMConnected.isNotEmpty()) {
         val list = stateSMConnected
@@ -163,10 +168,6 @@ fun GoLiveScreen(
         isConnectedLinkedIn = isHasLinkedIn != -1
 
         println("smProfile onView ${list.size}")
-    }
-
-    if (isShowScheduleScreen) {
-        //navController.navigate(NavigationPath.SET_SCHEDULE.name)
     }
 
     Box(

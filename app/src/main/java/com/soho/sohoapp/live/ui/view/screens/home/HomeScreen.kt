@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
@@ -57,6 +58,7 @@ fun HomeScreen(
     val navController = rememberNavController()
     var navigationSelectedItem by remember { mutableIntStateOf(0) }
     var selectedTabTitle by remember { mutableStateOf("SCHEDULED") }
+    var showBottomBar by remember { mutableStateOf(true) }
 
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collect { backStackEntry ->
@@ -73,15 +75,19 @@ fun HomeScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            AppTopBar(
-                title = selectedTabTitle,
-                isAllowBack = false,
-                onBackClick = { })
+            if (showBottomBar) {
+                AppTopBar(
+                    title = selectedTabTitle,
+                    isAllowBack = false,
+                    onBackClick = { })
+            }
         },
         bottomBar = {
-            BottomNavigationBar(navController, navigationSelectedItem, onTabClick = {
-                navigationSelectedItem = it
-            })
+            if (showBottomBar) {
+                BottomNavigationBar(navController, navigationSelectedItem, onTabClick = {
+                    navigationSelectedItem = it
+                })
+            }
         }
     ) { innerPadding ->
         Surface(
@@ -90,8 +96,10 @@ fun HomeScreen(
                 .background(brushMainGradientBg)
                 .padding(innerPadding)
         ) {
-            //navControllerHome.navigate(NavigationPath.SET_SCHEDULE.name)
             BottomNavHost(navController, viewMMain)
+
+            val currentBackStackEntry by navController.currentBackStackEntryAsState()
+            showBottomBar = currentBackStackEntry?.destination?.route != NavigationPath.SET_SCHEDULE.name
         }
     }
 }

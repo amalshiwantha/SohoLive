@@ -8,7 +8,6 @@ import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.forget_pw.ForgetPwScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeScreen
 import com.soho.sohoapp.live.ui.view.screens.pre_access.PreAccessScreen
-import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInScreen
 import com.soho.sohoapp.live.ui.view.screens.signup.SignUpScreen
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashScreen
@@ -35,9 +34,6 @@ fun AppNavHost(viewMMain: MainViewModel) {
         }
         composable(route = NavigationPath.HOME.name) {
             HomeScreen(navControllerHome = navController, viewMMain = viewMMain)
-        }
-        composable(route = NavigationPath.SET_SCHEDULE.name) {
-            ScheduleScreen(navController = navController)
         }
     }
 }
