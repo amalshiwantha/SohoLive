@@ -66,27 +66,11 @@ fun ScheduleScreen(
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
 
     if (isShowDialog) {
-        AlertDialog(
-            onDismissRequest = { isShowDialog = false },
-            title = { Text(text = "Confirm Deletion") },
-            text = { Text(text = "Do you want to delete ${slotToDelete?.date.orEmpty()} schedule slot?") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        scheduleSlots.remove(slotToDelete)
-                        isShowDialog = false
-                    }
-                ) {
-                    Text("Yes")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { isShowDialog = false }
-                ) {
-                    Text("No")
-                }
-            }
+        ShowDeleteAlert(
+            isShowDialog = isShowDialog,
+            slotToDelete = slotToDelete,
+            onDismiss = { isShowDialog = it },
+            onDelete = { scheduleSlots.remove(it) }
         )
     }
 
@@ -153,6 +137,37 @@ fun ScheduleScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ShowDeleteAlert(
+    isShowDialog: Boolean,
+    slotToDelete: ScheduleSlots?,
+    onDismiss: (Boolean) -> Unit,
+    onDelete: (ScheduleSlots) -> Unit
+) {
+    slotToDelete?.let {
+        AlertDialog(
+            onDismissRequest = { onDismiss(!isShowDialog) },
+            title = { Text(text = "Confirm Deletion") },
+            text = { Text(text = "Do you want to delete ${it.date.orEmpty()} schedule slot?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDelete(it)
+                        onDismiss(!isShowDialog)
+                    }
+                ) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss(!isShowDialog) }) {
+                    Text("No")
+                }
+            }
+        )
     }
 }
 
