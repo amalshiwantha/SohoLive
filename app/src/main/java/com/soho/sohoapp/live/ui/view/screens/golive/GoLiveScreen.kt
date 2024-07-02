@@ -153,6 +153,9 @@ fun GoLiveScreen(
                     onLoadApiResults.invoke(apiRes)
                 }
             })
+        }else{
+            //fill saved data into localDataSet
+            goLiveVm.updateAssetsState(savedTsResults,savedApiResults,savedState)
         }
     }
 

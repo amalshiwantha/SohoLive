@@ -1,7 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +12,8 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
+import com.soho.sohoapp.live.network.response.DataGoLive
+import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -44,10 +45,6 @@ class GoLiveViewModel(
         }
     }
 
-    fun updateStepId(stepId: Int) {
-        assetsState.value = assetsState.value.copy(stepId = mutableIntStateOf(stepId))
-    }
-
     private fun loadProfile() {
         mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
 
@@ -57,6 +54,56 @@ class GoLiveViewModel(
                     loadPropertyListing(it.authenticationToken)
                 }
             }
+        }
+    }
+
+    fun updateAssetsState(
+        savedState: TsPropertyResponse?,
+        savedApiResults: DataGoLive,
+        savedAssets: GoLiveAssets?
+    ) {
+        savedState?.let {
+            /*it.propertyListState?.let {
+                assetsState.value =
+                    assetsState.value.copy(propertyListState = mutableStateOf(it.value))
+            }
+
+            it.agencyListState?.let {
+                assetsState.value =
+                    assetsState.value.copy(agencyListState = mutableStateOf(it.value))
+            }*/
+
+            val selectedProperty = savedAssets?.propertyListState?.value?.find { it.isChecked }
+
+            val foundPropList = savedState.propertyList.map {
+                PropertyItem(
+                    id = it.document.propertyId,
+                    propInfo = it.document,
+                    isChecked = getCheckedStatus(selectedProperty, it.document.propertyId)
+                )
+            }
+
+            mState.value = mState.value.copy(apiResults = savedApiResults)
+            mState.value = mState.value.copy(tsResults = savedState)
+            assetsState.value =
+                assetsState.value.copy(
+                    propertyListState = mutableStateOf(
+                        foundPropList
+                    )
+                )
+            mState.value = mState.value.copy(isSuccess = true)
+        }
+    }
+
+    private fun getCheckedStatus(selectedProperty: PropertyItem?, propertyId: Int): Boolean {
+        selectedProperty?.let {
+            if (propertyId == selectedProperty.id) {
+                return selectedProperty.isChecked
+            } else {
+                return false
+            }
+        } ?: run {
+            return false
         }
     }
 
