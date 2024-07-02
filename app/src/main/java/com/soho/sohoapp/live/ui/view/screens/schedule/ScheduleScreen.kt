@@ -309,6 +309,13 @@ fun DateTimePicker(
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
     val minute = calendar.get(Calendar.MINUTE)
 
+    // Set minimum date (today)
+    val minDate = calendar.timeInMillis
+
+    // Set maximum date (30 days from today)
+    calendar.add(Calendar.DAY_OF_YEAR, 30)
+    val maxDate = calendar.timeInMillis
+
     // DateRime format
     val dateFormat = SimpleDateFormat("d MMMM yyyy, EEEE", Locale.getDefault())
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
@@ -323,6 +330,9 @@ fun DateTimePicker(
                 displayDateTime = displayFormat.format(calendar.time)
                 selectedDate = dateFormat.format(calendar.time)
             }, year, month, day)
+
+        datePickerDialog.datePicker.minDate = minDate
+        datePickerDialog.datePicker.maxDate = maxDate
 
         datePickerDialog.setOnDismissListener {
             isShowDatePicker = false
