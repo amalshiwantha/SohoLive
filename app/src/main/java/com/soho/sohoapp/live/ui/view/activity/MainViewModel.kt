@@ -92,6 +92,4 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             }
         }
     }
-
-
 }

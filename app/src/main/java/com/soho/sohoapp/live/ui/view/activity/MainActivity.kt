@@ -113,11 +113,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
-
                     val stateSMProfile by viewMMain.stateConnectedProfile.collectAsStateWithLifecycle()
                     val stateSMConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
-
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)

@@ -90,6 +90,7 @@ fun HomeScreen(
                 .background(brushMainGradientBg)
                 .padding(innerPadding)
         ) {
+            //navControllerHome.navigate(NavigationPath.SET_SCHEDULE.name)
             BottomNavHost(navController, viewMMain)
         }
     }

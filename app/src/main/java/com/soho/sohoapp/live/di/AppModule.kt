@@ -6,7 +6,6 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiServices
 import com.soho.sohoapp.live.network.api.soho.SohoServicesImpl
 import com.soho.sohoapp.live.network.core.KtorHttpClient
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
-import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel

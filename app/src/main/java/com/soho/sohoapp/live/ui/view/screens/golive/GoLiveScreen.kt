@@ -99,6 +99,7 @@ import com.soho.sohoapp.live.ui.components.brushGradientLive
 import com.soho.sohoapp.live.ui.components.brushGradientSetDateTime
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -112,7 +113,6 @@ import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
 import org.koin.compose.koinInject
-
 
 @Composable
 fun GoLiveScreen(
@@ -138,6 +138,7 @@ fun GoLiveScreen(
     var isConnectedYouTube by remember { mutableStateOf(false) }
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
+    var isShowScheduleScreen by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
 
@@ -162,6 +163,10 @@ fun GoLiveScreen(
         isConnectedLinkedIn = isHasLinkedIn != -1
 
         println("smProfile onView ${list.size}")
+    }
+
+    if (isShowScheduleScreen) {
+        //navController.navigate(NavigationPath.SET_SCHEDULE.name)
     }
 
     Box(
@@ -254,7 +259,7 @@ fun GoLiveScreen(
                         currentStepId = (currentStepId - 1) % stepCount
                     },
                     onClickedDateTime = {
-                        //POST /api/soho_live/live_stream
+                        isShowScheduleScreen = true
                     },
                     onClickedLive = {
                         //POST /api/soho_live/live_stream

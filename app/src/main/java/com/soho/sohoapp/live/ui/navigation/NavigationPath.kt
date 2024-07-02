@@ -10,5 +10,6 @@ enum class NavigationPath {
     SCHEDULED,
     GO_LIVE,
     VIDEO_LIBRARY,
-    PROFILE
+    PROFILE,
+    SET_SCHEDULE
 }
