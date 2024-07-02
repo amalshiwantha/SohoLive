@@ -27,7 +27,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
     var onGoLiveResult by remember { mutableStateOf<DataGoLive?>(null) }
     var onGoLiveTsResult by remember { mutableStateOf<TsPropertyResponse?>(null) }
     var mState by remember { mutableStateOf(GoLiveAssets()) }
-    var scheduleSlots = remember { mutableStateListOf<ScheduleSlots>() }
+    val scheduleSlots = remember { mutableStateListOf<ScheduleSlots>() }
 
     NavHost(
         navController = navController, startDestination = NavigationPath.GO_LIVE.name
@@ -50,8 +50,8 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         composable(route = NavigationPath.SET_SCHEDULE.name) {
             ScheduleScreen(
                 navController = navController,
-                scheduleSlots,
-                onUpdateSlots = {  })
+                scheduleSlots
+            )
         }
     }
 }
