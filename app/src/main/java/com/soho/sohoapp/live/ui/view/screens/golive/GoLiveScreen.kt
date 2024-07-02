@@ -58,7 +58,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -110,7 +109,6 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
-import com.soho.sohoapp.live.ui.view.screens.ComposableLifecycle
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
@@ -395,13 +393,13 @@ fun StepContents(
     when (currentStepId) {
         // step#1
         0 -> {
-            tsResults?.let { tsProp ->
-                if (tsProp.propertyList.isEmpty()) {
+            propertyList?.let { propList ->
+                if (propList.isEmpty()) {
                     DisplayNoData(message = "Not Found Properties")
                 } else {
                     SearchBar()
                     SpacerVertical(16.dp)
-                    PropertyListing(propertyList, onItemClicked = {
+                    PropertyListing(propList, onItemClicked = {
                         onPropertyItemClicked.invoke(it)
                     })
                     SpacerVertical(size = 70.dp)
@@ -413,19 +411,20 @@ fun StepContents(
 
         // step#2
         1 -> {
-            if (savedResults.agentProfiles.isEmpty()) {
-                DisplayNoData(message = "No Agency Information")
-            } else {
+            mainAgencyList?.let { agentList ->
+                if (agentList.isEmpty()) {
+                    DisplayNoData(message = "No Agency Information")
+                } else {
+                    ProfileHideItem(isNotShowProfile, onCheckedChange = {
+                        onNotShowProfileChange.invoke(it)
+                    })
 
-                ProfileHideItem(isNotShowProfile, onCheckedChange = {
-                    onNotShowProfileChange.invoke(it)
-                })
-
-                mainAgencyList?.let { it1 ->
-                    AgentListing(it1, onAgentItemClicked = { selected ->
+                    AgentListing(mainAgencyList, onAgentItemClicked = { selected ->
                         onAgentItemClicked.invoke(selected)
                     })
                 }
+            } ?: run {
+                DisplayNoData(message = "Agency Information Load Failed")
             }
         }
 
