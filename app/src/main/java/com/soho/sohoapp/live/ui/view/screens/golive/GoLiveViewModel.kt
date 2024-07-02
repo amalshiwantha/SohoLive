@@ -63,15 +63,6 @@ class GoLiveViewModel(
         savedAssets: GoLiveAssets?
     ) {
         savedState?.let {
-            /*it.propertyListState?.let {
-                assetsState.value =
-                    assetsState.value.copy(propertyListState = mutableStateOf(it.value))
-            }
-
-            it.agencyListState?.let {
-                assetsState.value =
-                    assetsState.value.copy(agencyListState = mutableStateOf(it.value))
-            }*/
 
             val selectedProperty = savedAssets?.propertyListState?.value?.find { it.isChecked }
 
@@ -83,8 +74,8 @@ class GoLiveViewModel(
                 )
             }
 
-            mState.value = mState.value.copy(apiResults = savedApiResults)
-            mState.value = mState.value.copy(tsResults = savedState)
+            updateAgentList(foundPropList)
+
             assetsState.value =
                 assetsState.value.copy(
                     propertyListState = mutableStateOf(
