@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -138,6 +139,7 @@ fun GoLiveScreen(
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
+    val checkedSM = remember { mutableStateListOf<String>() }
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -226,8 +228,11 @@ fun GoLiveScreen(
                                 },
                                 onSMItemClicked = { selectedSM ->
                                     if (selectedSM.isConnect) {
-                                        //update post model with checkedState
-                                        println("myState "+selectedSM.name+" "+selectedSM.isItemChecked)
+                                        if (selectedSM.isItemChecked) {
+                                            checkedSM.add(selectedSM.name)
+                                        } else {
+                                            checkedSM.remove(selectedSM.name)
+                                        }
                                     } else {
                                         viewMMain.updateSocialMediaState(selectedSM)
                                     }
