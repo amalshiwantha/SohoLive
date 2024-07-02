@@ -191,7 +191,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
 
                         SocialMediaInfo.LINKEDIN -> {
-                            linkedInLogin()
+                            LaunchedEffect(key1 = "linkedInLogin") {
+                                linkedInLogin()
+                            }
 
                             /*val smProfile = SMProfile(
                                 "Jhon Smith",
@@ -670,27 +672,27 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             this,
             "8670uh4gz1gbbp",
             "9xaiOv3ibWwsqCXi",
-            "https://lakveggie.ceylonapz.com",
+            "https://www.linkedin.com/developers/tools/oauth/redirect",
             true
         )
 
         linkedInRequestManager.isLoggedIn(object : LinkedInUserLoginValidationResponse {
             override fun activeLogin() {
-                //Session token is active. can use to get data from linkedin
+                println("myLinkedin activeLogin")
             }
 
             override fun tokenExpired() {
-                //token has been expired. need to obtain a new code
+                println("myLinkedin tokenExpired")
             }
 
             override fun notLogged() {
-                //user is not logged into the application
+                println("myLinkedin notLogged")
             }
         })
 
         linkedInRequestManager.getLoggedRequestedMode(object : LinkedInUserLoginDetailsResponse {
             override fun loggedMode(mode: Int) {
-                //user is already logged in. active token. mode is available
+                println("myLinkedin getLoggedRequestedMode $mode")
                 when (mode) {
                     LinkedInRequestManager.MODE_LITE_PROFILE_ONLY -> {}
                     LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY -> {}
@@ -699,11 +701,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             }
 
             override fun tokenExpired() {
-                //token has been expired. need to obtain a new code
+                println("myLinkedin tokenExpired")
             }
 
             override fun notLogged() {
-                //user is not logged into the application
+                println("myLinkedin notLogged")
             }
         })
 
@@ -711,35 +713,37 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     }
 
     override fun onGetAccessTokenFailed() {
-        TODO("Not yet implemented")
+        println("myLinkedin onGetAccessTokenFailed")
     }
 
     override fun onGetAccessTokenSuccess(linkedInAccessToken: LinkedInAccessToken?) {
         val linkedinAccessToken = linkedInAccessToken?.access_token
+        println("myLinkedin linkedinAccessToken $linkedinAccessToken")
     }
 
     override fun onGetCodeFailed() {
-        TODO("Not yet implemented")
+        println("myLinkedin onGetCodeFailed")
     }
 
     override fun onGetCodeSuccess(code: String?) {
-        TODO("Not yet implemented")
+        println("myLinkedin onGetCodeSuccess $code")
     }
 
     override fun onGetProfileDataFailed() {
-        TODO("Not yet implemented")
+        println("myLinkedin onGetProfileDataFailed ")
     }
 
     override fun onGetProfileDataSuccess(linkedInUserProfile: LinkedInUserProfile?) {
-        TODO("Not yet implemented")
+        println("myLinkedin onGetProfileDataSuccess $linkedInUserProfile")
     }
 
     override fun onGetEmailAddressFailed() {
-        TODO("Not yet implemented")
+        println("myLinkedin onGetEmailAddressFailed")
     }
 
     override fun onGetEmailAddressSuccess(linkedInEmailAddress: LinkedInEmailAddress?) {
-        val adde = linkedInEmailAddress?.emailAddress
+        val inkedinEml = linkedInEmailAddress?.emailAddress
+        println("myLinkedin onGetEmailAddressSuccess $inkedinEml")
     }
     //LinkedIn End
 
