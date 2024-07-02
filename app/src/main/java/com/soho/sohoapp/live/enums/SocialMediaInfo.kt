@@ -14,7 +14,8 @@ enum class SocialMediaInfo(
     var btnColor: Color,
     var btnIcon: Int,
     val icon: Int,
-    var isConnect: Boolean
+    var isConnect: Boolean,
+    var isItemChecked: Boolean = false
 ) {
     SOHO(
         title = "Your listing on",

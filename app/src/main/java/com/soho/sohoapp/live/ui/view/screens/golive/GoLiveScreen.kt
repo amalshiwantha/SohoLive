@@ -203,8 +203,7 @@ fun GoLiveScreen(
                             val agencyList = stateVm.agencyListState?.value
 
                             //All Steps
-                            StepContents(
-                                currentStepId = currentStepId,
+                            StepContents(currentStepId = currentStepId,
                                 savedResults = savedData,
                                 tsResults = savedTsResults,
                                 propertyList = propertyList,
@@ -226,9 +225,13 @@ fun GoLiveScreen(
                                     goLiveVm.updateAgentSelectionList(selectedAgent)
                                 },
                                 onSMItemClicked = { selectedSM ->
-                                    viewMMain.updateSocialMediaState(selectedSM)
-                                }
-                            )
+                                    if (selectedSM.isConnect) {
+                                        //update post model with checkedState
+                                        println("myState "+selectedSM.name+" "+selectedSM.isItemChecked)
+                                    } else {
+                                        viewMMain.updateSocialMediaState(selectedSM)
+                                    }
+                                })
                         }
                     }
                 }
@@ -410,8 +413,7 @@ fun StepContents(
 
         // step#3
         2 -> {
-            SocialMediaListing(
-                isConnectYoutube = isConnectYT,
+            SocialMediaListing(isConnectYoutube = isConnectYT,
                 isConnectFaceBook = isConnectFB,
                 isConnectLinkedIn = isConnectLI,
                 onSMItemClicked = { selectedSM ->
@@ -428,6 +430,9 @@ fun StepContents(
                             onSMItemClicked.invoke(SocialMediaInfo.LINKEDIN)
                         }
                     }
+                },
+                onSMItemChecked = { smInfo ->
+                    onSMItemClicked.invoke(smInfo)
                 })
             SpacerVertical(size = 70.dp)
         }
@@ -795,7 +800,8 @@ private fun SocialMediaListing(
     isConnectYoutube: Boolean,
     isConnectFaceBook: Boolean,
     isConnectLinkedIn: Boolean,
-    onSMItemClicked: (String) -> Unit
+    onSMItemClicked: (String) -> Unit,
+    onSMItemChecked: (SocialMediaInfo) -> Unit
 ) {
 
     val visibleSMList = SocialMediaInfo.entries.filter {
@@ -816,14 +822,15 @@ private fun SocialMediaListing(
     smList.forEach { item ->
         SocialMediaItemContent(item, onSMItemClicked = {
             onSMItemClicked.invoke(it)
+        }, onSMItemChecked = { smInfo ->
+            onSMItemChecked(smInfo)
         })
     }
 }
 
 @Composable
 private fun AgentListing(
-    agencyList: List<AgencyItem>,
-    onAgentItemClicked: (AgencyItem) -> Unit
+    agencyList: List<AgencyItem>, onAgentItemClicked: (AgencyItem) -> Unit
 ) {
     agencyList.forEach { agentItem ->
         AgencyItemContent(agentItem, onItemClicked = { selected ->
@@ -834,8 +841,7 @@ private fun AgentListing(
 
 @Composable
 private fun PropertyListing(
-    listings: List<PropertyItem>?,
-    onItemClicked: (PropertyItem) -> Unit = {}
+    listings: List<PropertyItem>?, onItemClicked: (PropertyItem) -> Unit = {}
 ) {
     listings?.forEach { item ->
         PropertyItemContent(item, onItemClicked = { selected ->
@@ -846,8 +852,7 @@ private fun PropertyListing(
 
 @Composable
 private fun ProfileHideItem(
-    isDontShowProfile: Boolean,
-    onCheckedChange: (Boolean) -> Unit = {}
+    isDontShowProfile: Boolean, onCheckedChange: (Boolean) -> Unit = {}
 ) {
 
     Card(
@@ -900,7 +905,8 @@ private fun ProfileHideItem(
 @Composable
 private fun SocialMediaItemContent(
     info: SocialMediaInfo,
-    onSMItemClicked: (String) -> Unit
+    onSMItemClicked: (String) -> Unit,
+    onSMItemChecked: (SocialMediaInfo) -> Unit
 ) {
     var isChecked by remember { mutableStateOf(false) }
 
@@ -941,6 +947,9 @@ private fun SocialMediaItemContent(
                 //switch
                 SwitchCompo(isChecked, onCheckedChange = {
                     isChecked = it
+                    onSMItemChecked.invoke(info.apply {
+                        isItemChecked = isChecked
+                    })
                 })
             } else {
                 //button
@@ -1165,9 +1174,7 @@ private fun TypeAndCheckBox(
 
 @Composable
 private fun ProfileNameCheckBox(
-    profile: AgentProfileGoLive,
-    isChecked: Boolean,
-    textColor: Color
+    profile: AgentProfileGoLive, isChecked: Boolean, textColor: Color
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -1190,9 +1197,7 @@ private fun ProfileNameCheckBox(
             SpacerHorizontal(size = 16.dp)
 
             Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.padding(horizontal = 8.dp), contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
                 Image(
@@ -1255,9 +1260,7 @@ fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) 
 data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
 
 data class AgencyItem(
-    val id: Int,
-    val agentProfile: AgentProfileGoLive,
-    var isChecked: Boolean = false
+    val id: Int, val agentProfile: AgentProfileGoLive, var isChecked: Boolean = false
 )
 
 @Preview
