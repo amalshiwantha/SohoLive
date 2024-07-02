@@ -58,6 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -109,6 +110,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.screens.ComposableLifecycle
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
@@ -141,6 +143,17 @@ fun GoLiveScreen(
     var isShowScheduleScreen by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
+
+    ComposableLifecycle { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_CREATE -> println("myApp ON_CREATE")
+            Lifecycle.Event.ON_RESUME -> println("myApp ON_RESUME")
+            Lifecycle.Event.ON_PAUSE -> println("myApp ON_PAUSE")
+            else -> {
+                println("myApp $event")
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {

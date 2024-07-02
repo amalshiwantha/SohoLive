@@ -7,26 +7,24 @@ import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
-import com.soho.sohoapp.live.model.ConnectedSocialMedia
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class GoLiveViewModel(
-    private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager
+    private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager,
 ) : ViewModel() {
-
     val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
 
-    private val _connectedProfileNames = MutableStateFlow<MutableList<SocialMediaInfo>>(mutableListOf())
+    private val _connectedProfileNames =
+        MutableStateFlow<MutableList<SocialMediaInfo>>(mutableListOf())
     val connectedProfileNames = _connectedProfileNames.asStateFlow()
 
 
