@@ -100,7 +100,8 @@ fun TextFieldWhiteIcon(
             unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
             unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent,
             disabledContainerColor = AppWhite,
-            disabledTrailingIconColor = AppPrimaryDark
+            disabledTrailingIconColor = AppPrimaryDark,
+            disabledTextColor = AppPrimaryDark
         )
     )
 }
