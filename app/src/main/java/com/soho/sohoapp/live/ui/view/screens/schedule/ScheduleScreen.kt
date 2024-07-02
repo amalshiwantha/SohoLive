@@ -126,7 +126,10 @@ fun ScheduleScreen(
                     ) {
                         item {
                             TopContent(scheduleSlots.isEmpty(), slotToSave, onClickAdd = {
-                                slotToSave?.let { scheduleSlots.add(it) }
+                                slotToSave?.let {
+                                    slotToSave = null
+                                    scheduleSlots.add(it)
+                                }
                             },
                                 onClickShowDateTimePicker = {
                                     isShowDateTimePicker = it
