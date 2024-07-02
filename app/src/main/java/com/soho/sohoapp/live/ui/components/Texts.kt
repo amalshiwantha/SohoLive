@@ -38,7 +38,7 @@ fun TextWhite14(modifier: Modifier = Modifier, title: String) {
 }
 
 @Composable
-fun TextWhite12(modifier: Modifier = Modifier, title: String) {
+fun TextWhite12(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,
         text = title,
@@ -46,7 +46,7 @@ fun TextWhite12(modifier: Modifier = Modifier, title: String) {
         lineHeight = 16.8.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(800),
-        color = AppWhite,
+        color = txtColor,
         textAlign = TextAlign.Center,
         letterSpacing = 0.14.sp
     )

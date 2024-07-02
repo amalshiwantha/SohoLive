@@ -25,6 +25,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BorderGray
 
 @Composable
@@ -163,6 +165,7 @@ fun ButtonConnect(
     modifier: Modifier = Modifier,
     text: String,
     color: Color,
+    txtColor: Color = AppWhite,
     onBtnClick: () -> Unit
 ) {
     Button(
@@ -173,7 +176,7 @@ fun ButtonConnect(
             containerColor = color
         )
     ) {
-        TextWhite12(title = text)
+        TextWhite12(title = text, txtColor = txtColor)
     }
 }
 
