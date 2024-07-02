@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -18,5 +19,6 @@ data class GoLiveState(
 
 data class GoLiveAssets(
     var propertyListState: MutableState<List<PropertyItem>>? = null,
-    var agencyListState: MutableState<List<AgencyItem>>? = null
+    var agencyListState: MutableState<List<AgencyItem>>? = null,
+    var stepId: MutableState<Int> = mutableIntStateOf(0)
 )

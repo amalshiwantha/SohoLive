@@ -131,7 +131,7 @@ fun GoLiveScreen(
     val stateVm = goLiveVm.mState.value
     val assetsState = savedState ?: goLiveVm.assetsState.value
     val stepCount = 4
-    var currentStepId by remember { mutableIntStateOf(0) }
+    var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
     var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
@@ -259,10 +259,12 @@ fun GoLiveScreen(
                     onClickedNext = {
                         if (currentStepId < stepCount - 1) {
                             currentStepId++
+                            assetsState.stepId.value = currentStepId
                         }
                     },
                     onClickedBack = {
                         currentStepId = (currentStepId - 1) % stepCount
+                        assetsState.stepId.value = currentStepId
                     },
                     onClickedDateTime = {
                         isShowScheduleScreen = true

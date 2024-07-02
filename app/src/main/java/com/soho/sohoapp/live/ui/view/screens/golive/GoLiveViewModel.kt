@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,6 +42,10 @@ class GoLiveViewModel(
 
             GoLiveEvent.DismissAlert -> {}
         }
+    }
+
+    fun updateStepId(stepId: Int) {
+        assetsState.value = assetsState.value.copy(stepId = mutableIntStateOf(stepId))
     }
 
     private fun loadProfile() {
