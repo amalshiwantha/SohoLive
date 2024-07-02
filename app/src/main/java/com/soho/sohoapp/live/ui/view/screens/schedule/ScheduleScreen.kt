@@ -312,13 +312,15 @@ fun DateTimePicker(
     // DateRime format
     val dateFormat = SimpleDateFormat("d MMMM yyyy, EEEE", Locale.getDefault())
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-    val displayFormat = SimpleDateFormat("d/M/yyyy, hh:mma", Locale.getDefault())
+    val displayFormat = SimpleDateFormat("d/M/yyyy,", Locale.getDefault())
 
     // Open DatePickerDialog
     if (isShowDatePicker) {
         val datePickerDialog =
             DatePickerDialog(context, { _, selectedYear, selectedMonth, selectedDay ->
                 calendar.set(selectedYear, selectedMonth, selectedDay)
+
+                displayDateTime = displayFormat.format(calendar.time)
                 selectedDate = dateFormat.format(calendar.time)
             }, year, month, day)
 
@@ -335,8 +337,8 @@ fun DateTimePicker(
             calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
             calendar.set(Calendar.MINUTE, selectedMinute)
 
-            displayDateTime = displayFormat.format(calendar.time)
             selectedTime = timeFormat.format(calendar.time)
+            displayDateTime += " $selectedTime"
         }, hour, minute, false)
 
         timePickerDialog.setOnDismissListener {
