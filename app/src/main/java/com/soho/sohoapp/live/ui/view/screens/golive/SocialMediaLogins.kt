@@ -96,7 +96,7 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                                             pages = pagesList,
                                             groups = groupsList
                                         )
-                                        println("myFB $smProfile")
+
                                         viewMMain.saveSMProfile(smProfile)
                                     })
                                 })

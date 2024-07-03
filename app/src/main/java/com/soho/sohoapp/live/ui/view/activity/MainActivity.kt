@@ -422,17 +422,17 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //Display Content for each tab
                     val fbSubList = when (fbViewType) {
                         CategoryType.TIMELINE -> {
-                            val str = stringResource(R.string.not_admin)
+                            val str = stringResource(R.string.not_admin_timeline)
                             Pair(mListTimelines, str)
                         }
 
                         CategoryType.PAGES -> {
-                            val str = stringResource(R.string.not_admin)
+                            val str = stringResource(R.string.not_admin_page)
                             Pair(mListPages, str)
                         }
 
                         CategoryType.GROUPS -> {
-                            val str = stringResource(R.string.not_admin)
+                            val str = stringResource(R.string.not_admin_group)
                             Pair(mListGroup, str)
                         }
                     }

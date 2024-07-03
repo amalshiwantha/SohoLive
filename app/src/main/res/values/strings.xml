@@ -36,6 +36,8 @@
     <string name="search_address">Search for an address</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
-    <string name="not_admin">You are not an admin on any Facebook pages</string>
+    <string name="not_admin_group">You are not an admin on any Facebook groups</string>
+    <string name="not_admin_page">You are not an admin on any Facebook pages</string>
+    <string name="not_admin_timeline">You are not an admin on any Facebook Account</string>
     <string name="date_time_title">Schedule Date &amp; Times</string>
 </resources>
