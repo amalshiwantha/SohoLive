@@ -71,7 +71,15 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                 override fun onSuccess(result: LoginResult) {
 
                     val accessToken = result.accessToken
-                    getFBPagesList(accessToken)
+
+                    getFBPagesList(accessToken, callback = {})
+
+                    getFBGroupsList(accessToken, callback = { groupsList ->
+                        println("myFB groupsList " + groupsList)
+                        for (group in groupsList) {
+                            println("myFB groups " + group)
+                        }
+                    })
 
                     /*getFBProfileData(result, onProfileFound = { fbProfile ->
                         fbProfile?.let {
@@ -132,13 +140,14 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
     )
 }
 
-private fun getFBPagesList(accessToken: AccessToken) {
+private fun getFBPagesList(accessToken: AccessToken, callback: (List<String>) -> Unit) {
     val request = GraphRequest.newGraphPathRequest(
         accessToken,
         "/me/accounts"
     ) { response ->
-        val jsonObject = response.jsonObject
+        val groupsList = mutableListOf<String>()
         try {
+            val jsonObject = response.jsonObject
             jsonObject?.let {
                 val dataArray = it.getJSONArray("data")
                 for (i in 0 until dataArray.length()) {
@@ -147,7 +156,10 @@ private fun getFBPagesList(accessToken: AccessToken) {
                     val pageName = pageObject.getString("name")
                     val pageAccessToken = pageObject.getString("access_token")
                     // Do something with the page data
-                    Log.d("myFB pages", "ID: $pageId, Name: $pageName, AccessToken: $pageAccessToken")
+                    Log.d(
+                        "myFB pages",
+                        "ID: $pageId, Name: $pageName, AccessToken: $pageAccessToken"
+                    )
                 }
             }
         } catch (e: Exception) {
@@ -157,6 +169,38 @@ private fun getFBPagesList(accessToken: AccessToken) {
 
     val parameters = Bundle()
     parameters.putString("fields", "id,name,access_token")
+    request.parameters = parameters
+    request.executeAsync()
+}
+
+
+fun getFBGroupsList(accessToken: AccessToken, callback: (List<String>) -> Unit) {
+    val request = GraphRequest.newGraphPathRequest(
+        accessToken,
+        "/me/groups"
+    ) { response ->
+        val groupsList = mutableListOf<String>()
+        try {
+            val jsonObject = response.jsonObject
+            jsonObject?.let {
+                val dataArray = jsonObject.getJSONArray("data")
+                for (i in 0 until dataArray.length()) {
+                    val group = dataArray.getJSONObject(i)
+                    val groupName = group.getString("name")
+                    groupsList.add(groupName)
+                }
+            }
+
+            callback(groupsList)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            callback(emptyList())
+        }
+    }
+
+    val parameters = Bundle()
+    parameters.putString("fields", "name")
     request.parameters = parameters
     request.executeAsync()
 }
