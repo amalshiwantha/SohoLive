@@ -249,9 +249,15 @@ fun GoLiveScreen(
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
                                 onPropertyItemClicked = { selectedProperty ->
+                                    mGoLiveSubmit.apply {
+                                        propertyId = selectedProperty.propInfo.propertyId
+                                    }
                                     goLiveVm.updatePropertyList(selectedProperty)
                                 },
                                 onAgentItemClicked = { selectedAgent ->
+                                    mGoLiveSubmit.apply {
+                                        agentId = selectedAgent.agentProfile.id.toString()
+                                    }
                                     goLiveVm.updateAgentSelectionList(selectedAgent)
                                 },
                                 onSMItemClicked = { selectedSM ->
@@ -413,7 +419,7 @@ fun StepContents(
     SpacerVertical(40.dp)
 
     when (currentStepId) {
-        // step#1
+        // step #1
         0 -> {
             propertyList?.let { propList ->
                 if (propList.isEmpty()) {
@@ -431,7 +437,7 @@ fun StepContents(
             }
         }
 
-        // step#2
+        // step #2
         1 -> {
             mainAgencyList?.let { agentList ->
                 if (agentList.isEmpty()) {
@@ -450,7 +456,7 @@ fun StepContents(
             }
         }
 
-        // step#3
+        // step #3
         2 -> {
             SocialMediaListing(isConnectYoutube = isConnectYT,
                 isConnectFaceBook = isConnectFB,
@@ -476,7 +482,7 @@ fun StepContents(
             SpacerVertical(size = 70.dp)
         }
 
-        // step#4
+        // step #4
         3 -> {
             Content4(
                 optionList = optionList,
