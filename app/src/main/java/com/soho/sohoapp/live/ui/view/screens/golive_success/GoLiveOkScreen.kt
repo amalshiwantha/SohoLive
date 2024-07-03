@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -67,13 +66,13 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ButtonColoured(text = stringResource(R.string.log_in),
-            color = AppGreen,
-            onBtnClick = { navController.navigate(NavigationPath.SIGNIN.name) })
-
         ButtonOutlineWhite(
-            text = stringResource(R.string.sign_up),
-            onBtnClick = { navController.navigate(NavigationPath.SIGNUP.name) })
+            text = "Manage Scheduled livecasts",
+            onBtnClick = { navController.popBackStack() })
+
+        ButtonColoured(text = "Schedule Another livecast",
+            color = AppGreen,
+            onBtnClick = { navController.popBackStack() })
     }
 }
 
@@ -82,7 +81,6 @@ fun CenterImgText(modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(AppGreen)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
