@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -17,7 +18,6 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
 import com.soho.sohoapp.live.model.Profile
@@ -69,7 +69,11 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
             callbackManager,
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(result: LoginResult) {
-                    getFBProfileData(result, onProfileFound = { fbProfile ->
+
+                    val accessToken = result.accessToken
+                    getFBPagesList(accessToken)
+
+                    /*getFBProfileData(result, onProfileFound = { fbProfile ->
                         fbProfile?.let {
                             val timeLine = getFBTimeLine(it)
                             val smProfile = SocialMediaProfile(
@@ -81,7 +85,8 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                         } ?: run {
                             println("myFB Logged but Error")
                         }
-                    })
+                    })*/
+
                 }
 
                 private fun getFBTimeLine(it: Profile): MutableList<CategoryInfo> {
@@ -126,6 +131,36 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
         permissionList
     )
 }
+
+private fun getFBPagesList(accessToken: AccessToken) {
+    val request = GraphRequest.newGraphPathRequest(
+        accessToken,
+        "/me/accounts"
+    ) { response ->
+        val jsonObject = response.jsonObject
+        try {
+            jsonObject?.let {
+                val dataArray = it.getJSONArray("data")
+                for (i in 0 until dataArray.length()) {
+                    val pageObject = dataArray.getJSONObject(i)
+                    val pageId = pageObject.getString("id")
+                    val pageName = pageObject.getString("name")
+                    val pageAccessToken = pageObject.getString("access_token")
+                    // Do something with the page data
+                    Log.d("myFB pages", "ID: $pageId, Name: $pageName, AccessToken: $pageAccessToken")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    val parameters = Bundle()
+    parameters.putString("fields", "id,name,access_token")
+    request.parameters = parameters
+    request.executeAsync()
+}
+
 
 private fun getFBProfileData(loginResult: LoginResult, onProfileFound: (Profile?) -> Unit) {
     val request = GraphRequest.newMeRequest(loginResult.accessToken) { info, response ->
