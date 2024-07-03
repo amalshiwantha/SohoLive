@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -57,6 +56,7 @@ import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextFieldWhiteIcon
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
@@ -171,11 +171,19 @@ fun ScheduleScreen(
                             }
                             .padding(16.dp)
                             .fillMaxWidth(),
-                        onBtnClick = { /* Handle button click */ })
+                        onBtnClick = { doSubmit(goLiveData, navController) })
                 }
             }
         }
     }
+}
+
+fun doSubmit(goLiveData: GoLiveSubmit, navController: NavController) {
+    println("goLiveSubmit "+goLiveData)
+    //TODO
+    // call doPost api
+    // goLiveData empty
+    navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
 }
 
 @Composable
