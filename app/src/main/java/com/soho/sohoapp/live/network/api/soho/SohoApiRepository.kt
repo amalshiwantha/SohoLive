@@ -15,22 +15,27 @@ import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
-    fun submitGoLive(authToken: String, goLiveData : GoLiveSubmit): Flow<ApiState<GoLiveResponse>> = flow {
-        try {
-            emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
-            val apiResponse = service.goLive(authToken = authToken, goLiveData = goLiveData)
-            emit(ApiState.Data(data = apiResponse))
+    fun submitGoLive(authToken: String, goLiveData: GoLiveSubmit): Flow<ApiState<GoLiveResponse>> =
+        flow {
+            try {
+                val copyData = goLiveData.copy()
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+                val apiResponse =
+                    service.goLive(authToken = authToken, goLiveData = copyData.apply {
+                        this.purpose = purpose?.lowercase()
+                    })
+                emit(ApiState.Data(data = apiResponse))
 
-        } catch (e: Exception) {
-            e.message?.let {
-                emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.SIGN_IN_ERROR.apply {
-                    message = it
-                })))
+            } catch (e: Exception) {
+                e.message?.let {
+                    emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.SIGN_IN_ERROR.apply {
+                        message = it
+                    })))
+                }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
             }
-        } finally {
-            emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
         }
-    }
 
     fun signIn(loginReq: SignInRequest): Flow<ApiState<AuthResponse>> = flow {
         try {
