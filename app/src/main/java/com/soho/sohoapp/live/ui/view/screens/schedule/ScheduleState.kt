@@ -12,5 +12,5 @@ data class ScheduleState(
     val isSuccess: Boolean = false,
     val loadingState: ProgressBarState = ProgressBarState.Idle,
     val alertState: AlertState = AlertState.Idle,
-    val tsResults: TsPropertyResponse? = null,
+    val results: DataGoLive? = null,
 )

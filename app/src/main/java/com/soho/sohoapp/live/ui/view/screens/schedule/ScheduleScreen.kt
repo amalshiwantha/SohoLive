@@ -207,7 +207,7 @@ private fun doSubmit(
     }
 
     //check api results
-    state.tsResults?.let { apiRes ->
+    state.results?.let { apiRes ->
         //TODO
         //goLiveData empty
         //is done -> navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)

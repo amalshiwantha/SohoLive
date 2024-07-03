@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 data class TextFiledConfig(
@@ -21,10 +22,10 @@ data class TextFiledConfig(
 
 @Serializable
 data class GoLiveSubmit(
-    var purpose: String? = null,
-    var title: String? = null,
-    var description: String? = null,
-    var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
+    @SerialName("purpose") var purpose: String? = null,
+    @SerialName("title") var title: String? = null,
+    @SerialName("description") var description: String? = null,
+    @SerialName("scheduleSlots") var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf()
 ) {
     constructor() : this(

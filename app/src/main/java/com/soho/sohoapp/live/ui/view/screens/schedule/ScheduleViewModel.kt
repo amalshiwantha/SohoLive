@@ -44,26 +44,23 @@ class ScheduleViewModel(
 
     private fun submitNow(authToken: String, submitData: GoLiveSubmit) {
 
-        println("mySubmit $submitData")
-
-        apiRepo.goLivePropertyListing(authToken).onEach { apiState ->
+        apiRepo.submitGoLive(authToken, submitData).onEach { apiState ->
 
             when (apiState) {
 
                 is ApiState.Data -> {
+
                     apiState.data?.let { result ->
+                        val isSuccessLogin = !result.responseType.equals("error")
+                        val res = result.data
 
-                        val listingData = result.first
-                        val tsData = result.second
-                        val isSuccess = !listingData.equals("error")
-
-                        if (isSuccess) {
-                            mState.value = mState.value.copy(tsResults = tsData)
+                        if (isSuccessLogin) {
+                            mState.value = mState.value.copy(results = res)
                             mState.value = mState.value.copy(isSuccess = true)
                         } else {
                             mState.value =
-                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_ERROR.apply {
-                                    listingData.response?.let {
+                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
+                                    result.response?.let {
                                         message = it
                                     }
                                 }))

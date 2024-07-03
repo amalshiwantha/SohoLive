@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.network.api.soho
 
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.network.core.BASE_URL
@@ -57,6 +58,18 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             }
             contentType(ContentType.Application.Json)
             header("X-TYPESENSE-API-KEY", TS_API_KEY)
+        }.body()
+    }
+
+    override suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveResponse {
+        return httpClient.post {
+            url {
+                takeFrom(BASE_URL)
+                encodedPath += SohoApiServices.GO_LIVE
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+            setBody(goLiveData)
         }.body()
     }
 }

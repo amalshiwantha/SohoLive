@@ -35,5 +35,10 @@ enum class AlertConfig(
         message = "Something went wrong. Please re-try later",
         confirmBtnText = "",
         dismissBtnText = "OK",
+    ),GO_LIVE_SUBMIT_ERROR(
+        title = "Submission Problem",
+        message = "Something went wrong. Please re-try later",
+        confirmBtnText = "",
+        dismissBtnText = "OK",
     ),
 }
