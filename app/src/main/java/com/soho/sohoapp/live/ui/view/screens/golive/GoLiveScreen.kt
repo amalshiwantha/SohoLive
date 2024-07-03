@@ -136,7 +136,6 @@ fun GoLiveScreen(
     val stepCount = 4
     var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
-    var selectedOption by remember { mutableStateOf("") }
     var isDateFixed by remember { mutableStateOf(false) }
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected: Boolean by remember { mutableStateOf(false) }
@@ -230,12 +229,10 @@ fun GoLiveScreen(
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
                                 isNotShowProfile = isDontShowProfile,
-                                selectedOption = selectedOption,
                                 mGoLiveSubmit = mGoLiveSubmit,
                                 isConnectYT = isConnectedYouTube,
                                 isConnectFB = isConnectedFacebook,
                                 isConnectLI = isConnectedLinkedIn,
-                                onSelectOption = { selectedOption = it },
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
                                 onPropertyItemClicked = { selectedProperty ->
@@ -387,11 +384,9 @@ fun StepContents(
     isNowSelected: Boolean,
     isNotShowProfile: Boolean,
     optionList: MutableList<String>,
-    selectedOption: String,
     isConnectYT: Boolean,
     isConnectFB: Boolean,
     isConnectLI: Boolean,
-    onSelectOption: (String) -> Unit,
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onNotShowProfileChange: (Boolean) -> Unit,
     onPropertyItemClicked: (PropertyItem) -> Unit,
@@ -468,10 +463,8 @@ fun StepContents(
         3 -> {
             Content4(
                 optionList = optionList,
-                selectedOption = selectedOption,
                 isNowSelected = isNowSelected,
                 mGoLiveSubmit = mGoLiveSubmit,
-                onSelectOption = { onSelectOption(it) },
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) },
                 onErrorUpdate = Pair(false, true),
             )
@@ -503,10 +496,8 @@ fun DisplayNoData(message: String) {
 @Composable
 private fun Content4(
     optionList: MutableList<String>,
-    selectedOption: String,
     isNowSelected: Boolean,
     mGoLiveSubmit: GoLiveSubmit,
-    onSelectOption: (String) -> Unit,
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onErrorUpdate: Pair<Boolean, Boolean>
 ) {
@@ -521,11 +512,10 @@ private fun Content4(
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "What is this livestream for?")
-    DropDownWhatForLiveStream(selectedValue = selectedOption,
+    DropDownWhatForLiveStream(
         options = optionList,
         placeHolder = "Select an option",
         onValueChangedEvent = {
-            onSelectOption(it)
             mGoLiveSubmit.apply { livesteram = it }
         },
         fieldConfig = FieldConfig.NEXT.apply {
@@ -1329,8 +1319,6 @@ private fun PreviewGoLiveScreen() {
                     optionList = mutableListOf(),
                     isNowSelected = true,
                     isNotShowProfile = true,
-                    selectedOption = "",
-                    onSelectOption = { },
                     mGoLiveSubmit = GoLiveSubmit(),
                     isConnectYT = true,
                     isConnectFB = true,

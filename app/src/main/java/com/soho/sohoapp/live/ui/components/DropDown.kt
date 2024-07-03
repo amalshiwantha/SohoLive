@@ -28,7 +28,6 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownWhatForLiveStream(
-    selectedValue: String,
     options: MutableList<String>,
     placeHolder: String,
     onValueChangedEvent: (String) -> Unit,
@@ -36,6 +35,7 @@ fun DropDownWhatForLiveStream(
     fieldConfig: FieldConfig
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var inputVal by remember { mutableStateOf(fieldConfig.input) }
 
     ExposedDropdownMenuBox(
         expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
@@ -44,7 +44,7 @@ fun DropDownWhatForLiveStream(
         //TextField
         OutlinedTextField(
             readOnly = true,
-            value = selectedValue,
+            value = inputVal,
             onValueChange = {},
             placeholder = { Text(text = placeHolder) },
             trailingIcon = {
@@ -76,6 +76,7 @@ fun DropDownWhatForLiveStream(
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
+                        inputVal = option
                         onValueChangedEvent(option)
                     },
                     text = {
