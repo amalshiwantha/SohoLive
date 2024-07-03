@@ -86,6 +86,8 @@ import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.DoConnectFacebook
 import com.soho.sohoapp.live.ui.view.screens.golive.doConnectGoogle
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -93,10 +95,14 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -170,6 +176,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         stateSMConnected,
                         isShowSMConnectedModel,
                         onClose = {
+                            //send updated SMProfile to save in submitData
+                            GlobalScope.launch {
+                                AppEventBus.sendEvent(AppEvent.SMProfile(stateSMConnected))
+                            }
                             isShowSMConnectedModel = it
                             viewMMain.resetViewModelState()
                         })

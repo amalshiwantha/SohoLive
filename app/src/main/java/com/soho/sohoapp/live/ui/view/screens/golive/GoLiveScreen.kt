@@ -30,6 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -64,14 +66,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
-import com.soho.sohoapp.live.model.CategoryInfo
 import com.soho.sohoapp.live.model.GoLiveSubmit
-import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -114,6 +113,8 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
@@ -150,6 +151,12 @@ fun GoLiveScreen(
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
     var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
+    val eventState =
+        AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
+
+    LaunchedEffect(eventState.value) {
+        saveSMProfileInGoLiveData(eventState, mGoLiveSubmit)
+    }
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -299,6 +306,31 @@ fun GoLiveScreen(
     }
 }
 
+fun saveSMProfileInGoLiveData(eventState: State<Any>, mGoLiveSubmit: GoLiveSubmit) {
+    val smProfile = when (val event = eventState.value) {
+        is AppEvent.SMProfile -> event.smProfile
+        else -> SocialMediaProfile()
+    }
+
+    if (smProfile.smInfo != SocialMediaInfo.NONE) {
+        //var platform: MutableList<String> = mutableListOf(),
+        //var accessToken: MutableList<String> = mutableListOf()
+
+        //get current platform list
+        val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
+
+        //update new platform list
+        if (smProfile.profile.isConnected) {
+            currentPlatformList.add(smProfile.smInfo.name.lowercase())
+        } else {
+            currentPlatformList.remove(smProfile.smInfo.name.lowercase())
+        }
+
+        //finally apply updated platform list to the mGoLiveSubmit
+        mGoLiveSubmit.apply { platform = currentPlatformList }
+    }
+}
+
 fun GoLiveSubmit.validateData(): MutableMap<FormFields, String> {
     val errors = mutableMapOf<FormFields, String>()
 
@@ -315,54 +347,6 @@ fun GoLiveSubmit.validateData(): MutableMap<FormFields, String> {
     }
 
     return errors
-}
-
-fun getSampleFbProfile(): SocialMediaProfile {
-    val profile = Profile(
-        "Jhone Smith",
-        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg",
-        "amalskr@gmail.com",
-        "ask123"
-    )
-
-    val timeline1 = CategoryInfo(
-        0,
-        CategoryType.TIMELINE,
-        "TimeLine 1",
-        "http:www.facebook.com",
-        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-    )
-    val timeline2 = CategoryInfo(
-        1,
-        CategoryType.TIMELINE,
-        "TimeLine 2",
-        "http:www.facebook.com",
-        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-    )
-
-    val page1 = CategoryInfo(
-        3,
-        CategoryType.PAGES,
-        "MyPage",
-        "http:www.facebook.com",
-        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-    )
-
-    val group1 = CategoryInfo(
-        4,
-        CategoryType.GROUPS,
-        "My Group",
-        "http:www.facebook.com",
-        "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-    )
-
-    return SocialMediaProfile(
-        smInfo = SocialMediaInfo.FACEBOOK,
-        profile = profile,
-        timelines = mutableListOf(timeline1, timeline2),
-        pages = mutableListOf(),
-        groups = mutableListOf(group1)
-    )
 }
 
 private fun callLoadPropertyApi(
@@ -898,10 +882,10 @@ private fun SocialMediaListing(
 
     val smList by rememberSaveable { mutableStateOf(visibleSMList) }
     smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
-        isConnect = isConnectYoutube
+        //isConnect = isConnectYoutube
     }
     smList.first { it.name == SocialMediaInfo.FACEBOOK.name }.apply {
-        isConnect = isConnectFaceBook
+        //isConnect = isConnectFaceBook
     }
     smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
         isConnect = isConnectLinkedIn
