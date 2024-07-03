@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.clickable
@@ -8,8 +10,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -29,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.ErrorContent
 import com.soho.sohoapp.live.ui.theme.HintGray
 
 @Composable
@@ -61,7 +67,7 @@ fun TextAreaWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
 @Composable
 fun TextFieldWhiteIcon(
     fieldConfig: FieldConfig,
-    inputTxt : String = "",
+    inputTxt: String = "",
     onTextChange: (String) -> Unit,
     onClick: () -> Unit
 ) {
@@ -111,7 +117,7 @@ fun TextFieldWhiteIcon(
 fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
     var txtInput by rememberSaveable { mutableStateOf("") }
 
-    TextField(
+    OutlinedTextField(
         value = txtInput,
         onValueChange = {
             txtInput = it
@@ -126,10 +132,14 @@ fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
+        isError = fieldConfig.isError,
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-            unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedPlaceholderColor = AppWhite,
+            unfocusedContainerColor = AppWhite,
+            focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = HintGray,
+            errorContainerColor = ErrorContent,
         )
     )
 }

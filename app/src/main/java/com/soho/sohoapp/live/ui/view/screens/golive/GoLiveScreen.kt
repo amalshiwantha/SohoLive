@@ -154,9 +154,9 @@ fun GoLiveScreen(
                     onLoadApiResults.invoke(apiRes)
                 }
             })
-        }else{
+        } else {
             //fill saved data into localDataSet
-            goLiveVm.updateAssetsState(savedTsResults,savedApiResults,savedState)
+            goLiveVm.updateAssetsState(savedTsResults, savedApiResults, savedState)
         }
     }
 
@@ -517,6 +517,10 @@ private fun Content4(
         placeHolder = "Select an option",
         onValueChangedEvent = {
             onSelectOption(it)
+        },
+        fieldConfig = FieldConfig.NEXT.apply {
+            placeholder = ""
+            isError = false
         })
     Text400_14sp(info = "Please indicate purpose of this livestream", color = ErrorRed)
 
@@ -524,6 +528,7 @@ private fun Content4(
     Text700_14sp(step = "Stream title")
     TextFieldWhite(FieldConfig.NEXT.apply {
         placeholder = "Address or title for your livestream"
+        isError = false
     }) {}
     Text400_14sp(info = "Please enter a stream title", color = ErrorRed)
 

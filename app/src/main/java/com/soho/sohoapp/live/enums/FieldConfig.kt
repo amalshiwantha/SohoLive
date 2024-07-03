@@ -12,7 +12,8 @@ enum class FieldConfig(
     var imeAction: ImeAction = ImeAction.Next,
     var isSingleLine: Boolean = true,
     var trailingIcon: ImageVector? = null,
-    var clickable: Boolean = false
+    var clickable: Boolean = false,
+    var isError: Boolean = false
 ) {
     NEXT(imeAction = ImeAction.Next),
     DONE(imeAction = ImeAction.Done)
