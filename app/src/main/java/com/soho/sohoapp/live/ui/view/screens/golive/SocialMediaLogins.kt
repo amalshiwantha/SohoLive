@@ -31,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.util.UUID
 
 //Google Auth
 @Composable
@@ -97,6 +96,7 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                                             pages = pagesList,
                                             groups = groupsList
                                         )
+                                        println("myFB $smProfile")
                                         viewMMain.saveSMProfile(smProfile)
                                     })
                                 })
@@ -104,21 +104,6 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                         }
                     }
                 }
-
-
-                /*getFBProfileData(result, onProfileFound = { fbProfile ->
-                    fbProfile?.let {
-                        val timeLine = getFBTimeLine(it)
-                        val smProfile = SocialMediaProfile(
-                            smInfo = SocialMediaInfo.FACEBOOK,
-                            profile = it,
-                            timelines = timeLine
-                        )
-                        viewMMain.saveSMProfile(smProfile)
-                    } ?: run {
-                        println("myFB Logged but Error")
-                    }
-                })*/
 
             }
 
@@ -162,7 +147,6 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
         context as ActivityResultRegistryOwner, callbackManager, permissionList
     )
 }
-
 
 private fun getFBProfile(accessToken: AccessToken, callback: (Profile?) -> Unit) {
     val request = GraphRequest.newMeRequest(
@@ -220,7 +204,7 @@ fun getFbPages(accessToken: AccessToken, callback: (MutableList<CategoryInfo>) -
 
                     pagesList.add(
                         CategoryInfo(
-                            index = UUID.randomUUID().hashCode(),
+                            index = 100 + i,
                             id = pageId,
                             type = CategoryType.PAGES,
                             title = pageName,
@@ -264,7 +248,7 @@ fun getFBGroups(accessToken: AccessToken, callback: (MutableList<CategoryInfo>) 
 
                     groupsList.add(
                         CategoryInfo(
-                            index = UUID.randomUUID().hashCode(),
+                            index = 200 + i,
                             id = groupId,
                             type = CategoryType.GROUPS,
                             title = groupName,
@@ -287,48 +271,6 @@ fun getFBGroups(accessToken: AccessToken, callback: (MutableList<CategoryInfo>) 
 
     val parameters = Bundle()
     parameters.putString("fields", "id,name,picture.type(large)")
-    request.parameters = parameters
-    request.executeAsync()
-}
-
-private fun getFBProfileData(loginResult: LoginResult, onProfileFound: (Profile?) -> Unit) {
-    val request = GraphRequest.newMeRequest(loginResult.accessToken) { info, response ->
-        Log.e("myFb info", info.toString())
-
-        try {
-            info?.let {
-                val userId = it.getString("id")
-                val profilePicture =
-                    "https://graph.facebook.com/$userId/picture?width=500&height=500"
-                val firstName = if (it.has("first_name")) it.getString("first_name") else ""
-                val lastName = if (it.has("last_name")) it.getString("last_name") else ""
-                val email = if (it.has("email")) it.getString("email") else ""
-                val fullName = "$firstName $lastName"
-
-                val profile = Profile(
-                    fullName = fullName,
-                    imageUrl = profilePicture,
-                    email = email,
-                    token = loginResult.accessToken.token,
-                    type = SocialMediaInfo.FACEBOOK,
-                    isConnected = true
-                )
-
-                onProfileFound(profile)
-
-                // get refresh token if expire
-                // get pages using accessToken
-            }
-        } catch (e: Exception) {
-            Log.e("myFb infoError", e.toString())
-            e.printStackTrace()
-            onProfileFound(null)
-        }
-    }
-
-    val parameters = Bundle().apply {
-        putString("fields", "id, first_name, last_name, email, birthday, gender")
-    }
     request.parameters = parameters
     request.executeAsync()
 }

@@ -109,7 +109,7 @@ data class Profile(
 
 @Serializable
 data class CategoryInfo(
-    val index: Int = 0,
+    var index: Int = 0,
     val id: String,
     val type: CategoryType,
     val title: String,
