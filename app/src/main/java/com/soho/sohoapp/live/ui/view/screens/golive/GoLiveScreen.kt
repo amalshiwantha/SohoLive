@@ -313,21 +313,24 @@ fun saveSMProfileInGoLiveData(eventState: State<Any>, mGoLiveSubmit: GoLiveSubmi
     }
 
     if (smProfile.smInfo != SocialMediaInfo.NONE) {
-        //var platform: MutableList<String> = mutableListOf(),
-        //var accessToken: MutableList<String> = mutableListOf()
-
         //get current platform list
         val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
+        val currentAccessTokenList = mGoLiveSubmit.accessToken.toMutableList()
 
         //update new platform list
         if (smProfile.profile.isConnected) {
             currentPlatformList.add(smProfile.smInfo.name.lowercase())
+            smProfile.profile.token?.let { currentAccessTokenList.add(it) }
         } else {
             currentPlatformList.remove(smProfile.smInfo.name.lowercase())
+            smProfile.profile.token?.let { currentAccessTokenList.remove(it) }
         }
 
         //finally apply updated platform list to the mGoLiveSubmit
-        mGoLiveSubmit.apply { platform = currentPlatformList }
+        mGoLiveSubmit.apply {
+            platform = currentPlatformList
+            accessToken = currentAccessTokenList
+        }
     }
 }
 
