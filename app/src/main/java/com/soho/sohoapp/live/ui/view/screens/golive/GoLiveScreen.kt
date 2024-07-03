@@ -105,6 +105,7 @@ import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.BorderGray
+import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
@@ -517,12 +518,14 @@ private fun Content4(
         onValueChangedEvent = {
             onSelectOption(it)
         })
+    Text400_14sp(info = "Please indicate purpose of this livestream", color = ErrorRed)
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Stream title")
     TextFieldWhite(FieldConfig.NEXT.apply {
         placeholder = "Address or title for your livestream"
     }) {}
+    Text400_14sp(info = "Please enter a stream title", color = ErrorRed)
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Description")

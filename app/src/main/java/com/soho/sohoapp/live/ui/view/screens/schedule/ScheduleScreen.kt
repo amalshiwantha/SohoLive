@@ -55,7 +55,7 @@ import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextFieldWhiteIcon
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.theme.DeleteRed
+import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import java.text.SimpleDateFormat
@@ -221,7 +221,7 @@ fun ScheduleItemView(slot: ScheduleSlots, onItemClick: (ScheduleSlots) -> Unit) 
             ButtonConnect(
                 text = "Delete",
                 color = Color.Transparent,
-                txtColor = DeleteRed,
+                txtColor = ErrorRed,
                 onBtnClick = { onItemClick(slot) }
             )
         }
