@@ -18,10 +18,9 @@ class SohoApiRepository(private val service: SohoApiServices) {
     fun submitGoLive(authToken: String, goLiveData: GoLiveSubmit): Flow<ApiState<GoLiveResponse>> =
         flow {
             try {
-                val copyData = goLiveData.copy()
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
                 val apiResponse =
-                    service.goLive(authToken = authToken, goLiveData = copyData.apply {
+                    service.goLive(authToken = authToken, goLiveData = goLiveData.copy().apply {
                         this.purpose = purpose?.lowercase()
                     })
                 emit(ApiState.Data(data = apiResponse))
