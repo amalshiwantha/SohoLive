@@ -39,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -155,7 +156,7 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
 
     LaunchedEffect(eventState.value) {
-        saveSMProfileInGoLiveData(eventState, mGoLiveSubmit)
+        saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM)
     }
 
     LaunchedEffect(Unit) {
@@ -168,6 +169,8 @@ fun GoLiveScreen(
             })
         } else {
             //fill saved data into localDataSet
+            checkedSM.clear()
+            checkedSM.addAll(mGoLiveSubmit.checkedPlatforms)
             mFieldsError = mGoLiveSubmit.errors
             goLiveVm.updateAssetsState(savedTsResults, savedApiResults, savedState)
         }
@@ -270,6 +273,10 @@ fun GoLiveScreen(
                                         } else {
                                             checkedSM.remove(selectedSM.name)
                                         }
+
+                                        mGoLiveSubmit.apply {
+                                            checkedPlatforms = checkedSM
+                                        }
                                     } else {
                                         viewMMain.updateSocialMediaState(selectedSM)
                                     }
@@ -315,7 +322,9 @@ fun GoLiveScreen(
     }
 }
 
-fun saveSMProfileInGoLiveData(eventState: State<Any>, mGoLiveSubmit: GoLiveSubmit) {
+fun saveSMProfileInGoLiveData(
+    eventState: State<Any>, mGoLiveSubmit: GoLiveSubmit, checkedSM: SnapshotStateList<String>
+) {
     val smProfile = when (val event = eventState.value) {
         is AppEvent.SMProfile -> event.smProfile
         else -> SocialMediaProfile()
@@ -326,12 +335,14 @@ fun saveSMProfileInGoLiveData(eventState: State<Any>, mGoLiveSubmit: GoLiveSubmi
         val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
         val currentAccessTokenList = mGoLiveSubmit.accessToken.toMutableList()
 
+        val platformName = smProfile.smInfo.name.lowercase()
+
         //update new platform list
         if (smProfile.profile.isConnected) {
-            currentPlatformList.add(smProfile.smInfo.name.lowercase())
+            currentPlatformList.add(platformName)
             smProfile.profile.token?.let { currentAccessTokenList.add(it) }
         } else {
-            currentPlatformList.remove(smProfile.smInfo.name.lowercase())
+            currentPlatformList.remove(platformName)
             smProfile.profile.token?.let { currentAccessTokenList.remove(it) }
         }
 
@@ -339,6 +350,12 @@ fun saveSMProfileInGoLiveData(eventState: State<Any>, mGoLiveSubmit: GoLiveSubmi
         mGoLiveSubmit.apply {
             platform = currentPlatformList
             accessToken = currentAccessTokenList
+        }
+
+        //save default checked state
+        checkedSM.add(platformName)
+        mGoLiveSubmit.apply {
+            checkedPlatforms = checkedSM
         }
     }
 }
@@ -487,13 +504,11 @@ fun StepContents(
 
         // step #4
         3 -> {
-            Content4(
-                optionList = optionList,
+            Content4(optionList = optionList,
                 isNowSelected = isNowSelected,
                 mGoLiveSubmit = mGoLiveSubmit,
                 mFieldsError = mFieldsError,
-                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) }
-            )
+                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
     }
 }
@@ -560,12 +575,9 @@ private fun Content4(
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "What is this livestream for?")
     DropDownWhatForLiveStream(
-        options = optionList,
-        placeHolder = "Select an option",
-        onValueChangedEvent = {
+        options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
             mGoLiveSubmit.apply { purpose = it }
-        },
-        fieldConfig = configPurpose
+        }, fieldConfig = configPurpose
     )
     errPurpose?.let {
         ShowError(message = it)
@@ -894,10 +906,10 @@ private fun SocialMediaListing(
 
     val smList by rememberSaveable { mutableStateOf(visibleSMList) }
     smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
-        //isConnect = isConnectYoutube
+        isConnect = isConnectYoutube
     }
     smList.first { it.name == SocialMediaInfo.FACEBOOK.name }.apply {
-        //isConnect = isConnectFaceBook
+        isConnect = isConnectFaceBook
     }
     smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
         isConnect = isConnectLinkedIn
@@ -992,7 +1004,7 @@ private fun SocialMediaItemContent(
     onSMItemClicked: (String) -> Unit,
     onSMItemChecked: (SocialMediaInfo) -> Unit
 ) {
-    var isChecked by remember { mutableStateOf(false) }
+    var isChecked by remember { mutableStateOf(info.isItemChecked) }
 
     Card(
         modifier = Modifier

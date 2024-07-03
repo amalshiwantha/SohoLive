@@ -48,7 +48,8 @@ data class GoLiveSubmit(
     @SerialName("target_feed_id") var feedId: MutableList<String> = mutableListOf(),
     @SerialName("privacy") var privacy: MutableList<String> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
-    var errors: MutableMap<FormFields, String> = mutableMapOf()
+    var errors: MutableMap<FormFields, String> = mutableMapOf(),
+    var checkedPlatforms: MutableList<String> = mutableListOf()
 ) {
     constructor() : this(
         purpose = null,
