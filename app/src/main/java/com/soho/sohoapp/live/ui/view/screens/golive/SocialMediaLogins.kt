@@ -28,7 +28,7 @@ import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
 data class FacebookPage(
     val id: String,
     val name: String,
-    val accessToken: String,
+    val accessToken: String? = null,
     val pictureUrl: String
 )
 
@@ -193,20 +193,30 @@ fun getFbPages(accessToken: AccessToken, callback: (List<FacebookPage>) -> Unit)
 }
 
 
-fun getFBGroups(accessToken: AccessToken, callback: (List<String>) -> Unit) {
+fun getFBGroups(accessToken: AccessToken, callback: (List<FacebookPage>) -> Unit) {
     val request = GraphRequest.newGraphPathRequest(
         accessToken,
         "/me/groups"
     ) { response ->
-        val groupsList = mutableListOf<String>()
+        val groupsList = mutableListOf<FacebookPage>()
         try {
             val jsonObject = response.jsonObject
             jsonObject?.let {
                 val dataArray = jsonObject.getJSONArray("data")
                 for (i in 0 until dataArray.length()) {
                     val group = dataArray.getJSONObject(i)
+                    val groupId = group.getString("id")
                     val groupName = group.getString("name")
-                    groupsList.add(groupName)
+                    val groupPicture =
+                        group.getJSONObject("picture").getJSONObject("data").getString("url")
+
+                    groupsList.add(
+                        FacebookPage(
+                            id = groupId,
+                            name = groupName,
+                            pictureUrl = groupPicture
+                        )
+                    )
                 }
             }
 
@@ -219,7 +229,7 @@ fun getFBGroups(accessToken: AccessToken, callback: (List<String>) -> Unit) {
     }
 
     val parameters = Bundle()
-    parameters.putString("fields", "name")
+    parameters.putString("fields", "id,name,picture.type(large)")
     request.parameters = parameters
     request.executeAsync()
 }
