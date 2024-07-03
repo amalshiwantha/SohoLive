@@ -9,6 +9,20 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+data class FBGroupPage(
+    val id: String,
+    val name: String,
+    val accessToken: String? = null,
+    val pictureUrl: String
+)
+
+data class FBProfile(
+    val id: String,
+    val name: String,
+    val email: String,
+    val profilePictureUrl: String
+)
+
 data class TextFiledConfig(
     var input: String = "",
     var placeholder: String = "",
