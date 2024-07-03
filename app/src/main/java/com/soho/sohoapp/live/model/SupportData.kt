@@ -1,9 +1,23 @@
 package com.soho.sohoapp.live.model
 
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import kotlinx.serialization.Serializable
+
+data class TextFiledConfig(
+    var input: String = "",
+    var placeholder: String = "",
+    var isError: Boolean = false,
+    var clickable: Boolean = false,
+    var isSingleLine: Boolean = true,
+    var trailingIcon: ImageVector? = null,
+    var imeAction: ImeAction = ImeAction.Done,
+    var keyboardType: KeyboardType = KeyboardType.Text,
+)
 
 @Serializable
 data class GoLiveSubmit(

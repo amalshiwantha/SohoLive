@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.ErrorContent
 import com.soho.sohoapp.live.ui.theme.HintGray
@@ -32,7 +33,7 @@ fun DropDownWhatForLiveStream(
     placeHolder: String,
     onValueChangedEvent: (String) -> Unit,
     modifier: Modifier = Modifier,
-    fieldConfig: FieldConfig
+    fieldConfig: TextFiledConfig
 ) {
     var expanded by remember { mutableStateOf(false) }
     var inputVal by remember { mutableStateOf(fieldConfig.input) }

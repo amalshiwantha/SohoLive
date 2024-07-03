@@ -32,14 +32,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.ErrorContent
 import com.soho.sohoapp.live.ui.theme.HintGray
 
 @Composable
-fun TextAreaWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
-    var txtInput by rememberSaveable { mutableStateOf("") }
+fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (String) -> Unit) {
+    var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
 
     TextField(
         value = txtInput,
@@ -133,6 +134,37 @@ fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         isError = fieldConfig.isError,
+        shape = RoundedCornerShape(16.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedPlaceholderColor = AppWhite,
+            unfocusedContainerColor = AppWhite,
+            focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = HintGray,
+            errorContainerColor = ErrorContent,
+        )
+    )
+}
+
+@Composable
+fun TextFieldOutlined(tfConfig: TextFiledConfig, onTextChange: (String) -> Unit) {
+    var txtInput by rememberSaveable { mutableStateOf(tfConfig.input) }
+
+    OutlinedTextField(
+        value = txtInput,
+        onValueChange = {
+            txtInput = it
+            onTextChange(txtInput)
+        },
+        singleLine = tfConfig.isSingleLine,
+        placeholder = { Text(tfConfig.placeholder) },
+        keyboardOptions = KeyboardOptions(
+            imeAction = tfConfig.imeAction,
+            keyboardType = tfConfig.keyboardType
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        isError = tfConfig.isError,
         shape = RoundedCornerShape(16.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedPlaceholderColor = AppWhite,

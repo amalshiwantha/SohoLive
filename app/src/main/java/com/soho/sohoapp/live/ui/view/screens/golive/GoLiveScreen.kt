@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
+import android.annotation.SuppressLint
 import android.util.Size
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -64,7 +65,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
-import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
@@ -72,6 +72,7 @@ import com.soho.sohoapp.live.model.CategoryInfo
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
+import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
@@ -93,7 +94,7 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
-import com.soho.sohoapp.live.ui.components.TextFieldWhite
+import com.soho.sohoapp.live.ui.components.TextFieldOutlined
 import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
@@ -117,6 +118,7 @@ import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
 import org.koin.compose.koinInject
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun GoLiveScreen(
     navController: NavController,
@@ -158,6 +160,7 @@ fun GoLiveScreen(
             })
         } else {
             //fill saved data into localDataSet
+            mFieldsError = mGoLiveSubmit.errors
             goLiveVm.updateAssetsState(savedTsResults, savedApiResults, savedState)
         }
     }
@@ -529,19 +532,34 @@ private fun Content4(
     onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
     var isOnCoverOption by remember { mutableStateOf(false) }
+    val errPurpose = mFieldsError[FormFields.PURPOSE]
+    val errTitle = mFieldsError[FormFields.TITLE]
 
-    println("myVal form " + mFieldsError)
+    val configPurpose = TextFiledConfig(
+        input = mGoLiveSubmit.purpose.orEmpty(),
+        placeholder = "Enter Purpose",
+        isError = !errPurpose.isNullOrEmpty()
+    )
 
-    val inputPurpose = mGoLiveSubmit.errors[FormFields.PURPOSE]
-    val inputTitle = mGoLiveSubmit.errors[FormFields.TITLE]
+    val configTitle = TextFiledConfig(
+        input = mGoLiveSubmit.title.orEmpty(),
+        placeholder = "Address or title for your livecast",
+        isError = !errTitle.isNullOrEmpty()
+    )
 
+    val configDesc = TextFiledConfig(
+        input = mGoLiveSubmit.description.orEmpty(),
+        placeholder = "Let viewers know more about what you are streaming. E.g. Property description, address, etc.",
+    )
+
+    //swipe selection
     Text700_14sp(step = "When do you want to go live?")
-
     SpacerVertical(size = 8.dp)
     SwipeableSwitch(isNowSelected, onSwipeChange = {
         onSwipeIsNowSelected(it)
     })
 
+    //what for livestream
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "What is this livestream for?")
     DropDownWhatForLiveStream(
@@ -550,39 +568,30 @@ private fun Content4(
         onValueChangedEvent = {
             mGoLiveSubmit.apply { purpose = it }
         },
-        fieldConfig = FieldConfig.NEXT.apply {
-            input = mGoLiveSubmit.purpose.orEmpty()
-            placeholder = ""
-            isError = !inputPurpose.isNullOrEmpty()
-        })
-    inputPurpose?.let {
+        fieldConfig = configPurpose
+    )
+    errPurpose?.let {
         ShowError(message = it)
     }
 
+    //title
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Stream title")
-    TextFieldWhite(FieldConfig.NEXT.apply {
-        input = mGoLiveSubmit.title.orEmpty()
-        placeholder = "Address or title for your livestream"
-        isError = !inputTitle.isNullOrEmpty()
-    }, onTextChange = {
+    TextFieldOutlined(tfConfig = configTitle, onTextChange = {
         mGoLiveSubmit.apply { title = it }
     })
-    inputTitle?.let {
+    errTitle?.let {
         ShowError(message = it)
     }
 
+    //description
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Description")
-    TextAreaWhite(FieldConfig.NEXT.apply {
-        input = mGoLiveSubmit.description.orEmpty()
-        placeholder =
-            "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
-    }, onTextChange = {
+    TextAreaWhite(fieldConfig = configDesc, onTextChange = {
         mGoLiveSubmit.apply { description = it }
     })
 
-
+    //cover image
     if (false) {
         SpacerVertical(size = 40.dp)
         Text700_14sp(step = "Livestream cover image")
