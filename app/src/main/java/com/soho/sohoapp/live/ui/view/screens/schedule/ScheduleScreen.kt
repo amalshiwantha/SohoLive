@@ -61,6 +61,7 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -69,8 +70,11 @@ import java.util.Locale
 fun ScheduleScreen(
     goLiveData: GoLiveSubmit,
     scheduleSlots: MutableList<ScheduleSlots>,
-    navController: NavController
+    navController: NavController,
+    viewMSchedule: ScheduleViewModel = koinInject(),
 ) {
+
+    val stateSchedule = viewMSchedule.mState.value
     var isShowDialog by remember { mutableStateOf(false) }
     var isShowDateTimePicker by remember { mutableStateOf(false) }
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
@@ -179,7 +183,7 @@ fun ScheduleScreen(
 }
 
 fun doSubmit(goLiveData: GoLiveSubmit, navController: NavController) {
-    println("goLiveSubmit "+goLiveData)
+    println("goLiveSubmit " + goLiveData)
     //TODO
     // call doPost api
     // goLiveData empty
