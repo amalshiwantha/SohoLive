@@ -13,6 +13,7 @@ import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.GraphRequest
+import com.facebook.GraphResponse
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -24,6 +25,7 @@ import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
+import org.json.JSONObject
 
 data class FacebookPage(
     val id: String,
@@ -78,6 +80,10 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                 override fun onSuccess(result: LoginResult) {
 
                     val accessToken = result.accessToken
+
+                    getFBProfile(accessToken, callback = { fbProfile ->
+                        println("myFB profile " + fbProfile)
+                    })
 
                     getFbPages(accessToken, callback = { pagesList ->
                         println("myFB pageList " + pagesList.size)
@@ -181,6 +187,7 @@ fun getFbPages(accessToken: AccessToken, callback: (List<FacebookPage>) -> Unit)
                 callback(pagesList)
             }
         } catch (e: Exception) {
+            Log.e("myFb pageError", e.toString())
             e.printStackTrace()
             callback(emptyList())
         }
@@ -223,6 +230,7 @@ fun getFBGroups(accessToken: AccessToken, callback: (List<FacebookPage>) -> Unit
             callback(groupsList)
 
         } catch (e: Exception) {
+            Log.e("myFb groupError", e.toString())
             e.printStackTrace()
             callback(emptyList())
         }
@@ -234,6 +242,41 @@ fun getFBGroups(accessToken: AccessToken, callback: (List<FacebookPage>) -> Unit
     request.executeAsync()
 }
 
+data class FBProfile(
+    val id: String,
+    val name: String,
+    val email: String,
+    val profilePictureUrl: String
+)
+
+private fun getFBProfile(accessToken: AccessToken, callback: (FBProfile?) -> Unit) {
+    val request = GraphRequest.newMeRequest(
+        accessToken
+    ) { jsonObject: JSONObject?, response: GraphResponse? ->
+        try {
+            jsonObject?.let {
+                val id = it.getString("id")
+                val name = it.getString("name")
+                val email = it.optString("email", "")
+                val profilePictureUrl = "https://graph.facebook.com/$id/picture?type=large"
+
+                val profile = FBProfile(id, name, email, profilePictureUrl)
+                callback(profile)
+            } ?: run {
+                callback(null)
+            }
+        } catch (e: Exception) {
+            Log.e("myFb profielError", e.toString())
+            e.printStackTrace()
+            callback(null)
+        }
+    }
+
+    val parameters = Bundle()
+    parameters.putString("fields", "id,name,email") // Specify the fields you need
+    request.parameters = parameters
+    request.executeAsync()
+}
 
 private fun getFBProfileData(loginResult: LoginResult, onProfileFound: (Profile?) -> Unit) {
     val request = GraphRequest.newMeRequest(loginResult.accessToken) { info, response ->
