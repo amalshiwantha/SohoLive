@@ -302,7 +302,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         onItemClick: (CategoryInfo) -> Unit
     ) {
         val selVal = myList.find { it.isSelect }
-        var selectedIndex by remember { mutableIntStateOf(selVal?.index ?: 0) }
+        var selectedIndex = selVal?.index ?: 0
 
         LazyColumn(
             Modifier
