@@ -74,6 +74,7 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.GoLiveSubmit
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -122,6 +123,7 @@ fun GoLiveScreen(
     savedApiResults: DataGoLive? = null,
     savedTsResults: TsPropertyResponse? = null,
     savedState: GoLiveAssets? = null,
+    mGoLiveSubmit: GoLiveSubmit,
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
     onLoadApiResults: (DataGoLive) -> Unit,
@@ -229,6 +231,7 @@ fun GoLiveScreen(
                                 isNowSelected = isNowSelected,
                                 isNotShowProfile = isDontShowProfile,
                                 selectedOption = selectedOption,
+                                mGoLiveSubmit = mGoLiveSubmit,
                                 isConnectYT = isConnectedYouTube,
                                 isConnectFB = isConnectedFacebook,
                                 isConnectLI = isConnectedLinkedIn,
@@ -380,6 +383,7 @@ fun StepContents(
     tsResults: TsPropertyResponse? = null,
     propertyList: List<PropertyItem>? = null,
     mainAgencyList: List<AgencyItem>? = null,
+    mGoLiveSubmit: GoLiveSubmit,
     isNowSelected: Boolean,
     isNotShowProfile: Boolean,
     optionList: MutableList<String>,
@@ -462,11 +466,15 @@ fun StepContents(
 
         // step#4
         3 -> {
-            Content4(optionList = optionList,
+            Content4(
+                optionList = optionList,
                 selectedOption = selectedOption,
                 isNowSelected = isNowSelected,
+                mGoLiveSubmit = mGoLiveSubmit,
                 onSelectOption = { onSelectOption(it) },
-                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
+                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) },
+                onErrorUpdate = Pair(false, true),
+            )
         }
     }
 }
@@ -497,10 +505,11 @@ private fun Content4(
     optionList: MutableList<String>,
     selectedOption: String,
     isNowSelected: Boolean,
+    mGoLiveSubmit: GoLiveSubmit,
     onSelectOption: (String) -> Unit,
-    onSwipeIsNowSelected: (Boolean) -> Unit
+    onSwipeIsNowSelected: (Boolean) -> Unit,
+    onErrorUpdate: Pair<Boolean, Boolean>
 ) {
-
     var isOnCoverOption by remember { mutableStateOf(false) }
 
     Text700_14sp(step = "When do you want to go live?")
@@ -517,27 +526,35 @@ private fun Content4(
         placeHolder = "Select an option",
         onValueChangedEvent = {
             onSelectOption(it)
+            mGoLiveSubmit.apply { livesteram = it }
         },
         fieldConfig = FieldConfig.NEXT.apply {
+            input = mGoLiveSubmit.livesteram.orEmpty()
             placeholder = ""
-            isError = false
+            isError = onErrorUpdate.first
         })
     Text400_14sp(info = "Please indicate purpose of this livestream", color = ErrorRed)
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Stream title")
     TextFieldWhite(FieldConfig.NEXT.apply {
+        input = mGoLiveSubmit.title.orEmpty()
         placeholder = "Address or title for your livestream"
-        isError = false
-    }) {}
+        isError = onErrorUpdate.second
+    }, onTextChange = {
+        mGoLiveSubmit.apply { title = it }
+    })
     Text400_14sp(info = "Please enter a stream title", color = ErrorRed)
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Description")
     TextAreaWhite(FieldConfig.NEXT.apply {
+        input = mGoLiveSubmit.description.orEmpty()
         placeholder =
             "Let viewers know more about what you are streaming. E.g. Property description, address, etc."
-    }) {}
+    }, onTextChange = {
+        mGoLiveSubmit.apply { description = it }
+    })
 
 
     if (false) {
@@ -1314,6 +1331,7 @@ private fun PreviewGoLiveScreen() {
                     isNotShowProfile = true,
                     selectedOption = "",
                     onSelectOption = { },
+                    mGoLiveSubmit = GoLiveSubmit(),
                     isConnectYT = true,
                     isConnectFB = true,
                     isConnectLI = true,

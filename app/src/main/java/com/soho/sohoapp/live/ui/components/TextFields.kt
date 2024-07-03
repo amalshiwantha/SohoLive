@@ -115,7 +115,7 @@ fun TextFieldWhiteIcon(
 
 @Composable
 fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
-    var txtInput by rememberSaveable { mutableStateOf("") }
+    var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
 
     OutlinedTextField(
         value = txtInput,

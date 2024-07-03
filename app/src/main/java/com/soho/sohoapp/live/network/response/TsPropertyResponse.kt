@@ -9,6 +9,19 @@ import java.text.NumberFormat
 import java.util.Locale
 
 @Serializable
+data class GoLiveSubmit(
+    var livesteram: String? = null,
+    var title: String? = null,
+    var description: String? = null
+) {
+    constructor() : this(
+        livesteram = null,
+        title = null,
+        description = null
+    )
+}
+
+@Serializable
 data class ScheduleSlots(
     var date: String? = null,
     var time: String? = null,
