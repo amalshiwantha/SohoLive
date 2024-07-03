@@ -247,7 +247,10 @@ fun GoLiveScreen(
                                 isConnectLI = isConnectedLinkedIn,
                                 mFieldsError = mFieldsError,
                                 onSwipeIsNowSelected = { isNowSelected = it },
-                                onNotShowProfileChange = { isDontShowProfile = it },
+                                onNotShowProfileChange = {
+                                    mGoLiveSubmit.apply { unlisted = it }
+                                    isDontShowProfile = it
+                                },
                                 onPropertyItemClicked = { selectedProperty ->
                                     mGoLiveSubmit.apply {
                                         propertyId = selectedProperty.propInfo.propertyId
