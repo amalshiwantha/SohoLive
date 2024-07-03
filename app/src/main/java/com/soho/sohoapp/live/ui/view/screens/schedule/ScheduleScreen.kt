@@ -47,11 +47,13 @@ import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
+import com.soho.sohoapp.live.ui.components.CenterProgress
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
@@ -81,6 +83,7 @@ fun ScheduleScreen(
     val stateSchedule = viewMSchedule.mState.value
     var isShowDialog by remember { mutableStateOf(false) }
     var isShowAlert by remember { mutableStateOf(false) }
+    var isShowProgress by remember { mutableStateOf(false) }
     var isShowDateTimePicker by remember { mutableStateOf(false) }
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
     var slotToSave by remember { mutableStateOf<ScheduleSlots?>(null) }
@@ -97,13 +100,17 @@ fun ScheduleScreen(
             isShowAlert = false
         }
 
-        //Show Progress
-        //stateSchedule.loadingState
+        //Show Loading view
+        isShowProgress = stateSchedule.loadingState == ProgressBarState.Loading
 
-        //Success handling
-        //stateSchedule.isSuccess
+        // Success handling
+        // stateSchedule.isSuccess
+
+        // Show no network status
+        // isNetConnected = true
     }
 
+    //show api error as alert
     if (isShowAlert) {
         alertConfig?.let {
             AppAlertDialog(
@@ -116,7 +123,6 @@ fun ScheduleScreen(
                 })
         }
     }
-
 
     //confirmation to delete time slot
     if (isShowDialog) {
@@ -160,67 +166,80 @@ fun ScheduleScreen(
                     .fillMaxWidth()
                     .padding(innerPadding)
             ) {
-
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    val (content, submitButton) = createRefs()
-
-                    LazyColumn(
-                        modifier = Modifier
-                            .constrainAs(content) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(submitButton.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                height = Dimension.fillToConstraints
-                            }
-                            .padding(16.dp)
-                    ) {
-                        item {
-                            TopContent(slots.isEmpty(), slotToSave, onClickAdd = {
-                                slotToSave?.let {
-                                    if (!it.date.isNullOrEmpty() && !it.time.isNullOrEmpty()) {
-                                        slotToSave = null
-                                        slots.add(it)
-                                        goLiveData.apply {
-                                            this.scheduleSlots = slots
-                                        }
-                                    }
-                                }
-                            },
-                                onClickShowDateTimePicker = {
-                                    isShowDateTimePicker = it
-                                })
-                        }
-                        items(slots) { slot ->
-                            ScheduleItemView(slot = slot, onItemClick = { deleteSlot ->
-                                isShowDialog = true
-                                slotToDelete = deleteSlot
-                            })
+                if (isShowProgress) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CenterProgress(modifier = Modifier)
+                            SpacerVertical(size = 8.dp)
+                            Text700_14sp(step = "Submitting Go Live Data....")
                         }
                     }
-
-                    ButtonColoured(text = "Complete Scheduling",
-                        color = AppGreen,
+                } else {
+                    ConstraintLayout(
                         modifier = Modifier
-                            .constrainAs(submitButton) {
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
+                            .fillMaxSize()
+                    ) {
+                        val (content, submitButton) = createRefs()
+
+                        LazyColumn(
+                            modifier = Modifier
+                                .constrainAs(content) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(submitButton.top)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    height = Dimension.fillToConstraints
+                                }
+                                .padding(16.dp)
+                        ) {
+                            item {
+                                TopContent(slots.isEmpty(), slotToSave, onClickAdd = {
+                                    slotToSave?.let {
+                                        if (!it.date.isNullOrEmpty() && !it.time.isNullOrEmpty()) {
+                                            slotToSave = null
+                                            slots.add(it)
+                                            goLiveData.apply {
+                                                this.scheduleSlots = slots
+                                            }
+                                        }
+                                    }
+                                },
+                                    onClickShowDateTimePicker = {
+                                        isShowDateTimePicker = it
+                                    })
                             }
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        onBtnClick = {
-                            doSubmit(
-                                goLiveData,
-                                navController,
-                                viewMSchedule,
-                                netUtil,
-                                stateSchedule
-                            )
-                        })
+                            items(slots) { slot ->
+                                ScheduleItemView(slot = slot, onItemClick = { deleteSlot ->
+                                    isShowDialog = true
+                                    slotToDelete = deleteSlot
+                                })
+                            }
+                        }
+
+                        ButtonColoured(text = "Complete Scheduling",
+                            color = AppGreen,
+                            modifier = Modifier
+                                .constrainAs(submitButton) {
+                                    bottom.linkTo(parent.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                }
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            onBtnClick = {
+                                doSubmit(
+                                    goLiveData,
+                                    viewMSchedule,
+                                    netUtil
+                                )
+                            })
+                    }
                 }
             }
         }
@@ -229,10 +248,8 @@ fun ScheduleScreen(
 
 private fun doSubmit(
     goLiveData: GoLiveSubmit,
-    navController: NavController,
     viewMSchedule: ScheduleViewModel,
-    netUtil: NetworkUtils,
-    state: ScheduleState
+    netUtil: NetworkUtils
 ) {
 
     if (netUtil.isNetworkAvailable()) {
@@ -241,13 +258,6 @@ private fun doSubmit(
     } else {
         //isNetConnected = false
     }
-
-    //check api results
-    /*state.results?.let { apiRes ->
-        //TODO
-        //goLiveData empty
-        //is done -> navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
-    }*/
 }
 
 @Composable
