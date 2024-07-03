@@ -1,8 +1,9 @@
 <resources>
     <!--facebook-->
-    <string name="facebook_app_id">821779222947839</string>
-    <string name="fb_login_protocol_scheme">fb821779222947839</string>
-    <string name="fb_client_token">3de6e9cba4cf3e1367c5b3479028150d</string>
+    <string name="facebook_app_id">770322204906238</string>
+    <string name="fb_login_protocol_scheme">fb770322204906238</string>
+    <string name="fb_client_token">eec0a7ca068d387dc66a99fa7500d3ee</string>
+    <string name="fb_app_secret">55c03cc275aa7e76a86f3efc4701c751</string>
 
     <!--google-->
     <string name="web_client_id">1071285822372-tmaj7fmh1qjsqpl5ub0mkf7fftr7kmli.apps.googleusercontent.com</string>

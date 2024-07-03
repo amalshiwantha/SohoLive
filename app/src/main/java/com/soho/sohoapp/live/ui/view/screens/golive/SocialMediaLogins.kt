@@ -86,16 +86,16 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
 
                 private fun getFBTimeLine(it: Profile): MutableList<CategoryInfo> {
 
-                    return mutableListOf(
+                    /*return mutableListOf(
                         CategoryInfo(
                             1001, CategoryType.TIMELINE,
                             it.fullName ?: "FB User", "", it.imageUrl ?: ""
-                        ),CategoryInfo(
+                        ), CategoryInfo(
                             1002, CategoryType.TIMELINE,
                             "FB User", "", it.imageUrl ?: ""
                         )
-                    )
-
+                    )*/
+                    return mutableListOf()
                 }
 
                 override fun onCancel() {
@@ -112,11 +112,18 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
         }
     }
 
-    //listOf("email","public_profile","publish_video","pages_read_engagement","pages_manage_posts","pages_show_list")
+    val permissionList = listOf(
+        "email",
+        "public_profile",
+        "publish_video",
+        "pages_read_engagement",
+        "pages_manage_posts",
+        "pages_show_list"
+    )
     loginManager.logIn(
         context as ActivityResultRegistryOwner,
         callbackManager,
-        listOf("email", "public_profile")
+        permissionList
     )
 }
 
