@@ -4,6 +4,7 @@ package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,7 +43,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (String) -> Unit) {
     var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
 
-    TextField(
+    OutlinedTextField(
         value = txtInput,
         onValueChange = {
             txtInput = it
@@ -56,6 +57,7 @@ fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (String) -> Unit) 
         maxLines = 10,
         modifier = Modifier
             .fillMaxWidth()
+            .height(150.dp)
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(

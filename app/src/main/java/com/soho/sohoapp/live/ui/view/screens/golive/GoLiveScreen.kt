@@ -53,6 +53,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -544,12 +545,13 @@ private fun Content4(
     val configTitle = TextFiledConfig(
         input = mGoLiveSubmit.title.orEmpty(),
         placeholder = "Address or title for your livecast",
-        isError = !errTitle.isNullOrEmpty()
+        isError = !errTitle.isNullOrEmpty(),
     )
 
     val configDesc = TextFiledConfig(
         input = mGoLiveSubmit.description.orEmpty(),
         placeholder = "Let viewers know more about what you are streaming. E.g. Property description, address, etc.",
+        imeAction = ImeAction.Done
     )
 
     //swipe selection

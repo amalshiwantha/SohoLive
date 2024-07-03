@@ -15,7 +15,7 @@ data class TextFiledConfig(
     var clickable: Boolean = false,
     var isSingleLine: Boolean = true,
     var trailingIcon: ImageVector? = null,
-    var imeAction: ImeAction = ImeAction.Done,
+    var imeAction: ImeAction = ImeAction.Next,
     var keyboardType: KeyboardType = KeyboardType.Text,
 )
 
