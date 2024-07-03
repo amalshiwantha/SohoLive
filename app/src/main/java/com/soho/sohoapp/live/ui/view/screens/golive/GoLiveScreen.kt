@@ -168,7 +168,7 @@ fun GoLiveScreen(
 
     LaunchedEffect(isShowScheduleScreen) {
         if (isShowScheduleScreen) {
-            navController.navigate(NavigationPath.SET_SCHEDULE.name)
+            navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
             isShowScheduleScreen = false
         }
     }
@@ -283,7 +283,6 @@ fun GoLiveScreen(
                         if (mFieldsError.isEmpty()) {
                             isShowScheduleScreen = true
                         }
-                        println("myVal " + mGoLiveSubmit)
                     },
                     onClickedLive = {
                         //POST /api/soho_live/live_stream

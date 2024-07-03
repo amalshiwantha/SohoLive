@@ -30,6 +30,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -99,8 +100,21 @@ fun HomeScreen(
             BottomNavHost(navController, viewMMain)
 
             val currentBackStackEntry by navController.currentBackStackEntryAsState()
-            showBottomBar = currentBackStackEntry?.destination?.route != NavigationPath.SET_SCHEDULE.name
+            showBottomBar = isBottomBarVisible(currentBackStackEntry)
+
         }
+    }
+}
+
+fun isBottomBarVisible(backStack: NavBackStackEntry?): Boolean {
+    backStack?.let {
+        when (backStack.destination.route) {
+            NavigationPath.GO_LIVE_SUCCESS.name -> return false
+            NavigationPath.SET_SCHEDULE.name -> return false
+            else -> return true
+        }
+    } ?: run {
+        return true
     }
 }
 

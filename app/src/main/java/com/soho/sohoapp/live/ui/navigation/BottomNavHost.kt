@@ -17,6 +17,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveAssets
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
+import com.soho.sohoapp.live.ui.view.screens.golive_success.GoLiveOkScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 
@@ -60,5 +61,12 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
                 scheduleSlots
             )
         }
+        composable(route = NavigationPath.GO_LIVE_SUCCESS.name) {
+            GoLiveOkScreen(
+                navController = navController,
+                goLiveData = mGoLiveSubmit
+            )
+        }
+
     }
 }
