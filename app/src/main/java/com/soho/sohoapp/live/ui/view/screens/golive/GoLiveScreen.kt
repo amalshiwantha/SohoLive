@@ -146,7 +146,7 @@ fun GoLiveScreen(
     var isShowScheduleScreen by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
-    val mFieldsError = remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
+    var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -234,6 +234,7 @@ fun GoLiveScreen(
                                 isConnectYT = isConnectedYouTube,
                                 isConnectFB = isConnectedFacebook,
                                 isConnectLI = isConnectedLinkedIn,
+                                mFieldsError = mFieldsError,
                                 onSwipeIsNowSelected = { isNowSelected = it },
                                 onNotShowProfileChange = { isDontShowProfile = it },
                                 onPropertyItemClicked = { selectedProperty ->
@@ -273,14 +274,12 @@ fun GoLiveScreen(
                     },
                     onClickedDateTime = {
                         mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
-                        mFieldsError.value = mGoLiveSubmit.errors
+                        mFieldsError = mGoLiveSubmit.errors
 
-                        if (mFieldsError.value.isEmpty()) {
+                        if (mFieldsError.isEmpty()) {
                             isShowScheduleScreen = true
-                            println("myfields good ")
-                        }else{
-                            println("myfields error "+mFieldsError.value)
                         }
+                        println("myVal " + mGoLiveSubmit)
                     },
                     onClickedLive = {
                         //POST /api/soho_live/live_stream
@@ -414,6 +413,7 @@ fun StepContents(
     isConnectYT: Boolean,
     isConnectFB: Boolean,
     isConnectLI: Boolean,
+    mFieldsError: MutableMap<FormFields, String>,
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onNotShowProfileChange: (Boolean) -> Unit,
     onPropertyItemClicked: (PropertyItem) -> Unit,
@@ -492,8 +492,8 @@ fun StepContents(
                 optionList = optionList,
                 isNowSelected = isNowSelected,
                 mGoLiveSubmit = mGoLiveSubmit,
-                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) },
-                onErrorUpdate = Pair(false, true),
+                mFieldsError = mFieldsError,
+                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) }
             )
         }
     }
@@ -525,10 +525,15 @@ private fun Content4(
     optionList: MutableList<String>,
     isNowSelected: Boolean,
     mGoLiveSubmit: GoLiveSubmit,
-    onSwipeIsNowSelected: (Boolean) -> Unit,
-    onErrorUpdate: Pair<Boolean, Boolean>
+    mFieldsError: MutableMap<FormFields, String>,
+    onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
     var isOnCoverOption by remember { mutableStateOf(false) }
+
+    println("myVal form " + mFieldsError)
+
+    val inputPurpose = mGoLiveSubmit.errors[FormFields.PURPOSE]
+    val inputTitle = mGoLiveSubmit.errors[FormFields.TITLE]
 
     Text700_14sp(step = "When do you want to go live?")
 
@@ -548,20 +553,24 @@ private fun Content4(
         fieldConfig = FieldConfig.NEXT.apply {
             input = mGoLiveSubmit.purpose.orEmpty()
             placeholder = ""
-            isError = onErrorUpdate.first
+            isError = !inputPurpose.isNullOrEmpty()
         })
-    Text400_14sp(info = "Please indicate purpose of this livestream", color = ErrorRed)
+    inputPurpose?.let {
+        ShowError(message = it)
+    }
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Stream title")
     TextFieldWhite(FieldConfig.NEXT.apply {
         input = mGoLiveSubmit.title.orEmpty()
         placeholder = "Address or title for your livestream"
-        isError = onErrorUpdate.second
+        isError = !inputTitle.isNullOrEmpty()
     }, onTextChange = {
         mGoLiveSubmit.apply { title = it }
     })
-    Text400_14sp(info = "Please enter a stream title", color = ErrorRed)
+    inputTitle?.let {
+        ShowError(message = it)
+    }
 
     SpacerVertical(size = 24.dp)
     Text700_14sp(step = "Description")
@@ -602,6 +611,11 @@ private fun Content4(
     }
 
     SpacerVertical(size = 140.dp)
+}
+
+@Composable
+private fun ShowError(message: String) {
+    Text400_14sp(info = message, color = ErrorRed)
 }
 
 @Composable
@@ -1350,6 +1364,7 @@ private fun PreviewGoLiveScreen() {
                     isConnectYT = true,
                     isConnectFB = true,
                     isConnectLI = true,
+                    mFieldsError = mutableMapOf(),
                     onSwipeIsNowSelected = { },
                     onNotShowProfileChange = {},
                     onPropertyItemClicked = {},
