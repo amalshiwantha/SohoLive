@@ -42,9 +42,12 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.ScheduleSlots
+import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -77,12 +80,45 @@ fun ScheduleScreen(
 
     val stateSchedule = viewMSchedule.mState.value
     var isShowDialog by remember { mutableStateOf(false) }
+    var isShowAlert by remember { mutableStateOf(false) }
     var isShowDateTimePicker by remember { mutableStateOf(false) }
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
     var slotToSave by remember { mutableStateOf<ScheduleSlots?>(null) }
     val slots by remember { mutableStateOf(goLiveData.scheduleSlots.toMutableStateList()) }
+    var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
 
 
+    LaunchedEffect(stateSchedule) {
+        //Display alert
+        if (stateSchedule.alertState is AlertState.Display) {
+            isShowAlert = true
+            alertConfig = stateSchedule.alertState.config
+        } else {
+            isShowAlert = false
+        }
+
+        //Show Progress
+        //stateSchedule.loadingState
+
+        //Success handling
+        //stateSchedule.isSuccess
+    }
+
+    if (isShowAlert) {
+        alertConfig?.let {
+            AppAlertDialog(
+                alert = it,
+                onConfirm = {
+                    viewMSchedule.onTriggerEvent(ScheduleEvent.DismissAlert)
+                },
+                onDismiss = {
+                    viewMSchedule.onTriggerEvent(ScheduleEvent.DismissAlert)
+                })
+        }
+    }
+
+
+    //confirmation to delete time slot
     if (isShowDialog) {
         ShowDeleteAlert(
             isShowDialog = isShowDialog,
@@ -207,11 +243,11 @@ private fun doSubmit(
     }
 
     //check api results
-    state.results?.let { apiRes ->
+    /*state.results?.let { apiRes ->
         //TODO
         //goLiveData empty
         //is done -> navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
-    }
+    }*/
 }
 
 @Composable

@@ -23,7 +23,9 @@ class ScheduleViewModel(
 
     fun onTriggerEvent(event: ScheduleEvent) {
         when (event) {
-            ScheduleEvent.DismissAlert -> {}
+            ScheduleEvent.DismissAlert -> {
+                mState.value = mState.value.copy(alertState = AlertState.Idle)
+            }
             is ScheduleEvent.CallSubmit -> {
                 submitGoLiveData(event.submitData)
             }
@@ -51,18 +53,18 @@ class ScheduleViewModel(
                 is ApiState.Data -> {
 
                     apiState.data?.let { result ->
-                        val isSuccessLogin = !result.responseType.equals("error")
+
+                        val isSuccess = !result.responseType.equals("error")
+                        val errorMsg = result.response
                         val res = result.data
 
-                        if (isSuccessLogin) {
+                        if (isSuccess) {
                             mState.value = mState.value.copy(results = res)
                             mState.value = mState.value.copy(isSuccess = true)
                         } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
-                                    result.response?.let {
-                                        message = it
-                                    }
+                                    message = errorMsg.orEmpty()
                                 }))
                         }
                     }
