@@ -25,6 +25,13 @@ import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
 
+data class FacebookPage(
+    val id: String,
+    val name: String,
+    val accessToken: String,
+    val pictureUrl: String
+)
+
 //Google Auth
 @Composable
 fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int, Task<GoogleSignInAccount>?> {
@@ -145,25 +152,31 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
     )
 }
 
-fun getFbPages(accessToken: AccessToken, callback: (List<String>) -> Unit) {
+fun getFbPages(accessToken: AccessToken, callback: (List<FacebookPage>) -> Unit) {
     val request = GraphRequest.newGraphPathRequest(
         accessToken,
         "/me/accounts"
     ) { response ->
-        val pagesList = mutableListOf<String>()
+        val pagesList = mutableListOf<FacebookPage>()
         try {
             val jsonObject = response.jsonObject
             jsonObject?.let {
                 val dataArray = it.getJSONArray("data")
                 for (i in 0 until dataArray.length()) {
-                    val pageObject = dataArray.getJSONObject(i)
-                    val pageId = pageObject.getString("id")
-                    val pageName = pageObject.getString("name")
-                    val pageAccessToken = pageObject.getString("access_token")
+                    val pageObj = dataArray.getJSONObject(i)
+                    val pageId = pageObj.getString("id")
+                    val pageName = pageObj.getString("name")
+                    val pageAccessToken = pageObj.getString("access_token")
                     val pagePicture =
-                        pageObject.getJSONObject("picture").getJSONObject("data").getString("url")
+                        pageObj.getJSONObject("picture").getJSONObject("data").getString("url")
 
-                    pagesList.add(pageName)
+                    val fbPage = FacebookPage(
+                        id = pageId,
+                        name = pageName,
+                        accessToken = pageAccessToken,
+                        pictureUrl = pagePicture
+                    )
+                    pagesList.add(fbPage)
                 }
                 callback(pagesList)
             }
