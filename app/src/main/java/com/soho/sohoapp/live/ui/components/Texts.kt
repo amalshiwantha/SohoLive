@@ -186,6 +186,7 @@ fun Text700_16sp(
         text = title,
         fontSize = 16.sp,
         lineHeight = 25.6.sp,
+        maxLines = 2,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(700),
         color = color,
