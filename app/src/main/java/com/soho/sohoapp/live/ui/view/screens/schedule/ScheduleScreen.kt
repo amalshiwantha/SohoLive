@@ -56,11 +56,11 @@ import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextFieldWhiteIcon
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -72,6 +72,7 @@ fun ScheduleScreen(
     scheduleSlots: MutableList<ScheduleSlots>,
     navController: NavController,
     viewMSchedule: ScheduleViewModel = koinInject(),
+    netUtil: NetworkUtils = koinInject(),
 ) {
 
     val stateSchedule = viewMSchedule.mState.value
@@ -175,19 +176,42 @@ fun ScheduleScreen(
                             }
                             .padding(16.dp)
                             .fillMaxWidth(),
-                        onBtnClick = { doSubmit(goLiveData, navController) })
+                        onBtnClick = {
+                            doSubmit(
+                                goLiveData,
+                                navController,
+                                viewMSchedule,
+                                netUtil,
+                                stateSchedule
+                            )
+                        })
                 }
             }
         }
     }
 }
 
-fun doSubmit(goLiveData: GoLiveSubmit, navController: NavController) {
-    println("goLiveSubmit " + goLiveData)
-    //TODO
-    // call doPost api
-    // goLiveData empty
-    navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
+private fun doSubmit(
+    goLiveData: GoLiveSubmit,
+    navController: NavController,
+    viewMSchedule: ScheduleViewModel,
+    netUtil: NetworkUtils,
+    state: ScheduleState
+) {
+
+    if (netUtil.isNetworkAvailable()) {
+        //isNetConnected = true
+        viewMSchedule.onTriggerEvent(ScheduleEvent.CallSubmit(goLiveData))
+    } else {
+        //isNetConnected = false
+    }
+
+    //check api results
+    state.tsResults?.let { apiRes ->
+        //TODO
+        //goLiveData empty
+        //is done -> navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
+    }
 }
 
 @Composable

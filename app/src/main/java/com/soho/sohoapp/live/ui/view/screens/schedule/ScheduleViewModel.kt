@@ -6,13 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
-import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -25,27 +23,28 @@ class ScheduleViewModel(
 
     fun onTriggerEvent(event: ScheduleEvent) {
         when (event) {
-            ScheduleEvent.CallSubmit -> {
-                submitGoLiveData()
-            }
-
             ScheduleEvent.DismissAlert -> {}
+            is ScheduleEvent.CallSubmit -> {
+                submitGoLiveData(event.submitData)
+            }
         }
     }
 
-    private fun submitGoLiveData() {
+    private fun submitGoLiveData(submitData: GoLiveSubmit) {
         mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
 
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let {
-                    submitNow(it.authenticationToken)
+                    submitNow(it.authenticationToken, submitData)
                 }
             }
         }
     }
 
-    private fun submitNow(authToken: String) {
+    private fun submitNow(authToken: String, submitData: GoLiveSubmit) {
+
+        println("mySubmit $submitData")
 
         apiRepo.goLivePropertyListing(authToken).onEach { apiState ->
 
