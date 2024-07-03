@@ -762,43 +762,12 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             "ask123"
         )
 
-        val timeline1 = CategoryInfo(
-            0,
-            CategoryType.TIMELINE,
-            "TimeLine 1",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-        val timeline2 = CategoryInfo(
-            1,
-            CategoryType.TIMELINE,
-            "TimeLine 2",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-
-        val page1 = CategoryInfo(
-            0,
-            CategoryType.PAGES,
-            "MyPage",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-
-        val group1 = CategoryInfo(
-            0,
-            CategoryType.GROUPS,
-            "My Group",
-            "http:www.facebook.com",
-            "https://t4.ftcdn.net/jpg/06/08/55/73/360_F_608557356_ELcD2pwQO9pduTRL30umabzgJoQn5fnd.jpg"
-        )
-
         return SocialMediaProfile(
             smInfo = SocialMediaInfo.FACEBOOK,
             profile = profile,
-            timelines = mutableListOf(timeline1, timeline2),
+            timelines = mutableListOf(),
             pages = mutableListOf(),
-            groups = mutableListOf(group1)
+            groups = mutableListOf()
         )
     }
 

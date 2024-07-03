@@ -110,9 +110,11 @@ data class Profile(
 @Serializable
 data class CategoryInfo(
     val index: Int = 0,
+    val id: String,
     val type: CategoryType,
     val title: String,
     val url: String,
     val imageUrl: String,
+    val accessToken: String,
     val isSelect: Boolean = false
 )

@@ -19,9 +19,9 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
-import com.soho.sohoapp.live.model.FBGroupPage
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
@@ -31,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.util.UUID
 
 //Google Auth
 @Composable
@@ -83,16 +84,23 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                     GlobalScope.launch(Dispatchers.Main) {
 
                         getFBProfile(accessToken) { fbProfile ->
-                            println("myFB profile " + fbProfile)
+                            fbProfile?.let {
 
-                            getFbPages(accessToken, callback = { pagesList ->
-                                println("myFB pageList " + pagesList.size)
+                                getFbPages(accessToken, callback = { pagesList ->
 
-                                getFBGroups(accessToken, callback = { groupsList ->
-                                    println("myFB groupsList " + groupsList.size)
+                                    getFBGroups(accessToken, callback = { groupsList ->
+
+                                        val smProfile = SocialMediaProfile(
+                                            smInfo = SocialMediaInfo.FACEBOOK,
+                                            profile = it,
+                                            timelines = getFBTimeLine(it),
+                                            pages = pagesList,
+                                            groups = groupsList
+                                        )
+                                        viewMMain.saveSMProfile(smProfile)
+                                    })
                                 })
-                            })
-
+                            }
                         }
                     }
                 }
@@ -115,17 +123,17 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
             }
 
             private fun getFBTimeLine(it: Profile): MutableList<CategoryInfo> {
-
-                /*return mutableListOf(
+                return mutableListOf(
                     CategoryInfo(
-                        1001, CategoryType.TIMELINE,
-                        it.fullName ?: "FB User", "", it.imageUrl ?: ""
-                    ), CategoryInfo(
-                        1002, CategoryType.TIMELINE,
-                        "FB User", "", it.imageUrl ?: ""
+                        index = 1001,
+                        id = "1",
+                        type = CategoryType.TIMELINE,
+                        title = it.fullName ?: "FB User",
+                        url = "",
+                        imageUrl = it.imageUrl.orEmpty(),
+                        accessToken = it.token.orEmpty(),
                     )
-                )*/
-                return mutableListOf()
+                )
             }
 
             override fun onCancel() {
@@ -193,11 +201,11 @@ private fun getFBProfile(accessToken: AccessToken, callback: (Profile?) -> Unit)
     request.executeAsync()
 }
 
-fun getFbPages(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit) {
+fun getFbPages(accessToken: AccessToken, callback: (MutableList<CategoryInfo>) -> Unit) {
     val request = GraphRequest.newGraphPathRequest(
         accessToken, "/me/accounts"
     ) { response ->
-        val pagesList = mutableListOf<FBGroupPage>()
+        val pagesList = mutableListOf<CategoryInfo>()
         try {
             val jsonObject = response.jsonObject
             jsonObject?.let {
@@ -211,11 +219,14 @@ fun getFbPages(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit) 
                         pageObj.getJSONObject("picture").getJSONObject("data").getString("url")
 
                     pagesList.add(
-                        FBGroupPage(
+                        CategoryInfo(
+                            index = UUID.randomUUID().hashCode(),
                             id = pageId,
-                            name = pageName,
+                            type = CategoryType.PAGES,
+                            title = pageName,
+                            url = "",
+                            imageUrl = pagePicture,
                             accessToken = pageAccessToken,
-                            pictureUrl = pagePicture
                         )
                     )
                 }
@@ -224,7 +235,7 @@ fun getFbPages(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit) 
         } catch (e: Exception) {
             Log.e("myFb pageError", e.toString())
             e.printStackTrace()
-            callback(emptyList())
+            callback(mutableListOf())
         }
     }
 
@@ -235,11 +246,11 @@ fun getFbPages(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit) 
 }
 
 
-fun getFBGroups(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit) {
+fun getFBGroups(accessToken: AccessToken, callback: (MutableList<CategoryInfo>) -> Unit) {
     val request = GraphRequest.newGraphPathRequest(
         accessToken, "/me/groups"
     ) { response ->
-        val groupsList = mutableListOf<FBGroupPage>()
+        val groupsList = mutableListOf<CategoryInfo>()
         try {
             val jsonObject = response.jsonObject
             jsonObject?.let {
@@ -252,8 +263,14 @@ fun getFBGroups(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit)
                         group.getJSONObject("picture").getJSONObject("data").getString("url")
 
                     groupsList.add(
-                        FBGroupPage(
-                            id = groupId, name = groupName, pictureUrl = groupPicture
+                        CategoryInfo(
+                            index = UUID.randomUUID().hashCode(),
+                            id = groupId,
+                            type = CategoryType.GROUPS,
+                            title = groupName,
+                            url = "",
+                            imageUrl = groupPicture,
+                            accessToken = "",
                         )
                     )
                 }
@@ -264,7 +281,7 @@ fun getFBGroups(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit)
         } catch (e: Exception) {
             Log.e("myFb groupError", e.toString())
             e.printStackTrace()
-            callback(emptyList())
+            callback(mutableListOf())
         }
     }
 
