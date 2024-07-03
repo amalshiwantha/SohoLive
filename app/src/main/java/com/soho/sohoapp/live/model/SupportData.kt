@@ -24,6 +24,7 @@ data class GoLiveSubmit(
     var purpose: String? = null,
     var title: String? = null,
     var description: String? = null,
+    var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf()
 ) {
     constructor() : this(

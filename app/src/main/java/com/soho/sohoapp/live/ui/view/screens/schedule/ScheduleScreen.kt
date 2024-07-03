@@ -27,7 +27,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,13 +75,20 @@ fun ScheduleScreen(
     var isShowDateTimePicker by remember { mutableStateOf(false) }
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
     var slotToSave by remember { mutableStateOf<ScheduleSlots?>(null) }
+    val slots by remember { mutableStateOf(goLiveData.scheduleSlots.toMutableStateList()) }
+
 
     if (isShowDialog) {
         ShowDeleteAlert(
             isShowDialog = isShowDialog,
             slotToDelete = slotToDelete,
             onDismiss = { isShowDialog = it },
-            onDelete = { scheduleSlots.remove(it) }
+            onDelete = {
+                slots.remove(it)
+                goLiveData.apply {
+                    this.scheduleSlots = slots
+                }
+            }
         )
     }
 
@@ -94,7 +103,9 @@ fun ScheduleScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.date_time_title),
-                onBackClick = { navController.popBackStack() })
+                onBackClick = {
+                    navController.popBackStack()
+                })
         }
     ) { innerPadding ->
 
@@ -127,11 +138,14 @@ fun ScheduleScreen(
                             .padding(16.dp)
                     ) {
                         item {
-                            TopContent(scheduleSlots.isEmpty(), slotToSave, onClickAdd = {
+                            TopContent(slots.isEmpty(), slotToSave, onClickAdd = {
                                 slotToSave?.let {
                                     if (!it.date.isNullOrEmpty() && !it.time.isNullOrEmpty()) {
                                         slotToSave = null
-                                        scheduleSlots.add(it)
+                                        slots.add(it)
+                                        goLiveData.apply {
+                                            this.scheduleSlots = slots
+                                        }
                                     }
                                 }
                             },
@@ -139,7 +153,7 @@ fun ScheduleScreen(
                                     isShowDateTimePicker = it
                                 })
                         }
-                        items(scheduleSlots) { slot ->
+                        items(slots) { slot ->
                             ScheduleItemView(slot = slot, onItemClick = { deleteSlot ->
                                 isShowDialog = true
                                 slotToDelete = deleteSlot
