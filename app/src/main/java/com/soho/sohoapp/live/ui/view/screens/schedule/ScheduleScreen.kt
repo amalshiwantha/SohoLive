@@ -42,7 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
-import com.soho.sohoapp.live.network.response.ScheduleSlots
+import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect

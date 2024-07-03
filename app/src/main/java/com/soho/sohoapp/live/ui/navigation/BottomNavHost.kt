@@ -10,9 +10,9 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.network.response.DataGoLive
-import com.soho.sohoapp.live.network.response.GoLiveSubmit
-import com.soho.sohoapp.live.network.response.ScheduleSlots
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveAssets

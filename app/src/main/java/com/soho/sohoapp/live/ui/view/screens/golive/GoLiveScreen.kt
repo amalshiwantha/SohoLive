@@ -65,16 +65,17 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.model.CategoryInfo
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
-import com.soho.sohoapp.live.network.response.GoLiveSubmit
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -136,7 +137,6 @@ fun GoLiveScreen(
     val stepCount = 4
     var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
     val optionList = mutableListOf("Option1", "Option 2", "Option 3")
-    var isDateFixed by remember { mutableStateOf(false) }
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected: Boolean by remember { mutableStateOf(false) }
     var isDontShowProfile by remember { mutableStateOf(false) }
@@ -146,6 +146,7 @@ fun GoLiveScreen(
     var isShowScheduleScreen by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
+    val mFieldsError = remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -271,7 +272,15 @@ fun GoLiveScreen(
                         assetsState.stepId.value = currentStepId
                     },
                     onClickedDateTime = {
-                        isShowScheduleScreen = true
+                        mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+                        mFieldsError.value = mGoLiveSubmit.errors
+
+                        if (mFieldsError.value.isEmpty()) {
+                            isShowScheduleScreen = true
+                            println("myfields good ")
+                        }else{
+                            println("myfields error "+mFieldsError.value)
+                        }
                     },
                     onClickedLive = {
                         //POST /api/soho_live/live_stream
@@ -286,6 +295,24 @@ fun GoLiveScreen(
             })
         }
     }
+}
+
+fun GoLiveSubmit.validateData(): MutableMap<FormFields, String> {
+    val errors = mutableMapOf<FormFields, String>()
+
+    if (purpose.isNullOrEmpty()) {
+        errors[FormFields.PURPOSE] = "Livestream cannot be null or empty"
+    } else {
+        errors.remove(FormFields.PURPOSE)
+    }
+
+    if (title.isNullOrEmpty()) {
+        errors[FormFields.TITLE] = "Title cannot be null or empty"
+    } else {
+        errors.remove(FormFields.TITLE)
+    }
+
+    return errors
 }
 
 fun getSampleFbProfile(): SocialMediaProfile {
@@ -516,10 +543,10 @@ private fun Content4(
         options = optionList,
         placeHolder = "Select an option",
         onValueChangedEvent = {
-            mGoLiveSubmit.apply { livesteram = it }
+            mGoLiveSubmit.apply { purpose = it }
         },
         fieldConfig = FieldConfig.NEXT.apply {
-            input = mGoLiveSubmit.livesteram.orEmpty()
+            input = mGoLiveSubmit.purpose.orEmpty()
             placeholder = ""
             isError = onErrorUpdate.first
         })

@@ -1,8 +1,36 @@
 package com.soho.sohoapp.live.model
 
 import com.soho.sohoapp.live.enums.CategoryType
+import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import kotlinx.serialization.Serializable
+
+@Serializable
+data class GoLiveSubmit(
+    var purpose: String? = null,
+    var title: String? = null,
+    var description: String? = null,
+    var errors: MutableMap<FormFields, String> = mutableMapOf()
+) {
+    constructor() : this(
+        purpose = null,
+        title = null,
+        description = null
+    )
+}
+
+@Serializable
+data class ScheduleSlots(
+    var date: String? = null,
+    var time: String? = null,
+    var display: String? = null
+) {
+    constructor() : this(
+        date = null,
+        time = null,
+        display = null
+    )
+}
 
 @Serializable
 data class ConnectedSocialMedia(val smList: MutableList<SocialMediaInfo>)
