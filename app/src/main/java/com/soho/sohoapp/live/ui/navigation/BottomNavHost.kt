@@ -57,8 +57,9 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         }
         composable(route = NavigationPath.SET_SCHEDULE.name) {
             ScheduleScreen(
-                navController = navController,
-                scheduleSlots
+                goLiveData = mGoLiveSubmit,
+                scheduleSlots = scheduleSlots,
+                navController = navController
             )
         }
         composable(route = NavigationPath.GO_LIVE_SUCCESS.name) {

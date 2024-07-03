@@ -168,7 +168,7 @@ fun GoLiveScreen(
 
     LaunchedEffect(isShowScheduleScreen) {
         if (isShowScheduleScreen) {
-            navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
+            navController.navigate(NavigationPath.SET_SCHEDULE.name)
             isShowScheduleScreen = false
         }
     }

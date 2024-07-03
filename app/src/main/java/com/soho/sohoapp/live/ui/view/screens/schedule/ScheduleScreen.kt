@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -64,8 +65,9 @@ import java.util.Locale
 
 @Composable
 fun ScheduleScreen(
-    navController: NavController,
-    scheduleSlots: MutableList<ScheduleSlots>
+    goLiveData: GoLiveSubmit,
+    scheduleSlots: MutableList<ScheduleSlots>,
+    navController: NavController
 ) {
     var isShowDialog by remember { mutableStateOf(false) }
     var isShowDateTimePicker by remember { mutableStateOf(false) }
@@ -382,6 +384,7 @@ private fun ScheduleScreenPreview() {
 
     ScheduleScreen(
         navController = NavHostController(LocalContext.current),
-        scheduleSlots = scheduleSlots
+        scheduleSlots = scheduleSlots,
+        goLiveData = GoLiveSubmit()
     )
 }
