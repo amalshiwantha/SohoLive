@@ -22,10 +22,18 @@ data class TextFiledConfig(
 
 @Serializable
 data class GoLiveSubmit(
-    @SerialName("purpose") var purpose: String? = null,
+    @SerialName("stream_type") var purpose: String? = null,
+    @SerialName("property_listing_id") var propertyId: Int = 0,
     @SerialName("title") var title: String? = null,
+    @SerialName("live_stream_at") var liveStreamAt: String? = null,
     @SerialName("description") var description: String? = null,
-    @SerialName("scheduleSlots") var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
+    @SerialName("agent_profile_id") var agentId: String? = null,
+    @SerialName("unlisted") var unlisted: Boolean = false,
+    @SerialName("platform") var platform: MutableList<String> = mutableListOf(),
+    @SerialName("access_token") var accessToken: MutableList<String> = mutableListOf(),
+    @SerialName("target_feed_id") var feedId: MutableList<String> = mutableListOf(),
+    @SerialName("privacy") var privacy: MutableList<String> = mutableListOf(),
+    var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf()
 ) {
     constructor() : this(
