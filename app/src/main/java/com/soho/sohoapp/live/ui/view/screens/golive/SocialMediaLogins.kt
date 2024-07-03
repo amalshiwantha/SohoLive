@@ -29,8 +29,10 @@ import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.gauth.GoogleApiContract
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.json.JSONObject
 
 //Google Auth
@@ -81,9 +83,12 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                 if (!accessToken.isExpired) {
 
                     GlobalScope.launch(Dispatchers.Main) {
-                        getFBProfile(accessToken, callback = { fbProfile ->
-                            println("myFB profile " + fbProfile)
-                        })
+
+                        val fbProfile  = getFBProfile(accessToken)
+                        fbProfile?.let {
+
+                        }
+                        println("myFB profile " + fbProfile)
 
                         getFbPages(accessToken, callback = { pagesList ->
                             println("myFB pageList " + pagesList.size)
@@ -157,6 +162,47 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
     loginManager.logIn(
         context as ActivityResultRegistryOwner, callbackManager, permissionList
     )
+}
+
+
+@OptIn(ExperimentalCoroutinesApi::class)
+suspend fun getFBProfile(accessToken: AccessToken): Profile? {
+    return suspendCancellableCoroutine { continuation ->
+        val request = GraphRequest.newMeRequest(
+            accessToken
+        ) { jsonObject: JSONObject?, response: GraphResponse? ->
+            try {
+                jsonObject?.let {
+                    val id = it.getString("id")
+                    val name = it.getString("name")
+                    val email = it.optString("email", "")
+                    val pictureUrl = "https://graph.facebook.com/$id/picture?type=large"
+
+                    val profile = Profile(
+                        fullName = name,
+                        imageUrl = pictureUrl,
+                        email = email,
+                        token = accessToken.token,
+                        type = SocialMediaInfo.FACEBOOK,
+                        isConnected = true
+                    )
+
+                    continuation.resume(profile, null)
+                } ?: run {
+                    continuation.resume(null, null)
+                }
+            } catch (e: Exception) {
+                Log.e("myFb profileError", e.toString())
+                e.printStackTrace()
+                continuation.resume(null, null)
+            }
+        }
+
+        val parameters = Bundle()
+        parameters.putString("fields", "id,name,email")
+        request.parameters = parameters
+        request.executeAsync()
+    }
 }
 
 fun getFbPages(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit) {
@@ -236,35 +282,6 @@ fun getFBGroups(accessToken: AccessToken, callback: (List<FBGroupPage>) -> Unit)
 
     val parameters = Bundle()
     parameters.putString("fields", "id,name,picture.type(large)")
-    request.parameters = parameters
-    request.executeAsync()
-}
-
-private fun getFBProfile(accessToken: AccessToken, callback: (FBProfile?) -> Unit) {
-    val request = GraphRequest.newMeRequest(
-        accessToken
-    ) { jsonObject: JSONObject?, response: GraphResponse? ->
-        try {
-            jsonObject?.let {
-                val id = it.getString("id")
-                val name = it.getString("name")
-                val email = it.optString("email", "")
-                val profilePictureUrl = "https://graph.facebook.com/$id/picture?type=large"
-
-                val profile = FBProfile(id, name, email, profilePictureUrl)
-                callback(profile)
-            } ?: run {
-                callback(null)
-            }
-        } catch (e: Exception) {
-            Log.e("myFb profielError", e.toString())
-            e.printStackTrace()
-            callback(null)
-        }
-    }
-
-    val parameters = Bundle()
-    parameters.putString("fields", "id,name,email")
     request.parameters = parameters
     request.executeAsync()
 }
