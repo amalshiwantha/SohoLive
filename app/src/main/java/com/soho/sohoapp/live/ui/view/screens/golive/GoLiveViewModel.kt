@@ -60,15 +60,15 @@ class GoLiveViewModel(
     }
 
     fun updateAssetsState(
-        savedState: TsPropertyResponse?,
+        savedTsResults: TsPropertyResponse?,
         savedApiResults: DataGoLive,
         savedAssets: GoLiveAssets?
     ) {
-        savedState?.let {
+        savedTsResults?.let {
             //update property list
             val selectedProperty = savedAssets?.propertyListState?.value?.find { it.isChecked }
 
-            val foundPropList = savedState.propertyList.map {
+            val foundPropList = savedTsResults.propertyList.map {
                 PropertyItem(
                     id = it.document.propertyId,
                     propInfo = it.document,
@@ -90,8 +90,13 @@ class GoLiveViewModel(
             agentProfiles.let { agent ->
                 val selectedAgentId =
                     foundPropList.filter { it.isChecked }.map { it.propInfo.apAgentsIds }
-                val agentLst = getAgencyItemsById(agent, selectedAgentId,selectedAgent)
-                assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+                val agentLst = getAgencyItemsById(agent, selectedAgentId, selectedAgent)
+                assetsState.value =
+                    assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+            }
+
+            if (mState.value.tsResults == null) {
+                mState.value = mState.value.copy(tsResults = savedTsResults)
             }
 
             mState.value = mState.value.copy(isSuccess = true)
@@ -167,9 +172,9 @@ class GoLiveViewModel(
                 val id = lists[0][0]
                 agentProfiles.filter { it.id == id }.map {
 
-                    val isChecked  = selectedAgent?.let { selAgent->
+                    val isChecked = selectedAgent?.let { selAgent ->
                         it.id == selAgent.id
-                    }?: kotlin.run {
+                    } ?: kotlin.run {
                         false
                     }
 
