@@ -250,8 +250,20 @@ class GoLiveViewModel(
                 currentList = profileList?.smProfileList?.map { it.smInfo }?.toMutableList()
                     ?: mutableListOf()
 
+                currentList.forEachIndexed { index, socialMediaInfo ->
+                    val foundToken =
+                        profileList?.smProfileList?.find { it.profile.type == socialMediaInfo }
+
+                    currentList[index] = socialMediaInfo.apply {
+                        accessToken = foundToken?.profile?.token
+                    }
+                }
+
+                currentList.forEach {
+                    println("smOnData ${it.accessToken}")
+                }
+
                 _connectedProfileNames.value = currentList
-                println("smProfile onLoad $currentList")
             }
         }
     }
