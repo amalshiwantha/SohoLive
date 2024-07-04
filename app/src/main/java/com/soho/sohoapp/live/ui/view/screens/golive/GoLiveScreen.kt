@@ -238,7 +238,7 @@ fun GoLiveScreen(
 
         if (isNetConnected) {
             if (stateVm.loadingState == ProgressBarState.Loading) {
-                CenterMessageProgress(message = "Loading...")
+                CenterMessageProgress(message = stateVm.loadingMessage)
             } else {
 
                 //save apiResults

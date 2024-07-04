@@ -50,7 +50,10 @@ class GoLiveViewModel(
     }
 
     private fun submitGoLiveData(submitData: GoLiveSubmit) {
-        mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
+        mState.value = mState.value.copy(
+            loadingState = ProgressBarState.Loading,
+            loadingMessage = "Requesting GoLive...."
+        )
 
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
