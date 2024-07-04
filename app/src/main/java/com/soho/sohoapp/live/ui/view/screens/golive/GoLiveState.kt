@@ -8,6 +8,8 @@ import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.DataGoLive
+import com.soho.sohoapp.live.network.response.DataGoLiveSubmit
+import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 
 data class GoLiveState(
@@ -18,7 +20,7 @@ data class GoLiveState(
     val errorStates: Map<FieldType, String> = emptyMap(),
     val apiResults: DataGoLive? = null,
     val tsResults: TsPropertyResponse? = null,
-    val results: DataGoLive? = null,
+    val goLiveResults: DataGoLiveSubmit? = null,
 )
 
 data class GoLiveAssets(

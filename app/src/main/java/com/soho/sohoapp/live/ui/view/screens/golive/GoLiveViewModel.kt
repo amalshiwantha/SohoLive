@@ -82,8 +82,7 @@ class GoLiveViewModel(
                         val res = result.data
 
                         if (isSuccess) {
-                            mState.value = mState.value.copy(results = res)
-                            mState.value = mState.value.copy(isSuccess = true)
+                            mState.value = mState.value.copy(goLiveResults = res)
                         } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {

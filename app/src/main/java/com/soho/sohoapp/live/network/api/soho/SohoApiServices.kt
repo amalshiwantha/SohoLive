@@ -5,6 +5,7 @@ import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
+import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 
 
@@ -20,5 +21,5 @@ interface SohoApiServices {
     suspend fun login(signInRequest: SignInRequest): AuthResponse
     suspend fun propertyListing(authToken: String): GoLiveResponse
     suspend fun tsProperty(tsPropRequest: TsPropertyRequest): TsPropertyResponse
-    suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveResponse
+    suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse
 }

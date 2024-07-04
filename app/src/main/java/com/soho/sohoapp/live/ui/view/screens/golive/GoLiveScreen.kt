@@ -164,6 +164,18 @@ fun GoLiveScreen(
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
 
     /*
+    * if goLiveApi got success response then want to open the LiveCast Screen
+    * */
+    LaunchedEffect(stateVm.goLiveResults) {
+        stateVm.goLiveResults?.let {
+            println("openGoLive GoScreen")
+        } ?: kotlin.run {
+            println("openGoLive Problem")
+        }
+    }
+
+
+    /*
     * Connect the SM need to update the mGoLiveSubmit
     * */
     LaunchedEffect(eventState.value) {

@@ -9,16 +9,19 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
+import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
-    fun submitGoLive(authToken: String, goLiveData: GoLiveSubmit): Flow<ApiState<GoLiveResponse>> =
+    fun submitGoLive(
+        authToken: String,
+        goLiveData: GoLiveSubmit
+    ): Flow<ApiState<GoLiveSubmitResponse>> =
         flow {
             try {
-                //emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
                 val apiResponse =
                     service.goLive(authToken = authToken, goLiveData = goLiveData.copy().apply {
                         this.purpose = purpose?.lowercase()
@@ -26,11 +29,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Data(data = apiResponse))
 
             } catch (e: Exception) {
-                e.message?.let {
-                    emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.SIGN_IN_ERROR.apply {
-                        message = it
-                    })))
-                }
+                e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
             } finally {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
             }
@@ -89,4 +88,11 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
             }
         }
+
+    private fun getAlertState(errorMsg: String): AlertState {
+        val config = AlertConfig.SIGN_IN_ERROR.apply {
+            message = errorMsg
+        }
+        return AlertState.Display(config)
+    }
 }

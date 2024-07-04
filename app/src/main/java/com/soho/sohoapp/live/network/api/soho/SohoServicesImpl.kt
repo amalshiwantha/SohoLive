@@ -8,6 +8,7 @@ import com.soho.sohoapp.live.network.core.BASE_URL_TS
 import com.soho.sohoapp.live.network.core.TS_API_KEY
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
+import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -61,7 +62,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         }.body()
     }
 
-    override suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveResponse {
+    override suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse {
         return httpClient.post {
             url {
                 takeFrom(BASE_URL)

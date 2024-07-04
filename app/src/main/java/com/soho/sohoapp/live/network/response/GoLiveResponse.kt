@@ -4,6 +4,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class GoLiveSubmitResponse(
+    @SerialName("data") val data: DataGoLiveSubmit? = null,
+    @SerialName("response") val response: String? = null,
+    @SerialName("response_type") val responseType: String? = null,
+)
+
+@Serializable
+data class DataGoLiveSubmit(
+    @SerialName("stream_url") val streamUrl: String? = null,
+    @SerialName("api_key") val apiKey: String? = null,
+)
+
+@Serializable
 data class GoLiveResponse(
     @SerialName("data") val data: DataGoLive? = null,
     @SerialName("response") val response: String? = null,
