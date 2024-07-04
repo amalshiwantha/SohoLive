@@ -601,6 +601,18 @@ fun StepContents(
                 },
                 onSMItemChecked = { smInfo ->
                     onSMItemClicked.invoke(smInfo)
+                },
+                onUpdateInitialState = { smAllList ->
+                    val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
+                    val selectedSMList = smList.filter { it.isConnect }.map { it.title.lowercase() }
+
+                    mGoLiveSubmit.apply {
+                        platform = selectedSMList.toMutableList()
+                    }
+
+                    selectedSMList.forEach {
+                        println("myTadf $it")
+                    }
                 })
             SpacerVertical(size = 70.dp)
         }
@@ -1000,7 +1012,8 @@ private fun SocialMediaListing(
     isConnectFaceBook: Boolean,
     isConnectLinkedIn: Boolean,
     onSMItemClicked: (String) -> Unit,
-    onSMItemChecked: (SocialMediaInfo) -> Unit
+    onSMItemChecked: (SocialMediaInfo) -> Unit,
+    onUpdateInitialState: (smList: List<SocialMediaInfo>)->Unit
 ) {
 
     val visibleSMList = SocialMediaInfo.entries.filter {
@@ -1008,6 +1021,7 @@ private fun SocialMediaListing(
     }
 
     val smList by rememberSaveable { mutableStateOf(visibleSMList) }
+
     smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
         isConnect = isConnectYoutube
     }
@@ -1016,6 +1030,10 @@ private fun SocialMediaListing(
     }
     smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
         isConnect = isConnectLinkedIn
+    }
+
+    LaunchedEffect(onUpdateInitialState) {
+        onUpdateInitialState(smList)
     }
 
     smList.forEach { item ->
