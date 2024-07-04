@@ -71,7 +71,9 @@ import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
+import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -1352,12 +1354,6 @@ fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) 
         )
     }
 }
-
-data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
-
-data class AgencyItem(
-    val id: Int, val agentProfile: AgentProfileGoLive, var isChecked: Boolean = false
-)
 
 @Preview
 @Composable

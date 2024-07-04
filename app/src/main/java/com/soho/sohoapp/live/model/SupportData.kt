@@ -6,21 +6,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.network.response.AgentProfileGoLive
+import com.soho.sohoapp.live.network.response.Document
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-data class FBGroupPage(
-    val id: String,
-    val name: String,
-    val accessToken: String? = null,
-    val pictureUrl: String
-)
+data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
 
-data class FBProfile(
-    val id: String,
-    val name: String,
-    val email: String,
-    val profilePictureUrl: String
+data class AgencyItem(
+    val id: Int, val agentProfile: AgentProfileGoLive, var isChecked: Boolean = false
 )
 
 data class TextFiledConfig(

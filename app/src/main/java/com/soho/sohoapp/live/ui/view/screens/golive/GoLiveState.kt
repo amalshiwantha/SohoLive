@@ -3,6 +3,8 @@ package com.soho.sohoapp.live.ui.view.screens.golive
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.model.AgencyItem
+import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.DataGoLive

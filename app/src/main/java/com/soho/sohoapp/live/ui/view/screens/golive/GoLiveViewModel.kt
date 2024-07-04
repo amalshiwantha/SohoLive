@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.AgencyItem
+import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
