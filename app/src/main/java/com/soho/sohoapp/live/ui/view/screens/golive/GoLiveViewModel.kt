@@ -8,6 +8,7 @@ import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.AgencyItem
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
@@ -42,8 +43,60 @@ class GoLiveViewModel(
                 mState.value = mState.value.copy(alertState = AlertState.Idle)
             }
 
-            is GoLiveEvent.CallSubmitGoLive -> TODO()
+            is GoLiveEvent.CallSubmitGoLive -> {
+                submitGoLiveData(event.submitData)
+            }
         }
+    }
+
+    private fun submitGoLiveData(submitData: GoLiveSubmit) {
+        mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
+
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    submitNowGoLive(it.authenticationToken, submitData)
+                }
+            }
+        }
+    }
+
+    //same submitNowGoLive() has ScheduleViewModel
+    private fun submitNowGoLive(authToken: String, submitData: GoLiveSubmit) {
+
+        apiRepo.submitGoLive(authToken, submitData).onEach { apiState ->
+
+            when (apiState) {
+
+                is ApiState.Data -> {
+
+                    apiState.data?.let { result ->
+
+                        val isSuccess = !result.responseType.equals("error")
+                        val errorMsg = result.response
+                        val res = result.data
+
+                        if (isSuccess) {
+                            mState.value = mState.value.copy(results = res)
+                            mState.value = mState.value.copy(isSuccess = true)
+                        } else {
+                            mState.value =
+                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
+                                    message = errorMsg.orEmpty()
+                                }))
+                        }
+                    }
+                }
+
+                is ApiState.Loading -> {
+                    mState.value = mState.value.copy(loadingState = apiState.progressBarState)
+                }
+
+                is ApiState.Alert -> {
+                    mState.value = mState.value.copy(alertState = apiState.alertState)
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun loadProfile() {

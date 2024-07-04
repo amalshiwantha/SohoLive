@@ -17,6 +17,7 @@ data class GoLiveState(
     val errorStates: Map<FieldType, String> = emptyMap(),
     val apiResults: DataGoLive? = null,
     val tsResults: TsPropertyResponse? = null,
+    val results: DataGoLive? = null,
 )
 
 data class GoLiveAssets(

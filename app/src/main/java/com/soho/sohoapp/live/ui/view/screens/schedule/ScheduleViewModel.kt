@@ -38,13 +38,14 @@ class ScheduleViewModel(
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let {
-                    submitNow(it.authenticationToken, submitData)
+                    submitNowGoLive(it.authenticationToken, submitData)
                 }
             }
         }
     }
 
-    private fun submitNow(authToken: String, submitData: GoLiveSubmit) {
+    //same submitNowGoLive() has GoLiveViewModel
+    private fun submitNowGoLive(authToken: String, submitData: GoLiveSubmit) {
 
         apiRepo.submitGoLive(authToken, submitData).onEach { apiState ->
 
