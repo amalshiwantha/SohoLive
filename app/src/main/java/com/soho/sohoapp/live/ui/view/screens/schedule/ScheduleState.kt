@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 data class ScheduleState(
     val isSuccess: Boolean = false,
     val loadingState: ProgressBarState = ProgressBarState.Idle,
+    val loadingMessage: String = "Schedule Loading",
     val alertState: AlertState = AlertState.Idle,
     val results: DataGoLive? = null,
 )

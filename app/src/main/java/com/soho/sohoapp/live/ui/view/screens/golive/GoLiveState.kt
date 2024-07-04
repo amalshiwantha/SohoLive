@@ -13,7 +13,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 data class GoLiveState(
     val isSuccess: Boolean = false,
     val loadingState: ProgressBarState = ProgressBarState.Idle,
-    val loadingMessage: String = "Loading",
+    val loadingMessage: String = "Property Loading",
     val alertState: AlertState = AlertState.Idle,
     val errorStates: Map<FieldType, String> = emptyMap(),
     val apiResults: DataGoLive? = null,

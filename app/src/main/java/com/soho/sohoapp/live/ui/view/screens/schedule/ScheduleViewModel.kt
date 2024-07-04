@@ -34,6 +34,10 @@ class ScheduleViewModel(
 
     private fun submitGoLiveData(submitData: GoLiveSubmit) {
         mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
+        mState.value = mState.value.copy(
+            loadingState = ProgressBarState.Loading,
+            loadingMessage = "GoLive Requesting"
+        )
 
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->

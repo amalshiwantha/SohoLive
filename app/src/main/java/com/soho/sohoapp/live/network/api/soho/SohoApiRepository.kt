@@ -18,7 +18,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
     fun submitGoLive(authToken: String, goLiveData: GoLiveSubmit): Flow<ApiState<GoLiveResponse>> =
         flow {
             try {
-                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+                //emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
                 val apiResponse =
                     service.goLive(authToken = authToken, goLiveData = goLiveData.copy().apply {
                         this.purpose = purpose?.lowercase()
@@ -38,7 +38,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
 
     fun signIn(loginReq: SignInRequest): Flow<ApiState<AuthResponse>> = flow {
         try {
-            emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+            //emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
             val apiResponse = service.login(loginReq)
             emit(ApiState.Data(data = apiResponse))
@@ -57,7 +57,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
     fun goLivePropertyListing(authToken: String): Flow<ApiState<Pair<GoLiveResponse, TsPropertyResponse>>> =
         flow {
             try {
-                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+                //emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
                 //get property id list
                 val apiResponse = service.propertyListing(authToken = authToken)
