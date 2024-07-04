@@ -4,6 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -52,7 +54,7 @@ class GoLiveViewModel(
     private fun submitGoLiveData(submitData: GoLiveSubmit) {
         mState.value = mState.value.copy(
             loadingState = ProgressBarState.Loading,
-            loadingMessage = "Requesting GoLive...."
+            loadingMessage = context.getString(R.string.requesting_golive)
         )
 
         viewModelScope.launch {

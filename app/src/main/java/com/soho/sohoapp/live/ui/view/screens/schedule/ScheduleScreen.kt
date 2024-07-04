@@ -167,7 +167,7 @@ fun ScheduleScreen(
                     .padding(innerPadding)
             ) {
                 if (isShowProgress) {
-                    CenterMessageProgress(message = "Submitting Go Live Data....")
+                    CenterMessageProgress(message = stateSchedule.loadingMessage)
                 } else {
                     ConstraintLayout(
                         modifier = Modifier

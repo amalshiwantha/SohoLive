@@ -47,4 +47,5 @@
     <string name="select_property">Please select a property</string>
     <string name="connection_lost">Connection Lost</string>
     <string name="no_net_msg">Please check your internet connection and try again</string>
+    <string name="requesting_golive">Requesting GoLive....</string>
 </resources>
