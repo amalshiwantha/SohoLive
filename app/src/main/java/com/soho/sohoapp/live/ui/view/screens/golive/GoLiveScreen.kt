@@ -169,8 +169,6 @@ fun GoLiveScreen(
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
             println("openGoLive GoScreen")
-        } ?: kotlin.run {
-            println("openGoLive Problem")
         }
     }
 

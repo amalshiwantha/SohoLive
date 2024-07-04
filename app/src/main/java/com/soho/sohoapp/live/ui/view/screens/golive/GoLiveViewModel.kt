@@ -18,12 +18,14 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
+import com.soho.sohoapp.live.network.response.DataGoLiveSubmit
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class GoLiveViewModel(
     private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager,
@@ -84,6 +86,11 @@ class GoLiveViewModel(
                         if (isSuccess) {
                             mState.value = mState.value.copy(goLiveResults = res)
                         } else {
+                            //temp todo
+                            val dat = DataGoLiveSubmit(streamUrl = "htttp://", apiKey = UUID.randomUUID().toString())
+                            mState.value = mState.value.copy(goLiveResults = dat)
+                            // temp end
+
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
                                     message = errorMsg.orEmpty()
