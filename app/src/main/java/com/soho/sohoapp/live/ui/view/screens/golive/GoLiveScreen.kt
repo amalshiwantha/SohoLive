@@ -162,19 +162,31 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
 
+    /*
+    * Connect the SM need to update the mGoLiveSubmit
+    * */
     LaunchedEffect(eventState.value) {
         saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM)
     }
 
+    /*
+    * Checking alert state updated or not
+    * */
     LaunchedEffect(stateVm.alertState) {
         alertState.value = getAlertConfig(stateVm)
     }
 
+    /*
+    * Show alert when state change
+    * */
     ShowAlert(alertState.value, onDismiss = {
         alertState.value = Pair(false, null)
         goLiveVm.onTriggerEvent(GoLiveEvent.DismissAlert)
     })
 
+    /*
+    * Load main data when api is connected and already connected need to get it from cache when reloading
+    * */
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
             callLoadPropertyApi(goLiveVm, netUtil, onUpdateNetStatus = {
@@ -190,8 +202,13 @@ fun GoLiveScreen(
             mFieldsError = mGoLiveSubmit.errors
             goLiveVm.updateAssetsState(savedTsResults, savedApiResults, savedState)
         }
+
+        goLiveVm.loadConnectedSMList()
     }
 
+    /*
+    * open Schedule Screen
+    * */
     LaunchedEffect(isShowScheduleScreen) {
         if (isShowScheduleScreen) {
             navController.navigate(NavigationPath.SET_SCHEDULE.name)
@@ -199,6 +216,9 @@ fun GoLiveScreen(
         }
     }
 
+    /*
+    * update SM connected state to show toggle front of the SM
+    * */
     if (stateSMConnected.isNotEmpty()) {
         val list = stateSMConnected
         val isHasYouTube = list.indexOfFirst { it.name == SocialMediaInfo.YOUTUBE.name }
@@ -207,8 +227,6 @@ fun GoLiveScreen(
         isConnectedYouTube = isHasYouTube != -1
         isConnectedFacebook = isHasFaceBook != -1
         isConnectedLinkedIn = isHasLinkedIn != -1
-
-        println("smProfile onView ${list.size}")
     }
 
     Box(
@@ -1013,7 +1031,7 @@ private fun SocialMediaListing(
     isConnectLinkedIn: Boolean,
     onSMItemClicked: (String) -> Unit,
     onSMItemChecked: (SocialMediaInfo) -> Unit,
-    onUpdateInitialState: (smList: List<SocialMediaInfo>)->Unit
+    onUpdateInitialState: (smList: List<SocialMediaInfo>) -> Unit
 ) {
 
     val visibleSMList = SocialMediaInfo.entries.filter {

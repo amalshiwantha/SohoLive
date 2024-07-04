@@ -32,11 +32,6 @@ class GoLiveViewModel(
         MutableStateFlow<MutableList<SocialMediaInfo>>(mutableListOf())
     val connectedProfileNames = _connectedProfileNames.asStateFlow()
 
-
-    init {
-        checkSMConnectionStatus()
-    }
-
     fun onTriggerEvent(event: GoLiveEvent) {
         when (event) {
             GoLiveEvent.CallLoadProperties -> {
@@ -241,7 +236,7 @@ class GoLiveViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun checkSMConnectionStatus() {
+    fun loadConnectedSMList() {
         var currentList: MutableList<SocialMediaInfo>
 
         viewModelScope.launch {
