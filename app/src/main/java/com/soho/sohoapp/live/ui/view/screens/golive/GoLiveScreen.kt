@@ -1198,7 +1198,7 @@ private fun SocialMediaItemContent(
 
             if (info.isConnect) {
                 //switch
-                SwitchCompo(isChecked, onCheckedChange = {
+                SwitchCompo(isChecked, modifier = Modifier.height(35.dp), onCheckedChange = {
                     isChecked = it
                     onSMItemChecked.invoke(info.apply {
                         isItemChecked = isChecked
@@ -1492,11 +1492,14 @@ private fun StepCountTitleInfo(currentStepId: Int) {
 
 
 @Composable
-fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) {
+fun SwitchCompo(
+    isChecked: Boolean = false,
+    modifier: Modifier = Modifier,
+    onCheckedChange: (Boolean) -> Unit
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 8.dp)
-            .height(40.dp)
             .clickable {
                 onCheckedChange(!isChecked)
             }, contentAlignment = Alignment.Center
