@@ -140,15 +140,7 @@ class GoLiveViewModel(
         agentProfiles?.let { agent ->
             val selectedAgentId =
                 propertyList.filter { it.isChecked }.map { it.propInfo.apAgentsIds }
-
-            val agentList = getAgencyItemsById(agent, selectedAgentId)
-
-            //this is for temp
-            val agentLst = mutableListOf<AgencyItem>()
-            agentProfiles.forEach {
-                agentLst.add(AgencyItem(id = it.id, agentProfile = it))
-            }
-
+            val agentLst = getAgencyItemsById(agent, selectedAgentId)
             assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
         }
     }
