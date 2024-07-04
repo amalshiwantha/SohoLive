@@ -746,7 +746,10 @@ private fun Content4(
 
     //description
     SpacerVertical(size = 24.dp)
-    Text700_14sp(step = "Description")
+    Row {
+        Text700_14sp(step = "Description", modifier = Modifier.weight(1f))
+        Text700_14sp(step = "0/3000", isBold = false)
+    }
     TextAreaWhite(fieldConfig = configDesc, onTextChange = {
         mGoLiveSubmit.apply { description = it }
     })

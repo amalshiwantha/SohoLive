@@ -158,16 +158,19 @@ fun Text700_14sp(
     modifier: Modifier = Modifier,
     step: String,
     isCenter: Boolean = false,
-    color: Color = AppWhite
+    color: Color = AppWhite,
+    isBold: Boolean = true
 ) {
+    val fontId = if (isBold) R.font.axiforma else R.font.axiforma_regular
+
     Text(
         textAlign = if (isCenter) TextAlign.Center else TextAlign.Left,
         modifier = modifier,
         text = step,
         fontSize = 14.sp,
         lineHeight = 19.6.sp,
-        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
-        fontWeight = FontWeight(700),
+        fontFamily = FontFamily(Font(fontId)),
+        fontWeight = FontWeight(if (isBold) 700 else 400),
         color = color,
         letterSpacing = 0.17.sp
     )
