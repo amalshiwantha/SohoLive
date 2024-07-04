@@ -42,4 +42,7 @@
     <string name="date_time_title">Schedule Date &amp; Times</string>
     <string name="selection_required">Selection Required</string>
     <string name="problem">Problem</string>
+    <string name="select_platform">Please select a platform</string>
+    <string name="select_agent">Please select an agent or select Don\'t show profile for go to the next step</string>
+    <string name="select_property">Please select a property</string>
 </resources>

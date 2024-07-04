@@ -339,54 +339,11 @@ fun GoLiveScreen(
                     currentStepId = currentStepId,
                     isNowSelected = isNowSelected,
                     onClickedNext = {
-
-                        val isAllowGo = when (currentStepId) {
-                            0 -> {
-                                if (mGoLiveSubmit.propertyId == 0) {
-                                    goLiveVm.showAlert(
-                                        getAlertConfig(
-                                            context.getString(R.string.selection_required),
-                                            "Please select a property"
-                                        )
-                                    )
-                                    false
-                                } else {
-                                    true
-                                }
-                            }
-
-                            1 -> {
-                                if (mGoLiveSubmit.agentId.isNullOrEmpty()) {
-                                    goLiveVm.showAlert(
-                                        getAlertConfig(
-                                            context.getString(R.string.selection_required),
-                                            "Please select an agent"
-                                        )
-                                    )
-                                    false
-                                } else {
-                                    true
-                                }
-                            }
-
-                            2 -> {
-                                if (mGoLiveSubmit.platform.isNotEmpty()) {
-                                    true
-                                } else {
-                                    goLiveVm.showAlert(
-                                        getAlertConfig(
-                                            context.getString(R.string.selection_required),
-                                            "Please select a platform"
-                                        )
-                                    )
-                                    false
-                                }
-                            }
-
-                            else -> {
-                                true
-                            }
-                        }
+                        val isAllowGo = isAllowGoNext(
+                            currentStepId,
+                            mGoLiveSubmit,
+                            goLiveVm
+                        )
 
                         if (currentStepId < stepCount - 1 && isAllowGo) {
                             currentStepId++
@@ -416,6 +373,64 @@ fun GoLiveScreen(
                     stateVm.apiResults?.let { apiRes -> onLoadApiResults.invoke(apiRes) }
                 })
             })
+        }
+    }
+}
+
+fun isAllowGoNext(
+    currentStepId: Int,
+    mGoLiveSubmit: GoLiveSubmit,
+    goLiveVm: GoLiveViewModel
+): Boolean {
+    return when (currentStepId) {
+        0 -> {
+            if (mGoLiveSubmit.propertyId == 0) {
+                goLiveVm.showAlert(
+                    getAlertConfig(
+                        context.getString(R.string.selection_required),
+                        context.getString(R.string.select_property)
+                    )
+                )
+                false
+            } else {
+                true
+            }
+        }
+
+        1 -> {
+            if (mGoLiveSubmit.unlisted) {
+                true
+            } else {
+                if (mGoLiveSubmit.agentId.isNullOrEmpty()) {
+                    goLiveVm.showAlert(
+                        getAlertConfig(
+                            context.getString(R.string.selection_required),
+                            context.getString(R.string.select_agent)
+                        )
+                    )
+                    false
+                } else {
+                    true
+                }
+            }
+        }
+
+        2 -> {
+            if (mGoLiveSubmit.platform.isNotEmpty()) {
+                true
+            } else {
+                goLiveVm.showAlert(
+                    getAlertConfig(
+                        context.getString(R.string.selection_required),
+                        context.getString(R.string.select_platform)
+                    )
+                )
+                false
+            }
+        }
+
+        else -> {
+            true
         }
     }
 }
