@@ -155,6 +155,7 @@ fun GoLiveScreen(
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
     var isShowScheduleScreen by remember { mutableStateOf(false) }
+    var isShowLiveCastScreen by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
     var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
@@ -363,7 +364,12 @@ fun GoLiveScreen(
                         }
                     },
                     onClickedLive = {
-                        //POST /api/soho_live/live_stream
+                        mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+                        mFieldsError = mGoLiveSubmit.errors
+
+                        if (mFieldsError.isEmpty()) {
+                            //call doSubmitAPi
+                        }
                     })
             }
         } else {
