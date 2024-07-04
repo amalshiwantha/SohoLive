@@ -1496,6 +1496,7 @@ fun SwitchCompo(isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit) 
     Box(
         modifier = Modifier
             .padding(horizontal = 8.dp)
+            .height(40.dp)
             .clickable {
                 onCheckedChange(!isChecked)
             }, contentAlignment = Alignment.Center
