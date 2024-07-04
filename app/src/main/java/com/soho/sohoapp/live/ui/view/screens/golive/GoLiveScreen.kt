@@ -292,7 +292,23 @@ fun GoLiveScreen(
                     currentStepId = currentStepId,
                     isNowSelected = isNowSelected,
                     onClickedNext = {
-                        if (currentStepId < stepCount - 1) {
+
+                        val isAllowGo = when (currentStepId) {
+                            0 -> {
+                                mGoLiveSubmit.propertyId != 0
+                            }
+                            1 -> {
+                                !mGoLiveSubmit.agentId.isNullOrEmpty()
+                            }
+                            2 -> {
+                                mGoLiveSubmit.platform.isNotEmpty()
+                            }
+                            else -> {
+                                true
+                            }
+                        }
+
+                        if (currentStepId < stepCount - 1 && isAllowGo) {
                             currentStepId++
                             assetsState.stepId.value = currentStepId
                         }
