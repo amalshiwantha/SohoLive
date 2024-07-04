@@ -3,7 +3,10 @@ package com.soho.sohoapp.live.ui.view.activity
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,7 +25,7 @@ class HaishinActivity : AppCompatActivity() {
     private var openGlView: OpenGlView? = null
     private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "93181ff2-2b07-5a4a-396b-a06334d461e2"
+    private var streamKey: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +38,34 @@ class HaishinActivity : AppCompatActivity() {
         }
 
         inits()
+        showStreamKeyDialog()
+    }
+
+    private fun showStreamKeyDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Enter Mux Stream Key")
+
+        val input = EditText(this)
+        input.hint = "Find it form https://dashboard.mux.com/"
+        alertDialogBuilder.setView(input)
+
+        alertDialogBuilder.setPositiveButton("OK") { dialog, which ->
+            val key = input.text.toString().trim()
+            if (key.isNotEmpty()) {
+                streamKey = key
+            } else {
+                showStreamKeyDialog()
+            }
+        }
+
+        alertDialogBuilder.setNegativeButton("Cancel") { dialog, which ->
+            dialog.dismiss()
+            finish()
+        }
+
+        alertDialogBuilder.setCancelable(false)
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
     }
 
     private object StreamParameters {
@@ -87,23 +118,27 @@ class HaishinActivity : AppCompatActivity() {
     }
 
     fun startBroadcast() {
-        rtmpCamera2?.let {
-            if (!it.isStreaming) {
-                if (it.prepareAudio() && it.prepareVideo(
-                        StreamParameters.resolution.width,
-                        StreamParameters.resolution.height,
-                        StreamParameters.fps,
-                        StreamParameters.startBitrate,
-                        StreamParameters.iFrameIntervalInSeconds,
-                        CameraHelper.getCameraOrientation(application)
-                    )
-                ) {
-                    println("myStream  startBroadcast")
-                    it.startStream(rtmpEndpoint + streamKey)
-                } else {
-                    println("myStream Error startBroadcast")
+        if (streamKey.isNotEmpty()) {
+            rtmpCamera2?.let {
+                if (!it.isStreaming) {
+                    if (it.prepareAudio() && it.prepareVideo(
+                            StreamParameters.resolution.width,
+                            StreamParameters.resolution.height,
+                            StreamParameters.fps,
+                            StreamParameters.startBitrate,
+                            StreamParameters.iFrameIntervalInSeconds,
+                            CameraHelper.getCameraOrientation(application)
+                        )
+                    ) {
+                        println("myStream  startBroadcast")
+                        it.startStream(rtmpEndpoint + streamKey)
+                    } else {
+                        println("myStream Error startBroadcast")
+                    }
                 }
             }
+        } else {
+            showStreamKeyDialog()
         }
     }
 
@@ -127,8 +162,14 @@ class HaishinActivity : AppCompatActivity() {
         }
 
         override fun onConnectionFailed(reason: String) {
+            Toast.makeText(
+                applicationContext,
+                "ConnectionFailed. Add new Stream Key.",
+                Toast.LENGTH_LONG
+            ).show()
             println("myStream onConnectionFailed $reason")
             stopBroadcast()
+            finish()
         }
 
         override fun onConnectionStarted(url: String) {
@@ -141,6 +182,11 @@ class HaishinActivity : AppCompatActivity() {
 
         override fun onDisconnect() {
             println("myStream onDisconnect")
+            Toast.makeText(
+                applicationContext,
+                "Disconnected. Add new Stream Key.",
+                Toast.LENGTH_LONG
+            ).show()
         }
 
         override fun onNewBitrate(bitrate: Long) {
