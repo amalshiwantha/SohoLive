@@ -53,7 +53,7 @@ import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
-import com.soho.sohoapp.live.ui.components.CenterProgress
+import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
@@ -167,19 +167,7 @@ fun ScheduleScreen(
                     .padding(innerPadding)
             ) {
                 if (isShowProgress) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            CenterProgress(modifier = Modifier)
-                            SpacerVertical(size = 8.dp)
-                            Text700_14sp(step = "Submitting Go Live Data....")
-                        }
-                    }
+                    CenterMessageProgress(message = "Submitting Go Live Data....")
                 } else {
                     ConstraintLayout(
                         modifier = Modifier

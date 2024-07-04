@@ -89,7 +89,7 @@ import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
-import com.soho.sohoapp.live.ui.components.CenterProgress
+import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
@@ -238,7 +238,7 @@ fun GoLiveScreen(
 
         if (isNetConnected) {
             if (stateVm.loadingState == ProgressBarState.Loading) {
-                CenterProgress(modifier = Modifier.align(Alignment.Center))
+                CenterMessageProgress(message = "Loading...")
             } else {
 
                 //save apiResults
