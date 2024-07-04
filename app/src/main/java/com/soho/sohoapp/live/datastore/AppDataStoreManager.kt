@@ -42,19 +42,4 @@ class AppDataStoreManager(private val context: Context) {
                 Json.decodeFromString<Data>(jsonString)
             }
         }
-
-    //Save Connected SocialMedia Profile List
-    suspend fun saveConnectedSMProfile(profileList: ConnectedSocialProfile) {
-        val jsonString = Json.encodeToString(profileList)
-        context.dataStore.edit { preferences ->
-            preferences[DataStoreKeys.PREF_KEY_USER_SM_PROFILES] = jsonString
-        }
-    }
-
-    val connectedSMProfile: Flow<ConnectedSocialProfile?> = context.dataStore.data
-        .map { preferences ->
-            preferences[DataStoreKeys.PREF_KEY_USER_SM_PROFILES]?.let { jsonString ->
-                Json.decodeFromString<ConnectedSocialProfile>(jsonString)
-            }
-        }
 }

@@ -6,7 +6,9 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.FacebookBlue
 import com.soho.sohoapp.live.ui.theme.LinkedInBlue
 import com.soho.sohoapp.live.ui.theme.YoutubeRed
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class SocialMediaInfo(
     var title: String,
     var info: String,

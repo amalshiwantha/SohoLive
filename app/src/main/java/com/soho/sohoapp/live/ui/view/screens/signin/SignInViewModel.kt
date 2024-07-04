@@ -100,10 +100,6 @@ class SignInViewModel(
             profileData?.let {
                 userPref.saveUserProfile(it)
                 userPref.setLoginState(true)
-
-                userPref.userProfile.collect { userProfile ->
-                    println("myProf " + userProfile)
-                }
             }
         }
     }

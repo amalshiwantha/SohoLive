@@ -26,6 +26,9 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _stateConnectedProfile = MutableStateFlow(SocialMediaProfile())
     val stateConnectedProfile = _stateConnectedProfile.asStateFlow()
 
+    private val _saveProf = MutableStateFlow(ConnectedSocialProfile(mutableListOf()))
+    val saveProf = _saveProf.asStateFlow()
+
     //update LiveData
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
         _isCallSMConnect.value = smInfo
@@ -78,7 +81,8 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             println("smProfile onSave ${currentList.smProfileList.size}")
 
             // Save the updated profile list
-            dataStore.saveConnectedSMProfile(currentList)
+            //dataStore.saveConnectedSMProfile(currentList)
+            _saveProf.value = currentList
             getSavedSMProfile(newProfile, currentList)
         }
     }
