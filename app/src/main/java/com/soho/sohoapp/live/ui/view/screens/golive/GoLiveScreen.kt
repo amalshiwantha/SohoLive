@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Size
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -119,6 +120,7 @@ import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
@@ -168,7 +170,10 @@ fun GoLiveScreen(
     * */
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
-            println("openGoLive GoScreen")
+            val intent = Intent(context, HaishinActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(intent)
         }
     }
 

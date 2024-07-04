@@ -22,7 +22,7 @@ class HaishinActivity : AppCompatActivity() {
     private var openGlView: OpenGlView? = null
     private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "46a43371-e5fa-c3c2-99a5-1b88bffbd2c4"
+    private var streamKey: String = "93181ff2-2b07-5a4a-396b-a06334d461e2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
