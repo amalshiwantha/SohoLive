@@ -272,13 +272,21 @@ fun GoLiveScreen(
                                 },
                                 onPropertyItemClicked = { selectedProperty ->
                                     mGoLiveSubmit.apply {
-                                        propertyId = selectedProperty.propInfo.propertyId
+                                        propertyId = if (selectedProperty.isChecked) {
+                                            selectedProperty.propInfo.propertyId
+                                        } else {
+                                            0
+                                        }
                                     }
                                     goLiveVm.updatePropertyList(selectedProperty)
                                 },
                                 onAgentItemClicked = { selectedAgent ->
                                     mGoLiveSubmit.apply {
-                                        agentId = selectedAgent.agentProfile.id.toString()
+                                        agentId = if (selectedAgent.isChecked) {
+                                            selectedAgent.agentProfile.id.toString()
+                                        } else {
+                                            null
+                                        }
                                     }
                                     goLiveVm.updateAgentSelectionList(selectedAgent)
                                 },
