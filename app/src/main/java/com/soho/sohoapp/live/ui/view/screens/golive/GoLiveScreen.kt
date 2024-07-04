@@ -146,7 +146,7 @@ fun GoLiveScreen(
     val optionList = mutableListOf("Inspection", "Auction", "Other")
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected: Boolean by remember { mutableStateOf(false) }
-    var isDontShowProfile by remember { mutableStateOf(false) }
+    var isDontShowProfile by remember { mutableStateOf(mGoLiveSubmit.unlisted) }
     var isConnectedYouTube by remember { mutableStateOf(false) }
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
