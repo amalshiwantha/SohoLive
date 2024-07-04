@@ -40,4 +40,6 @@
     <string name="not_admin_page">You are not an admin on any Facebook pages</string>
     <string name="not_admin_timeline">You are not an admin on any Facebook Account</string>
     <string name="date_time_title">Schedule Date &amp; Times</string>
+    <string name="selection_required">Selection Required</string>
+    <string name="problem">Problem</string>
 </resources>

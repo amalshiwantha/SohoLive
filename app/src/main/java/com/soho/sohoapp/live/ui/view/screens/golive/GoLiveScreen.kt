@@ -67,6 +67,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -76,11 +78,13 @@ import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
+import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
@@ -156,10 +160,20 @@ fun GoLiveScreen(
     var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
     val eventState =
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
+    val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
 
     LaunchedEffect(eventState.value) {
         saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM)
     }
+
+    LaunchedEffect(stateVm.alertState) {
+        alertState.value = getAlertConfig(stateVm)
+    }
+
+    ShowAlert(alertState.value, onDismiss = {
+        alertState.value = Pair(false, null)
+        goLiveVm.onTriggerEvent(GoLiveEvent.DismissAlert)
+    })
 
     LaunchedEffect(Unit) {
         if (savedApiResults == null) {
@@ -295,14 +309,48 @@ fun GoLiveScreen(
 
                         val isAllowGo = when (currentStepId) {
                             0 -> {
-                                mGoLiveSubmit.propertyId != 0
+                                if (mGoLiveSubmit.propertyId == 0) {
+                                    goLiveVm.showAlert(
+                                        getAlertConfig(
+                                            context.getString(R.string.selection_required),
+                                            "Please select a property"
+                                        )
+                                    )
+                                    false
+                                } else {
+                                    true
+                                }
                             }
+
                             1 -> {
-                                !mGoLiveSubmit.agentId.isNullOrEmpty()
+                                if (mGoLiveSubmit.agentId.isNullOrEmpty()) {
+                                    goLiveVm.showAlert(
+                                        getAlertConfig(
+                                            context.getString(R.string.selection_required),
+                                            "Please select an agent"
+                                        )
+                                    )
+                                    false
+                                } else {
+                                    true
+                                }
                             }
+
                             2 -> {
-                                mGoLiveSubmit.platform.isNotEmpty()
+                                //TODO when loading need to update platform if selected
+                                if (mGoLiveSubmit.platform.isNotEmpty()) {
+                                    true
+                                } else {
+                                    goLiveVm.showAlert(
+                                        getAlertConfig(
+                                            context.getString(R.string.selection_required),
+                                            "Please select a platform"
+                                        )
+                                    )
+                                    false
+                                }
                             }
+
                             else -> {
                                 true
                             }
@@ -337,6 +385,35 @@ fun GoLiveScreen(
                 })
             })
         }
+    }
+}
+
+@Composable
+fun ShowAlert(value: Pair<Boolean, AlertConfig?>, onDismiss: () -> Unit) {
+    if (value.first) {
+        value.second?.let {
+            AppAlertDialog(alert = it, onConfirm = {
+                onDismiss()
+            }, onDismiss = {
+                onDismiss()
+            })
+        }
+    }
+}
+
+fun getAlertConfig(alertTitle: String?, msg: String): AlertConfig {
+    return AlertConfig.COMMON_OK.apply {
+        title = alertTitle ?: context.getString(R.string.problem)
+        message = msg
+    }
+}
+
+fun getAlertConfig(state: GoLiveState): Pair<Boolean, AlertConfig?> {
+    return if (state.alertState is AlertState.Display) {
+        val alertConfig = state.alertState.config
+        Pair(true, alertConfig)
+    } else {
+        Pair(false, null)
     }
 }
 

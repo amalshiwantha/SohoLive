@@ -43,7 +43,9 @@ class GoLiveViewModel(
                 loadProfile()
             }
 
-            GoLiveEvent.DismissAlert -> {}
+            GoLiveEvent.DismissAlert -> {
+                mState.value = mState.value.copy(alertState = AlertState.Idle)
+            }
         }
     }
 
@@ -252,6 +254,10 @@ class GoLiveViewModel(
                 println("smProfile onLoad $currentList")
             }
         }
+    }
+
+    fun showAlert(config: AlertConfig) {
+        mState.value = mState.value.copy(alertState = AlertState.Display(config))
     }
 
 

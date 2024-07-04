@@ -1,7 +1,10 @@
 package com.soho.sohoapp.live.enums
 
+import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
+
 enum class AlertConfig(
-    val title: String,
+    var title: String,
     var message: String,
     val confirmBtnText: String,
     val dismissBtnText: String,
@@ -30,15 +33,23 @@ enum class AlertConfig(
         message = "Do you want to delete this item?",
         confirmBtnText = "Delete",
         dismissBtnText = "Cancel"
-    ),GO_LIVE_ERROR(
+    ),
+    GO_LIVE_ERROR(
         title = "Property Listing Problem",
         message = "Something went wrong. Please re-try later",
         confirmBtnText = "",
         dismissBtnText = "OK",
-    ),GO_LIVE_SUBMIT_ERROR(
+    ),
+    GO_LIVE_SUBMIT_ERROR(
         title = "Submission Problem",
         message = "Something went wrong. Please re-try later",
         confirmBtnText = "",
         dismissBtnText = "OK",
     ),
+    COMMON_OK(
+        title = context.getString(R.string.problem),
+        message = "Something went wrong. Please re-try later",
+        confirmBtnText = "",
+        dismissBtnText = "OK",
+    )
 }
