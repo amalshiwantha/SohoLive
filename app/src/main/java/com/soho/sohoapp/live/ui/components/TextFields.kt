@@ -40,14 +40,18 @@ import com.soho.sohoapp.live.ui.theme.ErrorContent
 import com.soho.sohoapp.live.ui.theme.HintGray
 
 @Composable
-fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (String) -> Unit) {
+fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (Pair<String, String>) -> Unit) {
+    val maxLength = 3000
     var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
 
     OutlinedTextField(
         value = txtInput,
         onValueChange = {
-            txtInput = it
-            onTextChange(txtInput)
+            println("myinpot ${it.length}")
+            if (it.length <= maxLength) {
+                txtInput = it
+                onTextChange(Pair(txtInput, "${it.length}/$maxLength"))
+            }
         },
         placeholder = { Text(fieldConfig.placeholder) },
         keyboardOptions = KeyboardOptions(

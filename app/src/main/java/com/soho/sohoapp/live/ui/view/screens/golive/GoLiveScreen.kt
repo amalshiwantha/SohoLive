@@ -693,6 +693,7 @@ private fun Content4(
     mFieldsError: MutableMap<FormFields, String>,
     onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
+    var txtCounter by rememberSaveable { mutableStateOf("0/3000") }
     var isOnCoverOption by remember { mutableStateOf(false) }
     val errPurpose = mFieldsError[FormFields.PURPOSE]
     val errTitle = mFieldsError[FormFields.TITLE]
@@ -748,10 +749,11 @@ private fun Content4(
     SpacerVertical(size = 24.dp)
     Row {
         Text700_14sp(step = "Description", modifier = Modifier.weight(1f))
-        Text700_14sp(step = "0/3000", isBold = false)
+        Text700_14sp(step = txtCounter, isBold = false)
     }
     TextAreaWhite(fieldConfig = configDesc, onTextChange = {
-        mGoLiveSubmit.apply { description = it }
+        mGoLiveSubmit.apply { description = it.first }
+        txtCounter = it.second
     })
 
     //cover image
