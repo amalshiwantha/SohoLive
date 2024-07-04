@@ -41,6 +41,8 @@ class GoLiveViewModel(
             GoLiveEvent.DismissAlert -> {
                 mState.value = mState.value.copy(alertState = AlertState.Idle)
             }
+
+            is GoLiveEvent.CallSubmitGoLive -> TODO()
         }
     }
 
@@ -266,6 +268,5 @@ class GoLiveViewModel(
     fun showAlert(config: AlertConfig) {
         mState.value = mState.value.copy(alertState = AlertState.Display(config))
     }
-
 
 }

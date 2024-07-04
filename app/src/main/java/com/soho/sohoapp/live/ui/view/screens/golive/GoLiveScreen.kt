@@ -367,8 +367,17 @@ fun GoLiveScreen(
                         mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
                         mFieldsError = mGoLiveSubmit.errors
 
-                        if (mFieldsError.isEmpty()) {
-                            //call doSubmitAPi
+                        if (netUtil.isNetworkAvailable()) {
+                            if (mFieldsError.isEmpty()) {
+                                goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(mGoLiveSubmit))
+                            }
+                        } else {
+                            goLiveVm.showAlert(
+                                getAlertConfig(
+                                    context.getString(R.string.connection_lost),
+                                    context.getString(R.string.no_net_msg)
+                                )
+                            )
                         }
                     })
             }
