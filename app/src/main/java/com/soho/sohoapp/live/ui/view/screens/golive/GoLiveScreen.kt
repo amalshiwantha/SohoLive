@@ -310,15 +310,22 @@ fun GoLiveScreen(
                                 },
                                 onSMItemClicked = { selectedSM ->
                                     if (selectedSM.isConnect) {
+
+                                        val goLivePlatform = mGoLiveSubmit.platform
+
                                         if (selectedSM.isItemChecked) {
+                                            goLivePlatform.add(selectedSM.name.lowercase())
                                             checkedSM.add(selectedSM.name)
                                         } else {
+                                            goLivePlatform.remove(selectedSM.name.lowercase())
                                             checkedSM.remove(selectedSM.name)
                                         }
 
                                         mGoLiveSubmit.apply {
                                             checkedPlatforms = checkedSM
+                                            platform = goLivePlatform
                                         }
+
                                     } else {
                                         viewMMain.updateSocialMediaState(selectedSM)
                                     }
@@ -363,7 +370,6 @@ fun GoLiveScreen(
                             }
 
                             2 -> {
-                                //TODO when loading need to update platform if selected
                                 if (mGoLiveSubmit.platform.isNotEmpty()) {
                                     true
                                 } else {
@@ -622,14 +628,11 @@ fun StepContents(
                 },
                 onUpdateInitialState = { smAllList ->
                     val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
-                    val selectedSMList = smList.filter { it.isConnect }.map { it.title.lowercase() }
+                    val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
+                        .map { it.title.lowercase() }
 
                     mGoLiveSubmit.apply {
                         platform = selectedSMList.toMutableList()
-                    }
-
-                    selectedSMList.forEach {
-                        println("myTadf $it")
                     }
                 })
             SpacerVertical(size = 70.dp)
