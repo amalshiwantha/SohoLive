@@ -33,7 +33,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
     val mGoLiveSubmit by remember { mutableStateOf(GoLiveSubmit()) }
 
     NavHost(
-        navController = navController, startDestination = NavigationPath.GO_LIVE.name
+        navController = navController, startDestination = NavigationPath.SCHEDULED.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
             HomeContent(navController, "SCHEDULED")
