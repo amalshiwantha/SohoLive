@@ -86,6 +86,7 @@ import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonColouredWrap
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
@@ -1015,59 +1016,89 @@ private fun NextBackButtons(
     onClickedLive: () -> Unit,
     onClickedDateTime: () -> Unit
 ) {
-    Box(
-        modifier = modifier.background(
-            brushBottomGradientBg, shape = RoundedCornerShape(
-                topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                brushBottomGradientBg, shape = RoundedCornerShape(
+                    topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp
+                )
             )
-        )
     ) {
-
-        Row(
-            modifier = Modifier
+        Box(
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
         ) {
 
-            if (currentStepId > 0) {
-                ButtonColoured(
+            val isEnableBack = currentStepId > 0
+
+            //Back Button
+            if (isEnableBack) {
+                ButtonColouredWrap(
                     text = stringResource(R.string.back),
                     color = Color.Transparent,
-                    modifier = Modifier.weight(1f),
-                    isBackButton = true
+                    isBackButton = true,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .height(48.dp)
                 ) {
                     onClickedBack.invoke()
                 }
-                Spacer(modifier = Modifier.width(16.dp))
             }
 
-            if (currentStepId == 3) {
-                if (isNowSelected) {
-                    ButtonGradientIcon(text = "Preview Live",
-                        icon = R.drawable.ic_livestream,
-                        gradientBrush = brushGradientLive,
-                        modifier = Modifier.weight(1f),
-                        onBtnClick = {
-                            onClickedLive.invoke()
-                        })
+            //Next Button
+            val rightAlign = if (isEnableBack) {
+                Alignment.CenterEnd
+            } else {
+                Alignment.Center
+            }
+
+            val rightModify = if (isEnableBack) {
+                if (currentStepId == 3) {
+                    Modifier.height(48.dp)
                 } else {
-                    ButtonGradientIcon(text = "Set Date & Time",
-                        icon = R.drawable.ic_calender,
-                        gradientBrush = brushGradientSetDateTime,
-                        modifier = Modifier.weight(1f),
-                        onBtnClick = {
-                            onClickedDateTime.invoke()
-                        })
+                    Modifier
+                        .height(48.dp)
+                        .width(170.dp)
                 }
             } else {
-                ButtonColoured(
-                    text = stringResource(R.string.next),
-                    color = AppGreen,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    onClickedNext.invoke()
+                Modifier
+                    .height(48.dp)
+                    .fillMaxWidth()
+            }
+
+            Column(modifier = Modifier.align(rightAlign)) {
+
+                if (currentStepId == 3) {
+                    if (isNowSelected) {
+                        //LivePreview Button
+                        ButtonGradientIcon(text = "Preview Live",
+                            icon = R.drawable.ic_livestream,
+                            gradientBrush = brushGradientLive,
+                            modifier = rightModify,
+                            onBtnClick = {
+                                onClickedLive.invoke()
+                            })
+                    } else {
+                        //Date&Time Button
+                        ButtonGradientIcon(text = "Set Date & Time",
+                            icon = R.drawable.ic_calender,
+                            gradientBrush = brushGradientSetDateTime,
+                            modifier = rightModify,
+                            onBtnClick = {
+                                onClickedDateTime.invoke()
+                            })
+                    }
+                } else {
+                    //Next Button
+                    ButtonColouredWrap(
+                        text = stringResource(R.string.next),
+                        color = AppGreen,
+                        modifier = rightModify
+                    ) {
+                        onClickedNext.invoke()
+                    }
                 }
             }
         }

@@ -62,6 +62,31 @@ fun ButtonOutLinedIcon(
     }
 }
 
+
+@Composable
+fun ButtonColouredWrap(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color,
+    isBackButton: Boolean = false,
+    onBtnClick: () -> Unit
+) {
+    Button(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        onClick = { onBtnClick() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = color
+        )
+    ) {
+        if (isBackButton) {
+            TextWhite14Left(title = text)
+        } else {
+            TextWhite14(title = text)
+        }
+    }
+}
+
 @Composable
 fun ButtonColoured(
     modifier: Modifier = Modifier,
@@ -142,13 +167,11 @@ fun ButtonGradientIcon(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
                 .background(gradientBrush)
                 .padding(16.dp)
         ) {
             Row(
-                Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             ) {
