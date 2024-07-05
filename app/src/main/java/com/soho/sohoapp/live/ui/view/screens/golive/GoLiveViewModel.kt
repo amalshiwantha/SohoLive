@@ -87,7 +87,10 @@ class GoLiveViewModel(
                             mState.value = mState.value.copy(goLiveResults = res)
                         } else {
                             //temp todo
-                            val dat = DataGoLiveSubmit(streamUrl = "htttp://", apiKey = UUID.randomUUID().toString())
+                            val dat = DataGoLiveSubmit(
+                                streamUrl = "htttp://",
+                                apiKey = UUID.randomUUID().toString()
+                            )
                             mState.value = mState.value.copy(goLiveResults = dat)
                             // temp end
 
@@ -307,13 +310,12 @@ class GoLiveViewModel(
 
         viewModelScope.launch {
 
-            dataStore.connectedSMProfile.collect { profileList ->
-                currentList = profileList?.smProfileList?.map { it.smInfo }?.toMutableList()
-                    ?: mutableListOf()
+            dataStore.getSMProfileList()?.let { profileList ->
+                currentList = profileList.smProfileList.map { it.smInfo }.toMutableList()
 
                 currentList.forEachIndexed { index, socialMediaInfo ->
                     val foundToken =
-                        profileList?.smProfileList?.find { it.profile.type == socialMediaInfo }
+                        profileList.smProfileList.find { it.profile.type == socialMediaInfo }
 
                     currentList[index] = socialMediaInfo.apply {
                         accessToken = foundToken?.profile?.token
@@ -321,9 +323,10 @@ class GoLiveViewModel(
                 }
 
                 currentList.forEach {
-                    println("smOnData ${it.accessToken}")
+                    println("savedSMList load : ${it.accessToken}")
                 }
 
+                println("savedSMList loadConnectedSMList $currentList")
                 _connectedProfileNames.value = currentList
             }
         }

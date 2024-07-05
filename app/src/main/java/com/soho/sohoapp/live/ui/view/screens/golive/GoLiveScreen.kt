@@ -182,7 +182,10 @@ fun GoLiveScreen(
     * Connect the SM need to update the mGoLiveSubmit
     * */
     LaunchedEffect(eventState.value) {
-        saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM)
+        println("savedSMList eventState LaunchedEffect")
+        saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM, onReloadDataStore = {
+            goLiveVm.loadConnectedSMList()
+        })
     }
 
     /*
@@ -243,6 +246,8 @@ fun GoLiveScreen(
         isConnectedYouTube = isHasYouTube != -1
         isConnectedFacebook = isHasFaceBook != -1
         isConnectedLinkedIn = isHasLinkedIn != -1
+
+        println("savedSMList stateSMConnected")
     }
 
     Box(
@@ -495,7 +500,7 @@ fun getAlertConfig(state: GoLiveState): Pair<Boolean, AlertConfig?> {
 }
 
 fun saveSMProfileInGoLiveData(
-    eventState: State<Any>, mGoLiveSubmit: GoLiveSubmit, checkedSM: SnapshotStateList<String>
+    eventState: State<Any>, mGoLiveSubmit: GoLiveSubmit, checkedSM: SnapshotStateList<String>, onReloadDataStore:()->Unit
 ) {
     val smProfile = when (val event = eventState.value) {
         is AppEvent.SMProfile -> event.smProfile
@@ -503,6 +508,8 @@ fun saveSMProfileInGoLiveData(
     }
 
     if (smProfile.smInfo != SocialMediaInfo.NONE) {
+        onReloadDataStore()
+
         //get current platform list
         val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
         val currentAccessTokenList = mGoLiveSubmit.accessToken.toMutableList()
@@ -530,6 +537,8 @@ fun saveSMProfileInGoLiveData(
             checkedPlatforms = checkedSM
         }
     }
+
+    println("savedSMList eventState saveSMProfileInGoLiveData")
 }
 
 fun GoLiveSubmit.validateData(): MutableMap<FormFields, String> {

@@ -125,7 +125,7 @@ class SharedPreferencesHelper(context: Context) {
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
-    private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
+    //private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,7 +133,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
         enableEdgeToEdge()
 
-        sharedPreferencesHelper = SharedPreferencesHelper(this)
+        //sharedPreferencesHelper = SharedPreferencesHelper(this)
 
 
         setContent {
@@ -143,29 +143,16 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 ) {
 
                     val viewMMain: MainViewModel = koinInject()
-
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
-                    val stateSMProfile by viewMMain.stateConnectedProfile.collectAsStateWithLifecycle()
+                    //val stateSMProfile by viewMMain.stateConnectedProfile.collectAsStateWithLifecycle()
                     val stateSMConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
-
-                    val saveProf by viewMMain.saveProf.collectAsStateWithLifecycle()
+                    //val saveProf by viewMMain.saveProf.collectAsStateWithLifecycle()
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
-
-                    LaunchedEffect(saveProf) {
-                        println("myProf save " + saveProf)
-                        sharedPreferencesHelper.saveProfile("connected_profile", saveProf)
-
-                        // Retrieve the connected social profile
-                        val savedProfile = sharedPreferencesHelper.getProfile("connected_profile")
-                        savedProfile?.let {
-                            println("myProf load " + it)
-                        }
-                    }
 
                     /*
                     * open SM connect button bottomSheet and
@@ -189,6 +176,18 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
                     })
 
+                    //Connected SM save in local
+                    /*LaunchedEffect(saveProf) {
+                        println("myProf save " + saveProf)
+                        sharedPreferencesHelper.saveProfile("connected_profile", saveProf)
+
+                        // Retrieve the connected social profile
+                        val savedProfile = sharedPreferencesHelper.getProfile("connected_profile")
+                        savedProfile?.let {
+                            println("myProf load " + it)
+                        }
+                    }*/
+
                     //Connect SM api
                     //state change for clickEvents
                     LaunchedEffect(openSmConnectorState) {
@@ -198,12 +197,12 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     //Google Sign In
                     val gAuth = doConnectGoogle(viewMMain)
 
-                    LaunchedEffect(key1 = stateSMProfile) {
+                    /*LaunchedEffect(key1 = stateSMProfile) {
                         if (stateSMProfile.profile.isConnected) {
                             viewMMain.saveSocialMediaProfile(stateSMProfile)
                             viewMMain.resetState()
                         }
-                    }
+                    }*/
 
                     //Show Profile BottomSheet for SM connected
                     LaunchedEffect(stateSMConnected) {
@@ -221,7 +220,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                                 AppEventBus.sendEvent(AppEvent.SMProfile(stateSMConnected))
                             }
                             isShowSMConnectedModel = it
-                            viewMMain.resetViewModelState()
+                            viewMMain.resetSMConnectState()
                         })
 
 

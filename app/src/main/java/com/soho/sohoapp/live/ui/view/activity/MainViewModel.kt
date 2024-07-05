@@ -12,7 +12,6 @@ import com.soho.sohoapp.live.model.SocialMediaProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -23,21 +22,9 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _stateIsSMConnected = MutableStateFlow(SocialMediaProfile())
     val stateIsSMConnected = _stateIsSMConnected.asStateFlow()
 
-    private val _stateConnectedProfile = MutableStateFlow(SocialMediaProfile())
-    val stateConnectedProfile = _stateConnectedProfile.asStateFlow()
-
-    private val _saveProf = MutableStateFlow(ConnectedSocialProfile(mutableListOf()))
-    val saveProf = _saveProf.asStateFlow()
-
     //update LiveData
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
         _isCallSMConnect.value = smInfo
-    }
-
-    fun saveSocialMediaProfile(smProfile: SocialMediaProfile) {
-        viewModelScope.launch {
-            _stateIsSMConnected.update { smProfile }
-        }
     }
 
     //Google
@@ -47,11 +34,7 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
         }
     }
 
-    fun resetState() {
-        _stateConnectedProfile.update { SocialMediaProfile() }
-    }
-
-    fun resetViewModelState() {
+    fun resetSMConnectState() {
         _stateIsSMConnected.update { SocialMediaProfile() }
     }
 
@@ -73,16 +56,14 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private fun saveConnectedSMProfileList(newProfile: SocialMediaProfile) {
         viewModelScope.launch {
             val currentList =
-                dataStore.connectedSMProfile.first() ?: ConnectedSocialProfile(mutableListOf())
+                dataStore.getSMProfileList() ?: ConnectedSocialProfile(mutableListOf())
 
             currentList.smProfileList.removeAll { it.smInfo == newProfile.smInfo }
             currentList.smProfileList.add(newProfile)
 
-            println("smProfile onSave ${currentList.smProfileList.size}")
-
             // Save the updated profile list
-            //dataStore.saveConnectedSMProfile(currentList)
-            _saveProf.value = currentList
+            println("savedSMList ConnectedSMProfileList")
+            dataStore.saveSMProfileList(currentList)
             getSavedSMProfile(newProfile, currentList)
         }
     }
@@ -92,7 +73,8 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             val list = profList.smProfileList
             val foundProfile = list.find { it.smInfo == smProfile.smInfo }
             if (foundProfile != null) {
-                _stateConnectedProfile.update { foundProfile }
+                println("savedSMList getSavedSMProfile")
+                _stateIsSMConnected.update { foundProfile }
             }
         }
     }

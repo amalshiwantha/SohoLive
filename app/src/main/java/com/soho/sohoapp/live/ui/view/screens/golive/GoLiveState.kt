@@ -25,5 +25,5 @@ data class GoLiveState(
 data class GoLiveAssets(
     var propertyListState: MutableState<List<PropertyItem>>? = null,
     var agencyListState: MutableState<List<AgencyItem>>? = null,
-    var stepId: MutableState<Int> = mutableIntStateOf(3)
+    var stepId: MutableState<Int> = mutableIntStateOf(0)
 )
