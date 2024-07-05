@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.utility
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.util.Base64
@@ -14,14 +15,22 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
 
+fun openLiveCaster() {
+    val intent = Intent(context, HaishinActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    }
+    context.startActivity(intent)
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun IsPermissionsGranted(): Boolean {
+fun isPermissionsGranted(): Boolean {
 
     val permissions = listOf(
         Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO

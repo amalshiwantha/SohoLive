@@ -1,5 +1,7 @@
 package com.soho.sohoapp.live.ui.view.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.widget.Button
@@ -8,6 +10,8 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.pedro.common.ConnectChecker
@@ -18,7 +22,6 @@ import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.StreamResolution
 
-
 class HaishinActivity : AppCompatActivity() {
 
     private var rtmpCamera2: RtmpCamera2? = null
@@ -26,11 +29,14 @@ class HaishinActivity : AppCompatActivity() {
     private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
     private var streamKey: String = ""
+    private val PERMISSION_REQUEST_CODE = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContentView(R.layout.activity_haishin)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -38,7 +44,62 @@ class HaishinActivity : AppCompatActivity() {
         }
 
         inits()
-        showStreamKeyDialog()
+        checkRequiredPermissions()
+    }
+
+    private fun checkRequiredPermissions() {
+        if (arePermissionsGranted()) {
+            showStreamKeyDialog()
+        } else {
+            requestPermissions()
+        }
+    }
+
+    private fun arePermissionsGranted(): Boolean {
+        val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        val audioPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+        return cameraPermission == PackageManager.PERMISSION_GRANTED &&
+                audioPermission == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO),
+            PERMISSION_REQUEST_CODE
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                showStreamKeyDialog()
+            } else {
+                showPermissionDeniedDialog()
+            }
+        }
+    }
+
+    private fun showPermissionDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Permissions Required")
+            .setMessage("Camera and Audio permissions are required to start the live stream.")
+            .setPositiveButton("Retry") { dialog, _ ->
+                requestPermissions()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     private fun showStreamKeyDialog() {
@@ -49,7 +110,7 @@ class HaishinActivity : AppCompatActivity() {
         input.hint = "Find it form https://dashboard.mux.com/"
         alertDialogBuilder.setView(input)
 
-        alertDialogBuilder.setPositiveButton("OK") { dialog, which ->
+        alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
             val key = input.text.toString().trim()
             if (key.isNotEmpty()) {
                 streamKey = key
@@ -58,7 +119,7 @@ class HaishinActivity : AppCompatActivity() {
             }
         }
 
-        alertDialogBuilder.setNegativeButton("Cancel") { dialog, which ->
+        alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
             dialog.dismiss()
             finish()
         }
@@ -94,15 +155,19 @@ class HaishinActivity : AppCompatActivity() {
         }
 
         createRtmpCamera2()
-
-
-        /*rtmpCamera2?.let {
-            it.replaceView(openGlView)
-            it.startPreview(StreamParameters.resolution.width, StreamParameters.resolution.height)
-        }*/
     }
 
-    fun createRtmpCamera2() {
+    override fun onPause() {
+        super.onPause()
+
+        rtmpCamera2?.let {
+            if (it.isStreaming) {
+                stopBroadcast()
+            }
+        }
+    }
+
+    private fun createRtmpCamera2() {
         openGlView?.let {
             if (rtmpCamera2 == null) {
                 rtmpCamera2 = RtmpCamera2(it, connectCheckerRtmp).apply {
@@ -117,39 +182,50 @@ class HaishinActivity : AppCompatActivity() {
         println("myStream fps : $fps")
     }
 
-    fun startBroadcast() {
-        if (streamKey.isNotEmpty()) {
-            rtmpCamera2?.let {
-                if (!it.isStreaming) {
-                    if (it.prepareAudio() && it.prepareVideo(
-                            StreamParameters.resolution.width,
-                            StreamParameters.resolution.height,
-                            StreamParameters.fps,
-                            StreamParameters.startBitrate,
-                            StreamParameters.iFrameIntervalInSeconds,
-                            CameraHelper.getCameraOrientation(application)
-                        )
-                    ) {
-                        println("myStream  startBroadcast")
-                        it.startStream(rtmpEndpoint + streamKey)
-                    } else {
-                        println("myStream Error startBroadcast")
+    private fun startBroadcast() {
+        if (arePermissionsGranted()) {
+            if (streamKey.isNotEmpty()) {
+                rtmpCamera2?.let {
+                    if (!it.isStreaming) {
+                        if (it.prepareAudio() && it.prepareVideo(
+                                StreamParameters.resolution.width,
+                                StreamParameters.resolution.height,
+                                StreamParameters.fps,
+                                StreamParameters.startBitrate,
+                                StreamParameters.iFrameIntervalInSeconds,
+                                CameraHelper.getCameraOrientation(application)
+                            )
+                        ) {
+                            showToast("Started Broadcast")
+                            println("myStream startBroadcast")
+                            it.startStream(rtmpEndpoint + streamKey)
+                        } else {
+                            showToast("Broadcast Error")
+                            println("myStream Error startBroadcast")
+                        }
                     }
                 }
+            } else {
+                showStreamKeyDialog()
             }
         } else {
-            showStreamKeyDialog()
+            requestPermissions()
         }
     }
 
-    fun stopBroadcast() {
+    private fun stopBroadcast() {
         rtmpCamera2?.let {
             if (it.isStreaming) {
                 btnStartLive?.text = "Go Live"
                 println("myStream stopBroadcast")
                 it.stopStream()
+                showToast("Stopped Broadcast")
             }
         }
+    }
+
+    private fun showToast(msg: String) {
+        Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
     }
 
     private val connectCheckerRtmp = object : ConnectChecker {
@@ -162,11 +238,6 @@ class HaishinActivity : AppCompatActivity() {
         }
 
         override fun onConnectionFailed(reason: String) {
-            Toast.makeText(
-                applicationContext,
-                "ConnectionFailed. Add new Stream Key.",
-                Toast.LENGTH_LONG
-            ).show()
             println("myStream onConnectionFailed $reason")
             stopBroadcast()
             finish()
@@ -182,11 +253,7 @@ class HaishinActivity : AppCompatActivity() {
 
         override fun onDisconnect() {
             println("myStream onDisconnect")
-            Toast.makeText(
-                applicationContext,
-                "Disconnected. Add new Stream Key.",
-                Toast.LENGTH_LONG
-            ).show()
+            showToast("Broadcast Disconnected. Add new Key")
         }
 
         override fun onNewBitrate(bitrate: Long) {

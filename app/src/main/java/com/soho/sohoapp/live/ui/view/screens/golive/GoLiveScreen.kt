@@ -1,7 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.util.Size
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -120,12 +119,11 @@ import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
-import com.soho.sohoapp.live.utility.IsPermissionsGranted
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.openLiveCaster
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
 import org.koin.compose.koinInject
@@ -158,7 +156,6 @@ fun GoLiveScreen(
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
     var isShowScheduleScreen by remember { mutableStateOf(false) }
-    var isOpenLiveCaster by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
     var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
@@ -171,7 +168,7 @@ fun GoLiveScreen(
     * */
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
-            isOpenLiveCaster = true
+            openLiveCaster()
         }
     }
 
@@ -219,15 +216,6 @@ fun GoLiveScreen(
         }
 
         goLiveVm.loadConnectedSMList()
-        isOpenLiveCaster = true
-    }
-
-    /*
-    * start live cast screen
-    * */
-    if (isOpenLiveCaster) {
-        OpenLiveCaster()
-        //isOpenLiveCaster = false
     }
 
     /*
@@ -410,22 +398,6 @@ fun GoLiveScreen(
                 })
             })
         }
-    }
-}
-
-@Composable
-fun OpenLiveCaster() {
-    if (IsPermissionsGranted()) {
-        val intent = Intent(context, HaishinActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        context.startActivity(intent)
-    } else {
-        //show alert message dialog to ask permissions
-
-        //if pressed OK button then reopen the IsPermissionsGranted()
-
-        //else close the app
     }
 }
 
