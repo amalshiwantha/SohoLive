@@ -198,6 +198,27 @@ fun Text700_16sp(
 }
 
 @Composable
+fun TextProgress(
+    modifier: Modifier = Modifier,
+    title: String,
+    isCenter: Boolean = false,
+    color: Color = AppWhite
+) {
+    Text(
+        textAlign = if (isCenter) TextAlign.Center else TextAlign.Left,
+        modifier = modifier,
+        text = title,
+        fontSize = 16.sp,
+        lineHeight = 25.6.sp,
+        maxLines = 2,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(700),
+        color = color,
+        letterSpacing = 0.19.sp
+    )
+}
+
+@Composable
 fun Text700_14spBold(modifier: Modifier = Modifier, step: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,

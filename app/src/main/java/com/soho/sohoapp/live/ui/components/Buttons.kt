@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
@@ -25,7 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BorderGray
 
@@ -82,6 +84,44 @@ fun ButtonColoured(
             TextWhite14Left(title = text)
         } else {
             TextWhite14(title = text)
+        }
+    }
+}
+
+@Composable
+fun ButtonColouredProgress(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color,
+    isLoading: Boolean = false,
+    isBackButton: Boolean = false,
+    onBtnClick: () -> Unit
+) {
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        shape = RoundedCornerShape(16.dp),
+        onClick = {
+            if (!isLoading) {
+                onBtnClick()
+            }
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = color
+        )
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                color = AppRed
+            )
+        } else {
+            if (isBackButton) {
+                TextWhite14Left(title = text)
+            } else {
+                TextWhite14(title = text)
+            }
         }
     }
 }

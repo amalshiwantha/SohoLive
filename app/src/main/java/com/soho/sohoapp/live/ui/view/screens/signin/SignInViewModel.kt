@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Data
 import com.soho.sohoapp.live.utility.formValidation
 import kotlinx.coroutines.flow.launchIn
@@ -56,6 +57,10 @@ class SignInViewModel(
     }
 
     private fun callSignInApi(requestParam: SignInRequest) {
+
+        mStateLogin.value = mStateLogin.value.copy(
+            loadingState = ProgressBarState.Loading
+        )
 
         apiRepo.signIn(requestParam).onEach { apiState ->
 

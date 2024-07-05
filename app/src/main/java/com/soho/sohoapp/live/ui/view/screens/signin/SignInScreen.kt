@@ -8,15 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +33,7 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
-import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.TextButtonBlue
@@ -57,6 +59,7 @@ fun SignInScreen(
     val stateVm = vmSignIn.mStateLogin.value
     val snackBarState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    var isShowProgress by remember { mutableStateOf(false) }
 
     //if login success then open home screen
     LaunchedEffect(key1 = stateVm.isLoginSuccess) {
@@ -104,8 +107,8 @@ fun SignInScreen(
                     }
 
                     //Display progress bar
-                    if (stateVm.loadingState is ProgressBarState.Loading) {
-                        CircularProgressIndicator()
+                    LaunchedEffect(stateVm.loadingState) {
+                        isShowProgress = stateVm.loadingState is ProgressBarState.Loading
                     }
 
                     //Display alert
@@ -126,7 +129,7 @@ fun SignInScreen(
                 SpacerVertical(24.dp)
 
                 //Display bottom login button
-                BottomLoginBtn(modifier) {
+                BottomLoginBtn(modifier, isShowProgress) {
                     if (netUtil.isNetworkAvailable()) {
                         vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
                     } else {
@@ -199,7 +202,7 @@ private fun LoginForm(
 }
 
 @Composable
-private fun BottomLoginBtn(modifier: Modifier, onBtnClick: () -> Unit) {
+private fun BottomLoginBtn(modifier: Modifier, isShowProgress: Boolean, onBtnClick: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -207,7 +210,8 @@ private fun BottomLoginBtn(modifier: Modifier, onBtnClick: () -> Unit) {
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        ButtonColoured(text = stringResource(R.string.log_in),
+        ButtonColouredProgress(text = stringResource(R.string.log_in),
+            isLoading = isShowProgress,
             color = AppGreen,
             onBtnClick = {
                 onBtnClick()

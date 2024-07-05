@@ -25,7 +25,7 @@ fun CenterMessageProgress(modifier: Modifier = Modifier, color: Color = AppGreen
         ) {
             CircularProgressIndicator(modifier = modifier, color = color)
             SpacerVertical(size = 8.dp)
-            Text950_16sp(title = message)
+            TextProgress(title = message)
         }
     }
 }
