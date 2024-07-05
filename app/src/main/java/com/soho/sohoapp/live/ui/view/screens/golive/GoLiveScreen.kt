@@ -2,7 +2,10 @@ package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.annotation.SuppressLint
 import android.util.Size
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -1048,6 +1051,11 @@ private fun NextBackButtons(
             }
 
             //Next Button
+            val widthAnimate by animateDpAsState(
+                targetValue = if (isEnableBack) 170.dp else 570.dp,
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing), label = "animateNextBtn"
+            )
+
             val rightAlign = if (isEnableBack) {
                 Alignment.CenterEnd
             } else {
@@ -1060,7 +1068,7 @@ private fun NextBackButtons(
                 } else {
                     Modifier
                         .height(48.dp)
-                        .width(170.dp)
+                        .width(widthAnimate)
                 }
             } else {
                 Modifier
@@ -1069,7 +1077,6 @@ private fun NextBackButtons(
             }
 
             Column(modifier = Modifier.align(rightAlign)) {
-
                 if (currentStepId == 3) {
                     if (isNowSelected) {
                         //LivePreview Button
