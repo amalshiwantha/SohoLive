@@ -1,10 +1,16 @@
 package com.soho.sohoapp.live.utility
 
+import android.Manifest
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.util.Base64
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
@@ -12,6 +18,23 @@ import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun IsPermissionsGranted(): Boolean {
+
+    val permissions = listOf(
+        Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
+    )
+
+    val multiplePermissionsState = rememberMultiplePermissionsState(permissions = permissions)
+
+    LaunchedEffect(Unit) {
+        multiplePermissionsState.launchMultiplePermissionRequest()
+    }
+
+    return multiplePermissionsState.permissions.all { it.status.isGranted }
+}
 
 fun formValidation(
     state: MutableState<SignInState>, mapList: MutableMap<FieldType, String?>

@@ -124,6 +124,7 @@ import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.IsPermissionsGranted
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
@@ -157,7 +158,7 @@ fun GoLiveScreen(
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
     var isShowScheduleScreen by remember { mutableStateOf(false) }
-    var isShowLiveCastScreen by remember { mutableStateOf(false) }
+    var isOpenLiveCaster by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
     var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
@@ -170,13 +171,9 @@ fun GoLiveScreen(
     * */
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
-            val intent = Intent(context, HaishinActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context.startActivity(intent)
+            isOpenLiveCaster = true
         }
     }
-
 
     /*
     * Connect the SM need to update the mGoLiveSubmit
@@ -222,6 +219,15 @@ fun GoLiveScreen(
         }
 
         goLiveVm.loadConnectedSMList()
+        isOpenLiveCaster = true
+    }
+
+    /*
+    * start live cast screen
+    * */
+    if (isOpenLiveCaster) {
+        OpenLiveCaster()
+        //isOpenLiveCaster = false
     }
 
     /*
@@ -358,9 +364,7 @@ fun GoLiveScreen(
                     isNowSelected = isNowSelected,
                     onClickedNext = {
                         val isAllowGo = isAllowGoNext(
-                            currentStepId,
-                            mGoLiveSubmit,
-                            goLiveVm
+                            currentStepId, mGoLiveSubmit, goLiveVm
                         )
 
                         if (currentStepId < stepCount - 1 && isAllowGo) {
@@ -409,10 +413,24 @@ fun GoLiveScreen(
     }
 }
 
+@Composable
+fun OpenLiveCaster() {
+    if (IsPermissionsGranted()) {
+        val intent = Intent(context, HaishinActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+    } else {
+        //show alert message dialog to ask permissions
+
+        //if pressed OK button then reopen the IsPermissionsGranted()
+
+        //else close the app
+    }
+}
+
 fun isAllowGoNext(
-    currentStepId: Int,
-    mGoLiveSubmit: GoLiveSubmit,
-    goLiveVm: GoLiveViewModel
+    currentStepId: Int, mGoLiveSubmit: GoLiveSubmit, goLiveVm: GoLiveViewModel
 ): Boolean {
     return when (currentStepId) {
         0 -> {
@@ -497,7 +515,10 @@ fun getAlertConfig(state: GoLiveState): Pair<Boolean, AlertConfig?> {
 }
 
 fun saveSMProfileInGoLiveData(
-    eventState: State<Any>, mGoLiveSubmit: GoLiveSubmit, checkedSM: SnapshotStateList<String>, onReloadDataStore:()->Unit
+    eventState: State<Any>,
+    mGoLiveSubmit: GoLiveSubmit,
+    checkedSM: SnapshotStateList<String>,
+    onReloadDataStore: () -> Unit
 ) {
     val smProfile = when (val event = eventState.value) {
         is AppEvent.SMProfile -> event.smProfile
@@ -1532,9 +1553,7 @@ private fun StepCountTitleInfo(currentStepId: Int) {
 
 @Composable
 fun SwitchCompo(
-    isChecked: Boolean = false,
-    modifier: Modifier = Modifier,
-    onCheckedChange: (Boolean) -> Unit
+    isChecked: Boolean = false, modifier: Modifier = Modifier, onCheckedChange: (Boolean) -> Unit
 ) {
     Box(
         modifier = modifier

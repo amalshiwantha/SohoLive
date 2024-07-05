@@ -107,6 +107,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.4.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
 
+    //Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.30.0")
+
     /*implementation(libs.androidx.appcompat)
     implementation(libs.material)*/
 
