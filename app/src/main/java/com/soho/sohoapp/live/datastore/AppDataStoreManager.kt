@@ -29,7 +29,6 @@ class AppDataStoreManager(private val context: Context) {
         val editor = sharedPref.edit()
         editor.putString(PREF_KEY_USER_SM_PROFILES, jsonString)
         editor.apply()
-        println("savedSMList saveSMProfileList")
     }
 
     fun getSMProfileList(): ConnectedSocialProfile? {

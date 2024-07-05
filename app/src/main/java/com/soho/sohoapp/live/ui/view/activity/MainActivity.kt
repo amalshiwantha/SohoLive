@@ -176,18 +176,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
                     })
 
-                    //Connected SM save in local
-                    /*LaunchedEffect(saveProf) {
-                        println("myProf save " + saveProf)
-                        sharedPreferencesHelper.saveProfile("connected_profile", saveProf)
-
-                        // Retrieve the connected social profile
-                        val savedProfile = sharedPreferencesHelper.getProfile("connected_profile")
-                        savedProfile?.let {
-                            println("myProf load " + it)
-                        }
-                    }*/
-
                     //Connect SM api
                     //state change for clickEvents
                     LaunchedEffect(openSmConnectorState) {

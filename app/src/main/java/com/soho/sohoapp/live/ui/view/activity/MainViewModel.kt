@@ -62,7 +62,6 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             currentList.smProfileList.add(newProfile)
 
             // Save the updated profile list
-            println("savedSMList ConnectedSMProfileList")
             dataStore.saveSMProfileList(currentList)
             getSavedSMProfile(newProfile, currentList)
         }
@@ -73,7 +72,6 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             val list = profList.smProfileList
             val foundProfile = list.find { it.smInfo == smProfile.smInfo }
             if (foundProfile != null) {
-                println("savedSMList getSavedSMProfile")
                 _stateIsSMConnected.update { foundProfile }
             }
         }

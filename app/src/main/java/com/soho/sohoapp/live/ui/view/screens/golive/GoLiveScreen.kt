@@ -182,7 +182,6 @@ fun GoLiveScreen(
     * Connect the SM need to update the mGoLiveSubmit
     * */
     LaunchedEffect(eventState.value) {
-        println("savedSMList eventState LaunchedEffect")
         saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM, onReloadDataStore = {
             goLiveVm.loadConnectedSMList()
         })
@@ -246,8 +245,6 @@ fun GoLiveScreen(
         isConnectedYouTube = isHasYouTube != -1
         isConnectedFacebook = isHasFaceBook != -1
         isConnectedLinkedIn = isHasLinkedIn != -1
-
-        println("savedSMList stateSMConnected")
     }
 
     Box(
@@ -537,8 +534,6 @@ fun saveSMProfileInGoLiveData(
             checkedPlatforms = checkedSM
         }
     }
-
-    println("savedSMList eventState saveSMProfileInGoLiveData")
 }
 
 fun GoLiveSubmit.validateData(): MutableMap<FormFields, String> {

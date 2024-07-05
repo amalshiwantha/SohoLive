@@ -322,11 +322,6 @@ class GoLiveViewModel(
                     }
                 }
 
-                currentList.forEach {
-                    println("savedSMList load : ${it.accessToken}")
-                }
-
-                println("savedSMList loadConnectedSMList $currentList")
                 _connectedProfileNames.value = currentList
             }
         }

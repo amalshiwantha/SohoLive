@@ -47,7 +47,6 @@ fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (Pair<String, Stri
     OutlinedTextField(
         value = txtInput,
         onValueChange = {
-            println("myinpot ${it.length}")
             if (it.length <= maxLength) {
                 txtInput = it
                 onTextChange(Pair(txtInput, "${it.length}/$maxLength"))
