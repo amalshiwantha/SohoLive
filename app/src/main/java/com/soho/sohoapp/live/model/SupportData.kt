@@ -62,8 +62,8 @@ data class GoLiveSubmit(
     @SerialName("unlisted") var unlisted: Boolean = false,
     @SerialName("simulcast_targets") var targets: MutableList<GoLivePlatform> = mutableListOf(),
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
-    var accessToken: MutableList<String> = mutableListOf(),
-    var platform: MutableList<String> = mutableListOf(),
+    //var accessToken: MutableList<String> = mutableListOf(),
+    //var platform: MutableList<String> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf()

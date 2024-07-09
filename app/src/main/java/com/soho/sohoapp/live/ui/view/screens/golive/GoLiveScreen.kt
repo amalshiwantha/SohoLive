@@ -327,19 +327,32 @@ fun GoLiveScreen(
                                 onSMItemClicked = { selectedSM ->
                                     if (selectedSM.isConnect) {
 
-                                        val goLivePlatform = mGoLiveSubmit.platform
+                                        //val goLivePlatform = mGoLiveSubmit.platform
+                                        val currentPT = mGoLiveSubmit.platformToken
+                                        val platformName = selectedSM.name.lowercase()
+                                        val token = selectedSM.accessToken
 
                                         if (selectedSM.isItemChecked) {
-                                            goLivePlatform.add(selectedSM.name.lowercase())
+                                            //goLivePlatform.add(selectedSM.name.lowercase())
                                             checkedSM.add(selectedSM.name)
+
+                                            currentPT.add(
+                                                PlatformToken(
+                                                    platformName,
+                                                    token.toString()
+                                                )
+                                            )
                                         } else {
-                                            goLivePlatform.remove(selectedSM.name.lowercase())
+                                            //goLivePlatform.remove(selectedSM.name.lowercase())
                                             checkedSM.remove(selectedSM.name)
+
+                                            currentPT.removeIf { it.platform == platformName }
                                         }
 
                                         mGoLiveSubmit.apply {
                                             checkedPlatforms = checkedSM
-                                            platform = goLivePlatform
+                                            //platform = goLivePlatform
+                                            platformToken = currentPT
                                         }
 
                                     } else {
@@ -442,7 +455,7 @@ fun isAllowGoNext(
         }
 
         2 -> {
-            if (mGoLiveSubmit.platform.isNotEmpty()) {
+            if (mGoLiveSubmit.platformToken.isNotEmpty()) {
                 true
             } else {
                 goLiveVm.showAlert(
@@ -505,8 +518,8 @@ fun saveSMProfileInGoLiveData(
         onReloadDataStore()
 
         //get current platform list
-        val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
-        val currentAccessTokenList = mGoLiveSubmit.accessToken.toMutableList()
+        /*val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
+        val currentAccessTokenList = mGoLiveSubmit.accessToken.toMutableList()*/
         val currentPlatformToken = mGoLiveSubmit.platformToken.toMutableList()
 
         val platformName = smProfile.smInfo.name.lowercase()
@@ -514,8 +527,8 @@ fun saveSMProfileInGoLiveData(
 
         //update new platform list
         if (smProfile.profile.isConnected) {
-            currentPlatformList.add(platformName)
-            token?.let { currentAccessTokenList.add(it) }
+            /*currentPlatformList.add(platformName)
+            token?.let { currentAccessTokenList.add(it) }*/
 
             currentPlatformToken.add(
                 PlatformToken(
@@ -525,16 +538,16 @@ fun saveSMProfileInGoLiveData(
             )
 
         } else {
-            currentPlatformList.remove(platformName)
-            smProfile.profile.token?.let { currentAccessTokenList.remove(it) }
+            /*currentPlatformList.remove(platformName)
+            smProfile.profile.token?.let { currentAccessTokenList.remove(it) }*/
 
             currentPlatformToken.removeIf { it.platform == platformName }
         }
 
         //finally apply updated platform list to the mGoLiveSubmit
         mGoLiveSubmit.apply {
-            platform = currentPlatformList
-            accessToken = currentAccessTokenList
+            /* platform = currentPlatformList
+             accessToken = currentAccessTokenList*/
             platformToken = currentPlatformToken
         }
 
@@ -687,11 +700,21 @@ fun StepContents(
                 },
                 onUpdateInitialState = { smAllList ->
                     val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
+                    /*val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
+                        .map { it.title.lowercase() }*/
                     val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
-                        .map { it.title.lowercase() }
+
+                    val updatedPlatformToken: MutableList<PlatformToken> =
+                        selectedSMList.mapNotNull { sm ->
+                            PlatformToken(
+                                platform = sm.name.lowercase(),
+                                accessToken = sm.accessToken.toString()
+                            )
+                        }.toMutableList()
 
                     mGoLiveSubmit.apply {
-                        platform = selectedSMList.toMutableList()
+                        //platform = selectedSMList.toMutableList()
+                        platformToken = updatedPlatformToken
                     }
                 })
             SpacerVertical(size = 70.dp)
