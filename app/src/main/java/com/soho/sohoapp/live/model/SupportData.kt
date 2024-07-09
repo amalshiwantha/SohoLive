@@ -28,19 +28,42 @@ data class TextFiledConfig(
     var keyboardType: KeyboardType = KeyboardType.Text,
 )
 
+/*
+* {
+   "unlisted":false,
+   "stream_type":"auction",
+   "title":"2\/102 Saddlers Drive, Gillieston Heights NSW 2321",
+   "simulcast_targets":[
+      {
+         "target_feed_id":"me",
+         "platform":"facebook",
+         "privacy":"",
+         "access_token":"EAAK8mp1i0v4BO0DNT7MdRNAy8uIp1olq73oZCv0cmUQSmvQXnUepsClSSYUxbMAsHQZAQrYDcVzCqrZCgCZA51tdaRXnh1aWVboFC9CFCEhh1yPlL7lErYqaEDAVHDNhIQ6GxxxpTjX2dzitIZB5MIYOdNSdO6jFCL6BqzPxGU9LHA0S5IKPh7TDqwtoLVnA90SARwvF3e6DXLPAk4YP6bZCutjgZDZD"
+      },
+      {
+         "platform":"youtube",
+         "target_feed_id":"",
+         "access_token":"ya29.a0AXooCgtJHM-12Z-DdKoyaV6seysRWLW9Huh9ZiTFNjByKkfoLHJjetCvcXEjgkpo4ejZp8MBg4NuSLf2DWc126kFhL6NK6wRuFK4nXdmgFRVjWPjW5Rckjg_6okzKzjj4z0572dDViFQGxseJgon6yzzgTVWNpSFYsPbaCgYKATkSARASFQHGX2MiDMpaYDx1QgpW43MOx80rLA0171",
+         "privacy":""
+      }
+   ],
+   "property_listing_id":81063,
+   "description":"Test Description",
+   "agent_profile_id":9619
+}
+* */
 @Serializable
 data class GoLiveSubmit(
     @SerialName("stream_type") var purpose: String? = null,
     @SerialName("property_listing_id") var propertyId: Int = 0,
     @SerialName("title") var title: String? = null,
-    @SerialName("live_stream_at") var liveStreamAt: String? = null,
     @SerialName("description") var description: String? = null,
     @SerialName("agent_profile_id") var agentId: String? = null,
     @SerialName("unlisted") var unlisted: Boolean = false,
-    @SerialName("platform") var platform: MutableList<String> = mutableListOf(),
-    @SerialName("access_token") var accessToken: MutableList<String> = mutableListOf(),
-    @SerialName("target_feed_id") var feedId: MutableList<String> = mutableListOf(),
-    @SerialName("privacy") var privacy: MutableList<String> = mutableListOf(),
+    @SerialName("simulcast_targets") var targets: MutableList<GoLivePlatform> = mutableListOf(),
+    var platformToken: MutableList<PlatformToken> = mutableListOf(),
+    var accessToken: MutableList<String> = mutableListOf(),
+    var platform: MutableList<String> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf()
@@ -51,6 +74,39 @@ data class GoLiveSubmit(
         description = null
     )
 }
+
+@Serializable
+data class PlatformToken(
+    var platform: String? = null,
+    var accessToken: String? = null
+)
+
+/*
+* if timeline selected
+* {
+         "target_feed_id":"me",
+         "platform":"facebook",
+         "privacy":"",
+         "access_token":"EAAK8mp1i0v4...." (login accessToken)
+      }
+      *
+      *
+      * if page or group
+      * {
+         "access_token":"EAAK...", (page or group accessToken)
+         "platform":"facebook",
+         "target_feed_id":"359629113892076",(page or group ID)
+         "privacy":""
+      }
+* */
+
+@Serializable
+data class GoLivePlatform(
+    @SerialName("target_feed_id") var targetFeedId: String? = null,
+    @SerialName("platform") var platform: String? = null,
+    @SerialName("access_token") var accessToken: String? = null,
+    @SerialName("privacy") var privacy: String = "",
+)
 
 @Serializable
 data class ScheduleSlots(
