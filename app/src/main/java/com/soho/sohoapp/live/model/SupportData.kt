@@ -77,8 +77,8 @@ data class GoLiveSubmit(
 
 @Serializable
 data class PlatformToken(
-    var platform: String? = null,
-    var accessToken: String? = null
+    var platform: String,
+    var accessToken: String
 )
 
 /*

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.util.Size
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -78,6 +77,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
@@ -507,22 +507,35 @@ fun saveSMProfileInGoLiveData(
         //get current platform list
         val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
         val currentAccessTokenList = mGoLiveSubmit.accessToken.toMutableList()
+        val currentPlatformToken = mGoLiveSubmit.platformToken.toMutableList()
 
         val platformName = smProfile.smInfo.name.lowercase()
+        val token = smProfile.profile.token
 
         //update new platform list
         if (smProfile.profile.isConnected) {
             currentPlatformList.add(platformName)
-            smProfile.profile.token?.let { currentAccessTokenList.add(it) }
+            token?.let { currentAccessTokenList.add(it) }
+
+            currentPlatformToken.add(
+                PlatformToken(
+                    platform = platformName,
+                    accessToken = token.toString()
+                )
+            )
+
         } else {
             currentPlatformList.remove(platformName)
             smProfile.profile.token?.let { currentAccessTokenList.remove(it) }
+
+            currentPlatformToken.removeIf { it.platform == platformName }
         }
 
         //finally apply updated platform list to the mGoLiveSubmit
         mGoLiveSubmit.apply {
             platform = currentPlatformList
             accessToken = currentAccessTokenList
+            platformToken = currentPlatformToken
         }
 
         //save default checked state
@@ -1053,7 +1066,8 @@ private fun NextBackButtons(
             //Next Button
             val widthAnimate by animateDpAsState(
                 targetValue = if (isEnableBack) 170.dp else 570.dp,
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing), label = "animateNextBtn"
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                label = "animateNextBtn"
             )
 
             val rightAlign = if (isEnableBack) {
