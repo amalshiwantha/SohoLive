@@ -42,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,6 +82,7 @@ import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
+import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.network.common.AlertState
@@ -126,6 +128,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -831,7 +834,7 @@ fun StepContents(
         // step #5
         4 -> {
             Content5(
-                mGoLiveSubmit = mGoLiveSubmit,
+                goLiveData = mGoLiveSubmit,
                 isNowSelected = isNowSelected,
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
@@ -953,11 +956,14 @@ private fun Content4(
 
 @Composable
 private fun Content5(
-    mGoLiveSubmit: GoLiveSubmit,
+    goLiveData: GoLiveSubmit,
     isNowSelected: Boolean,
     onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
     val isNoSchedule = true
+    var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
+    var isShowDialog by remember { mutableStateOf(false) }
+    val slots by remember { mutableStateOf(goLiveData.scheduleSlots.toMutableStateList()) }
 
     //swipe selection
     Text700_14sp(step = "When do you want to go live?")
@@ -975,6 +981,20 @@ private fun Content5(
         Text700_14sp(step = "You can schedule multiple livecast for this listing", isBold = false)
 
         SpacerVertical(size = 16.dp)
+
+        //Schedule List
+        if (slots.isNotEmpty()) {
+            slots.forEach { slot ->
+                ScheduleItemView(slot = slot, onItemClick = { deleteSlot ->
+                    isShowDialog = true
+                    slotToDelete = deleteSlot
+                })
+            }
+            
+            SpacerVertical(size = 16.dp)
+        }
+
+        //Add Button
         ButtonColoredIcon(title = "Add Scheduled Time(s)",
             icon = R.drawable.ic_add,
             btnColor = AppGreen,
