@@ -18,7 +18,8 @@ enum class SocialMediaInfo(
     val icon: Int,
     var isConnect: Boolean,
     var isItemChecked: Boolean = true,
-    var accessToken: String? = null
+    var accessToken: String? = null,
+    var selectionType: CategoryType = CategoryType.TIMELINE
 ) {
     SOHO(
         title = "Your listing on",

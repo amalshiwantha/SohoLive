@@ -474,6 +474,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
                     }
 
+                    smProfile.smInfo.apply {
+                        selectionType = fbViewType
+                    }
+
                     if (fbSubList.first.isNotEmpty()) {
                         SingleSelectionList(fbSubList.first, onItemClick = {
                             when (it.type) {
