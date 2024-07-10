@@ -811,16 +811,19 @@ fun StepContents(
 
         // step #4
         3 -> {
-            Content4(optionList = optionList,
-                isNowSelected = isNowSelected,
+            Content4(
+                optionList = optionList,
                 mGoLiveSubmit = mGoLiveSubmit,
-                mFieldsError = mFieldsError,
-                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
+                mFieldsError = mFieldsError
+            )
         }
 
         // step #5
         4 -> {
-            Content5(mGoLiveSubmit = mGoLiveSubmit)
+            Content5(
+                mGoLiveSubmit = mGoLiveSubmit,
+                isNowSelected = isNowSelected,
+                onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
     }
 }
@@ -849,10 +852,8 @@ fun DisplayNoData(message: String) {
 @Composable
 private fun Content4(
     optionList: MutableList<String>,
-    isNowSelected: Boolean,
     mGoLiveSubmit: GoLiveSubmit,
-    mFieldsError: MutableMap<FormFields, String>,
-    onSwipeIsNowSelected: (Boolean) -> Unit
+    mFieldsError: MutableMap<FormFields, String>
 ) {
     var txtCounter by rememberSaveable { mutableStateOf("0/3000") }
     var isOnCoverOption by remember { mutableStateOf(false) }
@@ -877,15 +878,7 @@ private fun Content4(
         imeAction = ImeAction.Done
     )
 
-    //swipe selection
-    Text700_14sp(step = "When do you want to go live?")
-    SpacerVertical(size = 8.dp)
-    SwipeableSwitch(isNowSelected, onSwipeChange = {
-        onSwipeIsNowSelected(it)
-    })
-
     //what for livestream
-    SpacerVertical(size = 24.dp)
     Text700_14sp(step = "What is this livestream for?")
     DropDownWhatForLiveStream(
         options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
@@ -949,8 +942,18 @@ private fun Content4(
 }
 
 @Composable
-private fun Content5(mGoLiveSubmit: GoLiveSubmit) {
-    Text700_14sp(step = "This is step #5")
+private fun Content5(
+    mGoLiveSubmit: GoLiveSubmit,
+    isNowSelected: Boolean,
+    onSwipeIsNowSelected: (Boolean) -> Unit
+) {
+    //swipe selection
+    Text700_14sp(step = "When do you want to go live?")
+    SpacerVertical(size = 8.dp)
+    SwipeableSwitch(isNowSelected, onSwipeChange = {
+        onSwipeIsNowSelected(it)
+    })
+    SpacerVertical(size = 154.dp)
 }
 
 @Composable
@@ -1726,7 +1729,7 @@ fun SwitchCompo(
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         val countSteps = 5
-        val currentStep = 3
+        val currentStep = 4
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
