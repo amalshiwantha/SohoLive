@@ -161,7 +161,8 @@ fun GoLiveScreen(
     var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
     val optionList = mutableListOf("Inspection", "Auction", "Other")
     var isNetConnected by remember { mutableStateOf(true) }
-    var isNowSelected: Boolean by remember { mutableStateOf(assetsState.isNowSelected.value) }
+    var isNowSelected by remember { mutableStateOf(assetsState.isNowSelected.value) }
+    var isNoSlots by rememberSaveable { mutableStateOf(false) }
     var isDontShowProfile by remember { mutableStateOf(mGoLiveSubmit.unlisted) }
     var isConnectedYouTube by remember { mutableStateOf(false) }
     var isConnectedFacebook by remember { mutableStateOf(false) }
@@ -304,6 +305,7 @@ fun GoLiveScreen(
                                 mainAgencyList = agencyList,
                                 optionList = optionList,
                                 isNowSelected = isNowSelected,
+                                isNoSlots = isNoSlots,
                                 isNotShowProfile = isDontShowProfile,
                                 mGoLiveSubmit = mGoLiveSubmit,
                                 isConnectYT = isConnectedYouTube,
@@ -402,12 +404,11 @@ fun GoLiveScreen(
                         assetsState.stepId.value = currentStepId
                     },
                     onClickedFinalise = {
-                        /*mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
-                        mFieldsError = mGoLiveSubmit.errors
+                        isNoSlots = mGoLiveSubmit.scheduleSlots.isEmpty()
 
-                        if (mFieldsError.isEmpty()) {
-                            isShowScheduleScreen = true
-                        }*/
+                        if(!isNoSlots){
+
+                        }
                     },
                     onClickedLive = {
                         mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
@@ -727,6 +728,7 @@ fun StepContents(
     mainAgencyList: List<AgencyItem>? = null,
     mGoLiveSubmit: GoLiveSubmit,
     isNowSelected: Boolean,
+    isNoSlots: Boolean,
     isNotShowProfile: Boolean,
     optionList: MutableList<String>,
     isConnectYT: Boolean,
@@ -838,6 +840,7 @@ fun StepContents(
             Content5(
                 goLiveData = mGoLiveSubmit,
                 isNowSelected = isNowSelected,
+                isNoSlots = isNoSlots,
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
     }
@@ -960,9 +963,9 @@ private fun Content4(
 private fun Content5(
     goLiveData: GoLiveSubmit,
     isNowSelected: Boolean,
+    isNoSlots: Boolean,
     onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
-    val isNoSchedule = true
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
     var isShowDialog by remember { mutableStateOf(false) }
     var isShowDateTimePicker by remember { mutableStateOf(false) }
@@ -987,6 +990,7 @@ private fun Content5(
     if (isShowDateTimePicker) {
         DateTimePicker(onDismissed = { isShowDateTimePicker = !it }, onDateTimeSelect = {
             if (!it.date.isNullOrEmpty() && !it.time.isNullOrEmpty()) {
+                //isNoSchedules = false
                 slots.add(it)
                 goLiveData.apply {
                     this.scheduleSlots = slots
@@ -1003,7 +1007,7 @@ private fun Content5(
     })
 
     //this is for Schedule section content
-    if (isNowSelected) {
+    if (!isNowSelected) {
         SpacerVertical(size = 40.dp)
         Text700_14sp(step = "Set date & time")
 
@@ -1025,15 +1029,17 @@ private fun Content5(
         }
 
         //Add Button
-        val btnText = if(slots.isNotEmpty()) "Add Another" else "Add Scheduled Time(s)"
+        val btnText = if (slots.isNotEmpty()) "Add Another" else "Add Scheduled Time(s)"
         ButtonColoredIcon(title = btnText,
             icon = R.drawable.ic_add,
             btnColor = AppGreen,
             onBtnClick = { isShowDateTimePicker = true })
 
-        if (isNoSchedule) {
-            SpacerVertical(size = 8.dp)
-            Text700_14sp(step = "Please set at least 1 schedule", isBold = false, color = ErrorRed)
+        if (isNoSlots) {
+            if(goLiveData.scheduleSlots.isEmpty()){
+                SpacerVertical(size = 8.dp)
+                Text700_14sp(step = "Please set at least 1 schedule", isBold = false, color = ErrorRed)
+            }
         }
     }
 
@@ -1831,6 +1837,7 @@ private fun PreviewGoLiveScreen() {
                     savedResults = DataGoLive(emptyList(), emptyList()),
                     optionList = mutableListOf(),
                     isNowSelected = true,
+                    isNoSlots = false,
                     isNotShowProfile = true,
                     mGoLiveSubmit = GoLiveSubmit(),
                     isConnectYT = true,
