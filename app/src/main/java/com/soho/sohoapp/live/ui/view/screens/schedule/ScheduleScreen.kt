@@ -62,9 +62,11 @@ import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextFieldWhiteIcon
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
@@ -286,7 +288,7 @@ fun ScheduleItemView(slot: ScheduleSlots, onItemClick: (ScheduleSlots) -> Unit) 
             .fillMaxWidth()
             .padding(bottom = 16.dp),
         shape = MaterialTheme.shapes.small,
-        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+        colors = CardDefaults.cardColors(containerColor = AppWhite)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -298,9 +300,9 @@ fun ScheduleItemView(slot: ScheduleSlots, onItemClick: (ScheduleSlots) -> Unit) 
                     .padding(16.dp)
                     .weight(1f)
             ) {
-                Text800_14sp(label = slot.date.orEmpty())
+                Text800_14sp(label = slot.date.orEmpty(), txtColor = TextDark)
                 SpacerVertical(size = 8.dp)
-                Text400_14sp(info = slot.time.orEmpty())
+                Text400_14sp(info = slot.time.orEmpty(), color = TextDark)
             }
 
             //Delete button
