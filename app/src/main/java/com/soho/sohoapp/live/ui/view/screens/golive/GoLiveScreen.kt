@@ -152,7 +152,7 @@ fun GoLiveScreen(
 
     val stateVm = goLiveVm.mState.value
     val assetsState = savedState ?: goLiveVm.assetsState.value
-    val stepCount = 4
+    val stepCount = 5
     var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
     val optionList = mutableListOf("Inspection", "Auction", "Other")
     var isNetConnected by remember { mutableStateOf(true) }
@@ -801,6 +801,11 @@ fun StepContents(
                 mFieldsError = mFieldsError,
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
         }
+
+        // step #5
+        4 -> {
+            Content5(mGoLiveSubmit = mGoLiveSubmit)
+        }
     }
 }
 
@@ -925,6 +930,11 @@ private fun Content4(
     }
 
     SpacerVertical(size = 140.dp)
+}
+
+@Composable
+private fun Content5(mGoLiveSubmit: GoLiveSubmit) {
+    Text700_14sp(step = "This is step #5")
 }
 
 @Composable
