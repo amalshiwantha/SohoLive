@@ -167,7 +167,7 @@ fun GoLiveScreen(
     var isConnectedYouTube by remember { mutableStateOf(false) }
     var isConnectedFacebook by remember { mutableStateOf(false) }
     var isConnectedLinkedIn by remember { mutableStateOf(false) }
-    var isShowScheduleScreen by remember { mutableStateOf(false) }
+    var isShowScheduleOkScreen by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
     var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
@@ -237,10 +237,10 @@ fun GoLiveScreen(
     /*
     * open Schedule Screen
     * */
-    LaunchedEffect(isShowScheduleScreen) {
-        if (isShowScheduleScreen) {
-            navController.navigate(NavigationPath.SET_SCHEDULE.name)
-            isShowScheduleScreen = false
+    LaunchedEffect(isShowScheduleOkScreen) {
+        if (isShowScheduleOkScreen) {
+            navController.navigate(NavigationPath.GO_LIVE_SUCCESS.name)
+            isShowScheduleOkScreen = false
         }
     }
 
@@ -407,7 +407,8 @@ fun GoLiveScreen(
                         isNoSlots = mGoLiveSubmit.scheduleSlots.isEmpty()
 
                         if(!isNoSlots){
-
+                            //TODO call schedule api and open success screen
+                            isShowScheduleOkScreen = true
                         }
                     },
                     onClickedLive = {

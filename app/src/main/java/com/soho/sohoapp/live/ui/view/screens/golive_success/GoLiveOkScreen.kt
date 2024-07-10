@@ -33,7 +33,6 @@ import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 
 @Composable
@@ -52,7 +51,7 @@ fun GoLiveOkScreen(
                     .calculateTopPadding()
             )
     ) {
-        CenterImgText(modifier)
+        CenterImgText(modifier, goLiveData)
         BottomButtons(modifier.align(alignment = Alignment.BottomCenter), navController)
     }
 }
@@ -77,7 +76,7 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
 }
 
 @Composable
-fun CenterImgText(modifier: Modifier) {
+fun CenterImgText(modifier: Modifier, goLiveData: GoLiveSubmit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -92,8 +91,11 @@ fun CenterImgText(modifier: Modifier) {
 
         SpacerVertical(size = 40.dp)
 
+        val countSlots = goLiveData.scheduleSlots.size
+        val endWord = if(countSlots == 1) "one livecast" else "$countSlots livecasts"
+
         Text(
-            text = "We’ve scheduled 2 livecasts",
+            text = "We’ve scheduled $endWord",
             fontSize = 20.sp,
             lineHeight = 28.sp,
             fontFamily = FontFamily(Font(R.font.axiforma)),
