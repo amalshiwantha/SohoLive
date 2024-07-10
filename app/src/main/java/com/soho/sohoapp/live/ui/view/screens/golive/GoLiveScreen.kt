@@ -372,6 +372,7 @@ fun GoLiveScreen(
                 //bottom button
                 NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
                     currentStepId = currentStepId,
+                    stepCount = stepCount,
                     isNowSelected = isNowSelected,
                     onClickedNext = {
                         val isAllowGo = isAllowGoNext(
@@ -1132,12 +1133,15 @@ private fun StepIndicator(
 private fun NextBackButtons(
     modifier: Modifier,
     currentStepId: Int,
+    stepCount: Int,
     isNowSelected: Boolean,
     onClickedNext: () -> Unit,
     onClickedBack: () -> Unit,
     onClickedLive: () -> Unit,
     onClickedDateTime: () -> Unit
 ) {
+    val beforeLastStepId = stepCount - 1
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -1183,7 +1187,7 @@ private fun NextBackButtons(
             }
 
             val rightModify = if (isEnableBack) {
-                if (currentStepId == 3) {
+                if (currentStepId == beforeLastStepId) {
                     Modifier.height(48.dp)
                 } else {
                     Modifier
@@ -1197,7 +1201,7 @@ private fun NextBackButtons(
             }
 
             Column(modifier = Modifier.align(rightAlign)) {
-                if (currentStepId == 3) {
+                if (currentStepId == beforeLastStepId) {
                     if (isNowSelected) {
                         //LivePreview Button
                         ButtonGradientIcon(text = "Preview Live",
@@ -1706,7 +1710,7 @@ fun SwitchCompo(
 @Composable
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
-        val countSteps = 4
+        val countSteps = 5
         val currentStep = 3
 
         LazyColumn(
@@ -1736,6 +1740,7 @@ private fun PreviewGoLiveScreen() {
 
         NextBackButtons(modifier = Modifier.align(Alignment.BottomCenter),
             currentStepId = currentStep,
+            stepCount = countSteps,
             isNowSelected = true,
             onClickedNext = {},
             onClickedBack = {},
