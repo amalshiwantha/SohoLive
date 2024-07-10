@@ -128,6 +128,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
@@ -963,7 +964,20 @@ private fun Content5(
     val isNoSchedule = true
     var slotToDelete by remember { mutableStateOf<ScheduleSlots?>(null) }
     var isShowDialog by remember { mutableStateOf(false) }
+    var isShowDateTimePicker by remember { mutableStateOf(false) }
     val slots by remember { mutableStateOf(goLiveData.scheduleSlots.toMutableStateList()) }
+
+    //open DateTimePicker
+    if (isShowDateTimePicker) {
+        DateTimePicker(onDismissed = { isShowDateTimePicker = !it }, onDateTimeSelect = {
+            if (!it.date.isNullOrEmpty() && !it.time.isNullOrEmpty()) {
+                slots.add(it)
+                goLiveData.apply {
+                    this.scheduleSlots = slots
+                }
+            }
+        })
+    }
 
     //swipe selection
     Text700_14sp(step = "When do you want to go live?")
@@ -990,15 +1004,16 @@ private fun Content5(
                     slotToDelete = deleteSlot
                 })
             }
-            
+
             SpacerVertical(size = 16.dp)
         }
 
         //Add Button
-        ButtonColoredIcon(title = "Add Scheduled Time(s)",
+        val btnText = if(slots.isNotEmpty()) "Add Another" else "Add Scheduled Time(s)"
+        ButtonColoredIcon(title = btnText,
             icon = R.drawable.ic_add,
             btnColor = AppGreen,
-            onBtnClick = { })
+            onBtnClick = { isShowDateTimePicker = true })
 
         if (isNoSchedule) {
             SpacerVertical(size = 8.dp)
