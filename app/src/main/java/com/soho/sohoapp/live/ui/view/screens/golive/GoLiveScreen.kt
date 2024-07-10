@@ -71,11 +71,13 @@ import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.model.AgencyItem
+import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
@@ -518,18 +520,45 @@ fun saveSMProfileInGoLiveData(
         onReloadDataStore()
 
         //get current platform list
-        /*val currentPlatformList = mGoLiveSubmit.platform.toMutableList()
-        val currentAccessTokenList = mGoLiveSubmit.accessToken.toMutableList()*/
         val currentPlatformToken = mGoLiveSubmit.platformToken.toMutableList()
+        val liveTargets = mGoLiveSubmit.targets.toMutableList()
 
+        val selectedType = smProfile.smInfo.selectionType
         val platformName = smProfile.smInfo.name.lowercase()
         val token = smProfile.profile.token
 
+        /*
+        * according to the selectedType need to get selected platform and token from the pages,groups and timeline arrayList
+        * */
+        if (smProfile.smInfo == SocialMediaInfo.FACEBOOK) {
+            when (selectedType) {
+                CategoryType.TIMELINE -> {
+                    TODO()
+                }
+
+                CategoryType.PAGES -> {
+                    TODO()
+                }
+
+                CategoryType.GROUPS -> {
+                    TODO()
+                }
+            }
+        } else {
+            val smTargetToken = smProfile.profile.token
+            smTargetToken?.let {
+                val goPlatform = GoLivePlatform(
+                    targetFeedId = "",
+                    platform = platformName,
+                    accessToken = it
+                )
+                liveTargets.add(goPlatform)
+            }
+        }
+
+
         //update new platform list
         if (smProfile.profile.isConnected) {
-            /*currentPlatformList.add(platformName)
-            token?.let { currentAccessTokenList.add(it) }*/
-
             currentPlatformToken.add(
                 PlatformToken(
                     platform = platformName,
@@ -538,23 +567,17 @@ fun saveSMProfileInGoLiveData(
             )
 
         } else {
-            /*currentPlatformList.remove(platformName)
-            smProfile.profile.token?.let { currentAccessTokenList.remove(it) }*/
-
-            currentPlatformToken.removeIf { it.platform == platformName }
-        }
-
-        //finally apply updated platform list to the mGoLiveSubmit
-        mGoLiveSubmit.apply {
-            /* platform = currentPlatformList
-             accessToken = currentAccessTokenList*/
-            platformToken = currentPlatformToken
+           currentPlatformToken.removeIf { it.platform == platformName }
         }
 
         //save default checked state
         checkedSM.add(platformName)
+
+        //finally apply updated platform list to the mGoLiveSubmit
         mGoLiveSubmit.apply {
+            platformToken = currentPlatformToken
             checkedPlatforms = checkedSM
+            targets = liveTargets
         }
     }
 }
