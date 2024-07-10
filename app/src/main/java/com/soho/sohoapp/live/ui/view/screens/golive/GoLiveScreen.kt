@@ -376,7 +376,12 @@ fun GoLiveScreen(
                     isNowSelected = isNowSelected,
                     onClickedNext = {
                         val isAllowGo = isAllowGoNext(
-                            currentStepId, mGoLiveSubmit, goLiveVm
+                            currentStepId = currentStepId,
+                            mGoLiveSubmit = mGoLiveSubmit,
+                            goLiveVm = goLiveVm,
+                            onValidateRes = {
+                                mFieldsError = it.errors
+                            }
                         )
 
                         if (currentStepId < stepCount - 1 && isAllowGo) {
@@ -389,12 +394,12 @@ fun GoLiveScreen(
                         assetsState.stepId.value = currentStepId
                     },
                     onClickedDateTime = {
-                        mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+                        /*mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
                         mFieldsError = mGoLiveSubmit.errors
 
                         if (mFieldsError.isEmpty()) {
                             isShowScheduleScreen = true
-                        }
+                        }*/
                     },
                     onClickedLive = {
                         mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
@@ -454,7 +459,10 @@ fun resetSteps(currentStepId: Int, mGoLiveSubmit: GoLiveSubmit, assetsState: GoL
 }
 
 fun isAllowGoNext(
-    currentStepId: Int, mGoLiveSubmit: GoLiveSubmit, goLiveVm: GoLiveViewModel
+    currentStepId: Int,
+    mGoLiveSubmit: GoLiveSubmit,
+    goLiveVm: GoLiveViewModel,
+    onValidateRes: (GoLiveSubmit) -> Unit
 ): Boolean {
     return when (currentStepId) {
         0 -> {
@@ -501,6 +509,13 @@ fun isAllowGoNext(
                 )
                 false
             }
+        }
+
+        3 -> {
+            mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+            val errorList = mGoLiveSubmit.errors
+            onValidateRes.invoke(mGoLiveSubmit)
+            errorList.isEmpty()
         }
 
         else -> {
