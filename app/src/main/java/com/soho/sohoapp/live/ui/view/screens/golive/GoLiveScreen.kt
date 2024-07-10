@@ -175,6 +175,10 @@ fun GoLiveScreen(
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
             openLiveCaster(it)
+
+            //Reset steps flow
+            currentStepId = 0
+            resetSteps(currentStepId, mGoLiveSubmit, assetsState)
         }
     }
 
@@ -417,6 +421,34 @@ fun GoLiveScreen(
                 })
             })
         }
+    }
+}
+
+fun resetSteps(currentStepId: Int, mGoLiveSubmit: GoLiveSubmit, assetsState: GoLiveAssets) {
+    assetsState.stepId.value = currentStepId
+
+    assetsState.agencyListState?.value =
+        assetsState.agencyListState?.value?.map { item ->
+            if (item.isChecked) item.copy(isChecked = false) else item
+        } ?: listOf()
+
+    assetsState.propertyListState?.value =
+        assetsState.propertyListState?.value?.map { item ->
+            if (item.isChecked) item.copy(isChecked = false) else item
+        } ?: listOf()
+
+    mGoLiveSubmit.apply {
+        purpose = null
+        propertyId = 0
+        title = null
+        description = null
+        agentId = 0
+        unlisted = false
+        targets.clear()
+        platformToken.clear()
+        scheduleSlots.clear()
+        errors.clear()
+        checkedPlatforms.clear()
     }
 }
 
