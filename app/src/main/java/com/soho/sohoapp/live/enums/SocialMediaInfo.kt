@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.enums
 
 import androidx.compose.ui.graphics.Color
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.model.CategoryInfo
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.FacebookBlue
 import com.soho.sohoapp.live.ui.theme.LinkedInBlue
@@ -19,7 +20,7 @@ enum class SocialMediaInfo(
     var isConnect: Boolean,
     var isItemChecked: Boolean = true,
     var accessToken: String? = null,
-    var selectionType: CategoryType = CategoryType.TIMELINE
+    var selectionType: CategoryInfo? = null
 ) {
     SOHO(
         title = "Your listing on",

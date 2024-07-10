@@ -474,16 +474,16 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
                     }
 
-                    smProfile.smInfo.apply {
-                        selectionType = fbViewType
-                    }
-
                     if (fbSubList.first.isNotEmpty()) {
                         SingleSelectionList(fbSubList.first, onItemClick = {
                             when (it.type) {
                                 CategoryType.TIMELINE -> updateState(mListTimelines, it)
                                 CategoryType.PAGES -> updateState(mListPages, it)
                                 CategoryType.GROUPS -> updateState(mListGroup, it)
+                            }
+
+                            smProfile.smInfo.apply {
+                                selectionType = it
                             }
                         })
                     } else {
@@ -493,6 +493,21 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 } else {
                     //profile card
                     ProfileCard(smProfile.profile, smInfo.title.lowercase())
+
+                    smProfile.profile.let {
+                        smProfile.smInfo.apply {
+                            selectionType = CategoryInfo(
+                                index = 0,
+                                id = "",
+                                type = CategoryType.TIMELINE,
+                                title = "",
+                                url = "",
+                                imageUrl = "",
+                                accessToken = it.token.orEmpty(),
+                                isSelect = true
+                            )
+                        }
+                    }
                 }
 
                 //Button buttons

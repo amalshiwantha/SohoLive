@@ -523,35 +523,53 @@ fun saveSMProfileInGoLiveData(
         val currentPlatformToken = mGoLiveSubmit.platformToken.toMutableList()
         val liveTargets = mGoLiveSubmit.targets.toMutableList()
 
-        val selectedType = smProfile.smInfo.selectionType
+        val smSelection = smProfile.smInfo.selectionType
         val platformName = smProfile.smInfo.name.lowercase()
         val token = smProfile.profile.token
 
         /*
         * according to the selectedType need to get selected platform and token from the pages,groups and timeline arrayList
         * */
-        if (smProfile.smInfo == SocialMediaInfo.FACEBOOK) {
-            when (selectedType) {
-                CategoryType.TIMELINE -> {
-                    TODO()
-                }
+        smSelection?.let { selectedType ->
+            if (smProfile.smInfo == SocialMediaInfo.FACEBOOK) {
+                when (selectedType.type) {
+                    CategoryType.TIMELINE -> {
+                        val goPlatform = GoLivePlatform(
+                            targetFeedId = "me",
+                            platform = platformName,
+                            accessToken = selectedType.accessToken
+                        )
+                        //liveTargets.remove(goPlatform)
+                        liveTargets.add(goPlatform)
+                    }
 
-                CategoryType.PAGES -> {
-                    TODO()
-                }
+                    CategoryType.PAGES -> {
+                        val goPlatform = GoLivePlatform(
+                            targetFeedId = selectedType.id,
+                            platform = platformName,
+                            accessToken = selectedType.accessToken
+                        )
+                        //liveTargets.remove(goPlatform)
+                        liveTargets.add(goPlatform)
+                    }
 
-                CategoryType.GROUPS -> {
-                    TODO()
+                    CategoryType.GROUPS -> {
+                        val goPlatform = GoLivePlatform(
+                            targetFeedId = selectedType.id,
+                            platform = platformName,
+                            accessToken = selectedType.accessToken
+                        )
+                        //liveTargets.remove(goPlatform)
+                        liveTargets.add(goPlatform)
+                    }
                 }
-            }
-        } else {
-            val smTargetToken = smProfile.profile.token
-            smTargetToken?.let {
+            } else {
                 val goPlatform = GoLivePlatform(
                     targetFeedId = "",
                     platform = platformName,
-                    accessToken = it
+                    accessToken = selectedType.accessToken
                 )
+                //liveTargets.remove(goPlatform)
                 liveTargets.add(goPlatform)
             }
         }
@@ -567,7 +585,7 @@ fun saveSMProfileInGoLiveData(
             )
 
         } else {
-           currentPlatformToken.removeIf { it.platform == platformName }
+            currentPlatformToken.removeIf { it.platform == platformName }
         }
 
         //save default checked state
