@@ -130,6 +130,7 @@ import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
+import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -966,6 +967,21 @@ private fun Content5(
     var isShowDialog by remember { mutableStateOf(false) }
     var isShowDateTimePicker by remember { mutableStateOf(false) }
     val slots by remember { mutableStateOf(goLiveData.scheduleSlots.toMutableStateList()) }
+
+    //confirmation to delete time slot
+    if (isShowDialog) {
+        ShowDeleteAlert(
+            isShowDialog = isShowDialog,
+            slotToDelete = slotToDelete,
+            onDismiss = { isShowDialog = it },
+            onDelete = {
+                slots.remove(it)
+                goLiveData.apply {
+                    this.scheduleSlots = slots
+                }
+            }
+        )
+    }
 
     //open DateTimePicker
     if (isShowDateTimePicker) {
