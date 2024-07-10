@@ -1223,7 +1223,7 @@ private fun NextBackButtons(
                     if (isNowSelected) {
                         //LivePreview Button
                         ButtonGradientIcon(text = "Preview Live",
-                            icon = R.drawable.ic_livestream,
+                            icon = R.drawable.livecast,
                             gradientBrush = brushGradientLive,
                             modifier = rightModify,
                             onBtnClick = {
