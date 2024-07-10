@@ -12,8 +12,18 @@ data class GoLiveSubmitResponse(
 
 @Serializable
 data class DataGoLiveSubmit(
-    @SerialName("stream_url") val streamUrl: String? = null,
-    @SerialName("api_key") val apiKey: String? = null,
+    @SerialName("id") val id: Int,
+    @SerialName("property_listing_id") val propertyListingId: Int,
+    @SerialName("live_stream_at") val liveStreamAt: String?,
+    @SerialName("stream_type") val streamType: String,
+    @SerialName("title") val title: String,
+    @SerialName("agent_user_id") val agentUserId: Int,
+    @SerialName("description") val description: String?,
+    @SerialName("stream_key") val streamKey: String,
+    @SerialName("unlisted") val unlisted: Boolean,
+    @SerialName("agent_profile_id") val agentProfileId: Int,
+    @SerialName("shareable_link") val shareableLink: String,
+    @SerialName("simulcast_targets") val simulcastTargets: List<String>
 )
 
 @Serializable
