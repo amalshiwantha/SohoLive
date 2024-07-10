@@ -309,7 +309,7 @@ fun GoLiveScreen(
                                 onPropertyItemClicked = { selectedProperty ->
                                     mGoLiveSubmit.apply {
                                         propertyId = if (selectedProperty.isChecked) {
-                                            selectedProperty.propInfo.propertyId
+                                            selectedProperty.propInfo.id?.toInt() ?: 0
                                         } else {
                                             0
                                         }
@@ -319,9 +319,9 @@ fun GoLiveScreen(
                                 onAgentItemClicked = { selectedAgent ->
                                     mGoLiveSubmit.apply {
                                         agentId = if (selectedAgent.isChecked) {
-                                            selectedAgent.agentProfile.id.toString()
+                                            selectedAgent.agentProfile.id
                                         } else {
-                                            null
+                                            0
                                         }
                                     }
                                     goLiveVm.updateAgentSelectionList(selectedAgent)
@@ -442,7 +442,7 @@ fun isAllowGoNext(
             if (mGoLiveSubmit.unlisted) {
                 true
             } else {
-                if (mGoLiveSubmit.agentId.isNullOrEmpty()) {
+                if (mGoLiveSubmit.agentId == 0) {
                     goLiveVm.showAlert(
                         getAlertConfig(
                             context.getString(R.string.selection_required),

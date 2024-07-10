@@ -58,7 +58,7 @@ data class GoLiveSubmit(
     @SerialName("property_listing_id") var propertyId: Int = 0,
     @SerialName("title") var title: String? = null,
     @SerialName("description") var description: String? = null,
-    @SerialName("agent_profile_id") var agentId: String? = null,
+    @SerialName("agent_profile_id") var agentId: Int = 0,
     @SerialName("unlisted") var unlisted: Boolean = false,
     @SerialName("simulcast_targets") var targets: MutableList<GoLivePlatform> = mutableListOf(),
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
