@@ -112,7 +112,6 @@ import com.soho.sohoapp.live.ui.components.TextStarRating
 import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushGradientLive
-import com.soho.sohoapp.live.ui.components.brushGradientSetDateTime
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -156,7 +155,7 @@ fun GoLiveScreen(
     var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
     val optionList = mutableListOf("Inspection", "Auction", "Other")
     var isNetConnected by remember { mutableStateOf(true) }
-    var isNowSelected: Boolean by remember { mutableStateOf(false) }
+    var isNowSelected: Boolean by remember { mutableStateOf(assetsState.isNowSelected.value) }
     var isDontShowProfile by remember { mutableStateOf(mGoLiveSubmit.unlisted) }
     var isConnectedYouTube by remember { mutableStateOf(false) }
     var isConnectedFacebook by remember { mutableStateOf(false) }
@@ -305,7 +304,10 @@ fun GoLiveScreen(
                                 isConnectFB = isConnectedFacebook,
                                 isConnectLI = isConnectedLinkedIn,
                                 mFieldsError = mFieldsError,
-                                onSwipeIsNowSelected = { isNowSelected = it },
+                                onSwipeIsNowSelected = {
+                                    isNowSelected = it
+                                    assetsState.isNowSelected.value = it
+                                },
                                 onNotShowProfileChange = {
                                     mGoLiveSubmit.apply { unlisted = it }
                                     isDontShowProfile = it
@@ -393,7 +395,7 @@ fun GoLiveScreen(
                         currentStepId = (currentStepId - 1) % stepCount
                         assetsState.stepId.value = currentStepId
                     },
-                    onClickedDateTime = {
+                    onClickedFinalise = {
                         /*mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
                         mFieldsError = mGoLiveSubmit.errors
 
@@ -1156,7 +1158,7 @@ private fun NextBackButtons(
     onClickedNext: () -> Unit,
     onClickedBack: () -> Unit,
     onClickedLive: () -> Unit,
-    onClickedDateTime: () -> Unit
+    onClickedFinalise: () -> Unit
 ) {
     val beforeLastStepId = stepCount - 1
 
@@ -1230,24 +1232,26 @@ private fun NextBackButtons(
                                 onClickedLive.invoke()
                             })
                     } else {
-                        //Date&Time Button
-                        ButtonGradientIcon(text = "Set Date & Time",
-                            icon = R.drawable.ic_calender,
-                            gradientBrush = brushGradientSetDateTime,
+                        //FinaliseSchedule Button
+                        ButtonColouredWrap(
+                            text = "Finalise Schedule",
+                            color = AppGreen,
                             modifier = rightModify,
                             onBtnClick = {
-                                onClickedDateTime.invoke()
-                            })
+                                onClickedFinalise.invoke()
+                            }
+                        )
                     }
                 } else {
                     //Next Button
                     ButtonColouredWrap(
                         text = stringResource(R.string.next),
                         color = AppGreen,
-                        modifier = rightModify
-                    ) {
-                        onClickedNext.invoke()
-                    }
+                        modifier = rightModify,
+                        onBtnClick = {
+                            onClickedNext.invoke()
+                        }
+                    )
                 }
             }
         }
@@ -1762,7 +1766,7 @@ private fun PreviewGoLiveScreen() {
             isNowSelected = true,
             onClickedNext = {},
             onClickedBack = {},
-            onClickedDateTime = {},
+            onClickedFinalise = {},
             onClickedLive = {})
     }
 }

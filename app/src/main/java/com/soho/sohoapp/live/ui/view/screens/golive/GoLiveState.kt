@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.golive
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.PropertyItem
@@ -25,5 +26,6 @@ data class GoLiveState(
 data class GoLiveAssets(
     var propertyListState: MutableState<List<PropertyItem>>? = null,
     var agencyListState: MutableState<List<AgencyItem>>? = null,
-    var stepId: MutableState<Int> = mutableIntStateOf(0)
+    var stepId: MutableState<Int> = mutableIntStateOf(4),
+    var isNowSelected: MutableState<Boolean> = mutableStateOf(true)
 )
