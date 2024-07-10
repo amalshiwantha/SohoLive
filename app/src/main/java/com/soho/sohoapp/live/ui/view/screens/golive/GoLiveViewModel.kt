@@ -10,6 +10,7 @@ import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.AgencyItem
+import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
@@ -92,6 +93,7 @@ class GoLiveViewModel(
                                 apiKey = UUID.randomUUID().toString()
                             )
                             mState.value = mState.value.copy(goLiveResults = dat)
+                            removedConnectedSM()
                             // temp end
 
                             mState.value =
@@ -325,6 +327,14 @@ class GoLiveViewModel(
                 _connectedProfileNames.value = currentList
             }
         }
+    }
+
+    /*
+    * after goLive APi is success then set logOut state from connectedSM list
+    * to reopen when next
+    * */
+    private fun removedConnectedSM() {
+        dataStore.saveSMProfileList(ConnectedSocialProfile(mutableListOf()))
     }
 
     fun showAlert(config: AlertConfig) {
