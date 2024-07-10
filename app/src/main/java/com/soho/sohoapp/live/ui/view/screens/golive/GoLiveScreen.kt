@@ -410,6 +410,13 @@ fun GoLiveScreen(
                         if (netUtil.isNetworkAvailable()) {
                             if (mFieldsError.isEmpty()) {
                                 goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(mGoLiveSubmit))
+                            } else {
+                                goLiveVm.showAlert(
+                                    getAlertConfig(
+                                        context.getString(R.string.attention),
+                                        context.getString(R.string.attention_message)
+                                    )
+                                )
                             }
                         } else {
                             goLiveVm.showAlert(
@@ -956,6 +963,12 @@ private fun Content5(
         onSwipeIsNowSelected(it)
     })
     SpacerVertical(size = 154.dp)
+
+    if (isNowSelected) {
+
+    } else {
+
+    }
 }
 
 @Composable

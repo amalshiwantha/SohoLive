@@ -48,4 +48,6 @@
     <string name="connection_lost">Connection Lost</string>
     <string name="no_net_msg">Please check your internet connection and try again</string>
     <string name="requesting_golive">Requesting GoLive....</string>
+    <string name="attention">Attention</string>
+    <string name="attention_message">All mandatory fields are required</string>
 </resources>
