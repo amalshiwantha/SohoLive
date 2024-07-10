@@ -84,9 +84,10 @@ class GoLiveViewModel(
                         val errorMsg = result.response
                         val res = result.data
 
+                        removedConnectedSM()
+
                         if (isSuccess) {
                             mState.value = mState.value.copy(goLiveResults = res)
-                            removedConnectedSM()
                         } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {

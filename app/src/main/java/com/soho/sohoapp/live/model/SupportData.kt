@@ -102,8 +102,7 @@ data class PlatformToken(
 data class GoLivePlatform(
     @SerialName("target_feed_id") var targetFeedId: String? = null,
     @SerialName("platform") var platform: String? = null,
-    @SerialName("access_token") var accessToken: String? = null,
-    @SerialName("privacy") var privacy: String = "",
+    @SerialName("access_token") var accessToken: String? = null
 )
 
 @Serializable
