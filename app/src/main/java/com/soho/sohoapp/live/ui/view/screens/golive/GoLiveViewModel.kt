@@ -86,16 +86,8 @@ class GoLiveViewModel(
 
                         if (isSuccess) {
                             mState.value = mState.value.copy(goLiveResults = res)
-                        } else {
-                            //temp todo
-                            val dat = DataGoLiveSubmit(
-                                streamUrl = "htttp://",
-                                apiKey = UUID.randomUUID().toString()
-                            )
-                            mState.value = mState.value.copy(goLiveResults = dat)
                             removedConnectedSM()
-                            // temp end
-
+                        } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
                                     message = errorMsg.orEmpty()
