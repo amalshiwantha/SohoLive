@@ -90,6 +90,7 @@ import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
+import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonColouredWrap
 import com.soho.sohoapp.live.ui.components.ButtonConnect
@@ -956,19 +957,37 @@ private fun Content5(
     isNowSelected: Boolean,
     onSwipeIsNowSelected: (Boolean) -> Unit
 ) {
+    val isNoSchedule = true
+
     //swipe selection
     Text700_14sp(step = "When do you want to go live?")
     SpacerVertical(size = 8.dp)
     SwipeSwitchWhenGo(isNowSelected, onSwipeChange = {
         onSwipeIsNowSelected(it)
     })
-    SpacerVertical(size = 154.dp)
 
+    //this is for Schedule section content
     if (isNowSelected) {
+        SpacerVertical(size = 40.dp)
+        Text700_14sp(step = "Set date & time")
 
-    } else {
+        SpacerVertical(size = 8.dp)
+        Text700_14sp(step = "You can schedule multiple livecast for this listing", isBold = false)
 
+        SpacerVertical(size = 16.dp)
+        ButtonColoredIcon(title = "Add Scheduled Time(s)",
+            icon = R.drawable.ic_add,
+            btnColor = AppGreen,
+            onBtnClick = { })
+
+        if (isNoSchedule) {
+            SpacerVertical(size = 8.dp)
+            Text700_14sp(step = "Please set at least 1 schedule", isBold = false, color = ErrorRed)
+        }
     }
+
+    //add more bottom spaces
+    SpacerVertical(size = 100.dp)
 }
 
 @Composable
