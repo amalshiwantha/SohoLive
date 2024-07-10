@@ -84,7 +84,7 @@ class GoLiveViewModel(
                         val errorMsg = result.response
                         val res = result.data
 
-                        removedConnectedSM()
+                        //removedConnectedSM()
 
                         if (isSuccess) {
                             mState.value = mState.value.copy(goLiveResults = res)

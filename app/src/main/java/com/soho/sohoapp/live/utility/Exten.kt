@@ -15,16 +15,19 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.network.response.DataGoLiveSubmit
 import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
+import com.soho.sohoapp.live.ui.view.activity.HaishinActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
 
-fun openLiveCaster() {
+fun openLiveCaster(apiRes: DataGoLiveSubmit) {
     val intent = Intent(context, HaishinActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK
     }
+    intent.putExtra(KEY_STREAM, apiRes.streamKey)
     context.startActivity(intent)
 }
 

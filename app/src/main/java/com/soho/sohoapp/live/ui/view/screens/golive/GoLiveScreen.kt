@@ -174,7 +174,7 @@ fun GoLiveScreen(
     * */
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
-            openLiveCaster()
+            openLiveCaster(it)
         }
     }
 

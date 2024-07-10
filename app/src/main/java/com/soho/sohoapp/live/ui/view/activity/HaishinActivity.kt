@@ -31,6 +31,10 @@ class HaishinActivity : AppCompatActivity() {
     private var streamKey: String = ""
     private val PERMISSION_REQUEST_CODE = 101
 
+    companion object {
+        const val KEY_STREAM = "streamKey"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -103,30 +107,36 @@ class HaishinActivity : AppCompatActivity() {
     }
 
     private fun showStreamKeyDialog() {
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setTitle("Enter Mux Stream Key")
+        streamKey = intent.getStringExtra(KEY_STREAM) ?: ""
 
-        val input = EditText(this)
-        input.hint = "Find it form https://dashboard.mux.com/"
-        alertDialogBuilder.setView(input)
+        if (streamKey.isEmpty()) {
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setTitle("Enter Mux Stream Key")
 
-        alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
-            val key = input.text.toString().trim()
-            if (key.isNotEmpty()) {
-                streamKey = key
-            } else {
-                showStreamKeyDialog()
+            val input = EditText(this)
+            input.hint = "Find it form https://dashboard.mux.com/"
+            alertDialogBuilder.setView(input)
+
+            alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
+                val key = input.text.toString().trim()
+                if (key.isNotEmpty()) {
+                    streamKey = key
+                } else {
+                    showStreamKeyDialog()
+                }
             }
-        }
 
-        alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
-            dialog.dismiss()
-            finish()
-        }
+            alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
 
-        alertDialogBuilder.setCancelable(false)
-        val alertDialog = alertDialogBuilder.create()
-        alertDialog.show()
+            alertDialogBuilder.setCancelable(false)
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        } else {
+            Toast.makeText(applicationContext, "Found Stream Key", Toast.LENGTH_LONG).show()
+        }
     }
 
     private object StreamParameters {
