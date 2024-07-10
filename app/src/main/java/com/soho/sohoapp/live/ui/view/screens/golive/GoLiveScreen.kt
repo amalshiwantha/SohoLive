@@ -108,8 +108,8 @@ import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
+import com.soho.sohoapp.live.ui.components.TextIconSwipeSelection
 import com.soho.sohoapp.live.ui.components.TextStarRating
-import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushGradientLive
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -952,7 +952,7 @@ private fun Content5(
     //swipe selection
     Text700_14sp(step = "When do you want to go live?")
     SpacerVertical(size = 8.dp)
-    SwipeableSwitch(isNowSelected, onSwipeChange = {
+    SwipeSwitchWhenGo(isNowSelected, onSwipeChange = {
         onSwipeIsNowSelected(it)
     })
     SpacerVertical(size = 154.dp)
@@ -1070,7 +1070,7 @@ fun ShareDownloadButtons() {
 }
 
 @Composable
-private fun SwipeableSwitch(isNowSelected: Boolean, onSwipeChange: (Boolean) -> Unit) {
+private fun SwipeSwitchWhenGo(isNowSelected: Boolean, onSwipeChange: (Boolean) -> Unit) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val horizontalPadding = 16.dp
     val availableWidth = screenWidth - (horizontalPadding * 2)
@@ -1082,7 +1082,7 @@ private fun SwipeableSwitch(isNowSelected: Boolean, onSwipeChange: (Boolean) -> 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(88.dp)
             .border(width = 1.dp, color = BorderGray, shape = RoundedCornerShape(16.dp))
             .background(Color.Transparent)
     ) {
@@ -1102,19 +1102,21 @@ private fun SwipeableSwitch(isNowSelected: Boolean, onSwipeChange: (Boolean) -> 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            TextSwipeSelection(
+            TextIconSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
                     .clickable { onSwipeChange(true) },
-                title = "Now",
+                title = "Go Live Now",
+                icon = R.drawable.livecast_color,
                 textColor = if (isNowSelected) TextDark else AppWhite
             )
 
-            TextSwipeSelection(
+            TextIconSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
                     .clickable { onSwipeChange(false) },
-                title = "Schedule for later",
+                title = "Schedule for Later",
+                icon = if (!isNowSelected) R.drawable.schedule_on else R.drawable.schedule_off,
                 textColor = if (!isNowSelected) TextDark else AppWhite
             )
         }

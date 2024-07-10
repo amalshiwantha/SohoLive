@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -360,6 +362,35 @@ fun TextSwipeSelection(modifier: Modifier, title: String, textColor: Color) {
             textAlign = TextAlign.Center,
             letterSpacing = 0.14.sp
         )
+    }
+}
+
+@Composable
+fun TextIconSwipeSelection(modifier: Modifier, title: String, textColor: Color, icon : Int) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = null
+            )
+            SpacerVertical(size = 8.dp)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = title,
+                fontSize = 12.sp,
+                lineHeight = 16.8.sp,
+                fontFamily = FontFamily(Font(R.font.axiforma)),
+                fontWeight = FontWeight(800),
+                color = textColor,
+                textAlign = TextAlign.Center,
+                letterSpacing = 0.14.sp
+            )
+        }
     }
 }
 
