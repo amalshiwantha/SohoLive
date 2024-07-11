@@ -81,7 +81,8 @@ fun ButtonColouredWrap(
         onClick = { onBtnClick() },
         colors = ButtonDefaults.buttonColors(
             containerColor = color
-        )
+        ),
+        contentPadding = PaddingValues(0.dp)
     ) {
         if (isBackButton) {
             TextWhite14Left(title = text)
