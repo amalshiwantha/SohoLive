@@ -5,8 +5,12 @@
     <string name="fb_client_token">eec0a7ca068d387dc66a99fa7500d3ee</string>
     <string name="fb_app_secret">55c03cc275aa7e76a86f3efc4701c751</string>
 
-    <!--google-->
-    <string name="web_client_id">1071285822372-tmaj7fmh1qjsqpl5ub0mkf7fftr7kmli.apps.googleusercontent.com</string>
+
+    <!--Google Auth-->
+    <!--web-->
+    <string name="google_client_id">490952348271-banmgt50mhn4im6satvfbmhdmqam6l37.apps.googleusercontent.com</string>
+    <!--android-->
+    <!--<string name="google_client_id">490952348271-fvsgi6n9ka7mrum5e506rgasb4j751ti.apps.googleusercontent.com</string>-->
 
     <!--MainApp-->
     <string name="app_name">SohoLive</string>

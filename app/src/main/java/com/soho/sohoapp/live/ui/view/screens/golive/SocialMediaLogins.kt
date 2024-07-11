@@ -50,6 +50,7 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
                         type = SocialMediaInfo.YOUTUBE,
                         isConnected = true
                     )
+                    println("profileGoogle "+profileGoogle)
                     val smProfile = SocialMediaProfile(SocialMediaInfo.YOUTUBE, profileGoogle)
                     viewMMain.saveSMProfile(smProfile)
                     viewMMain.googleSignOut()

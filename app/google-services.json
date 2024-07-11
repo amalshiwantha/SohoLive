@@ -29,10 +29,6 @@
             "package_name": "com.soho.sohoapp",
             "certificate_hash": "c4b69bd66871d82d6526f2241e54d20129d644d1"
           }
-        },
-        {
-          "client_id": "929774443290-2b426hk5p3l3620dnuo1j9kfivl8l7gh.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
@@ -88,10 +84,6 @@
             "package_name": "com.soho.sohoapp.dev",
             "certificate_hash": "99a0c0fd684ec00473b8ade5f775713c4ac17281"
           }
-        },
-        {
-          "client_id": "929774443290-2b426hk5p3l3620dnuo1j9kfivl8l7gh.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
@@ -126,25 +118,12 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:929774443290:android:f544b4946f942654cc2aa3",
+        "mobilesdk_app_id": "1:929774443290:android:823d1f6a2b273556cc2aa3",
         "android_client_info": {
           "package_name": "com.soho.sohoapp.live"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "929774443290-9n4pen2ntfq98a3detothoddfvc5krsv.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.soho.sohoapp.live",
-            "certificate_hash": "cae827ed18dcf2268d1944076d3ee7abc4c133e1"
-          }
-        },
-        {
-          "client_id": "929774443290-2b426hk5p3l3620dnuo1j9kfivl8l7gh.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyBPQoY2n2Tcv4hvKkK6A5Z6NaBQAYlKtbg"
