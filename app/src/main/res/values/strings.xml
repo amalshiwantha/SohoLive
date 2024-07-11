@@ -7,10 +7,7 @@
 
 
     <!--Google Auth-->
-    <!--web-->
     <string name="google_client_id">490952348271-banmgt50mhn4im6satvfbmhdmqam6l37.apps.googleusercontent.com</string>
-    <!--android-->
-    <!--<string name="google_client_id">490952348271-fvsgi6n9ka7mrum5e506rgasb4j751ti.apps.googleusercontent.com</string>-->
 
     <!--MainApp-->
     <string name="app_name">SohoLive</string>
