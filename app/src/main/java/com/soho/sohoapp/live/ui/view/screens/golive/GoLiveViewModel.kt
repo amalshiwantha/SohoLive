@@ -72,6 +72,8 @@ class GoLiveViewModel(
     //same submitNowGoLive() has ScheduleViewModel
     private fun submitNowGoLive(authToken: String, submitData: GoLiveSubmit) {
 
+        removedConnectedSM()
+
         apiRepo.submitGoLive(authToken, submitData).onEach { apiState ->
 
             when (apiState) {
@@ -83,8 +85,6 @@ class GoLiveViewModel(
                         val isSuccess = !result.responseType.equals("error")
                         val errorMsg = result.response
                         val res = result.data
-
-                        //removedConnectedSM()
 
                         if (isSuccess) {
                             mState.value = mState.value.copy(goLiveResults = res)
