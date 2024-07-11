@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -23,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.ui.theme.AppRed
@@ -151,7 +155,46 @@ fun ButtonColouredProgress(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ButtonGradientIcon(
+    text: String,
+    gradientBrush: Brush,
+    icon: Int,
+    modifier: Modifier = Modifier,
+    onBtnClick: () -> Unit
+) {
+    val radius = 16.dp
+    Button(
+        modifier = modifier,
+        onClick = onBtnClick,
+        shape = RoundedCornerShape(radius),
+        colors = ButtonDefaults.buttonColors(
+            contentColor = Color.Transparent
+        ),
+        contentPadding = PaddingValues()
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    brush = gradientBrush,
+                    shape = RoundedCornerShape(radius)
+                )
+                .padding(horizontal = 24.dp, vertical = 12.dp)
+        ) {
+            Row {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = icon),
+                    contentDescription = "",
+                    tint = Color.White
+                )
+                SpacerHorizontal(size = 8.dp)
+                TextWhite14(title = text)
+            }
+        }
+    }
+}
+
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ButtonGradientIcon(
     text: String,
@@ -184,7 +227,7 @@ fun ButtonGradientIcon(
             }
         }
     }
-}
+}*/
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
