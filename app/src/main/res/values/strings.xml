@@ -50,4 +50,8 @@
     <string name="requesting_golive">Requesting GoLive....</string>
     <string name="attention">Attention</string>
     <string name="attention_message">All mandatory fields are required</string>
+    <plurals name="livecast">
+        <item quantity="one">We’ve scheduled one livecast</item>
+        <item quantity="other">We’ve scheduled %d livecasts</item>
+    </plurals>
 </resources>
