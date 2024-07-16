@@ -19,6 +19,8 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
@@ -30,7 +32,14 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONObject
+import java.io.IOException
 
 //Google Auth
 @Composable
@@ -40,22 +49,11 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
         rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
             try {
                 val gsa = task?.getResult(ApiException::class.java)
-
-                if (gsa != null) {
-                    val profileGoogle = Profile(
-                        fullName = gsa.displayName,
-                        imageUrl = gsa.photoUrl.toString(),
-                        email = gsa.email,
-                        token = gsa.idToken,
-                        type = SocialMediaInfo.YOUTUBE,
-                        isConnected = true
-                    )
-                    println("profileGoogle "+profileGoogle)
-                    val smProfile = SocialMediaProfile(SocialMediaInfo.YOUTUBE, profileGoogle)
-                    viewMMain.saveSMProfile(smProfile)
-                    viewMMain.googleSignOut()
-                } else {
-                    //show error on gAuth
+                gsa?.let { account ->
+                    val authCode = account.serverAuthCode
+                    authCode?.let { auth -> getTokens(auth, viewMMain, account) }
+                } ?: run {
+                    println("myGuser gsa null ")
                 }
             } catch (e: ApiException) {
                 println("myGuser error " + e.toString())
@@ -63,6 +61,58 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
         }
 
     return authResultLauncher
+}
+
+private fun getTokens(authCode: String, viewMMain: MainViewModel, gsa: GoogleSignInAccount) {
+    val clientId = context.getString(R.string.google_client_id)
+    val clientSecret = context.getString(R.string.google_client_secret)
+    val redirectUri = "" // Redirect URI, usually "urn:ietf:wg:oauth:2.0:oob"
+    val grantType = "authorization_code"
+
+    val url = "https://oauth2.googleapis.com/token"
+    val requestBody = FormBody.Builder()
+        .add("code", authCode)
+        .add("client_id", clientId)
+        .add("client_secret", clientSecret)
+        .add("redirect_uri", redirectUri)
+        .add("grant_type", grantType)
+        .build()
+
+    val request = Request.Builder()
+        .url(url)
+        .post(requestBody)
+        .build()
+
+    val client = OkHttpClient()
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            println("myGuser getTokensErrr " + e.toString())
+            e.printStackTrace()
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            response.body?.string()?.let {
+                val jsonObject = JSONObject(it)
+
+                val accessToken = jsonObject.getString("access_token")
+                val refreshToken = jsonObject.getString("refresh_token")
+
+                val profileGoogle = Profile(
+                    fullName = gsa.displayName,
+                    imageUrl = gsa.photoUrl.toString(),
+                    email = gsa.email,
+                    token = accessToken,
+                    type = SocialMediaInfo.YOUTUBE,
+                    isConnected = true
+                )
+
+                val smProfile = SocialMediaProfile(SocialMediaInfo.YOUTUBE, profileGoogle)
+                viewMMain.saveSMProfile(smProfile)
+
+                println("myGuser profile " + profileGoogle)
+            }
+        }
+    })
 }
 
 //Facebook

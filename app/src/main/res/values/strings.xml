@@ -8,6 +8,7 @@
 
     <!--Google Auth-->
     <string name="google_client_id">490952348271-banmgt50mhn4im6satvfbmhdmqam6l37.apps.googleusercontent.com</string>
+    <string name="google_client_secret">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</string>
 
     <!--MainApp-->
     <string name="app_name">SohoLive</string>
