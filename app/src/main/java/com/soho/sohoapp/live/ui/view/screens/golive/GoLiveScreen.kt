@@ -200,6 +200,7 @@ fun GoLiveScreen(
     LaunchedEffect(eventState.value) {
         saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM, onReloadDataStore = {
             goLiveVm.loadConnectedSMList()
+            viewMMain.resetSendEvent()
         })
     }
 
@@ -346,19 +347,19 @@ fun GoLiveScreen(
 
                                     if (selectedSM.isConnect) {
 
-                                        val currentPT = mGoLiveSubmit.platformToken
-                                        val platformName = selectedSM.name.lowercase()
-
                                         if (selectedSM.isItemChecked) {
                                             viewMMain.updateSMConnectedState(selectedSM)
                                         } else {
-                                            checkedSM.remove(selectedSM.name)
-                                            currentPT.removeIf { it.platform == platformName }
-                                        }
+                                            val currentPT = mGoLiveSubmit.platformToken
+                                            val platformName = selectedSM.name.lowercase()
 
-                                        mGoLiveSubmit.apply {
-                                            checkedPlatforms = checkedSM
-                                            platformToken = currentPT
+                                            checkedSM.remove(platformName)
+                                            currentPT.removeIf { it.platform == platformName }
+
+                                            mGoLiveSubmit.apply {
+                                                checkedPlatforms = checkedSM
+                                                platformToken = currentPT
+                                            }
                                         }
 
                                     } else {
@@ -708,6 +709,7 @@ fun saveSMProfileInGoLiveData(
             platformToken = currentPlatformToken
             checkedPlatforms = checkedSM
             targets = liveTargets
+            //TODO if checkedSM == targets remove non SM from targets
         }
     }
 }
@@ -850,7 +852,7 @@ fun StepContents(
                     onSMItemClicked.invoke(smInfo)
                 },
                 onUpdateInitialState = { smAllList ->
-                    /*val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
+                    val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
                     val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
 
                     val updatedPlatformToken: MutableList<PlatformToken> =
@@ -863,7 +865,7 @@ fun StepContents(
 
                     mGoLiveSubmit.apply {
                         platformToken = updatedPlatformToken
-                    }*/
+                    }
                 })
             SpacerVertical(size = 70.dp)
         }
@@ -1431,9 +1433,9 @@ private fun SocialMediaListing(
         accessToken = savedLI?.accessToken
     }
 
-    /*LaunchedEffect(onUpdateInitialState) {
+    LaunchedEffect(onUpdateInitialState) {
         onUpdateInitialState(smList)
-    }*/
+    }
 
     smList.forEach { item ->
         SocialMediaItemContent(item, onSMItemClicked = {
