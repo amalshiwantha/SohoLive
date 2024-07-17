@@ -208,13 +208,15 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             GlobalScope.launch {
                                 AppEventBus.sendEvent(AppEvent.SMProfile(stateSMConnected))
                             }
-                            isShowSMConnectedModel = false
+
                             viewMMain.resetSMConnectState()
+                            isShowSMConnectedModel = false
                         },
                         onDisconnectClick = { smProfile ->
                             doLogout(smProfile)
-                            isShowSMConnectedModel = false
+                            viewMMain.removeSMProfile(smProfile)
                             viewMMain.resetSMConnectState()
+                            isShowSMConnectedModel = false
                         })
 
 

@@ -2,9 +2,6 @@ package com.soho.sohoapp.live.ui.view.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
@@ -32,30 +29,28 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
         getConnectedSMProfile(smInfo.name)
     }
 
-    //Google
+    //save logged SM profile
     fun saveSMProfile(smProfile: SocialMediaProfile) {
         viewModelScope.launch {
             saveConnectedSMProfileList(smProfile)
         }
     }
 
+    //remove logout SM profile
+    fun removeSMProfile(smProfile: SocialMediaProfile) {
+        viewModelScope.launch {
+            val currentList =
+                dataStore.getSMProfileList() ?: ConnectedSocialProfile(mutableListOf())
+
+            currentList.smProfileList.removeIf { it.smInfo.name == smProfile.smInfo.name }
+
+            dataStore.saveSMProfileList(currentList)
+        }
+    }
+
     fun resetSMConnectState() {
         _stateIsSMConnected.update { SocialMediaProfile() }
     }
-
-    fun googleSignOut() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
-        val googleSignInClient = GoogleSignIn.getClient(context, gso)
-        googleSignInClient.signOut().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                println("myGuser signed out successfully.")
-            } else {
-                println("myGuser Sign out failed.")
-            }
-        }
-    }
-    //Google End
-
 
     //add or replace a connected social media profile
     private fun saveConnectedSMProfileList(newProfile: SocialMediaProfile) {
