@@ -198,9 +198,9 @@ fun GoLiveScreen(
     * Connect the SM need to update the mGoLiveSubmit
     * */
     LaunchedEffect(eventState.value) {
-        /*saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM, onReloadDataStore = {
+        saveSMProfileInGoLiveData(eventState, mGoLiveSubmit, checkedSM, onReloadDataStore = {
             goLiveVm.loadConnectedSMList()
-        })*/
+        })
     }
 
     /*
@@ -346,24 +346,11 @@ fun GoLiveScreen(
 
                                     if (selectedSM.isConnect) {
 
+                                        val currentPT = mGoLiveSubmit.platformToken
+                                        val platformName = selectedSM.name.lowercase()
+
                                         if (selectedSM.isItemChecked) {
                                             viewMMain.updateSMConnectedState(selectedSM)
-                                        }
-
-                                        //TODO add below code after model done button click
-                                        /*val currentPT = mGoLiveSubmit.platformToken
-                                        val platformName = selectedSM.name.lowercase()
-                                        val token = selectedSM.accessToken
-
-                                        if (selectedSM.isItemChecked) {
-                                            checkedSM.add(selectedSM.name)
-
-                                            currentPT.add(
-                                                PlatformToken(
-                                                    platformName,
-                                                    token.toString()
-                                                )
-                                            )
                                         } else {
                                             checkedSM.remove(selectedSM.name)
                                             currentPT.removeIf { it.platform == platformName }
@@ -372,7 +359,7 @@ fun GoLiveScreen(
                                         mGoLiveSubmit.apply {
                                             checkedPlatforms = checkedSM
                                             platformToken = currentPT
-                                        }*/
+                                        }
 
                                     } else {
                                         viewMMain.updateSocialMediaState(selectedSM)
