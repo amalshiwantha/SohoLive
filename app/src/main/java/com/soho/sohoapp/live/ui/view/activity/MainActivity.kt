@@ -204,7 +204,13 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         stateSMConnected,
                         isShowSMConnectedModel,
                         onDoneClick = {
-                            //send updated SMProfile to save in submitData
+
+                            stateSMConnected.apply {
+                                profile.isConnected = true
+                                smInfo.isConnect = true
+                                smInfo.isItemChecked = true
+                            }
+
                             GlobalScope.launch {
                                 AppEventBus.sendEvent(AppEvent.SMProfile(stateSMConnected))
                             }
@@ -212,14 +218,20 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             viewMMain.resetSMConnectState()
                             isShowSMConnectedModel = false
                         },
-                        onDisconnectClick = { smProfile ->
-                            doLogout(smProfile)
-                            viewMMain.removeSMProfile(smProfile)
+                        onDisconnectClick = { delSmProfile ->
+                            delSmProfile.apply {
+                                profile.isConnected = false
+                                smInfo.isConnect = false
+                                smInfo.isItemChecked = false
+                            }
+
+                            doLogout(delSmProfile)
+                            viewMMain.removeSMProfile(delSmProfile)
                             viewMMain.resetSMConnectState()
                             isShowSMConnectedModel = false
 
                             GlobalScope.launch {
-                                AppEventBus.sendEvent(AppEvent.SMProfile(smProfile))
+                                AppEventBus.sendEvent(AppEvent.SMProfile(delSmProfile))
                             }
                         })
 

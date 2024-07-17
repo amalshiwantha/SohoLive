@@ -18,7 +18,7 @@ enum class SocialMediaInfo(
     var btnIcon: Int,
     val icon: Int,
     var isConnect: Boolean = false,
-    var isItemChecked: Boolean = true,
+    var isItemChecked: Boolean = false,
     var accessToken: String? = null,
     var selectionType: CategoryInfo? = null
 ) {

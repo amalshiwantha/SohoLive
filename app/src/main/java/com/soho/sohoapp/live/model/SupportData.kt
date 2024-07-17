@@ -151,7 +151,7 @@ data class Profile(
     val email: String? = null,
     val token: String? = null,
     val type: SocialMediaInfo = SocialMediaInfo.NONE,
-    val isConnected: Boolean = false
+    var isConnected: Boolean = false
 ) {
     constructor() : this(
         fullName = "",
