@@ -1698,7 +1698,7 @@ private fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem
             ) {
 
                 TypeAndCheckBox(item.isChecked, property, txtColor = textColor, onCheckedChange = {
-                    onItemClicked(item)
+                    onItemClicked(item.apply { isChecked = !isChecked })
                 })
                 SpacerVertical(size = 8.dp)
                 Text700_14sp(step = property.fullAddress(), color = textColor)
