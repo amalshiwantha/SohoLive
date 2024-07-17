@@ -19,14 +19,12 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
-import com.soho.sohoapp.live.network.response.DataGoLiveSubmit
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class GoLiveViewModel(
     private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager,
@@ -90,8 +88,6 @@ class GoLiveViewModel(
 
     private fun submitNowGoLiveSchedule(authToken: String, submitData: GoLiveSubmit) {
 
-        removedConnectedSM()
-
         apiRepo.submitGoLiveSchedule(authToken, submitData).onEach { apiState ->
 
             when (apiState) {
@@ -99,6 +95,8 @@ class GoLiveViewModel(
                 is ApiState.Data -> {
 
                     apiState.data?.let { result ->
+
+                        removedConnectedSM()
 
                         val isSuccess = !result.responseType.equals("error")
                         val errorMsg = result.response
@@ -129,8 +127,6 @@ class GoLiveViewModel(
     //same submitNowGoLive() has ScheduleViewModel
     private fun submitNowGoLive(authToken: String, submitData: GoLiveSubmit) {
 
-        removedConnectedSM()
-
         apiRepo.submitGoLive(authToken, submitData).onEach { apiState ->
 
             when (apiState) {
@@ -138,6 +134,8 @@ class GoLiveViewModel(
                 is ApiState.Data -> {
 
                     apiState.data?.let { result ->
+
+                        removedConnectedSM()
 
                         val isSuccess = !result.responseType.equals("error")
                         val errorMsg = result.response

@@ -184,7 +184,12 @@ fun GoLiveScreen(
     * */
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
-            openLiveCaster(it)
+
+            if (isNowSelected) {
+                openLiveCaster(it)
+            } else {
+                isShowScheduleOkScreen = true
+            }
 
             //Reset steps flow
             currentStepId = 0
@@ -416,9 +421,6 @@ fun GoLiveScreen(
                         isNoSlots = mGoLiveSubmit.scheduleSlots.isEmpty()
 
                         if (!isNoSlots) {
-                            //TODO call schedule api and open success screen
-                            //isShowScheduleOkScreen = true
-
                             //add utc dateFormat for schedules
                             convertScheduleUtc(mGoLiveSubmit)
 
@@ -452,10 +454,9 @@ fun GoLiveScreen(
 
 /*
 * mGoLiveSubmit.scheduleSlots convert to the utc timeFormat like "2024-07-13T06:30:00Z"
-* //“schedules_at”:[{“date_time”:“2024-07-13T06:30:00Z”},{“date_time”:“2024-07-16T06:30:00Z”}]
 * */
 
-fun convertScheduleUtc(mGoLiveSubmit: GoLiveSubmit) {
+private fun convertScheduleUtc(mGoLiveSubmit: GoLiveSubmit) {
     val updatedSchedulesAt: MutableList<ScheduleDateTime> = mutableListOf()
 
     mGoLiveSubmit.scheduleSlots.forEach { dateTimeString ->
