@@ -61,6 +61,7 @@ data class GoLiveSubmit(
     @SerialName("agent_profile_id") var agentId: Int = 0,
     @SerialName("unlisted") var unlisted: Boolean = false,
     @SerialName("simulcast_targets") var targets: MutableList<GoLivePlatform> = mutableListOf(),
+    @SerialName("schedules_at") var schedulesAt: MutableList<ScheduleDateTime> = mutableListOf(),
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
@@ -117,6 +118,11 @@ data class ScheduleSlots(
         display = null
     )
 }
+
+@Serializable
+data class ScheduleDateTime(
+    @SerialName("date_time") var dateTime: String? = null
+)
 
 @Serializable
 data class ConnectedSocialMedia(val smList: MutableList<SocialMediaInfo>)

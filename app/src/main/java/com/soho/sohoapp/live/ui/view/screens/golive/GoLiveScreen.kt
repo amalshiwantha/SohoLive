@@ -82,6 +82,7 @@ import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
+import com.soho.sohoapp.live.model.ScheduleDateTime
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
@@ -138,6 +139,9 @@ import com.soho.sohoapp.live.utility.openLiveCaster
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
 import org.koin.compose.koinInject
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -415,6 +419,9 @@ fun GoLiveScreen(
                             //TODO call schedule api and open success screen
                             //isShowScheduleOkScreen = true
 
+                            //add utc dateFormat for schedules
+                            convertScheduleUtc(mGoLiveSubmit)
+
                             callApi(
                                 mGoLiveSubmit,
                                 mFieldsError,
@@ -440,6 +447,35 @@ fun GoLiveScreen(
                 })
             })
         }
+    }
+}
+
+/*
+* mGoLiveSubmit.scheduleSlots convert to the utc timeFormat like "2024-07-13T06:30:00Z"
+* //“schedules_at”:[{“date_time”:“2024-07-13T06:30:00Z”},{“date_time”:“2024-07-16T06:30:00Z”}]
+* */
+
+fun convertScheduleUtc(mGoLiveSubmit: GoLiveSubmit) {
+    val updatedSchedulesAt: MutableList<ScheduleDateTime> = mutableListOf()
+
+    mGoLiveSubmit.scheduleSlots.forEach { dateTimeString ->
+        dateTimeString.display?.let { dateTime ->
+
+            val formatter = SimpleDateFormat("d/M/yyyy, hh:mm a", Locale.US)
+            formatter.timeZone = TimeZone.getDefault()
+            val localDate = formatter.parse(dateTime)
+
+            val utcFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+            utcFormatter.timeZone = TimeZone.getTimeZone("UTC")
+
+            localDate?.let {
+                updatedSchedulesAt.add(ScheduleDateTime(dateTime = utcFormatter.format(it)))
+            }
+        }
+    }
+
+    mGoLiveSubmit.apply {
+        schedulesAt = updatedSchedulesAt
     }
 }
 
