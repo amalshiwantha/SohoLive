@@ -22,9 +22,14 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _stateIsSMConnected = MutableStateFlow(SocialMediaProfile())
     val stateIsSMConnected = _stateIsSMConnected.asStateFlow()
 
+
     //update LiveData
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {
         _isCallSMConnect.value = smInfo
+    }
+
+    fun updateSMConnectedState(smInfo: SocialMediaInfo) {
+        getConnectedSMProfile(smInfo.name)
     }
 
     //Google
@@ -78,5 +83,18 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
                 _stateIsSMConnected.update { foundProfile }
             }
         }
+    }
+
+    private fun getConnectedSMProfile(name: String) {
+        viewModelScope.launch {
+            val currentList =
+                dataStore.getSMProfileList() ?: ConnectedSocialProfile(mutableListOf())
+            val foundSMprofile = currentList.smProfileList.find { it.smInfo.name == name }
+
+            if (foundSMprofile != null) {
+                _stateIsSMConnected.update { foundSMprofile }
+            }
+        }
+
     }
 }

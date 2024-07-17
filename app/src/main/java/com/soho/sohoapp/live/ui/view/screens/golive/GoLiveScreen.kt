@@ -360,9 +360,20 @@ fun GoLiveScreen(
                                     goLiveVm.updateAgentSelectionList(selectedAgent)
                                 },
                                 onSMItemClicked = { selectedSM ->
+
+                                    /*
+                                    * if SM Connected then open resultSM bottomSheet
+                                    * or else open connectSM bottomSheet
+                                    * */
+
                                     if (selectedSM.isConnect) {
 
-                                        val currentPT = mGoLiveSubmit.platformToken
+                                        if (selectedSM.isItemChecked) {
+                                            viewMMain.updateSMConnectedState(selectedSM)
+                                        }
+
+                                        //TODO add below code after model done button click
+                                        /*val currentPT = mGoLiveSubmit.platformToken
                                         val platformName = selectedSM.name.lowercase()
                                         val token = selectedSM.accessToken
 
@@ -383,7 +394,7 @@ fun GoLiveScreen(
                                         mGoLiveSubmit.apply {
                                             checkedPlatforms = checkedSM
                                             platformToken = currentPT
-                                        }
+                                        }*/
 
                                     } else {
                                         viewMMain.updateSocialMediaState(selectedSM)
