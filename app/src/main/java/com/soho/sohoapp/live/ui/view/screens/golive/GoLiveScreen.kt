@@ -860,7 +860,7 @@ fun StepContents(
                     onSMItemClicked.invoke(smInfo)
                 },
                 onUpdateInitialState = { smAllList ->
-                    val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
+                    /*val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
                     val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
 
                     val updatedPlatformToken: MutableList<PlatformToken> =
@@ -873,7 +873,7 @@ fun StepContents(
 
                     mGoLiveSubmit.apply {
                         platformToken = updatedPlatformToken
-                    }
+                    }*/
                 })
             SpacerVertical(size = 70.dp)
         }
