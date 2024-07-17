@@ -652,7 +652,9 @@ fun saveSMProfileInGoLiveData(
                             platform = platformName,
                             accessToken = selectedType.accessToken
                         )
-                        //liveTargets.remove(goPlatform)
+                        liveTargets.removeIf {
+                            it.accessToken == goPlatform.accessToken
+                        }
                         liveTargets.add(goPlatform)
                     }
 
@@ -662,7 +664,9 @@ fun saveSMProfileInGoLiveData(
                             platform = platformName,
                             accessToken = selectedType.accessToken
                         )
-                        //liveTargets.remove(goPlatform)
+                        liveTargets.removeIf {
+                            it.accessToken == goPlatform.accessToken
+                        }
                         liveTargets.add(goPlatform)
                     }
 
@@ -672,7 +676,9 @@ fun saveSMProfileInGoLiveData(
                             platform = platformName,
                             accessToken = selectedType.accessToken
                         )
-                        //liveTargets.remove(goPlatform)
+                        liveTargets.removeIf {
+                            it.accessToken == goPlatform.accessToken
+                        }
                         liveTargets.add(goPlatform)
                     }
                 }
@@ -682,7 +688,9 @@ fun saveSMProfileInGoLiveData(
                     platform = platformName,
                     accessToken = selectedType.accessToken
                 )
-                //liveTargets.remove(goPlatform)
+                liveTargets.removeIf {
+                    it.accessToken == goPlatform.accessToken
+                }
                 liveTargets.add(goPlatform)
             }
         }
@@ -709,7 +717,6 @@ fun saveSMProfileInGoLiveData(
             platformToken = currentPlatformToken
             checkedPlatforms = checkedSM
             targets = liveTargets
-            //TODO if checkedSM == targets remove non SM from targets
         }
     }
 }
