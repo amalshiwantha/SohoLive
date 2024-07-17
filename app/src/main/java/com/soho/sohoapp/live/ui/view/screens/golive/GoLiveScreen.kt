@@ -1270,7 +1270,7 @@ private fun SwipeSwitchWhenGo(isNowSelected: Boolean, onSwipeChange: (Boolean) -
             TextIconSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { onSwipeChange(true) },
+                    .clickable { /*onSwipeChange(true)*/ },
                 title = "Go Live Now",
                 icon = R.drawable.livecast_color,
                 textColor = if (isNowSelected) TextDark else AppWhite
@@ -1279,7 +1279,7 @@ private fun SwipeSwitchWhenGo(isNowSelected: Boolean, onSwipeChange: (Boolean) -
             TextIconSwipeSelection(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { onSwipeChange(false) },
+                    .clickable { /*onSwipeChange(false)*/ },
                 title = "Schedule for Later",
                 icon = if (!isNowSelected) R.drawable.schedule_on else R.drawable.schedule_off,
                 textColor = if (!isNowSelected) TextDark else AppWhite
