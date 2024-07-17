@@ -1494,7 +1494,8 @@ private fun ProfileHideItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .padding(bottom = 16.dp)
+            .clickable { onCheckedChange(!isDontShowProfile) },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = ItemCardBg),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -1511,8 +1512,7 @@ private fun ProfileHideItem(
             Spacer(modifier = Modifier.weight(1f))
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clickable { onCheckedChange(!isDontShowProfile) },
+                    .padding(horizontal = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
