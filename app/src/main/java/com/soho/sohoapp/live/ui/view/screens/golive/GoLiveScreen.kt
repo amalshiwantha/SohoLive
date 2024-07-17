@@ -699,6 +699,7 @@ fun saveSMProfileInGoLiveData(
 
         //update new platform list
         if (smProfile.profile.isConnected) {
+            currentPlatformToken.removeIf { it.platform == platformName }
             currentPlatformToken.add(
                 PlatformToken(
                     platform = platformName,
