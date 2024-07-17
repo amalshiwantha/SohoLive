@@ -231,22 +231,29 @@ class GoLiveViewModel(
         }
     }
 
+    private fun resetPropSelections() {
+        assetsState.value.propertyListState?.value =
+            assetsState.value.propertyListState?.value?.map { item ->
+                if (item.isChecked) item.copy(isChecked = false) else item
+            } ?: listOf()
+    }
+
     fun updatePropertyList(updatedItem: PropertyItem) {
-        val propertyList = assetsState.value.propertyListState?.value
+        resetPropSelections()
 
-        propertyList?.let {
-            it.map { prop ->
-                prop.copy(
-                    id = updatedItem.id,
-                    propInfo = updatedItem.propInfo,
-                    isChecked = updatedItem.isChecked
-                )
-            }
+        val propList = assetsState.value.propertyListState?.value
 
-            assetsState.value =
-                assetsState.value.copy(propertyListState = mutableStateOf(propertyList))
+        propList?.let { listItem ->
+            assetsState.value.propertyListState?.value =
+                listItem.map { item ->
+                    if (item.id == updatedItem.id) {
+                        item.copy(isChecked = updatedItem.isChecked)
+                    } else {
+                        item
+                    }
+                }
 
-            updateAgentList(it)
+            updateAgentList(listItem,updatedItem)
         }
     }
 
@@ -266,13 +273,13 @@ class GoLiveViewModel(
         }
     }
 
-    private fun updateAgentList(propertyList: List<PropertyItem>) {
+    private fun updateAgentList(propertyList: List<PropertyItem>, updatedItem: PropertyItem) {
 
         val agentProfiles = mState.value.apiResults?.agentProfiles
 
         agentProfiles?.let { agent ->
             val selectedAgentId =
-                propertyList.filter { it.isChecked }.map { it.propInfo.apAgentsIds }
+                propertyList.filter { it.id == updatedItem.id }.map { it.propInfo.apAgentsIds }
             val agentLst = getAgencyItemsById(agent, selectedAgentId, null)
             assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
         }
