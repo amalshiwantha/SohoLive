@@ -13,6 +13,7 @@ import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
+import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
@@ -136,6 +137,8 @@ class GoLiveViewModel(
                         val isSuccess = !result.responseType.equals("error")
                         val errorMsg = result.response
                         val res = result.data
+
+                        resetSMState()
 
                         if (isSuccess) {
                             mState.value = mState.value.copy(goLiveResults = res)
@@ -382,11 +385,21 @@ class GoLiveViewModel(
     }
 
     /*
-    * after goLive APi is success then set logOut state from connectedSM list
+    * after goLive APi is success then set itemCheck state false state from connectedSM list
     * to reopen when next
     * */
-    private fun removedConnectedSM() {
-        dataStore.saveSMProfileList(ConnectedSocialProfile(mutableListOf()))
+    private fun resetSMState() {
+        viewModelScope.launch {
+            val currentList =
+                dataStore.getSMProfileList() ?: ConnectedSocialProfile(mutableListOf())
+
+            currentList.smProfileList.map { item ->
+                item.smInfo.isItemChecked = false
+            }
+
+            // Save the updated profile list
+            dataStore.saveSMProfileList(currentList)
+        }
     }
 
     fun showAlert(config: AlertConfig) {
