@@ -217,6 +217,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             viewMMain.removeSMProfile(smProfile)
                             viewMMain.resetSMConnectState()
                             isShowSMConnectedModel = false
+
+                            GlobalScope.launch {
+                                AppEventBus.sendEvent(AppEvent.SMProfile(smProfile))
+                            }
                         })
 
 

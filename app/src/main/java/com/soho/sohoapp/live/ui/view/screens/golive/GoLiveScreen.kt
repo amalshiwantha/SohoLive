@@ -1469,31 +1469,39 @@ private fun SocialMediaListing(
 
 
     val updatedList = smList.map { item ->
-        savedYT?.let { savedObj ->
-            if (item.name == savedObj.name) {
-                savedObj
+        savedYT?.let { ytData ->
+            if (item.name == ytData.name) {
+                ytData
             } else {
                 item
             }
-        } ?: item
+        } ?: item.apply {
+            isConnect = false
+            isItemChecked = false
+        }
 
-        savedFB?.let { savedObj ->
-            if (item.name == savedObj.name) {
-                savedObj
+        savedFB?.let { fbData ->
+            if (item.name == fbData.name) {
+                fbData
             } else {
                 item
             }
-        } ?: item
+        } ?: item.apply {
+            isConnect = false
+            isItemChecked = false
+        }
 
-        savedLI?.let { savedObj ->
-            if (item.name == savedObj.name) {
-                savedObj
+        savedLI?.let { liData ->
+            if (item.name == liData.name) {
+                liData
             } else {
                 item
             }
-        } ?: item
+        } ?: item.apply {
+            isConnect = false
+            isItemChecked = false
+        }
     }
-
 
     /*LaunchedEffect(onUpdateInitialState) {
         onUpdateInitialState(smList)
