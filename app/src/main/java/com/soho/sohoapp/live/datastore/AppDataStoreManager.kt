@@ -8,7 +8,6 @@ import com.soho.sohoapp.live.datastore.DataStoreKeys.PREF_KEY_LOGIN_STATE
 import com.soho.sohoapp.live.datastore.DataStoreKeys.PREF_KEY_USER_SM_PROFILES
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.network.response.Data
-import com.soho.sohoapp.live.ui.view.activity.SharedPreferencesHelper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
@@ -24,7 +23,7 @@ class AppDataStoreManager(private val context: Context) {
     private val sharedPref: SharedPreferences =
         context.getSharedPreferences(APP_DATASTORE, Context.MODE_PRIVATE)
 
-    fun saveSMProfileList(smProfileList : ConnectedSocialProfile?) {
+    fun saveSMProfileList(smProfileList: ConnectedSocialProfile?) {
         val jsonString = Json.encodeToString(smProfileList)
         val editor = sharedPref.edit()
         editor.putString(PREF_KEY_USER_SM_PROFILES, jsonString)

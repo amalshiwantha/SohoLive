@@ -1,7 +1,5 @@
 package com.soho.sohoapp.live.ui.view.activity
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -65,7 +63,6 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
-import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -102,40 +99,20 @@ import com.ssw.linkedinmanager.ui.LinkedInRequestManager
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 
-class SharedPreferencesHelper(context: Context) {
-
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
-
-    fun saveProfile(key: String, profile: ConnectedSocialProfile) {
-        val jsonString = Json.encodeToString(profile)
-        val editor = sharedPreferences.edit()
-        editor.putString(key, jsonString)
-        editor.apply()
-    }
-
-    fun getProfile(key: String): ConnectedSocialProfile? {
-        val jsonString = sharedPreferences.getString(key, null) ?: return null
-        return Json.decodeFromString(jsonString)
-    }
-}
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
-    //private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
+    companion object {
+        var maxSteps = 4
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-
-        //sharedPreferencesHelper = SharedPreferencesHelper(this)
-
 
         setContent {
             SohoLiveTheme {
@@ -147,10 +124,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
-                    //val stateSMProfile by viewMMain.stateConnectedProfile.collectAsStateWithLifecycle()
                     val stateSMConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
-                    //val saveProf by viewMMain.saveProf.collectAsStateWithLifecycle()
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
@@ -185,13 +160,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     //Google Sign In
                     val gAuth = doConnectGoogle(viewMMain)
-
-                    /*LaunchedEffect(key1 = stateSMProfile) {
-                        if (stateSMProfile.profile.isConnected) {
-                            viewMMain.saveSocialMediaProfile(stateSMProfile)
-                            viewMMain.resetState()
-                        }
-                    }*/
 
                     //Show Profile BottomSheet for SM connected
                     LaunchedEffect(stateSMConnected) {

@@ -128,6 +128,7 @@ import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.activity.MainActivity.Companion.maxSteps
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
@@ -161,7 +162,7 @@ fun GoLiveScreen(
 
     val stateVm = goLiveVm.mState.value
     val assetsState = savedState ?: goLiveVm.assetsState.value
-    val stepCount = 5
+    val stepCount = maxSteps
     var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
     val optionList = mutableListOf("Inspection", "Auction", "Other")
     var isNetConnected by remember { mutableStateOf(true) }
