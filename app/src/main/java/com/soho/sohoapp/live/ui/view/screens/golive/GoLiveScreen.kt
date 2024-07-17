@@ -351,15 +351,23 @@ fun GoLiveScreen(
                                         if (selectedSM.isItemChecked) {
                                             viewMMain.updateSMConnectedState(selectedSM)
                                         } else {
+                                            val updatedTargets: MutableList<GoLivePlatform> =
+                                                mutableListOf()
+                                            val liveTargets = mGoLiveSubmit.targets.toMutableList()
                                             val currentPT = mGoLiveSubmit.platformToken
                                             val platformName = selectedSM.name.lowercase()
 
                                             checkedSM.remove(platformName)
                                             currentPT.removeIf { it.platform == platformName }
 
+                                            checkedSM.forEach { smName ->
+                                                updatedTargets.add(liveTargets.first { it.platform == smName })
+                                            }
+
                                             mGoLiveSubmit.apply {
                                                 checkedPlatforms = checkedSM
                                                 platformToken = currentPT
+                                                targets = updatedTargets
                                             }
                                         }
 
