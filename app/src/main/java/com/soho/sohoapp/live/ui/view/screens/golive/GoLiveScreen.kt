@@ -1488,16 +1488,20 @@ private fun PropertyListing(
 
 @Composable
 private fun ProfileHideItem(
-    isDontShowProfile: Boolean, onCheckedChange: (Boolean) -> Unit = {}
+    isHideProfile: Boolean, onCheckedChange: (Boolean) -> Unit = {}
 ) {
+
+    val cardBgColor = if (isHideProfile) AppWhite else ItemCardBg
+    val textColor = if (isHideProfile) ItemCardBg else AppWhite
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
-            .clickable { onCheckedChange(!isDontShowProfile) },
+            .clickable { onCheckedChange(!isHideProfile) },
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = ItemCardBg),
+
+        colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
 
@@ -1508,7 +1512,7 @@ private fun ProfileHideItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text700_14spBold(step = "Do not show profile")
+            Text700_14spBold(step = "Do not show profile", txtColor = textColor)
             Spacer(modifier = Modifier.weight(1f))
             Box(
                 modifier = Modifier
@@ -1517,7 +1521,7 @@ private fun ProfileHideItem(
             ) {
                 //CheckBox BG
                 Image(
-                    painter = if (isDontShowProfile) {
+                    painter = if (isHideProfile) {
                         painterResource(id = R.drawable.check_box_chcked)
                     } else {
                         painterResource(id = R.drawable.cehck_box_uncheck)
@@ -1525,7 +1529,7 @@ private fun ProfileHideItem(
                 )
 
                 //Tick Icon
-                if (isDontShowProfile) {
+                if (isHideProfile) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_tick),
                         contentDescription = null,
