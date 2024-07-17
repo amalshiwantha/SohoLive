@@ -59,7 +59,7 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
                 dataStore.getSMProfileList() ?: ConnectedSocialProfile(mutableListOf())
 
             currentList.smProfileList.removeAll { it.smInfo == newProfile.smInfo }
-            currentList.smProfileList.add(newProfile)
+            currentList.smProfileList.add(newProfile.apply { smInfo.isItemChecked = true })
 
             // Save the updated profile list
             dataStore.saveSMProfileList(currentList)

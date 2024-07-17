@@ -96,8 +96,6 @@ class GoLiveViewModel(
 
                     apiState.data?.let { result ->
 
-                        removedConnectedSM()
-
                         val isSuccess = !result.responseType.equals("error")
                         val errorMsg = result.response
                         val res = result.data
@@ -134,8 +132,6 @@ class GoLiveViewModel(
                 is ApiState.Data -> {
 
                     apiState.data?.let { result ->
-
-                        removedConnectedSM()
 
                         val isSuccess = !result.responseType.equals("error")
                         val errorMsg = result.response

@@ -878,8 +878,6 @@ fun StepContents(
                 },
                 onUpdateInitialState = { smAllList ->
                     val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
-                    /*val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
-                        .map { it.title.lowercase() }*/
                     val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
 
                     val updatedPlatformToken: MutableList<PlatformToken> =
@@ -891,7 +889,6 @@ fun StepContents(
                         }.toMutableList()
 
                     mGoLiveSubmit.apply {
-                        //platform = selectedSMList.toMutableList()
                         platformToken = updatedPlatformToken
                     }
                 })
