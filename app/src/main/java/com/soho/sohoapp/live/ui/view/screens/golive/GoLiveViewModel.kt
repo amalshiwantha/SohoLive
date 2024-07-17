@@ -367,11 +367,12 @@ class GoLiveViewModel(
                 currentList = profileList.smProfileList.map { it.smInfo }.toMutableList()
 
                 currentList.forEachIndexed { index, socialMediaInfo ->
-                    val foundToken =
+                    val smProfile =
                         profileList.smProfileList.find { it.profile.type == socialMediaInfo }
 
                     currentList[index] = socialMediaInfo.apply {
-                        accessToken = foundToken?.profile?.token
+                        accessToken = smProfile?.profile?.token
+                        isConnect = smProfile?.profile?.isConnected ?: false
                     }
                 }
 

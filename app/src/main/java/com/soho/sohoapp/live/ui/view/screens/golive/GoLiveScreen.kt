@@ -186,6 +186,9 @@ fun GoLiveScreen(
         stateVm.goLiveResults?.let {
 
             if (isNowSelected) {
+                isConnectedYouTube = false
+                isConnectedFacebook = false
+                isConnectedLinkedIn = false
                 openLiveCaster(it)
             } else {
                 isShowScheduleOkScreen = true
@@ -258,10 +261,10 @@ fun GoLiveScreen(
     * */
     if (stateSMConnected.isNotEmpty()) {
         val list = stateSMConnected
-        val isHasYouTube = list.indexOfFirst { it.name == SocialMediaInfo.YOUTUBE.name }
+        val isHasYouTube = list.find { it.name == SocialMediaInfo.YOUTUBE.name }
         val isHasFaceBook = list.indexOfFirst { it.name == SocialMediaInfo.FACEBOOK.name }
         val isHasLinkedIn = list.indexOfFirst { it.name == SocialMediaInfo.LINKEDIN.name }
-        isConnectedYouTube = isHasYouTube != -1
+        isConnectedYouTube = isHasYouTube?.isConnect ?: false
         isConnectedFacebook = isHasFaceBook != -1
         isConnectedLinkedIn = isHasLinkedIn != -1
     }
@@ -307,7 +310,8 @@ fun GoLiveScreen(
                             val agencyList = assetsState.agencyListState?.value
 
                             //All Steps
-                            StepContents(currentStepId = currentStepId,
+                            StepContents(
+                                currentStepId = currentStepId,
                                 savedResults = savedData,
                                 tsResults = savedTsResults,
                                 propertyList = propertyList,
@@ -321,6 +325,7 @@ fun GoLiveScreen(
                                 isConnectFB = isConnectedFacebook,
                                 isConnectLI = isConnectedLinkedIn,
                                 mFieldsError = mFieldsError,
+                                stateSMConnected = stateSMConnected,
                                 onSwipeIsNowSelected = {
                                     isNowSelected = it
                                     assetsState.isNowSelected.value = it
@@ -357,13 +362,11 @@ fun GoLiveScreen(
                                 onSMItemClicked = { selectedSM ->
                                     if (selectedSM.isConnect) {
 
-                                        //val goLivePlatform = mGoLiveSubmit.platform
                                         val currentPT = mGoLiveSubmit.platformToken
                                         val platformName = selectedSM.name.lowercase()
                                         val token = selectedSM.accessToken
 
                                         if (selectedSM.isItemChecked) {
-                                            //goLivePlatform.add(selectedSM.name.lowercase())
                                             checkedSM.add(selectedSM.name)
 
                                             currentPT.add(
@@ -373,15 +376,12 @@ fun GoLiveScreen(
                                                 )
                                             )
                                         } else {
-                                            //goLivePlatform.remove(selectedSM.name.lowercase())
                                             checkedSM.remove(selectedSM.name)
-
                                             currentPT.removeIf { it.platform == platformName }
                                         }
 
                                         mGoLiveSubmit.apply {
                                             checkedPlatforms = checkedSM
-                                            //platform = goLivePlatform
                                             platformToken = currentPT
                                         }
 
@@ -807,6 +807,7 @@ fun StepContents(
     isConnectFB: Boolean,
     isConnectLI: Boolean,
     mFieldsError: MutableMap<FormFields, String>,
+    stateSMConnected: MutableList<SocialMediaInfo>,
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onNotShowProfileChange: (Boolean) -> Unit,
     onPropertyItemClicked: (PropertyItem) -> Unit,
@@ -855,7 +856,9 @@ fun StepContents(
 
         // step #3
         2 -> {
-            SocialMediaListing(isConnectYoutube = isConnectYT,
+            SocialMediaListing(
+                stateSMConnected = stateSMConnected,
+                isConnectYoutube = isConnectYT,
                 isConnectFaceBook = isConnectFB,
                 isConnectLinkedIn = isConnectLI,
                 onSMItemClicked = { selectedSM ->
@@ -877,7 +880,7 @@ fun StepContents(
                     onSMItemClicked.invoke(smInfo)
                 },
                 onUpdateInitialState = { smAllList ->
-                    val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
+                    /*val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
                     val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
 
                     val updatedPlatformToken: MutableList<PlatformToken> =
@@ -890,7 +893,7 @@ fun StepContents(
 
                     mGoLiveSubmit.apply {
                         platformToken = updatedPlatformToken
-                    }
+                    }*/
                 })
             SpacerVertical(size = 70.dp)
         }
@@ -1424,6 +1427,7 @@ private fun NextBackButtons(
 
 @Composable
 private fun SocialMediaListing(
+    stateSMConnected: MutableList<SocialMediaInfo>,
     isConnectYoutube: Boolean,
     isConnectFaceBook: Boolean,
     isConnectLinkedIn: Boolean,
@@ -1432,27 +1436,59 @@ private fun SocialMediaListing(
     onUpdateInitialState: (smList: List<SocialMediaInfo>) -> Unit
 ) {
 
+    val savedYT = stateSMConnected.find { it.name == SocialMediaInfo.YOUTUBE.name }
+    val savedFB = stateSMConnected.find { it.name == SocialMediaInfo.FACEBOOK.name }
+    val savedLI = stateSMConnected.find { it.name == SocialMediaInfo.LINKEDIN.name }
+
     val visibleSMList = SocialMediaInfo.entries.filter {
         it.name != SocialMediaInfo.NONE.name
     }
 
     val smList by rememberSaveable { mutableStateOf(visibleSMList) }
 
-    smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
-        isConnect = isConnectYoutube
-    }
-    smList.first { it.name == SocialMediaInfo.FACEBOOK.name }.apply {
-        isConnect = isConnectFaceBook
-    }
-    smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
-        isConnect = isConnectLinkedIn
+    /* smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
+         isConnect = savedYT?.isConnect ?: false
+     }
+     smList.first { it.name == SocialMediaInfo.FACEBOOK.name }.apply {
+         isConnect = savedFB?.isConnect ?: false
+     }
+     smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
+         isConnect = savedLI?.isConnect ?: false
+     }*/
+
+
+    val updatedList = smList.map { item ->
+        savedYT?.let { savedObj ->
+            if (item.name == savedObj.name) {
+                savedObj
+            } else {
+                item
+            }
+        } ?: item
+
+        savedFB?.let { savedObj ->
+            if (item.name == savedObj.name) {
+                savedObj
+            } else {
+                item
+            }
+        } ?: item
+
+        savedLI?.let { savedObj ->
+            if (item.name == savedObj.name) {
+                savedObj
+            } else {
+                item
+            }
+        } ?: item
     }
 
-    LaunchedEffect(onUpdateInitialState) {
+
+    /*LaunchedEffect(onUpdateInitialState) {
         onUpdateInitialState(smList)
-    }
+    }*/
 
-    smList.forEach { item ->
+    updatedList.forEach { item ->
         SocialMediaItemContent(item, onSMItemClicked = {
             onSMItemClicked.invoke(it)
         }, onSMItemChecked = { smInfo ->
@@ -1921,6 +1957,7 @@ private fun PreviewGoLiveScreen() {
                     isConnectFB = true,
                     isConnectLI = true,
                     mFieldsError = mutableMapOf(),
+                    stateSMConnected = mutableListOf(),
                     onSwipeIsNowSelected = { },
                     onNotShowProfileChange = {},
                     onPropertyItemClicked = {},
