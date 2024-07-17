@@ -16,7 +16,10 @@ import com.facebook.GraphRequest
 import com.facebook.GraphResponse
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.soho.sohoapp.live.R
@@ -40,6 +43,32 @@ import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
+
+//Logout SM
+fun doLogout(smProfile: SocialMediaProfile) {
+    when (smProfile.smInfo.name) {
+        SocialMediaInfo.YOUTUBE.name -> {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
+
+            googleSignInClient.signOut()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        println("myGuser User successfully logged out from Google.")
+                    } else {
+                        println("myGuser Failed to log out from Google.")
+                    }
+                }
+        }
+
+        SocialMediaInfo.FACEBOOK.name -> {
+            LoginManager.getInstance().logOut()
+            println("myFB logged out from Facebook.")
+        }
+
+        SocialMediaInfo.LINKEDIN.name -> {}
+    }
+}
 
 //Google Auth
 @Composable

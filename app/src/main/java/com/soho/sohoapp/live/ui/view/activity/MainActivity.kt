@@ -89,6 +89,7 @@ import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.DoConnectFacebook
 import com.soho.sohoapp.live.ui.view.screens.golive.doConnectGoogle
+import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
@@ -210,7 +211,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             isShowSMConnectedModel = false
                             viewMMain.resetSMConnectState()
                         },
-                        onDisconnectClick = {
+                        onDisconnectClick = { smProfile ->
+                            doLogout(smProfile)
                             isShowSMConnectedModel = false
                             viewMMain.resetSMConnectState()
                         })
@@ -318,7 +320,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         smProfile: SocialMediaProfile,
         isShow: Boolean,
         onDoneClick: () -> Unit,
-        onDisconnectClick: () -> Unit
+        onDisconnectClick: (SocialMediaProfile) -> Unit
     ) {
         val bottomSheetState = rememberModalBottomSheetState()
 
@@ -332,7 +334,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 ProfileContentBottomSheet(smProfile, onDone = {
                     onDoneClick()
                 }, onDisconnect = {
-                    onDisconnectClick()
+                    onDisconnectClick(smProfile)
                 })
             }
         }
