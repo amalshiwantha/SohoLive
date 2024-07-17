@@ -51,6 +51,10 @@ class GoLiveViewModel(
             is GoLiveEvent.CallSubmitGoLive -> {
                 submitGoLiveData(event.submitData)
             }
+
+            is GoLiveEvent.CallSubmitSchedule -> {
+                submitGoLiveSchedule(event.submitData)
+            }
         }
     }
 
@@ -67,6 +71,59 @@ class GoLiveViewModel(
                 }
             }
         }
+    }
+
+    private fun submitGoLiveSchedule(submitData: GoLiveSubmit) {
+        mState.value = mState.value.copy(
+            loadingState = ProgressBarState.Loading,
+            loadingMessage = context.getString(R.string.scheduling_golive)
+        )
+
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    submitNowGoLiveSchedule(it.authenticationToken, submitData)
+                }
+            }
+        }
+    }
+
+    private fun submitNowGoLiveSchedule(authToken: String, submitData: GoLiveSubmit) {
+
+        removedConnectedSM()
+
+        apiRepo.submitGoLiveSchedule(authToken, submitData).onEach { apiState ->
+
+            when (apiState) {
+
+                is ApiState.Data -> {
+
+                    apiState.data?.let { result ->
+
+                        val isSuccess = !result.responseType.equals("error")
+                        val errorMsg = result.response
+                        val res = result.data
+
+                        if (isSuccess) {
+                            mState.value = mState.value.copy(goLiveResults = res)
+                        } else {
+                            mState.value =
+                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
+                                    message = errorMsg.orEmpty()
+                                }))
+                        }
+                    }
+                }
+
+                is ApiState.Loading -> {
+                    mState.value = mState.value.copy(loadingState = apiState.progressBarState)
+                }
+
+                is ApiState.Alert -> {
+                    mState.value = mState.value.copy(alertState = apiState.alertState)
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     //same submitNowGoLive() has ScheduleViewModel

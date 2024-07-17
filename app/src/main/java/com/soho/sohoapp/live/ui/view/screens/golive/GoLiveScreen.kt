@@ -413,32 +413,23 @@ fun GoLiveScreen(
 
                         if (!isNoSlots) {
                             //TODO call schedule api and open success screen
-                            isShowScheduleOkScreen = true
+                            //isShowScheduleOkScreen = true
+
+                            callApi(
+                                mGoLiveSubmit,
+                                mFieldsError,
+                                netUtil,
+                                goLiveVm,
+                                false,
+                                onErrorsUpdate = {
+                                    mFieldsError = it
+                                })
                         }
                     },
                     onClickedLive = {
-                        mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
-                        mFieldsError = mGoLiveSubmit.errors
-
-                        if (netUtil.isNetworkAvailable()) {
-                            if (mFieldsError.isEmpty()) {
-                                goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(mGoLiveSubmit))
-                            } else {
-                                goLiveVm.showAlert(
-                                    getAlertConfig(
-                                        context.getString(R.string.attention),
-                                        context.getString(R.string.attention_message)
-                                    )
-                                )
-                            }
-                        } else {
-                            goLiveVm.showAlert(
-                                getAlertConfig(
-                                    context.getString(R.string.connection_lost),
-                                    context.getString(R.string.no_net_msg)
-                                )
-                            )
-                        }
+                        callApi(mGoLiveSubmit, mFieldsError, netUtil, goLiveVm, onErrorsUpdate = {
+                            mFieldsError = it
+                        })
                     })
             }
         } else {
@@ -449,6 +440,44 @@ fun GoLiveScreen(
                 })
             })
         }
+    }
+}
+
+fun callApi(
+    mGoLiveSubmit: GoLiveSubmit,
+    mFieldsError: MutableMap<FormFields, String>,
+    netUtil: NetworkUtils,
+    goLiveVm: GoLiveViewModel,
+    isGoLive: Boolean = true,
+    onErrorsUpdate: (MutableMap<FormFields, String>) -> Unit
+) {
+    mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+    onErrorsUpdate.invoke(mGoLiveSubmit.errors)
+
+    if (netUtil.isNetworkAvailable()) {
+        if (mFieldsError.isEmpty()) {
+
+            if (isGoLive) {
+                goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(mGoLiveSubmit))
+            } else {
+                goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitSchedule(mGoLiveSubmit))
+            }
+
+        } else {
+            goLiveVm.showAlert(
+                getAlertConfig(
+                    context.getString(R.string.attention),
+                    context.getString(R.string.attention_message)
+                )
+            )
+        }
+    } else {
+        goLiveVm.showAlert(
+            getAlertConfig(
+                context.getString(R.string.connection_lost),
+                context.getString(R.string.no_net_msg)
+            )
+        )
     }
 }
 

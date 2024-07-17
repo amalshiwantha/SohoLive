@@ -16,6 +16,28 @@ import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
+    fun submitGoLiveSchedule(
+        authToken: String,
+        goLiveData: GoLiveSubmit
+    ): Flow<ApiState<GoLiveSubmitResponse>> =
+        flow {
+            try {
+                val apiResponse =
+                    service.goLiveSchedule(
+                        authToken = authToken,
+                        propertyId = goLiveData.propertyId.toString(),
+                        goLiveData = goLiveData.copy().apply {
+                            this.purpose = purpose?.lowercase()
+                        })
+                emit(ApiState.Data(data = apiResponse))
+
+            } catch (e: Exception) {
+                e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
+
     fun submitGoLive(
         authToken: String,
         goLiveData: GoLiveSubmit

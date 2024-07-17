@@ -73,4 +73,20 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             setBody(goLiveData)
         }.body()
     }
+
+    override suspend fun goLiveSchedule(
+        authToken: String,
+        goLiveData: GoLiveSubmit,
+        propertyId: String
+    ): GoLiveSubmitResponse {
+        return httpClient.post {
+            url {
+                takeFrom(BASE_URL)
+                encodedPath += SohoApiServices.PROPERTY_SCHEDULE.replace("{propertyId}", propertyId)
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+            setBody(goLiveData)
+        }.body()
+    }
 }

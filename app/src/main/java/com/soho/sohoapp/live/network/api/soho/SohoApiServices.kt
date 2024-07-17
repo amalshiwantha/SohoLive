@@ -14,6 +14,7 @@ interface SohoApiServices {
     companion object {
         const val LOGIN = "sessions/login"
         const val PROPERTY_LISTING = "property_listing/data"
+        const val PROPERTY_SCHEDULE = "property_listing/{propertyId}/schedules"
         const val GO_LIVE = "live_stream"
         const val TS_PROPERTY = "collections/property_listings/documents/search"
     }
@@ -22,4 +23,5 @@ interface SohoApiServices {
     suspend fun propertyListing(authToken: String): GoLiveResponse
     suspend fun tsProperty(tsPropRequest: TsPropertyRequest): TsPropertyResponse
     suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse
+    suspend fun goLiveSchedule(authToken: String, goLiveData: GoLiveSubmit, propertyId : String): GoLiveSubmitResponse
 }
