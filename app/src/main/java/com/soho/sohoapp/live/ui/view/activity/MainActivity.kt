@@ -202,12 +202,16 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     SocialMediaProfileBottomSheet(
                         stateSMConnected,
                         isShowSMConnectedModel,
-                        onClose = {
+                        onDoneClick = {
                             //send updated SMProfile to save in submitData
                             GlobalScope.launch {
                                 AppEventBus.sendEvent(AppEvent.SMProfile(stateSMConnected))
                             }
-                            isShowSMConnectedModel = it
+                            isShowSMConnectedModel = false
+                            viewMMain.resetSMConnectState()
+                        },
+                        onDisconnectClick = {
+                            isShowSMConnectedModel = false
                             viewMMain.resetSMConnectState()
                         })
 
@@ -313,7 +317,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     private fun SocialMediaProfileBottomSheet(
         smProfile: SocialMediaProfile,
         isShow: Boolean,
-        onClose: (Boolean) -> Unit
+        onDoneClick: () -> Unit,
+        onDisconnectClick: () -> Unit
     ) {
         val bottomSheetState = rememberModalBottomSheetState()
 
@@ -321,13 +326,13 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             ModalBottomSheet(
                 containerColor = BottomBarBg,
                 dragHandle = { DragHandle(color = BottomSheetDrag) },
-                onDismissRequest = { onClose.invoke(false) },
+                onDismissRequest = { onDoneClick() },
                 sheetState = bottomSheetState
             ) {
                 ProfileContentBottomSheet(smProfile, onDone = {
-                    onClose.invoke(false)
+                    onDoneClick()
                 }, onDisconnect = {
-                    onClose.invoke(false)
+                    onDisconnectClick()
                 })
             }
         }
