@@ -13,7 +13,6 @@ import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
-import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
@@ -139,8 +138,8 @@ class GoLiveViewModel(
                         val res = result.data
 
                         if (isSuccess) {
-                            mState.value = mState.value.copy(goLiveResults = res)
                             resetSMState()
+                            mState.value = mState.value.copy(goLiveResults = res)
                         } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
@@ -251,7 +250,7 @@ class GoLiveViewModel(
                     }
                 }
 
-            updateAgentList(listItem,updatedItem)
+            updateAgentList(listItem, updatedItem)
         }
     }
 
