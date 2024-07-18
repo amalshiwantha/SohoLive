@@ -8,7 +8,6 @@ import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +20,9 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
 
     private val _stateIsSMConnected = MutableStateFlow(SocialMediaProfile())
     val stateIsSMConnected = _stateIsSMConnected.asStateFlow()
+
+    private val _stateRecentLoggedSM = MutableStateFlow(mutableListOf<String>())
+    val stateRecentLoggedSM = _stateRecentLoggedSM.asStateFlow()
 
 
     //update LiveData
@@ -36,6 +38,10 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     fun saveSMProfile(smProfile: SocialMediaProfile) {
         viewModelScope.launch {
             saveConnectedSMProfileList(smProfile)
+
+            val newSM = smProfile.smInfo.name
+            _stateRecentLoggedSM.value =
+                _stateRecentLoggedSM.value.toMutableList().apply { add(newSM) }
         }
     }
 
@@ -48,11 +54,21 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             currentList.smProfileList.removeIf { it.smInfo.name == smProfile.smInfo.name }
 
             dataStore.saveSMProfileList(currentList)
+            removeRecentSMConnectState(smProfile.smInfo.name)
         }
     }
 
     fun resetSMConnectState() {
         _stateIsSMConnected.update { SocialMediaProfile() }
+    }
+
+    fun resetRecentSMConnectState() {
+        _stateRecentLoggedSM.update { mutableListOf() }
+    }
+
+    fun removeRecentSMConnectState(name: String) {
+        _stateRecentLoggedSM.value =
+            _stateRecentLoggedSM.value.toMutableList().apply { remove(name) }
     }
 
     //add or replace a connected social media profile
@@ -95,7 +111,7 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
         }
     }
 
-    fun resetSendEvent(){
+    fun resetSendEvent() {
         viewModelScope.launch {
             AppEventBus.sendEvent(AppEvent.SMProfile(SocialMediaProfile()))
         }

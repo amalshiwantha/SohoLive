@@ -161,6 +161,7 @@ fun GoLiveScreen(
 ) {
 
     val stateVm = goLiveVm.mState.value
+    val stateRecentSM = viewMMain.stateRecentLoggedSM
     val assetsState = savedState ?: goLiveVm.assetsState.value
     val stepCount = maxSteps
     var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
@@ -176,6 +177,16 @@ fun GoLiveScreen(
     val eventState =
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
+    var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
+
+
+    LaunchedEffect(stateRecentSM) {
+        stateRecentSM.collect { list ->
+            recentLoggedSM = list
+            println("RecentSM list: $list")
+        }
+    }
+
 
     /*
     * if goLiveApi got success response then want to open the LiveCast Screen
@@ -306,6 +317,7 @@ fun GoLiveScreen(
                                 mGoLiveSubmit = mGoLiveSubmit,
                                 mFieldsError = mFieldsError,
                                 stateSMConnected = stateSMConnected,
+                                recentLoggedSM = recentLoggedSM,
                                 onSwipeIsNowSelected = {
                                     isNowSelected = it
                                     assetsState.isNowSelected.value = it
@@ -800,6 +812,7 @@ fun StepContents(
     optionList: MutableList<String>,
     mFieldsError: MutableMap<FormFields, String>,
     stateSMConnected: MutableList<SocialMediaInfo>,
+    recentLoggedSM: MutableList<String>,
     onSwipeIsNowSelected: (Boolean) -> Unit,
     onNotShowProfileChange: (Boolean) -> Unit,
     onPropertyItemClicked: (PropertyItem) -> Unit,
@@ -849,6 +862,7 @@ fun StepContents(
         // step #3
         2 -> {
             SocialMediaListing(
+                recentLoggedSM = recentLoggedSM,
                 stateSMConnected = stateSMConnected,
                 onSMItemClicked = { selectedSM ->
                     when (selectedSM) {
@@ -867,22 +881,6 @@ fun StepContents(
                 },
                 onSMItemChecked = { smInfo ->
                     onSMItemClicked.invoke(smInfo)
-                },
-                onUpdateInitialState = { smAllList ->
-                    /*val smList = smAllList.filterNot { it.name == SocialMediaInfo.SOHO.name }
-                    val selectedSMList = smList.filter { it.isConnect && it.isItemChecked }
-
-                    val updatedPlatformToken: MutableList<PlatformToken> =
-                        selectedSMList.mapNotNull { sm ->
-                            PlatformToken(
-                                platform = sm.name.lowercase(),
-                                accessToken = sm.accessToken.toString()
-                            )
-                        }.toMutableList()
-
-                    mGoLiveSubmit.apply {
-                        platformToken = updatedPlatformToken
-                    }*/
                 })
             SpacerVertical(size = 70.dp)
         }
@@ -1416,22 +1414,42 @@ private fun NextBackButtons(
 
 @Composable
 private fun SocialMediaListing(
+    recentLoggedSM: MutableList<String>,
     stateSMConnected: MutableList<SocialMediaInfo>,
     onSMItemClicked: (String) -> Unit,
-    onSMItemChecked: (SocialMediaInfo) -> Unit,
-    onUpdateInitialState: (smList: List<SocialMediaInfo>) -> Unit
+    onSMItemChecked: (SocialMediaInfo) -> Unit
 ) {
 
+    /*this is for each SM checkBox*/
+    var isCheckedSOHO by rememberSaveable { mutableStateOf(false) }
+    var isCheckedYT by rememberSaveable { mutableStateOf(false) }
+    var isCheckedFB by rememberSaveable { mutableStateOf(false) }
+    var isCheckedLI by rememberSaveable { mutableStateOf(false) }
+
+    /*check Sm connected or Not*/
     val savedYT = stateSMConnected.find { it.name == SocialMediaInfo.YOUTUBE.name }
     val savedFB = stateSMConnected.find { it.name == SocialMediaInfo.FACEBOOK.name }
     val savedLI = stateSMConnected.find { it.name == SocialMediaInfo.LINKEDIN.name }
+
+    /*if SM recentLogged first piroty to checked state or else change state*/
+    isCheckedYT =
+        if (recentLoggedSM.contains(SocialMediaInfo.YOUTUBE.name)) true
+        else savedYT?.isItemChecked ?: false
+    isCheckedFB =
+        if (recentLoggedSM.contains(SocialMediaInfo.FACEBOOK.name)) true
+        else savedFB?.isItemChecked ?: false
+    isCheckedLI =
+        if (recentLoggedSM.contains(SocialMediaInfo.LINKEDIN.name)) true
+        else savedLI?.isItemChecked ?: false
 
     val visibleSMList = SocialMediaInfo.entries.filter {
         it.name != SocialMediaInfo.NONE.name
     }
 
+    /*load all of SM list*/
     val smList by rememberSaveable { mutableStateOf(visibleSMList) }
 
+    /*and add nessary info token and connected state, according to that need to show connect button*/
     smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
         isConnect = savedYT?.isConnect ?: false
         isItemChecked = savedYT?.isItemChecked ?: false
@@ -1450,16 +1468,47 @@ private fun SocialMediaListing(
         accessToken = savedLI?.accessToken
     }
 
-    LaunchedEffect(onUpdateInitialState) {
-        onUpdateInitialState(smList)
-    }
-
+    /*finally display SM list with checkBox or connect button*/
     smList.forEach { item ->
-        SocialMediaItemContent(item, onSMItemClicked = {
-            onSMItemClicked.invoke(it)
-        }, onSMItemChecked = { smInfo ->
-            onSMItemChecked(smInfo)
-        })
+        SocialMediaItemContent(
+            item,
+            isCheckedSOHO,
+            isCheckedYT,
+            isCheckedFB,
+            isCheckedLI,
+            onSMItemClicked = {
+                /*this is for open connect model*/
+                onSMItemClicked.invoke(it)
+            },
+            onSMItemChecked = { smInfo ->
+                /*check and unCheck state update on toggle*/
+
+                /*first view need to show checkedState, so after that no need to check recentLogged state. so remove it*/
+                recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.YOUTUBE.name } }
+                recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.FACEBOOK.name } }
+                recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.LINKEDIN.name } }
+
+                /*smInfo.isItemChecked state update*/
+                when (smInfo.name) {
+                    SocialMediaInfo.YOUTUBE.name -> {
+                        isCheckedYT = smInfo.isItemChecked
+                    }
+
+                    SocialMediaInfo.FACEBOOK.name -> {
+                        isCheckedFB = smInfo.isItemChecked
+                    }
+
+                    SocialMediaInfo.LINKEDIN.name -> {
+                        isCheckedLI = smInfo.isItemChecked
+                    }
+
+                    else -> {
+                        isCheckedSOHO = smInfo.isItemChecked
+                    }
+                }
+
+                onSMItemChecked(smInfo)
+            })
     }
 }
 
@@ -1544,10 +1593,13 @@ private fun ProfileHideItem(
 @Composable
 private fun SocialMediaItemContent(
     info: SocialMediaInfo,
+    isCheckedSoho: Boolean,
+    isCheckedYT: Boolean,
+    isCheckedFB: Boolean,
+    isCheckedLI: Boolean,
     onSMItemClicked: (String) -> Unit,
     onSMItemChecked: (SocialMediaInfo) -> Unit
 ) {
-    var isChecked by remember { mutableStateOf(info.isItemChecked) }
 
     Card(
         modifier = Modifier
@@ -1584,10 +1636,26 @@ private fun SocialMediaItemContent(
 
             if (info.isConnect) {
                 //switch
+                val isChecked = when (info.name) {
+                    SocialMediaInfo.YOUTUBE.name -> {
+                        isCheckedYT
+                    }
+
+                    SocialMediaInfo.FACEBOOK.name -> {
+                        isCheckedFB
+                    }
+
+                    SocialMediaInfo.LINKEDIN.name -> {
+                        isCheckedLI
+                    }
+
+                    else -> {
+                        isCheckedSoho
+                    }
+                }
                 SwitchCompo(isChecked, modifier = Modifier.height(35.dp), onCheckedChange = {
-                    isChecked = it
                     onSMItemChecked.invoke(info.apply {
-                        isItemChecked = isChecked
+                        isItemChecked = it
                     })
                 })
             } else {
@@ -1921,6 +1989,7 @@ private fun PreviewGoLiveScreen() {
                     mGoLiveSubmit = GoLiveSubmit(),
                     mFieldsError = mutableMapOf(),
                     stateSMConnected = mutableListOf(),
+                    recentLoggedSM = mutableListOf(),
                     onSwipeIsNowSelected = { },
                     onNotShowProfileChange = {},
                     onPropertyItemClicked = {},
