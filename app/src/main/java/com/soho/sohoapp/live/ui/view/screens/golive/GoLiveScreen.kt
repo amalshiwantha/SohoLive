@@ -434,9 +434,25 @@ fun GoLiveScreen(
                         }
                     },
                     onClickedLive = {
-                        callApi(mGoLiveSubmit, mFieldsError, netUtil, goLiveVm, onErrorsUpdate = {
-                            mFieldsError = it
-                        })
+                        val isAllowGo = isAllowGoNext(
+                            currentStepId = currentStepId,
+                            mGoLiveSubmit = mGoLiveSubmit,
+                            goLiveVm = goLiveVm,
+                            onValidateRes = {
+                                mFieldsError = it.errors
+                            }
+                        )
+
+                        if (isAllowGo) {
+                            callApi(
+                                mGoLiveSubmit,
+                                mFieldsError,
+                                netUtil,
+                                goLiveVm,
+                                onErrorsUpdate = {
+                                    mFieldsError = it
+                                })
+                        }
                     })
             }
         } else {
