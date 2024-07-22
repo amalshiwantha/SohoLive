@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
@@ -46,8 +47,6 @@ import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
-
-data class VideoItem(val id: Int, val name: String)
 
 @Composable
 fun VideoLibraryScreen(
@@ -179,7 +178,7 @@ fun PropertyImageCenterPlay() {
 }
 
 private fun sampleData(): List<VideoItem> {
-    return List(50) { index -> VideoItem(index, "Item #$index") }
+    return List(50) { index -> VideoItem() }
 }
 
 @Preview
