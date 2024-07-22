@@ -113,7 +113,7 @@ private fun ListItemView(item: VideoItem) {
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
             PropertyImageCenterPlay(item.imageUrl, onClick = {
-
+                println("myVid - play ${item.imageUrl}")
             })
             SpacerHorizontal(size = 16.dp)
             TitleDescription(item)
@@ -131,19 +131,27 @@ private fun ListItemView(item: VideoItem) {
                 modifier = Modifier
                     .weight(1f)
                     .height(40.dp),
-                onBtnClick = {})
+                onBtnClick = {
+                    println("myVid - Manage ${item.title}")
+                })
             SpacerHorizontal(size = 8.dp)
 
             //download btn
-            ActionIconButton(R.drawable.ic_download_bold, onClickAction = {})
+            ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
+                println("myVid - download ${item.downloadLink}")
+            })
             SpacerHorizontal(size = 8.dp)
 
             //chart btn
-            ActionIconButton(R.drawable.ic_chart, onClickAction = {})
+            ActionIconButton(R.drawable.ic_chart, onClickAction = {
+                //open bottomSheet
+            })
             SpacerHorizontal(size = 8.dp)
 
             //share btn
-            ActionIconButton(R.drawable.ic_share, onClickAction = {})
+            ActionIconButton(R.drawable.ic_share, onClickAction = {
+                println("myVid - download ${item.shareableLink}")
+            })
         }
     }
 }
