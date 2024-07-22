@@ -1,11 +1,13 @@
 package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,7 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.StarYellow
 
@@ -290,6 +294,21 @@ fun Text700_12sp(modifier: Modifier = Modifier, label: String) {
 }
 
 @Composable
+fun Text700_12spRight(modifier: Modifier = Modifier, label: String, txtColor: Color) {
+    Text(
+        modifier = modifier,
+        text = label,
+        color = txtColor,
+        fontWeight = FontWeight(700),
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        textAlign = TextAlign.Right,
+        letterSpacing = 0.14.sp,
+    )
+}
+
+@Composable
 fun Text400_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,
@@ -366,7 +385,7 @@ fun TextSwipeSelection(modifier: Modifier, title: String, textColor: Color) {
 }
 
 @Composable
-fun TextIconSwipeSelection(modifier: Modifier, title: String, textColor: Color, icon : Int) {
+fun TextIconSwipeSelection(modifier: Modifier, title: String, textColor: Color, icon: Int) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -394,11 +413,46 @@ fun TextIconSwipeSelection(modifier: Modifier, title: String, textColor: Color, 
     }
 }
 
+@Composable
+fun TextBadge(text: String, bgColor: Color) {
+    Text(
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(800),
+        textAlign = TextAlign.Center,
+        letterSpacing = 0.9.sp,
+        text = text,
+        color = AppWhite,
+        modifier = Modifier
+            .background(bgColor, shape = RoundedCornerShape(12.dp))
+            .padding(8.dp)
+    )
+}
+
+@Composable
+fun TextBadgeDuration(text: String) {
+    Text(
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(700),
+        textAlign = TextAlign.Center,
+        letterSpacing = 0.9.sp,
+        text = text,
+        color = AppWhite,
+        modifier = Modifier
+            .background(DurationDark, shape = RoundedCornerShape(12.dp))
+            .padding(8.dp)
+    )
+}
 
 @Preview
 @Composable
 private fun PreViewTextError() {
     Column {
+        TextBadgeDuration(text = "44:21")
+        TextBadge(text = "PUBLIC", AppGreen)
         Text950_20sp(title = "This is Title")
         TextWhite14(title = "This is error message")
         TextLabelWhite14(label = "Label")

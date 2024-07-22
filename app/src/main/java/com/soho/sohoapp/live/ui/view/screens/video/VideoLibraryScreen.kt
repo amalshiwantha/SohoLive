@@ -31,17 +31,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.ui.components.SpacerHorizontal
+import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.Text700_12spRight
+import com.soho.sohoapp.live.ui.components.TextBadge
+import com.soho.sohoapp.live.ui.components.TextBadgeDuration
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -86,27 +87,15 @@ private fun ListItemView(item: VideoItem) {
 
         //badge time date
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Badge(text = "AUCTION", bgColor = Color(0xFFF9D881))
+            TextBadge(text = "AUCTION", bgColor = Color(0xFFF9D881))
             Spacer(modifier = Modifier.width(8.dp))
-            Badge(text = "PUBLIC", bgColor = Color(0xFF00B3A6))
+            TextBadge(text = "PUBLIC", bgColor = Color(0xFF00B3A6))
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "41:33",
-                color = Color.White,
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .background(Color.Black, shape = RoundedCornerShape(8.dp))
-                    .padding(4.dp)
-            )
+            TextBadgeDuration(text = "44:32")
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "22 May 2024",
-                color = Color.White,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(8.dp)
-            )
+            Text700_12spRight(label = "22 May 2024", txtColor = AppWhite)
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        SpacerVertical(size = 16.dp)
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -173,23 +162,6 @@ private fun ListItemView(item: VideoItem) {
             }
         }
     }
-}
-
-@Composable
-private fun Badge(text: String, bgColor: Color) {
-    Text(
-        fontSize = 12.sp,
-        lineHeight = 16.8.sp,
-        fontFamily = FontFamily(Font(R.font.axiforma)),
-        fontWeight = FontWeight(800),
-        textAlign = TextAlign.Center,
-        letterSpacing = 0.9.sp,
-        text = text,
-        color = AppWhite,
-        modifier = Modifier
-            .background(bgColor, shape = RoundedCornerShape(12.dp))
-            .padding(8.dp)
-    )
 }
 
 private fun sampleData(): List<VideoItem> {
