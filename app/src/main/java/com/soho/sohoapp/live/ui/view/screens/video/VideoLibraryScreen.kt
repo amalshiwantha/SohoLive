@@ -3,9 +3,11 @@ package com.soho.sohoapp.live.ui.view.screens.video
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,16 +33,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
+import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.TextBadge
 import com.soho.sohoapp.live.ui.components.TextBadgeDuration
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -98,31 +102,13 @@ private fun ListItemView(item: VideoItem) {
         SpacerVertical(size = 16.dp)
 
         //image title and info
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = rememberImagePainter(data = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP_F72CpKKW2UA8BfcMF4Pw0L4wQ1Wgu203Q&s"),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(
-                    text = "1002/6 Little Hay Street, Sydney NSW 2000",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = "Live Auction in 1002/6 Little Hay Street, Sydney NSW 2000, 4/11/17 – 11:00 ... More",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-            }
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
+
+            PropertyImageCenterPlay()
+            SpacerHorizontal(size = 16.dp)
+            TitleDescription()
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        SpacerVertical(size = 16.dp)
 
         //bottom action button list
         Row(
@@ -161,6 +147,40 @@ private fun ListItemView(item: VideoItem) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun TitleDescription() {
+    Column {
+        Text700_14sp(step = "1002/6 Little Hay Street, Sydney NSW 2000")
+        SpacerVertical(size = 8.dp)
+        Text400_12sp(label = "Live Auction in 1002/6 Little Hay Street, Sydney NSW 2000, 4/11/17 - 11:00")
+    }
+}
+
+@Composable
+fun PropertyImageCenterPlay() {
+    Box(
+        modifier = Modifier
+            .size(88.dp)
+            .fillMaxHeight()
+            .clip(RoundedCornerShape(12.dp))
+    ) {
+        Image(
+            painter = rememberImagePainter(data = "https://cdn.britannica.com/05/157305-004-53D5D212.jpg"),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.center_play),
+            contentDescription = "Play",
+            tint = Color.White,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .background(Color.Black.copy(alpha = 0.6f), shape = CircleShape)
+        )
     }
 }
 

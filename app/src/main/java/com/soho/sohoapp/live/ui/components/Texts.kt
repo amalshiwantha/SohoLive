@@ -315,6 +315,7 @@ fun Text400_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color =
         text = label,
         fontSize = 12.sp,
         lineHeight = 16.8.sp,
+        maxLines = 2,
         letterSpacing = 0.14.sp,
         color = txtColor,
         fontWeight = FontWeight(400),
