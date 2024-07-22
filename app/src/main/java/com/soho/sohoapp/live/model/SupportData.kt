@@ -29,8 +29,32 @@ data class VideoAnalytics(
     val yt: Int = 0,
     val li: Int = 0,
     val soho: Int = 0,
-    val play_min: Int = 0,
-)
+    val play_min: Int = 0, //seconds
+){
+    // Function to get the total playtime count in seconds
+    fun getTotalPlayTime(): Int {
+        return fb + yt + li + soho
+    }
+
+    // Function to format the total playtime
+    fun getFormattedPlayTime(): String {
+        return formatPlayTime(getTotalPlayTime())
+    }
+
+    private fun formatPlayTime(seconds: Int): String {
+        if (seconds <= 0) return "0 sec"
+
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+        val secs = seconds % 60
+
+        return when {
+            hours > 0 -> "$hours H ${if (minutes > 0) "$minutes min" else ""}".trim()
+            minutes > 0 -> "${if (minutes > 0) "$minutes min" else ""} ${if (secs > 0) "$secs sec" else ""}".trim()
+            else -> "${secs} sec"
+        }
+    }
+}
 
 data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
 

@@ -28,6 +28,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -71,21 +72,29 @@ fun VideoLibraryScreen(
     netUtil: NetworkUtils = koinInject(),
 ) {
     var showAnalyticsBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf<VideoItem?>(null) }
 
     //display main content
     Content(onShowAnalytics = {
-        showAnalyticsBottomSheet = true
+        showAnalyticsBottomSheet = it.first
+        selectedItem = it.second
     })
 
     //show analytics data in a bottomSheet view
-    AnalyticsBottomSheet(showAnalyticsBottomSheet, onVisibility = {
-        showAnalyticsBottomSheet = it
-    })
+    selectedItem?.analytics?.let { analytics ->
+        AnalyticsBottomSheet(showAnalyticsBottomSheet, analytics, onVisibility = {
+            showAnalyticsBottomSheet = it
+        })
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnalyticsBottomSheet(showBottomSheet: Boolean, onVisibility: (Boolean) -> Unit) {
+fun AnalyticsBottomSheet(
+    showBottomSheet: Boolean,
+    analyticsData: VideoAnalytics,
+    onVisibility: (Boolean) -> Unit
+) {
     val bottomSheetState = rememberModalBottomSheetState()
 
     if (showBottomSheet) {
@@ -95,13 +104,13 @@ fun AnalyticsBottomSheet(showBottomSheet: Boolean, onVisibility: (Boolean) -> Un
             onDismissRequest = { onVisibility(false) },
             sheetState = bottomSheetState
         ) {
-            ViewersAnalyticsContent()
+            ViewersAnalyticsContent(analyticsData)
         }
     }
 }
 
 @Composable
-fun ViewersAnalyticsContent() {
+fun ViewersAnalyticsContent(data: VideoAnalytics) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,12 +119,12 @@ fun ViewersAnalyticsContent() {
         Text800_20sp(label = "Viewers Analytics")
         SpacerVertical(size = 24.dp)
 
-        AnalyticsItem(label = "Total Views", value = "148")
-        AnalyticsItem(label = "Facebook", value = "56", isSubItem = true)
-        AnalyticsItem(label = "Youtube", value = "42", isSubItem = true)
-        AnalyticsItem(label = "LinkedIn", value = "32", isSubItem = true)
-        AnalyticsItem(label = "Soho.com.au", value = "18", isSubItem = true)
-        AnalyticsItem(label = "Average Playing Minutes", value = "7 Mins")
+        AnalyticsItem(label = "Total Views", value = data.getTotalPlayTime().toString())
+        AnalyticsItem(label = "Facebook", value = data.fb.toString(), isSubItem = true)
+        AnalyticsItem(label = "Youtube", value = data.yt.toString(), isSubItem = true)
+        AnalyticsItem(label = "LinkedIn", value = data.li.toString(), isSubItem = true)
+        AnalyticsItem(label = "Soho.com.au", value = data.soho.toString(), isSubItem = true)
+        AnalyticsItem(label = "Average Playing Minutes", value = data.getFormattedPlayTime())
         SpacerVertical(size = 8.dp)
     }
 }
@@ -138,7 +147,7 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
 }
 
 @Composable
-private fun Content(onShowAnalytics: () -> Unit) {
+private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
     Column(
         modifier = Modifier
             .background(brushMainGradientBg)
@@ -152,14 +161,17 @@ private fun Content(onShowAnalytics: () -> Unit) {
                 .padding(16.dp)
         ) {
             items(dataList) { item ->
-                ListItemView(item, onClickAnalytics = { onShowAnalytics() })
+                ListItemView(item, onClickAnalytics = { onShowAnalytics(it) })
             }
         }
     }
 }
 
 @Composable
-private fun ListItemView(item: VideoItem, onClickAnalytics: () -> Unit) {
+private fun ListItemView(
+    item: VideoItem,
+    onClickAnalytics: (Pair<Boolean, VideoItem>) -> Unit
+) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
         //badge time date
@@ -219,7 +231,10 @@ private fun ListItemView(item: VideoItem, onClickAnalytics: () -> Unit) {
 
             //chart btn
             ActionIconButton(R.drawable.ic_chart, onClickAction = {
-                onClickAnalytics()
+                item.analytics?.let {
+                    val analysisClick = Pair(true, item)
+                    onClickAnalytics(analysisClick)
+                }
             })
             SpacerHorizontal(size = 8.dp)
 
@@ -323,11 +338,11 @@ private fun sampleData(): List<VideoItem> {
         title = "11/6 Little Hay Street, Sydney NSW 1111",
         info = "11 Live Auction in 1002/6 Little Hay Street, ",
         analytics = VideoAnalytics(
-            fb = 1,
-            yt = 2,
-            li = 3,
-            soho = 3,
-            play_min = 40
+            fb = 11,
+            yt = 222,
+            li = 333,
+            soho = 44,
+            play_min = 5555
         ),
         shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         downloadLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
