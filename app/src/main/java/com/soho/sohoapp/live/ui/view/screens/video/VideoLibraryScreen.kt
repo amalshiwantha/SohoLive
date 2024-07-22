@@ -19,17 +19,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,10 +43,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.PropertyVisibility
@@ -62,10 +70,13 @@ import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
+import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
@@ -150,10 +161,12 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
     }
 }
 
+
 @Composable
 private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
 
+    //Show download status
     LaunchedEffect(downloadStatus) {
         if (downloadStatus.isNotEmpty()) {
             showToast(downloadStatus)
@@ -172,6 +185,8 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
+            item { VideoUploadProgress() }
+
             items(dataList) { item ->
                 ListItemView(
                     item,
@@ -182,6 +197,69 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
                             downloadStatus = it
                         })
                     })
+            }
+        }
+    }
+}
+
+@Composable
+fun VideoUploadProgress() {
+    var progress by remember { mutableStateOf(0f) }
+    var isUploading by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (progress < 1f) {
+                delay(100)
+                progress += 0.01f
+            }
+            isUploading = false
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp)
+            .background(DurationDark),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = rememberImagePainter("https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg"),
+                contentDescription = "Video Thumbnail",
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.Gray),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "Your video is uploading",
+                fontSize = 18.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            if (isUploading) {
+                CircularProgressIndicator(
+                    progress = progress,
+                    color = Color.White,
+                    strokeWidth = 4.dp,
+                    modifier = Modifier.size(40.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Upload Complete",
+                    tint = Color.White,
+                    modifier = Modifier.size(40.dp)
+                )
             }
         }
     }
