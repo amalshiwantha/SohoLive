@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -151,6 +152,14 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
 
 @Composable
 private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
+    var downloadStatus by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(downloadStatus) {
+        if (downloadStatus.isNotEmpty()) {
+            showToast(downloadStatus)
+        }
+    }
+
     Column(
         modifier = Modifier
             .background(brushMainGradientBg)
@@ -169,8 +178,9 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
                     onClickAnalytics = { onShowAnalytics(it) },
                     onShareVideo = { shareIntent(it) },
                     onDownloadVideo = {
-                        showToast("Downloading...")
-                        downloadFile(it.first, it.second)
+                        downloadFile(it.first, it.second, onDownloadStatus = {
+                            downloadStatus = it
+                        })
                     })
             }
         }
@@ -365,7 +375,7 @@ private fun sampleData(): List<VideoItem> {
             play_min = 5555
         ),
         shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        downloadLink = "https://file-examples.com/storage/fed095d328669e25aa083c5/2017/04/file_example_MP4_480_1_5MG.mp4",
+        downloadLink = "https://file-examples.com/storage/fe66e2583b669e33b951dc5/2017/04/file_example_MP4_480_1_5MG.mp4",
     )
 
     return List(20) { index ->

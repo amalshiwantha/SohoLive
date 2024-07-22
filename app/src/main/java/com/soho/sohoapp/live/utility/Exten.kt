@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.utility
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
@@ -24,14 +25,22 @@ import com.soho.sohoapp.live.network.response.DataGoLiveSubmit
 import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
 import com.soho.sohoapp.live.ui.view.activity.HaishinActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.io.File
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
 
-fun downloadFile(url: String, title: String) {
-    val fileName = title.toFileName()+".mp4"
+@OptIn(DelicateCoroutinesApi::class)
+fun downloadFile(url: String, title: String, onDownloadStatus: (String) -> Unit) {
+    var statusMsg: String
+    val progressTitle = "SohoLive Video"
+    val fileName = title.toFileName() + ".mp4"
     val request = DownloadManager.Request(Uri.parse(url)).apply {
-        setTitle("SohoLive Video")
+        setTitle(progressTitle)
         setDescription("Downloading $title")
         setDestinationInExternalPublicDir(
             Environment.DIRECTORY_DOWNLOADS, "SohoLive/$fileName"
@@ -40,7 +49,41 @@ fun downloadFile(url: String, title: String) {
     }
 
     val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-    downloadManager.enqueue(request)
+    val downloadId = downloadManager.enqueue(request)
+
+    GlobalScope.launch {
+        while (true) {
+            val status = getDownloadStatus(downloadId)
+            statusMsg = when (status) {
+                DownloadManager.STATUS_RUNNING -> "Downloading"
+                DownloadManager.STATUS_SUCCESSFUL -> "Download Completed"
+                DownloadManager.STATUS_FAILED -> "Download Failed"
+                else -> "Connecting..."
+            }
+
+            onDownloadStatus(statusMsg)
+
+            if (status == DownloadManager.STATUS_SUCCESSFUL || status == DownloadManager.STATUS_FAILED) {
+                break
+            }
+
+            delay(1000)
+        }
+    }
+}
+
+@SuppressLint("Range")
+private fun getDownloadStatus(downloadId: Long): Int {
+    val query = DownloadManager.Query().setFilterById(downloadId)
+    val cursor =
+        (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).query(query)
+    if (cursor.moveToFirst()) {
+        val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+        cursor.close()
+        return status
+    }
+    cursor.close()
+    return DownloadManager.STATUS_FAILED
 }
 
 fun String.toFileName(): String {
