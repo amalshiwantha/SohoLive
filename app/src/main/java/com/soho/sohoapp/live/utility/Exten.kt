@@ -1,9 +1,13 @@
 package com.soho.sohoapp.live.utility
 
 import android.Manifest
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Environment
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
@@ -24,6 +28,27 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
 
+fun downloadFile(url: String, title: String) {
+    val fileName = title.toFileName()+".mp4"
+    val request = DownloadManager.Request(Uri.parse(url)).apply {
+        setTitle("SohoLive Video")
+        setDescription("Downloading $title")
+        setDestinationInExternalPublicDir(
+            Environment.DIRECTORY_DOWNLOADS, "SohoLive/$fileName"
+        )
+        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+    }
+
+    val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    downloadManager.enqueue(request)
+}
+
+fun String.toFileName(): String {
+    return this.replace(" ", "_")
+        .replace("/", "_")
+        .lowercase()
+}
+
 fun shareIntent(shareLink: String) {
     val shareIntent = Intent().apply {
         action = Intent.ACTION_SEND
@@ -37,7 +62,7 @@ fun shareIntent(shareLink: String) {
 }
 
 fun showToast(msg: String) {
-    Toast.makeText(context,msg,Toast.LENGTH_LONG).show()
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }
 
 

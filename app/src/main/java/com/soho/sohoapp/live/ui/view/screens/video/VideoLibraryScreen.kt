@@ -62,6 +62,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
@@ -167,7 +168,10 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
                     item,
                     onClickAnalytics = { onShowAnalytics(it) },
                     onShareVideo = { shareIntent(it) },
-                    onDownloadVideo = {})
+                    onDownloadVideo = {
+                        showToast("Downloading...")
+                        downloadFile(it.first, it.second)
+                    })
             }
         }
     }
@@ -178,7 +182,7 @@ private fun ListItemView(
     item: VideoItem,
     onClickAnalytics: (Pair<Boolean, VideoItem>) -> Unit,
     onShareVideo: (String) -> Unit,
-    onDownloadVideo: (String) -> Unit
+    onDownloadVideo: (Pair<String, String>) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
@@ -234,7 +238,7 @@ private fun ListItemView(
             //download btn
             ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
                 item.downloadLink?.let {
-                    onDownloadVideo(it)
+                    onDownloadVideo(Pair(it, item.title.orEmpty()))
                 } ?: kotlin.run {
                     showToast("Not found a download link")
                 }
@@ -342,9 +346,7 @@ private fun sampleData(): List<VideoItem> {
             li = 30,
             soho = 40,
             play_min = 120
-        ),
-        shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        downloadLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        )
     )
     val myTestItem = VideoItem(
         propertyType = "inspection",
@@ -363,7 +365,7 @@ private fun sampleData(): List<VideoItem> {
             play_min = 5555
         ),
         shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        downloadLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        downloadLink = "https://file-examples.com/storage/fed095d328669e25aa083c5/2017/04/file_example_MP4_480_1_5MG.mp4",
     )
 
     return List(20) { index ->
