@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -229,6 +230,7 @@ fun VideoUploadProgress() {
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            //property image
             Image(
                 painter = rememberImagePainter("https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg"),
                 contentDescription = "Video Thumbnail",
@@ -238,28 +240,44 @@ fun VideoUploadProgress() {
                     .background(Color.Gray),
                 contentScale = ContentScale.Crop
             )
+
+            //center status
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Your video is uploading",
-                fontSize = 18.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+            Text700_14sp(step = "Your video is uploading")
+
+            //upload progress and tick mark
             Spacer(modifier = Modifier.weight(1f))
             if (isUploading) {
-                CircularProgressIndicator(
-                    progress = progress,
-                    color = Color.White,
-                    strokeWidth = 4.dp,
-                    modifier = Modifier.size(40.dp)
-                )
+                //upload progress
+                Box(contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(
+                        progress = progress,
+                        color = Color.White,
+                        strokeWidth = 4.dp,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Text(
+                        text = "${(progress * 100).toInt()}",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             } else {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Upload Complete",
-                    tint = Color.White,
-                    modifier = Modifier.size(40.dp)
-                )
+                //tick mark
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(3.dp, Color.White, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Upload Complete",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
