@@ -159,10 +159,10 @@ private fun LoginForm(
         val errorState = loginState.errorStates
 
         //TODO loginHardCoded
-        /*requestData.apply {
+        requestData.apply {
             email = "samuel@drewlindsaysir.com"
             password = "password"
-        }*/
+        }
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)

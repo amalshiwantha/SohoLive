@@ -20,6 +20,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.golive_success.GoLiveOkScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
+import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -50,10 +51,13 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
                 onUpdateState = { mState = it })
         }
         composable(route = NavigationPath.VIDEO_LIBRARY.name) {
-            HomeContent(navController, "VIDEO LIBRARY")
+            VideoLibraryScreen(
+                goLiveData = mGoLiveSubmit,
+                navController = navController
+            )
         }
         composable(route = NavigationPath.PROFILE.name) {
-            HomeContent(navController, "PROFILE")
+            HomeContent(navController, "Profile")
         }
         composable(route = NavigationPath.SET_SCHEDULE.name) {
             ScheduleScreen(

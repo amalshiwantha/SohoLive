@@ -66,7 +66,7 @@ fun HomeScreen(
             selectedTabTitle = when (backStackEntry.destination.route) {
                 NavigationPath.SCHEDULED.name -> context.getString(R.string.scheduled_livestreams)
                 NavigationPath.GO_LIVE.name -> context.getString(R.string.create_livestream)
-                NavigationPath.VIDEO_LIBRARY.name -> context.getString(R.string.your_videos)
+                NavigationPath.VIDEO_LIBRARY.name -> context.getString(R.string.video_library)
                 NavigationPath.PROFILE.name -> context.getString(R.string.manage_profile)
                 else -> context.getString(R.string.scheduled_livestreams)
             }
