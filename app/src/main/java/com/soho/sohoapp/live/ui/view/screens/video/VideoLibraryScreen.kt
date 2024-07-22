@@ -19,9 +19,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetDefaults.DragHandle
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,11 +52,14 @@ import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextBadge
 import com.soho.sohoapp.live.ui.components.TextBadgeDuration
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.BottomBarBg
+import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
 
@@ -59,11 +70,75 @@ fun VideoLibraryScreen(
     vmVidLib: VideoLibraryViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
 ) {
-    Content()
+    var showAnalyticsBottomSheet by rememberSaveable { mutableStateOf(false) }
+
+    //display main content
+    Content(onShowAnalytics = {
+        showAnalyticsBottomSheet = true
+    })
+
+    //show analytics data in a bottomSheet view
+    AnalyticsBottomSheet(showAnalyticsBottomSheet, onVisibility = {
+        showAnalyticsBottomSheet = it
+    })
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AnalyticsBottomSheet(showBottomSheet: Boolean, onVisibility: (Boolean) -> Unit) {
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            containerColor = BottomBarBg,
+            dragHandle = { DragHandle(color = BottomSheetDrag) },
+            onDismissRequest = { onVisibility(false) },
+            sheetState = bottomSheetState
+        ) {
+            ViewersAnalyticsContent()
+        }
+    }
 }
 
 @Composable
-private fun Content() {
+fun ViewersAnalyticsContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Text800_20sp(label = "Viewers Analytics")
+        SpacerVertical(size = 24.dp)
+
+        AnalyticsItem(label = "Total Views", value = "148")
+        AnalyticsItem(label = "Facebook", value = "56", isSubItem = true)
+        AnalyticsItem(label = "Youtube", value = "42", isSubItem = true)
+        AnalyticsItem(label = "LinkedIn", value = "32", isSubItem = true)
+        AnalyticsItem(label = "Soho.com.au", value = "18", isSubItem = true)
+        AnalyticsItem(label = "Average Playing Minutes", value = "7 Mins")
+        SpacerVertical(size = 8.dp)
+    }
+}
+
+@Composable
+fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text700_14sp(
+            step = label,
+            isBold = false,
+            modifier = Modifier.padding(start = if (isSubItem) 30.dp else 0.dp)
+        )
+        Text700_14sp(step = value)
+    }
+}
+
+@Composable
+private fun Content(onShowAnalytics: () -> Unit) {
     Column(
         modifier = Modifier
             .background(brushMainGradientBg)
@@ -77,14 +152,14 @@ private fun Content() {
                 .padding(16.dp)
         ) {
             items(dataList) { item ->
-                ListItemView(item)
+                ListItemView(item, onClickAnalytics = { onShowAnalytics() })
             }
         }
     }
 }
 
 @Composable
-private fun ListItemView(item: VideoItem) {
+private fun ListItemView(item: VideoItem, onClickAnalytics: () -> Unit) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
         //badge time date
@@ -144,13 +219,13 @@ private fun ListItemView(item: VideoItem) {
 
             //chart btn
             ActionIconButton(R.drawable.ic_chart, onClickAction = {
-                //open bottomSheet
+                onClickAnalytics()
             })
             SpacerHorizontal(size = 8.dp)
 
             //share btn
             ActionIconButton(R.drawable.ic_share, onClickAction = {
-                println("myVid - download ${item.shareableLink}")
+                println("myVid - share ${item.shareableLink}")
             })
         }
     }
@@ -271,5 +346,5 @@ private fun sampleData(): List<VideoItem> {
 @Preview
 @Composable
 private fun PreviewVidLib() {
-    Content()
+    Content(onShowAnalytics = {})
 }
