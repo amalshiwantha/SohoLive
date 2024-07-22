@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.PropertyVisibility
@@ -111,10 +112,11 @@ private fun ListItemView(item: VideoItem) {
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
+            PropertyImageCenterPlay(item.imageUrl, onClick = {
 
-            PropertyImageCenterPlay()
+            })
             SpacerHorizontal(size = 16.dp)
-            TitleDescription()
+            TitleDescription(item)
         }
         SpacerVertical(size = 16.dp)
 
@@ -165,24 +167,35 @@ fun ActionIconButton(btnIcon: Int, onClickAction: () -> Unit) {
 }
 
 @Composable
-fun TitleDescription() {
+fun TitleDescription(item: VideoItem) {
     Column {
-        Text700_14sp(step = "1002/6 Little Hay Street, Sydney NSW 2000")
-        SpacerVertical(size = 8.dp)
-        Text400_12sp(label = "Live Auction in 1002/6 Little Hay Street, Sydney NSW 2000, 4/11/17 - 11:00")
+        item.title?.let {
+            Text700_14sp(step = it)
+            SpacerVertical(size = 8.dp)
+        }
+        item.info?.let {
+            Text400_12sp(label = it)
+        }
     }
 }
 
 @Composable
-fun PropertyImageCenterPlay() {
+fun PropertyImageCenterPlay(imageUrl: String?, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(88.dp)
             .fillMaxHeight()
+            .clickable { onClick() }
             .clip(RoundedCornerShape(12.dp))
     ) {
+        val urlPainter = rememberAsyncImagePainter(
+            model = imageUrl,
+            placeholder = painterResource(id = R.drawable.property_placeholder),
+            error = painterResource(id = R.drawable.property_placeholder)
+        )
+
         Image(
-            painter = rememberImagePainter(data = "https://cdn.britannica.com/05/157305-004-53D5D212.jpg"),
+            painter = urlPainter,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
@@ -206,7 +219,7 @@ private fun sampleData(): List<VideoItem> {
         date = "22 may 2024",
         title = "1002/6 Little Hay Street, Sydney NSW 2000",
         info = "Live Auction in 1002/6 Little Hay Street, Sydney NSW 2000, 4/11/17 - 11:00",
-        imageUrl = "https://cdn.britannica.com/05/157305-004-53D5D212.jpg",
+        imageUrl = "https://cdn.britannica.com/05/157305-004-53D5D212",
         analytics = VideoAnalytics(
             fb = 10,
             yt = 20,
