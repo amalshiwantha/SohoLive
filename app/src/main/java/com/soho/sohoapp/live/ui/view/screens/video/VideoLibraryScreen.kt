@@ -31,13 +31,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
 
@@ -50,37 +56,39 @@ fun VideoLibraryScreen(
     vmVidLib: VideoLibraryViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
 ) {
+    Content()
+}
+
+@Composable
+private fun Content() {
     Column(
         modifier = Modifier
             .background(brushMainGradientBg)
             .fillMaxSize()
     ) {
-        MainListView(sampleData())
-    }
-}
+        val dataList = sampleData()
 
-@Composable
-fun MainListView(vidItems: List<VideoItem>) {
-    LazyColumn(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        items(vidItems) { item ->
-            ListItemView(item)
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            items(dataList) { item ->
+                ListItemView(item)
+            }
         }
     }
 }
 
 @Composable
-fun ListItemView(item: VideoItem) {
+private fun ListItemView(item: VideoItem) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
         //badge time date
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Badge(text = "AUCTION", backgroundColor = Color(0xFFF9D881))
+            Badge(text = "AUCTION", bgColor = Color(0xFFF9D881))
             Spacer(modifier = Modifier.width(8.dp))
-            Badge(text = "PUBLIC", backgroundColor = Color(0xFF00B3A6))
+            Badge(text = "PUBLIC", bgColor = Color(0xFF00B3A6))
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "41:33",
@@ -168,18 +176,28 @@ fun ListItemView(item: VideoItem) {
 }
 
 @Composable
-fun Badge(text: String, backgroundColor: Color) {
+private fun Badge(text: String, bgColor: Color) {
     Text(
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(800),
+        textAlign = TextAlign.Center,
+        letterSpacing = 0.9.sp,
         text = text,
-        color = Color.Black,
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp,
+        color = AppWhite,
         modifier = Modifier
-            .background(backgroundColor, shape = RoundedCornerShape(8.dp))
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .background(bgColor, shape = RoundedCornerShape(12.dp))
+            .padding(8.dp)
     )
 }
 
-fun sampleData(): List<VideoItem> {
+private fun sampleData(): List<VideoItem> {
     return List(50) { index -> VideoItem(index, "Item #$index") }
+}
+
+@Preview
+@Composable
+private fun PreviewVidLib() {
+    Content()
 }
