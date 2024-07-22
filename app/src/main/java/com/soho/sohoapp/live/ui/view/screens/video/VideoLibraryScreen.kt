@@ -62,6 +62,8 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.shareIntent
+import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 
 @Composable
@@ -161,7 +163,11 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
                 .padding(16.dp)
         ) {
             items(dataList) { item ->
-                ListItemView(item, onClickAnalytics = { onShowAnalytics(it) })
+                ListItemView(
+                    item,
+                    onClickAnalytics = { onShowAnalytics(it) },
+                    onShareVideo = { shareIntent(it) },
+                    onDownloadVideo = {})
             }
         }
     }
@@ -170,7 +176,9 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
 @Composable
 private fun ListItemView(
     item: VideoItem,
-    onClickAnalytics: (Pair<Boolean, VideoItem>) -> Unit
+    onClickAnalytics: (Pair<Boolean, VideoItem>) -> Unit,
+    onShareVideo: (String) -> Unit,
+    onDownloadVideo: (String) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
@@ -225,7 +233,11 @@ private fun ListItemView(
 
             //download btn
             ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
-                println("myVid - download ${item.downloadLink}")
+                item.downloadLink?.let {
+                    onDownloadVideo(it)
+                } ?: kotlin.run {
+                    showToast("Not found a download link")
+                }
             })
             SpacerHorizontal(size = 8.dp)
 
@@ -234,13 +246,19 @@ private fun ListItemView(
                 item.analytics?.let {
                     val analysisClick = Pair(true, item)
                     onClickAnalytics(analysisClick)
+                } ?: kotlin.run {
+                    showToast("Not found analytics data")
                 }
             })
             SpacerHorizontal(size = 8.dp)
 
             //share btn
             ActionIconButton(R.drawable.ic_share, onClickAction = {
-                println("myVid - share ${item.shareableLink}")
+                item.shareableLink?.let {
+                    onShareVideo(it)
+                } ?: kotlin.run {
+                    showToast("Not found a shareable link")
+                }
             })
         }
     }
@@ -348,7 +366,7 @@ private fun sampleData(): List<VideoItem> {
         downloadLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     )
 
-    return List(50) { index ->
+    return List(20) { index ->
         if (index == 1) {
             myTestItem
         } else {

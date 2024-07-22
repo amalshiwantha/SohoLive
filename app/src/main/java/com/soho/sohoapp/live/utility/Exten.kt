@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.util.Base64
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -22,6 +23,23 @@ import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
+
+fun shareIntent(shareLink: String) {
+    val shareIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, shareLink)
+        type = "text/plain"
+    }
+    val chooser = Intent.createChooser(shareIntent, "Share via").apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    context.startActivity(chooser)
+}
+
+fun showToast(msg: String) {
+    Toast.makeText(context,msg,Toast.LENGTH_LONG).show()
+}
+
 
 fun openLiveCaster(apiRes: DataGoLiveSubmit) {
     val intent = Intent(context, HaishinActivity::class.java).apply {
