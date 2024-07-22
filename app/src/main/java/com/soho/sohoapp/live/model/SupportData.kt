@@ -12,13 +12,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 data class VideoItem(
-    val propertyType: String? = null, //action inspection etc
-    val visibility: Int = 0, //public 1, private 0
+    var propertyType: String? = null, //action inspection etc
+    var visibility: Int = 0, //public 1, private 0
     val duration: String? = null, //22:31
     val date: String? = null, //22 may 2024
     val title: String? = null,
     val info: String? = null,
-    val imageUrl: String? = null,
+    var imageUrl: String? = null,
     val analytics: VideoAnalytics? = null,
     val shareableLink: String? = null,
     val downloadLink: String? = null

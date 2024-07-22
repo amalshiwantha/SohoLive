@@ -6,5 +6,15 @@ import com.soho.sohoapp.live.ui.theme.InspectionGreen
 
 enum class PropertyType(val bgColor: Color) {
     AUCTION(AuctionYellow),
-    INSPECTION(InspectionGreen)
+    INSPECTION(InspectionGreen);
+
+    companion object {
+        fun fromString(value: String): PropertyType {
+            return when (value.uppercase()) {
+                "AUCTION" -> AUCTION
+                "INSPECTION" -> INSPECTION
+                else -> AUCTION
+            }
+        }
+    }
 }

@@ -32,7 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.PropertyType
+import com.soho.sohoapp.live.enums.PropertyVisibility
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.VideoAnalytics
 import com.soho.sohoapp.live.model.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
@@ -85,13 +88,24 @@ private fun ListItemView(item: VideoItem) {
 
         //badge time date
         Row(verticalAlignment = Alignment.CenterVertically) {
-            TextBadge(text = "AUCTION", bgColor = Color(0xFFF9D881))
+
+            item.propertyType?.let {
+                TextBadge(text = it.uppercase(), bgColor = PropertyType.fromString(it).bgColor)
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+
+            val visiItem = PropertyVisibility.fromString(item.visibility)
+            TextBadge(text = visiItem.label, bgColor = visiItem.bgColor)
             Spacer(modifier = Modifier.width(8.dp))
-            TextBadge(text = "PUBLIC", bgColor = Color(0xFF00B3A6))
-            Spacer(modifier = Modifier.width(8.dp))
-            TextBadgeDuration(text = "44:32")
-            Spacer(modifier = Modifier.weight(1f))
-            Text700_12spRight(label = "22 May 2024", txtColor = AppWhite)
+
+            item.duration?.let {
+                TextBadgeDuration(text = it)
+            }
+
+            item.date?.let {
+                Spacer(modifier = Modifier.weight(1f))
+                Text700_12spRight(label = it, txtColor = AppWhite)
+            }
         }
         SpacerVertical(size = 16.dp)
 
@@ -110,7 +124,12 @@ private fun ListItemView(item: VideoItem) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            ButtonOutlineWhite(text = "Manage", modifier = Modifier.weight(1f).height(40.dp), onBtnClick = {})
+            ButtonOutlineWhite(
+                text = "Manage",
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp),
+                onBtnClick = {})
             SpacerHorizontal(size = 8.dp)
 
             //download btn
@@ -130,9 +149,11 @@ private fun ListItemView(item: VideoItem) {
 @Composable
 fun ActionIconButton(btnIcon: Int, onClickAction: () -> Unit) {
     IconButton(
-        onClick = { onClickAction() }, modifier = Modifier.background(
-            AppWhite, shape = RoundedCornerShape(16.dp)
-        ).size(40.dp)
+        onClick = { onClickAction() }, modifier = Modifier
+            .background(
+                AppWhite, shape = RoundedCornerShape(16.dp)
+            )
+            .size(40.dp)
     ) {
         Icon(
             painter = painterResource(id = btnIcon),
@@ -178,7 +199,52 @@ fun PropertyImageCenterPlay() {
 }
 
 private fun sampleData(): List<VideoItem> {
-    return List(50) { index -> VideoItem() }
+    val myItem = VideoItem(
+        propertyType = "action",
+        visibility = 1,
+        duration = "22:31",
+        date = "22 may 2024",
+        title = "1002/6 Little Hay Street, Sydney NSW 2000",
+        info = "Live Auction in 1002/6 Little Hay Street, Sydney NSW 2000, 4/11/17 - 11:00",
+        imageUrl = "https://cdn.britannica.com/05/157305-004-53D5D212.jpg",
+        analytics = VideoAnalytics(
+            fb = 10,
+            yt = 20,
+            li = 30,
+            soho = 40,
+            play_min = 120
+        ),
+        shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        downloadLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    )
+    val myTestItem = VideoItem(
+        propertyType = "inspection",
+        visibility = 0,
+        imageUrl =
+        "https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg",
+        duration = "11:31",
+        date = "11 may 2022",
+        title = "11/6 Little Hay Street, Sydney NSW 1111",
+        info = "11 Live Auction in 1002/6 Little Hay Street, ",
+        analytics = VideoAnalytics(
+            fb = 1,
+            yt = 2,
+            li = 3,
+            soho = 3,
+            play_min = 40
+        ),
+        shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        downloadLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    )
+
+    return List(50) { index ->
+        if (index == 1) {
+            myTestItem
+        } else {
+            myItem
+        }
+
+    }
 }
 
 @Preview
