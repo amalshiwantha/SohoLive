@@ -47,7 +47,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
@@ -107,15 +106,12 @@ fun VideoLibraryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalyticsBottomSheet(
-    showBottomSheet: Boolean,
-    analyticsData: VideoAnalytics,
-    onVisibility: (Boolean) -> Unit
+    showBottomSheet: Boolean, analyticsData: VideoAnalytics, onVisibility: (Boolean) -> Unit
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
 
     if (showBottomSheet) {
-        ModalBottomSheet(
-            containerColor = BottomBarBg,
+        ModalBottomSheet(containerColor = BottomBarBg,
             dragHandle = { DragHandle(color = BottomSheetDrag) },
             onDismissRequest = { onVisibility(false) },
             sheetState = bottomSheetState
@@ -189,8 +185,7 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
             item { VideoUploadProgress() }
 
             items(dataList) { item ->
-                ListItemView(
-                    item,
+                ListItemView(item,
                     onClickAnalytics = { onShowAnalytics(it) },
                     onShareVideo = { shareIntent(it) },
                     onDownloadVideo = {
@@ -227,8 +222,7 @@ fun VideoUploadProgress() {
         contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             //property image
             Image(
@@ -263,13 +257,13 @@ fun VideoUploadProgress() {
                     )
                 }
             } else {
+                //TODO after few second needs to show shimmer view and then hide it
                 //tick mark
                 Box(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .border(3.dp, Color.White, CircleShape),
-                    contentAlignment = Alignment.Center
+                        .border(3.dp, Color.White, CircleShape), contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
@@ -331,8 +325,7 @@ private fun ListItemView(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            ButtonOutlineWhite(
-                text = "Manage",
+            ButtonOutlineWhite(text = "Manage",
                 modifier = Modifier
                     .weight(1f)
                     .height(40.dp),
@@ -407,13 +400,11 @@ fun TitleDescription(item: VideoItem) {
 
 @Composable
 fun PropertyImageCenterPlay(imageUrl: String?, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(88.dp)
-            .fillMaxHeight()
-            .clickable { onClick() }
-            .clip(RoundedCornerShape(12.dp))
-    ) {
+    Box(modifier = Modifier
+        .size(88.dp)
+        .fillMaxHeight()
+        .clickable { onClick() }
+        .clip(RoundedCornerShape(12.dp))) {
         val urlPainter = rememberAsyncImagePainter(
             model = imageUrl,
             placeholder = painterResource(id = R.drawable.property_placeholder),
@@ -447,28 +438,19 @@ private fun sampleData(): List<VideoItem> {
         info = "Live Auction in 1002/6 Little Hay Street, Sydney NSW 2000, 4/11/17 - 11:00",
         imageUrl = "https://cdn.britannica.com/05/157305-004-53D5D212",
         analytics = VideoAnalytics(
-            fb = 10,
-            yt = 20,
-            li = 30,
-            soho = 40,
-            play_min = 120
+            fb = 10, yt = 20, li = 30, soho = 40, play_min = 120
         )
     )
     val myTestItem = VideoItem(
         propertyType = "inspection",
         visibility = 0,
-        imageUrl =
-        "https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg",
+        imageUrl = "https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg",
         duration = "11:31",
         date = "11 may 2022",
         title = "11/6 Little Hay Street, Sydney NSW 1111",
         info = "11 Live Auction in 1002/6 Little Hay Street, ",
         analytics = VideoAnalytics(
-            fb = 11,
-            yt = 222,
-            li = 333,
-            soho = 44,
-            play_min = 5555
+            fb = 11, yt = 222, li = 333, soho = 44, play_min = 5555
         ),
         shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         downloadLink = "https://file-examples.com/storage/fe66e2583b669e33b951dc5/2017/04/file_example_MP4_480_1_5MG.mp4",
