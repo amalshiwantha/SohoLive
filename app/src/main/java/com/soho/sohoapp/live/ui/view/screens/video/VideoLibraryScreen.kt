@@ -18,15 +18,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +33,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_12sp
@@ -48,6 +42,7 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.TextBadge
 import com.soho.sohoapp.live.ui.components.TextBadgeDuration
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
@@ -113,40 +108,39 @@ private fun ListItemView(item: VideoItem) {
         //bottom action button list
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Button(
-                onClick = { },
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-            ) {
-                Text(text = "Manage", color = Color.White)
-            }
-            IconButton(onClick = { }) {
-                Icon(
-                    imageVector = Icons.Default.Download,
-                    contentDescription = "Download",
-                    tint = Color.White,
-                    modifier = Modifier.background(Color.Black, shape = CircleShape)
-                )
-            }
-            IconButton(onClick = { }) {
-                Icon(
-                    imageVector = Icons.Default.BarChart,
-                    contentDescription = "Statistics",
-                    tint = Color.White,
-                    modifier = Modifier.background(Color.Black, shape = CircleShape)
-                )
-            }
-            IconButton(onClick = { }) {
-                Icon(
-                    imageVector = Icons.Default.Share,
-                    contentDescription = "Share",
-                    tint = Color.White,
-                    modifier = Modifier.background(Color.Black, shape = CircleShape)
-                )
-            }
+            ButtonOutlineWhite(text = "Manage", modifier = Modifier.weight(1f).height(40.dp), onBtnClick = {})
+            SpacerHorizontal(size = 8.dp)
+
+            //download btn
+            ActionIconButton(R.drawable.ic_download_bold, onClickAction = {})
+            SpacerHorizontal(size = 8.dp)
+
+            //chart btn
+            ActionIconButton(R.drawable.ic_chart, onClickAction = {})
+            SpacerHorizontal(size = 8.dp)
+
+            //share btn
+            ActionIconButton(R.drawable.ic_share, onClickAction = {})
         }
+    }
+}
+
+@Composable
+fun ActionIconButton(btnIcon: Int, onClickAction: () -> Unit) {
+    IconButton(
+        onClick = { onClickAction() }, modifier = Modifier.background(
+            AppWhite, shape = RoundedCornerShape(16.dp)
+        ).size(40.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = btnIcon),
+            contentDescription = "Icon",
+            tint = AppPrimaryDark,
+            modifier = Modifier.size(16.dp)
+        )
     }
 }
 

@@ -288,12 +288,14 @@ fun ButtonConnect(
 }
 
 @Composable
-fun ButtonOutlineWhite(text: String, modifier: Modifier = Modifier, onBtnClick: () -> Unit) {
+fun ButtonOutlineWhite(
+    text: String,
+    modifier: Modifier = Modifier.height(48.dp),
+    onBtnClick: () -> Unit
+) {
     OutlinedButton(
         onClick = { onBtnClick() },
-        modifier = modifier
-            .fillMaxWidth()
-            .height(48.dp),
+        modifier = modifier,
         border = BorderStroke(2.dp, Color.White),
         shape = RoundedCornerShape(16.dp),
     ) {
@@ -317,7 +319,8 @@ private fun TextButtonBluePrev() {
 @Preview
 @Composable
 private fun CustomButtonPrev() {
-    ButtonOutlineWhite(text = "Signup", onBtnClick = { /* Handle button click */ })
+    ButtonOutlineWhite(text = "Signup",
+        modifier = Modifier.fillMaxWidth(), onBtnClick = { /* Handle button click */ })
 }
 
 @Preview

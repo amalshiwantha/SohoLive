@@ -510,7 +510,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     ButtonOutlineWhite(text = "Disconnect",
-                        modifier = Modifier.weight(1f), onBtnClick = { onDisconnect() })
+                        modifier = Modifier.weight(1f).fillMaxWidth(), onBtnClick = { onDisconnect() })
                     SpacerHorizontal(size = 8.dp)
                     ButtonColoured(
                         text = "Done",

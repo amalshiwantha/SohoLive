@@ -60,6 +60,7 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
 
         ButtonOutlineWhite(
             text = stringResource(R.string.sign_up),
+            modifier = Modifier.fillMaxWidth(),
             onBtnClick = { navController.navigate(NavigationPath.SIGNUP.name) })
     }
 }

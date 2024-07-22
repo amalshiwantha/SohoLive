@@ -69,6 +69,7 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
     ) {
         ButtonOutlineWhite(
             text = "Manage Scheduled livecasts",
+            modifier = Modifier.fillMaxWidth(),
             onBtnClick = { navController.popBackStack() })
 
         ButtonColoured(text = "Schedule Another livecast",
