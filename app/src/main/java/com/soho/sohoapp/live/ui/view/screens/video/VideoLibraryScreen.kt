@@ -306,7 +306,7 @@ private fun ListItemView(
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
-            val visiItem = VideoPrivacy.fromString(item.visibility)
+            val visiItem = VideoPrivacy.fromId(item.visibility)
             TextBadge(text = visiItem.label, bgColor = visiItem.bgColor)
             Spacer(modifier = Modifier.width(8.dp))
 

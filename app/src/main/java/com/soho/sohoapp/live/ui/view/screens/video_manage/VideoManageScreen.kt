@@ -127,19 +127,19 @@ fun MainContent(data: VideoItem?, onBackClick: () -> Unit, onSaveClick: () -> Un
 }
 
 @Composable
-private fun InnerContent(data: VideoItem) {
+private fun InnerContent(itemInfo: VideoItem) {
     Column {
         //privacy
-        PrivacySettings()
+        PrivacySettings(itemInfo.visibility)
 
         //property
-        data.property?.let {
+        itemInfo.property?.let {
             SpacerVertical(size = 40.dp)
             PropertyView(it)
         }
 
         //video
-        data.downloadLink?.let {
+        itemInfo.downloadLink?.let {
             SpacerVertical(size = 24.dp)
             VideoView()
         }
@@ -157,11 +157,6 @@ private fun VideoView() {
 
 @Composable
 fun VideoItemContent() {
-    PropertyCard()
-}
-
-@Composable
-fun PropertyCard() {
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
@@ -258,11 +253,12 @@ private fun PropertyView(doc: Document) {
 }
 
 @Composable
-private fun PrivacySettings() {
+private fun PrivacySettings(visibility: Int) {
+
+    val privacyItem = VideoPrivacy.fromId(visibility)
+    var selectedOption by remember { mutableStateOf(privacyItem.label) }
     val pub = VideoPrivacy.PUBLIC.label
     val pvt = VideoPrivacy.PRIVATE.label
-
-    var selectedOption by remember { mutableStateOf(pub) }
 
     Column(
         modifier = Modifier
@@ -317,7 +313,7 @@ private fun PrivacyOption(
                 //box privacy name
                 Box(
                     modifier = Modifier
-                        .background(privacyConfig.bgColor, shape = RoundedCornerShape(4.dp))
+                        .background(privacyConfig.bgColor, shape = RoundedCornerShape(8.dp))
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text800_12sp(label = text)

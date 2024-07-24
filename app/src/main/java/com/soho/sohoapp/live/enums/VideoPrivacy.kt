@@ -9,11 +9,11 @@ enum class VideoPrivacy(val bgColor: Color, val label: String) {
     PRIVATE(PrivateGray, "PRIVATE");
 
     companion object {
-        fun fromString(value: Int): VideoPrivacy {
+        fun fromId(value: Int): VideoPrivacy {
             return when (value) {
                 1 -> PUBLIC
                 0 -> PRIVATE
-                else -> PUBLIC
+                else -> PRIVATE
             }
         }
 
@@ -21,7 +21,7 @@ enum class VideoPrivacy(val bgColor: Color, val label: String) {
             return when (value) {
                 PUBLIC.label -> PUBLIC
                 PRIVATE.label -> PRIVATE
-                else -> PUBLIC
+                else -> PRIVATE
             }
         }
     }
