@@ -30,6 +30,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
@@ -38,6 +40,7 @@ import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.VideoItem
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -45,8 +48,10 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_8sp
 import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
+import com.soho.sohoapp.live.ui.components.TextProgress
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
@@ -56,37 +61,68 @@ fun VideoManageScreen(
     mLiveData: GoLiveSubmit,
     navController: NavHostController,
 ) {
-    mLiveData.videoItemState.value?.let {
-        MainContent(data = it, onBackClick = { navController.popBackStack() })
-    } ?: run {
-        NoDataView()
-    }
+    MainContent(
+        data = mLiveData.videoItemState.value,
+        onBackClick = { navController.popBackStack() },
+        onSaveClick = { navController.popBackStack() })
 }
 
 @Composable
-fun MainContent(data: VideoItem, onBackClick: () -> Unit = {}) {
-    Column(
+fun MainContent(data: VideoItem?, onBackClick: () -> Unit, onSaveClick: () -> Unit) {
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
             .background(brushMainGradientBg)
     ) {
+        val (topAppBar, content, button) = createRefs()
+
         //action bar
         TopAppBarCustomClose(
             title = "Manage Video",
             rightIcon = R.drawable.ic_cross,
-            onCloseClick = {
-                onBackClick()
-            })
+            modifier = Modifier.constrainAs(topAppBar) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
+            onCloseClick = { onBackClick() })
 
         //content
-        LazyColumn(
-            Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 16.dp
-                )
-        ) { item { InnerContent(data) } }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .constrainAs(content) {
+                    top.linkTo(topAppBar.bottom)
+                    bottom.linkTo(button.top)
+                    height = Dimension.fillToConstraints
+                }
+                .padding(16.dp)
+        ) {
+            data?.let {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item { InnerContent(it) }
+                }
+            } ?: run {
+                NoDataView(modifier = Modifier.align(Alignment.Center))
+            }
+        }
 
+        //Bottom Button
+        data?.let {
+            ButtonColoured(
+                text = "Save Changes",
+                color = AppGreen,
+                onBtnClick = { onSaveClick() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .constrainAs(button) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+            )
+        }
     }
 }
 
@@ -296,13 +332,13 @@ private fun PrivacyOption(
 }
 
 @Composable
-fun NoDataView() {
+fun NoDataView(modifier: Modifier) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brushMainGradientBg)
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Text400_14sp(info = "No Video Data", color = Color.White)
+        TextProgress(title = "No Valid Information")
     }
 }
 

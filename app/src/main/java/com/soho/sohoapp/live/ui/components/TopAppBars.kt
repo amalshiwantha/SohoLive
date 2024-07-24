@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @Composable
-fun TopAppBarCustomClose(title: String, rightIcon: Int, onCloseClick: () -> Unit = {}) {
+fun TopAppBarCustomClose(title: String, rightIcon: Int,modifier: Modifier, onCloseClick: () -> Unit = {}) {
     Row(
-        modifier = Modifier
-            .padding(16.dp)
+        modifier = modifier
+            .padding(horizontal = 16.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
