@@ -80,7 +80,7 @@ fun MainContent(data: VideoItem, onBackClick: () -> Unit = {}) {
 }
 
 @Composable
-fun InnerContent(data: VideoItem) {
+private fun InnerContent(data: VideoItem) {
     Column {
         PrivacySettings()
 

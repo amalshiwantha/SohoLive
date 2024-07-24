@@ -98,9 +98,9 @@ fun VideoLibraryScreen(
     //open manage screen
     LaunchedEffect(selectedItem) {
         selectedItem?.let {
-            val savedProp = goLiveData.videoItemState?.value?.property
+            val savedProp = goLiveData.videoItemState.value?.property
             goLiveData.apply {
-                this.videoItemState?.value = it.apply {
+                this.videoItemState.value = it.apply {
                     property = savedProp
                 }
             }
