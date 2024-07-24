@@ -1,5 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.video_manage
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +37,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
@@ -56,20 +59,39 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
+import com.soho.sohoapp.live.utility.showToast
 
 @Composable
 fun VideoManageScreen(
     mLiveData: GoLiveSubmit,
     navController: NavHostController,
 ) {
+    val itemData = mLiveData.videoItemState.value
     MainContent(
-        data = mLiveData.videoItemState.value,
+        data = itemData,
         onBackClick = { navController.popBackStack() },
-        onSaveClick = { navController.popBackStack() })
+        onSaveClick = { navController.popBackStack() },
+        onPlayClick = { playVideo(itemData?.shareableLink) })
+}
+
+private fun playVideo(shareableLink: String?) {
+    shareableLink?.let {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+    } ?: run {
+        showToast("No Video Link")
+    }
 }
 
 @Composable
-fun MainContent(data: VideoItem?, onBackClick: () -> Unit, onSaveClick: () -> Unit) {
+fun MainContent(
+    data: VideoItem?,
+    onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    onPlayClick: () -> Unit
+) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -101,7 +123,7 @@ fun MainContent(data: VideoItem?, onBackClick: () -> Unit, onSaveClick: () -> Un
         ) {
             data?.let {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    item { InnerContent(it) }
+                    item { InnerContent(it, onPlayClick = { onPlayClick() }) }
                 }
             } ?: run {
                 NoDataView(modifier = Modifier.align(Alignment.Center))
@@ -128,7 +150,7 @@ fun MainContent(data: VideoItem?, onBackClick: () -> Unit, onSaveClick: () -> Un
 }
 
 @Composable
-private fun InnerContent(itemInfo: VideoItem) {
+private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
     Column {
         //privacy
         PrivacySettings(itemInfo.visibility)
@@ -140,22 +162,22 @@ private fun InnerContent(itemInfo: VideoItem) {
 
             //video
             SpacerVertical(size = 24.dp)
-            VideoView(it)
+            VideoView(it, onPlayClick = { onPlayClick() })
         }
     }
 }
 
 @Composable
-private fun VideoView(doc: Document) {
+private fun VideoView(doc: Document, onPlayClick: () -> Unit) {
     Column {
         Text950_16sp(title = "Watch Video")
         SpacerVertical(size = 8.dp)
-        VideoItemContent(doc)
+        VideoItemContent(doc, onPlayClick = { onPlayClick() })
     }
 }
 
 @Composable
-fun VideoItemContent(doc: Document) {
+fun VideoItemContent(doc: Document, onPlayClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
@@ -203,6 +225,7 @@ fun VideoItemContent(doc: Document) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .clickable { onPlayClick() }
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
@@ -340,5 +363,5 @@ fun NoDataView(modifier: Modifier) {
 @Preview
 @Composable
 private fun PreviewVidManage() {
-    MainContent(VideoItem(), onSaveClick = {}, onBackClick = {})
+    MainContent(VideoItem(), onSaveClick = {}, onBackClick = {}, onPlayClick = {})
 }
