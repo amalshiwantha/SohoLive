@@ -182,11 +182,11 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            item { VideoUploadProgress() }
+            /*item { VideoUploadProgress() }*/
 
             items(dataList) { item ->
                 ListItemView(item,
-                    onClickAnalytics = { onShowAnalytics(it) },
+                    onClickAnalytics = { /*onShowAnalytics(it)*/ },
                     onShareVideo = { shareIntent(it) },
                     onDownloadVideo = {
                         downloadFile(it.first, it.second, onDownloadStatus = {
@@ -345,7 +345,7 @@ private fun ListItemView(
             SpacerHorizontal(size = 8.dp)
 
             //chart btn
-            ActionIconButton(R.drawable.ic_chart, onClickAction = {
+            /*ActionIconButton(R.drawable.ic_chart, onClickAction = {
                 item.analytics?.let {
                     val analysisClick = Pair(true, item)
                     onClickAnalytics(analysisClick)
@@ -353,7 +353,7 @@ private fun ListItemView(
                     showToast("Not found analytics data")
                 }
             })
-            SpacerHorizontal(size = 8.dp)
+            SpacerHorizontal(size = 8.dp)*/
 
             //share btn
             ActionIconButton(R.drawable.ic_share, onClickAction = {
