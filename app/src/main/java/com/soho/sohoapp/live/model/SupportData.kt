@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.model
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -9,6 +10,9 @@ import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -23,7 +27,8 @@ data class VideoItem(
     var imageUrl: String? = null,
     val analytics: VideoAnalytics? = null,
     val shareableLink: String? = null,
-    val downloadLink: String? = null
+    val downloadLink: String? = null,
+    var property: Document? = null,
 )
 
 @Serializable
@@ -90,7 +95,7 @@ data class GoLiveSubmit(
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf(),
-    var videoItem : VideoItem? = null
+    var videoItemState: MutableState<VideoItem?> = mutableStateOf(null)
 ) {
     constructor() : this(
         purpose = null,

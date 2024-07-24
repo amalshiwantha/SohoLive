@@ -35,7 +35,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
     val mGoLiveSubmit by remember { mutableStateOf(GoLiveSubmit()) }
 
     NavHost(
-        navController = navController, startDestination = NavigationPath.VIDEO_MANAGE.name
+        navController = navController, startDestination = NavigationPath.GO_LIVE.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
             HomeContent(navController, "SCHEDULED")
@@ -76,7 +76,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         composable(route = NavigationPath.VIDEO_MANAGE.name) {
             VideoManageScreen(
                 navController = navController,
-                goLiveData = mGoLiveSubmit
+                mLiveData = mGoLiveSubmit
             )
         }
 

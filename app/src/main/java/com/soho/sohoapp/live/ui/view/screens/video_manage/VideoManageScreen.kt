@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,26 +27,33 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.PropertyItem
+import com.soho.sohoapp.live.model.VideoItem
+import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text800_12sp
+import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
+import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 
 @Composable
 fun VideoManageScreen(
-    goLiveData: GoLiveSubmit,
-    modifier: Modifier = Modifier,
+    mLiveData: GoLiveSubmit,
     navController: NavHostController,
 ) {
-    MainContent(onBackClick = { navController.popBackStack() })
+    mLiveData.videoItemState.value?.let {
+        MainContent(data = it, onBackClick = { navController.popBackStack() })
+    } ?: run {
+        NoDataView()
+    }
 }
 
 @Composable
-fun MainContent(onBackClick: () -> Unit = {}) {
+fun MainContent(data: VideoItem, onBackClick: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,15 +74,30 @@ fun MainContent(onBackClick: () -> Unit = {}) {
                 .padding(
                     horizontal = 16.dp
                 )
-        ) { item { InnerContent() } }
+        ) { item { InnerContent(data) } }
 
     }
 }
 
 @Composable
-fun InnerContent() {
+fun InnerContent(data: VideoItem) {
     Column {
         PrivacySettings()
+
+        data.property?.let {
+            SpacerVertical(size = 40.dp)
+            PropertyView(it)
+        }
+    }
+}
+
+@Composable
+private fun PropertyView(doc: Document) {
+    val propItem = PropertyItem(1, doc)
+    Column {
+        Text950_16sp(title = "Linked Listing")
+        SpacerVertical(size = 8.dp)
+        PropertyItemContent(propItem)
     }
 }
 
@@ -154,19 +176,18 @@ private fun PrivacyOption(
 }
 
 @Composable
-fun NoDataView(innerPadding: PaddingValues) {
+fun NoDataView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(brushMainGradientBg)
-            .padding(innerPadding)
     ) {
-        Text400_14sp(info = "No Video Data", color = AppPrimaryDark)
+        Text400_14sp(info = "No Video Data", color = Color.White)
     }
 }
 
 @Preview
 @Composable
 private fun PreviewVidManage() {
-    MainContent()
+    MainContent(VideoItem())
 }
