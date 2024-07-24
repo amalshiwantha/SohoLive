@@ -54,6 +54,7 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
+import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 
 @Composable
@@ -136,27 +137,25 @@ private fun InnerContent(itemInfo: VideoItem) {
         itemInfo.property?.let {
             SpacerVertical(size = 40.dp)
             PropertyView(it)
-        }
 
-        //video
-        itemInfo.downloadLink?.let {
+            //video
             SpacerVertical(size = 24.dp)
-            VideoView()
+            VideoView(it)
         }
     }
 }
 
 @Composable
-private fun VideoView() {
+private fun VideoView(doc: Document) {
     Column {
         Text950_16sp(title = "Watch Video")
         SpacerVertical(size = 8.dp)
-        VideoItemContent()
+        VideoItemContent(doc)
     }
 }
 
 @Composable
-fun VideoItemContent() {
+fun VideoItemContent(doc: Document) {
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
@@ -234,7 +233,7 @@ fun VideoItemContent() {
                     Column {
                         Text700_8sp(title = "3/19 Weeroona Avenue, Woollahra")
                         SpacerVertical(size = 2.dp)
-                        //AmenitiesView(property, AppWhite, isCompact = true)
+                        AmenitiesView(doc, AppWhite, isCompact = true)
                     }
                 }
             }
@@ -341,6 +340,5 @@ fun NoDataView(modifier: Modifier) {
 @Preview
 @Composable
 private fun PreviewVidManage() {
-    //MainContent(VideoItem())
-    VideoItemContent()
+    MainContent(VideoItem(), onSaveClick = {}, onBackClick = {})
 }

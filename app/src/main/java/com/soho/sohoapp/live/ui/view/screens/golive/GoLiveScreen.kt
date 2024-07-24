@@ -1825,7 +1825,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
             } else {
                 Text400_12sp(label = it, txtColor = textColor)
             }
-            AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor, isCompact)
         }
 
         doc.bathroomCount.visibleValue()?.let {
@@ -1834,7 +1834,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
             } else {
                 Text400_12sp(label = it, txtColor = textColor)
             }
-            AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor, isCompact)
         }
 
         doc.carspotCount.visibleValue()?.let {
@@ -1843,7 +1843,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
             } else {
                 Text400_12sp(label = it, txtColor = textColor)
             }
-            AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor, isCompact)
         }
 
         doc.areaSize()?.let {
@@ -1852,17 +1852,20 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
             } else {
                 Text400_12sp(label = it.first, txtColor = textColor)
             }
-            AmenitiesIcon(icon = it.second, iconColor = textColor)
+            AmenitiesIcon(icon = it.second, iconColor = textColor, isCompact)
         }
     }
 }
 
 @Composable
-private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite) {
+private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite, isCompact: Boolean) {
+    val iconSize = if (isCompact) 10.dp else 14.dp
     Image(
         painter = painterResource(id = icon),
         contentDescription = null,
-        modifier = Modifier.padding(start = 4.dp, end = 8.dp),
+        modifier = Modifier
+            .padding(start = 4.dp, end = 8.dp)
+            .size(iconSize),
         contentScale = ContentScale.FillBounds,
         colorFilter = ColorFilter.tint(iconColor)
     )
