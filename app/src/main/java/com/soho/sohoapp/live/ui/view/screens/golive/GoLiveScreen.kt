@@ -1751,7 +1751,11 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
 }
 
 @Composable
-fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Unit = {}) {
+fun PropertyItemContent(
+    item: PropertyItem,
+    isClickable: Boolean = true,
+    onItemClicked: (PropertyItem) -> Unit = {}
+) {
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
     val property = item.propInfo
@@ -1788,7 +1792,7 @@ fun PropertyItemContent(item: PropertyItem, onItemClicked: (PropertyItem) -> Uni
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(item.isChecked, property, txtColor = textColor, onCheckedChange = {
+                TypeAndCheckBox(item.isChecked,isClickable, property, txtColor = textColor, onCheckedChange = {
                     onItemClicked(item.apply { isChecked = !isChecked })
                 })
                 SpacerVertical(size = 8.dp)
@@ -1845,6 +1849,7 @@ private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite) {
 @Composable
 private fun TypeAndCheckBox(
     isChecked: Boolean,
+    isClickable: Boolean,
     doc: Document,
     txtColor: Color = AppWhite,
     onCheckedChange: (Boolean) -> Unit = {}
@@ -1871,28 +1876,30 @@ private fun TypeAndCheckBox(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .clickable { onCheckedChange(!isChecked) }, contentAlignment = Alignment.Center
-        ) {
-            //CheckBox BG
-            Image(
-                painter = if (isChecked) {
-                    painterResource(id = R.drawable.check_box_chcked)
-                } else {
-                    painterResource(id = R.drawable.cehck_box_uncheck)
-                }, contentDescription = null, contentScale = ContentScale.FillBounds
-            )
-
-            //Tick Icon
-            if (isChecked) {
+        if(isClickable){
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clickable { onCheckedChange(!isChecked) }, contentAlignment = Alignment.Center
+            ) {
+                //CheckBox BG
                 Image(
-                    painter = painterResource(id = R.drawable.ic_tick),
-                    contentDescription = null,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    contentScale = ContentScale.FillBounds
+                    painter = if (isChecked) {
+                        painterResource(id = R.drawable.check_box_chcked)
+                    } else {
+                        painterResource(id = R.drawable.cehck_box_uncheck)
+                    }, contentDescription = null, contentScale = ContentScale.FillBounds
                 )
+
+                //Tick Icon
+                if (isChecked) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_tick),
+                        contentDescription = null,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
             }
         }
 

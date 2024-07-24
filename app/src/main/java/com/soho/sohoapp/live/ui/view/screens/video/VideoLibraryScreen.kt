@@ -91,9 +91,7 @@ fun VideoLibraryScreen(
     var selectedItem by remember { mutableStateOf<VideoItem?>(null) }
 
     //display main content
-    Content(onManageClick = {
-        selectedItem = it
-    })
+    Content(onManageClick = { selectedItem = it })
 
     //open manage screen
     LaunchedEffect(selectedItem) {

@@ -97,7 +97,7 @@ private fun PropertyView(doc: Document) {
     Column {
         Text950_16sp(title = "Linked Listing")
         SpacerVertical(size = 8.dp)
-        PropertyItemContent(propItem)
+        PropertyItemContent(propItem, isClickable = false)
     }
 }
 
