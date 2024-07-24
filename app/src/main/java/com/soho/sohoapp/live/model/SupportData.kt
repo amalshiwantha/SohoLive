@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.model
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -11,6 +12,7 @@ import com.soho.sohoapp.live.network.response.Document
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class VideoItem(
     var propertyType: String? = null, //action inspection etc
     var visibility: Int = 0, //public 1, private 0
@@ -24,6 +26,7 @@ data class VideoItem(
     val downloadLink: String? = null
 )
 
+@Serializable
 data class VideoAnalytics(
     val fb: Int = 0,
     val yt: Int = 0,
@@ -86,7 +89,8 @@ data class GoLiveSubmit(
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
-    var checkedPlatforms: MutableList<String> = mutableListOf()
+    var checkedPlatforms: MutableList<String> = mutableListOf(),
+    var videoItem : VideoItem? = null
 ) {
     constructor() : this(
         purpose = null,

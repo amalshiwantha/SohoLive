@@ -66,6 +66,7 @@ import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextBadge
 import com.soho.sohoapp.live.ui.components.TextBadgeDuration
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
@@ -90,10 +91,19 @@ fun VideoLibraryScreen(
     var selectedItem by remember { mutableStateOf<VideoItem?>(null) }
 
     //display main content
-    Content(onShowAnalytics = {
-        showAnalyticsBottomSheet = it.first
-        selectedItem = it.second
+    Content(onManageClick = {
+        selectedItem = it
     })
+
+    //open manage screen
+    LaunchedEffect(selectedItem) {
+        selectedItem?.let {
+            goLiveData.apply {
+                this.videoItem = it
+            }
+            navController.navigate(NavigationPath.VIDEO_MANAGE.name)
+        }
+    }
 
     //show analytics data in a bottomSheet view
     selectedItem?.analytics?.let { analytics ->
@@ -111,7 +121,8 @@ fun AnalyticsBottomSheet(
     val bottomSheetState = rememberModalBottomSheetState()
 
     if (showBottomSheet) {
-        ModalBottomSheet(containerColor = BottomBarBg,
+        ModalBottomSheet(
+            containerColor = BottomBarBg,
             dragHandle = { DragHandle(color = BottomSheetDrag) },
             onDismissRequest = { onVisibility(false) },
             sheetState = bottomSheetState
@@ -160,7 +171,7 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
 
 
 @Composable
-private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
+private fun Content(onManageClick: (VideoItem) -> Unit) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
 
     //Show download status
@@ -186,7 +197,7 @@ private fun Content(onShowAnalytics: (Pair<Boolean, VideoItem>) -> Unit) {
 
             items(dataList) { item ->
                 ListItemView(item,
-                    onClickAnalytics = { /*onShowAnalytics(it)*/ },
+                    onClickManage = { onManageClick(it) },
                     onShareVideo = { shareIntent(it) },
                     onDownloadVideo = {
                         downloadFile(it.first, it.second, onDownloadStatus = {
@@ -280,7 +291,7 @@ fun VideoUploadProgress() {
 @Composable
 private fun ListItemView(
     item: VideoItem,
-    onClickAnalytics: (Pair<Boolean, VideoItem>) -> Unit,
+    onClickManage: (VideoItem) -> Unit,
     onShareVideo: (String) -> Unit,
     onDownloadVideo: (Pair<String, String>) -> Unit
 ) {
@@ -330,7 +341,7 @@ private fun ListItemView(
                     .weight(1f)
                     .height(40.dp),
                 onBtnClick = {
-                    println("myVid - Manage ${item.title}")
+                    onClickManage(item)
                 })
             SpacerHorizontal(size = 8.dp)
 
@@ -469,5 +480,5 @@ private fun sampleData(): List<VideoItem> {
 @Preview
 @Composable
 private fun PreviewVidLib() {
-    Content(onShowAnalytics = {})
+    Content(onManageClick = {})
 }

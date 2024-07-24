@@ -21,6 +21,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive_success.GoLiveOkScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
+import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -68,6 +69,12 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         }
         composable(route = NavigationPath.GO_LIVE_SUCCESS.name) {
             GoLiveOkScreen(
+                navController = navController,
+                goLiveData = mGoLiveSubmit
+            )
+        }
+        composable(route = NavigationPath.VIDEO_MANAGE.name) {
+            VideoManageScreen(
                 navController = navController,
                 goLiveData = mGoLiveSubmit
             )
