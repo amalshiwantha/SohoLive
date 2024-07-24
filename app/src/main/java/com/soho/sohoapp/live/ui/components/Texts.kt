@@ -27,6 +27,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.StarYellow
+import com.soho.sohoapp.live.ui.theme.lowGreen
 
 @Composable
 fun TextTopBarTitle(title: String, modifier: Modifier = Modifier) {
@@ -174,6 +175,23 @@ fun Text950_16sp(modifier: Modifier = Modifier, title: String) {
 }
 
 @Composable
+fun Text700_8sp(
+    modifier: Modifier = Modifier,
+    title: String
+) {
+    Text(
+        text = title,
+        fontSize = 8.sp,
+        lineHeight = 11.2.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(700),
+        color = Color(0xFFFFFFFF),
+        letterSpacing = 0.28.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
 fun Text700_14sp(
     modifier: Modifier = Modifier,
     step: String,
@@ -294,14 +312,14 @@ fun TextPlaceHolder(modifier: Modifier = Modifier, label: String) {
 }
 
 @Composable
-fun Text700_12sp(modifier: Modifier = Modifier, label: String) {
+fun Text700_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color = lowGreen) {
     Text(
         modifier = modifier,
         text = label,
         fontSize = 12.sp,
         lineHeight = 16.8.sp,
         letterSpacing = 0.14.sp,
-        color = Color(0xFF00BFA8),
+        color = txtColor,
         fontWeight = FontWeight(700),
         fontFamily = FontFamily(Font(R.font.axiforma)),
     )
@@ -319,6 +337,20 @@ fun Text700_12spRight(modifier: Modifier = Modifier, label: String, txtColor: Co
         lineHeight = 16.8.sp,
         textAlign = TextAlign.Right,
         letterSpacing = 0.14.sp,
+    )
+}
+
+@Composable
+fun Text400_8sp(modifier: Modifier = Modifier, label: String, txtColor: Color = AppWhite) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 8.sp,
+        lineHeight = 12.8.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(400),
+        color = Color(0xFFFFFFFF),
+        letterSpacing = 0.19.sp
     )
 }
 

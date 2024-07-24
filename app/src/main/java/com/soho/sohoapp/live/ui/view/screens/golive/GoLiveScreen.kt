@@ -107,6 +107,7 @@ import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text400_8sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
@@ -1792,9 +1793,14 @@ fun PropertyItemContent(
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(item.isChecked,isClickable, property, txtColor = textColor, onCheckedChange = {
-                    onItemClicked(item.apply { isChecked = !isChecked })
-                })
+                TypeAndCheckBox(
+                    item.isChecked,
+                    isClickable,
+                    property,
+                    txtColor = textColor,
+                    onCheckedChange = {
+                        onItemClicked(item.apply { isChecked = !isChecked })
+                    })
                 SpacerVertical(size = 8.dp)
                 Text700_14sp(step = property.fullAddress(), color = textColor)
                 SpacerVertical(size = 8.dp)
@@ -1807,29 +1813,45 @@ fun PropertyItemContent(
 }
 
 @Composable
-private fun AmenitiesView(doc: Document, textColor: Color) {
+fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
         doc.bedroomCount.visibleValue()?.let {
-            Text400_12sp(label = it, txtColor = textColor)
+            if (isCompact) {
+                Text400_8sp(label = it, txtColor = textColor)
+            } else {
+                Text400_12sp(label = it, txtColor = textColor)
+            }
             AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor)
         }
 
         doc.bathroomCount.visibleValue()?.let {
-            Text400_12sp(label = it, txtColor = textColor)
+            if (isCompact) {
+                Text400_8sp(label = it, txtColor = textColor)
+            } else {
+                Text400_12sp(label = it, txtColor = textColor)
+            }
             AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor)
         }
 
         doc.carspotCount.visibleValue()?.let {
-            Text400_12sp(label = it, txtColor = textColor)
+            if (isCompact) {
+                Text400_8sp(label = it, txtColor = textColor)
+            } else {
+                Text400_12sp(label = it, txtColor = textColor)
+            }
             AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor)
         }
 
         doc.areaSize()?.let {
-            Text400_12sp(label = it.first, txtColor = textColor)
+            if (isCompact) {
+                Text400_8sp(label = it.first, txtColor = textColor)
+            } else {
+                Text400_12sp(label = it.first, txtColor = textColor)
+            }
             AmenitiesIcon(icon = it.second, iconColor = textColor)
         }
     }
@@ -1876,7 +1898,7 @@ private fun TypeAndCheckBox(
             }
         }
 
-        if(isClickable){
+        if (isClickable) {
             Box(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
