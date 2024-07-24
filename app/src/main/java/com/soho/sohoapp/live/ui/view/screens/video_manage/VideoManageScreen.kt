@@ -1,7 +1,9 @@
 package com.soho.sohoapp.live.ui.view.screens.video_manage
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -109,38 +109,40 @@ private fun PrivacyOption(
 ) {
     val privacyConfig = VideoPrivacy.fromLabel(text)
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onOptionSelected() }
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { onOptionSelected() }
     ) {
-        //privacy radio button
-        RadioButton(
-            selected = isSelected,
-            onClick = onOptionSelected,
-            colors = RadioButtonDefaults.colors(
-                selectedColor = Color(0xFF00A19A),
-                unselectedColor = Color.White
+
+        //Radio button
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            //privacy radio button
+            val radioIcon = if (isSelected)
+                R.drawable.radio_active else R.drawable.radio_inactive
+            Image(
+                painter = painterResource(id = radioIcon),
+                contentDescription = null
             )
-        )
-        SpacerHorizontal(size = 8.dp)
-
-        //privacy info
-        Column {
-            //box privacy name
-            Box(
-                modifier = Modifier
-                    .background(privacyConfig.bgColor, shape = RoundedCornerShape(4.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text800_12sp(label = text)
-            }
-
-            //info
             SpacerHorizontal(size = 8.dp)
-            Text400_14sp(info = description)
+
+            Column {
+                //box privacy name
+                Box(
+                    modifier = Modifier
+                        .background(privacyConfig.bgColor, shape = RoundedCornerShape(4.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text800_12sp(label = text)
+                }
+            }
         }
+
+        //info
+        SpacerVertical(size = 8.dp)
+        Text400_14sp(info = description, modifier = Modifier.padding(start = 24.dp))
     }
 }
 
