@@ -29,6 +29,20 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.StarYellow
 
 @Composable
+fun TextTopBarTitle(title: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier,
+        text = title,
+        fontSize = 24.sp,
+        lineHeight = 33.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(950),
+        color = AppWhite,
+        letterSpacing = 0.28.sp,
+    )
+}
+
+@Composable
 fun TextWhite14(modifier: Modifier = Modifier, title: String) {
     Text(
         modifier = modifier,

@@ -1,20 +1,26 @@
 package com.soho.sohoapp.live.enums
 
 import androidx.compose.ui.graphics.Color
-import com.soho.sohoapp.live.enums.PropertyType.AUCTION
-import com.soho.sohoapp.live.enums.PropertyType.INSPECTION
 import com.soho.sohoapp.live.ui.theme.PrivateGray
 import com.soho.sohoapp.live.ui.theme.PublicGreen
 
-enum class PropertyVisibility(val bgColor: Color,val label: String) {
+enum class VideoPrivacy(val bgColor: Color, val label: String) {
     PUBLIC(PublicGreen, "PUBLIC"),
-    PRIVATE(PrivateGray,"PRIVATE");
+    PRIVATE(PrivateGray, "PRIVATE");
 
     companion object {
-        fun fromString(value: Int): PropertyVisibility {
+        fun fromString(value: Int): VideoPrivacy {
             return when (value) {
                 1 -> PUBLIC
                 0 -> PRIVATE
+                else -> PUBLIC
+            }
+        }
+
+        fun fromLabel(value: String): VideoPrivacy {
+            return when (value) {
+                PUBLIC.label -> PUBLIC
+                PRIVATE.label -> PRIVATE
                 else -> PUBLIC
             }
         }

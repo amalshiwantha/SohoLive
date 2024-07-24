@@ -1,23 +1,44 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-import com.soho.sohoapp.live.R
+import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.ui.theme.AppWhite
+
+@Composable
+fun TopAppBarCustomClose(title: String, rightIcon: Int, onCloseClick: () -> Unit = {}) {
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        TextTopBarTitle(title = title, modifier = Modifier.weight(1f))
+        IconButton(onClick = { onCloseClick() }) {
+            Icon(
+                painter = painterResource(id = rightIcon),
+                tint = AppWhite,
+                contentDescription = "Back"
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,17 +50,7 @@ fun AppTopBar(
     onRightClick: () -> Unit
 ) {
     TopAppBar(
-        title = {
-            Text(
-                text = title,
-                fontSize = 24.sp,
-                lineHeight = 33.6.sp,
-                fontFamily = FontFamily(Font(R.font.axiforma)),
-                fontWeight = FontWeight(950),
-                color = AppWhite,
-                letterSpacing = 0.28.sp,
-            )
-        },
+        title = { TextTopBarTitle(title) },
         actions = {
             if (rightIcon != 0) {
                 IconButton(onClick = { onRightClick() }) {

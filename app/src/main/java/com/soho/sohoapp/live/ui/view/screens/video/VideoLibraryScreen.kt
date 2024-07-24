@@ -52,7 +52,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.PropertyType
-import com.soho.sohoapp.live.enums.PropertyVisibility
+import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.VideoAnalytics
 import com.soho.sohoapp.live.model.VideoItem
@@ -303,7 +303,7 @@ private fun ListItemView(
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
-            val visiItem = PropertyVisibility.fromString(item.visibility)
+            val visiItem = VideoPrivacy.fromString(item.visibility)
             TextBadge(text = visiItem.label, bgColor = visiItem.bgColor)
             Spacer(modifier = Modifier.width(8.dp))
 
