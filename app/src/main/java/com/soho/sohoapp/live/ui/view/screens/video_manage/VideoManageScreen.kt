@@ -52,6 +52,7 @@ fun MainContent(onBackClick: () -> Unit = {}) {
             .fillMaxSize()
             .background(brushMainGradientBg)
     ) {
+        //action bar
         TopAppBarCustomClose(
             title = "Manage Video",
             rightIcon = R.drawable.ic_cross,
@@ -59,21 +60,27 @@ fun MainContent(onBackClick: () -> Unit = {}) {
                 onBackClick()
             })
 
+        //content
         LazyColumn(
             Modifier
                 .fillMaxWidth()
                 .padding(
                     horizontal = 16.dp
                 )
-        ) {
-            item { PrivacySettings() }
-        }
+        ) { item { InnerContent() } }
 
     }
 }
 
 @Composable
-fun PrivacySettings() {
+fun InnerContent() {
+    Column {
+        PrivacySettings()
+    }
+}
+
+@Composable
+private fun PrivacySettings() {
     val pub = VideoPrivacy.PUBLIC.label
     val pvt = VideoPrivacy.PRIVATE.label
 
