@@ -43,7 +43,7 @@ fun ForgetPwScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.forget_pw_title),
-                onBackClick = { navController.popBackStack() })
+                onBackClick = { navController.popBackStack() }, onRightClick = {})
         }
     ) { innerPadding ->
 

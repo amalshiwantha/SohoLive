@@ -10,6 +10,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -20,7 +21,13 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppTopBar(title: String, isAllowBack: Boolean = true, onBackClick: () -> Unit) {
+fun AppTopBar(
+    title: String,
+    rightIcon: Int = 0,
+    isAllowBack: Boolean = true,
+    onBackClick: () -> Unit,
+    onRightClick: () -> Unit
+) {
     TopAppBar(
         title = {
             Text(
@@ -32,6 +39,17 @@ fun AppTopBar(title: String, isAllowBack: Boolean = true, onBackClick: () -> Uni
                 color = AppWhite,
                 letterSpacing = 0.28.sp,
             )
+        },
+        actions = {
+            if (rightIcon != 0) {
+                IconButton(onClick = { onRightClick() }) {
+                    Icon(
+                        painter = painterResource(id = rightIcon),
+                        tint = AppWhite,
+                        contentDescription = "Right Icon"
+                    )
+                }
+            }
         },
         navigationIcon = {
             if (isAllowBack) {
@@ -53,5 +71,5 @@ fun AppTopBar(title: String, isAllowBack: Boolean = true, onBackClick: () -> Uni
 @Preview
 @Composable
 private fun PreviewAppTopBar() {
-    AppTopBar("Welcome Back") {}
+    AppTopBar("Welcome Back", onBackClick = {}, onRightClick = {})
 }

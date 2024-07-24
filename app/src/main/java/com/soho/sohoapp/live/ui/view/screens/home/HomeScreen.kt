@@ -80,7 +80,7 @@ fun HomeScreen(
                 AppTopBar(
                     title = selectedTabTitle,
                     isAllowBack = false,
-                    onBackClick = { })
+                    onBackClick = { }, onRightClick = {})
             }
         },
         bottomBar = {

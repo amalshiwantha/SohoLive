@@ -77,7 +77,7 @@ fun SignInScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.signin_title),
-                onBackClick = { navController.popBackStack() })
+                onBackClick = { navController.popBackStack() }, onRightClick = {})
         }
     ) { innerPadding ->
 

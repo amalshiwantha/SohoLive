@@ -44,7 +44,7 @@ fun SignUpScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.signup_title),
-                onBackClick = { navController.popBackStack() })
+                onBackClick = { navController.popBackStack() }, onRightClick = {})
         }
     ) { innerPadding ->
 

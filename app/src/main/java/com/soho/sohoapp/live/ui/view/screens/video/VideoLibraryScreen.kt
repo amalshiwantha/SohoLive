@@ -98,9 +98,7 @@ fun VideoLibraryScreen(
     //open manage screen
     LaunchedEffect(selectedItem) {
         selectedItem?.let {
-            goLiveData.apply {
-                this.videoItem = it
-            }
+            goLiveData.apply {this.videoItem = it }
             navController.navigate(NavigationPath.VIDEO_MANAGE.name)
         }
     }

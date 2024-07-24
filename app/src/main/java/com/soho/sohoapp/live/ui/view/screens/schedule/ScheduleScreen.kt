@@ -154,7 +154,7 @@ fun ScheduleScreen(
                 title = stringResource(R.string.date_time_title),
                 onBackClick = {
                     navController.popBackStack()
-                })
+                }, onRightClick = {})
         }
     ) { innerPadding ->
 
