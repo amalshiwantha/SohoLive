@@ -573,7 +573,7 @@ fun PropertyImageCenterPlay(imageUrl: String?, onClick: () -> Unit) {
         Image(
             painter = urlPainter,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()
         )
         Icon(

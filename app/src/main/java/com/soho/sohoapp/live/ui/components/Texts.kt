@@ -355,7 +355,7 @@ fun Text400_10sp(modifier: Modifier = Modifier, label: String, txtColor: Color =
         lineHeight = 12.8.sp,
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         fontWeight = FontWeight(400),
-        color = Color(0xFFFFFFFF),
+        color = txtColor,
         letterSpacing = 0.19.sp
     )
 }
