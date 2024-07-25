@@ -36,6 +36,7 @@ data class VideoItem(
     @SerialName("agent_profile_id") val agentProfileId: Int,
     @SerialName("live_stream_id") val liveStreamId: Int,
     @SerialName("shareable_link") val shareableLink: String?,
+    @SerialName("download_link") val downloadLink: String?,
     @SerialName("soho_link") val sohoLink: String,
     @SerialName("status") val status: String,
     var property: Document? = null,

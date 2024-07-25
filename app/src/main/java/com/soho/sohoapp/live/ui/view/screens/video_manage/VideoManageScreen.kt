@@ -73,7 +73,7 @@ fun VideoManageScreen(
         data = itemData,
         onBackClick = { navController.popBackStack() },
         onSaveClick = { navController.popBackStack() },
-        onPlayClick = { playVideo(itemData?.shareableLink) })
+        onPlayClick = { playVideo(itemData?.downloadLink) })
 }
 
 private fun playVideo(shareableLink: String?) {

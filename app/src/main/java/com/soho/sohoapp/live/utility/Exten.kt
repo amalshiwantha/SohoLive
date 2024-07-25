@@ -36,7 +36,6 @@ import java.util.Locale
 
 @OptIn(DelicateCoroutinesApi::class)
 fun downloadFile(url: String, title: String, onDownloadStatus: (String) -> Unit) {
-    println("url "+url)
     var statusMsg: String
     val progressTitle = "SohoLive Video"
     val fileName = title.toFileName() + ".mp4"

@@ -11,26 +11,8 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VideoItem
-import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
-/*@Serializable
-data class VideoItem(
-    var propertyType: String? = null, //action inspection etc
-    var visibility: Int = 0, //public 1, private 0
-    val duration: String? = null, //22:31
-    val date: String? = null, //22 may 2024
-    val title: String? = null,
-    val info: String? = null,
-    var imageUrl: String? = null,
-    val analytics: VideoAnalytics? = null,
-    val shareableLink: String? = null,
-    val downloadLink: String? = null,
-    var property: Document? = null,
-)*/
 
 @Serializable
 data class VideoAnalytics(
@@ -39,7 +21,7 @@ data class VideoAnalytics(
     val li: Int = 0,
     val soho: Int = 0,
     val play_min: Int = 0, //seconds
-){
+) {
     // Function to get the total playtime count in seconds
     fun getTotalPlayTime(): Int {
         return fb + yt + li + soho

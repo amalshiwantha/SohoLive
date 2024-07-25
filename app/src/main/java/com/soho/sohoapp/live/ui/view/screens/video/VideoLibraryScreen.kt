@@ -375,7 +375,7 @@ private fun ListItemView(
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
-            PropertyImageCenterPlay(item.shareableLink, onClick = {
+            PropertyImageCenterPlay(item.downloadLink, onClick = {
 
             })
             SpacerHorizontal(size = 16.dp)
@@ -400,7 +400,7 @@ private fun ListItemView(
 
             //download btn
             ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
-                item.shareableLink?.let {
+                item.downloadLink?.let {
                     onDownloadVideo(Pair(it, item.title.orEmpty()))
                 } ?: kotlin.run {
                     showToast("Not found a download link")
