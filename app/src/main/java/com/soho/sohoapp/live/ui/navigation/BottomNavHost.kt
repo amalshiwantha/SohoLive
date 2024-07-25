@@ -53,7 +53,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         }
         composable(route = NavigationPath.VIDEO_LIBRARY.name) {
             VideoLibraryScreen(
-                goLiveData = mGoLiveSubmit,
+                mLiveData = mGoLiveSubmit,
                 navController = navController
             )
         }

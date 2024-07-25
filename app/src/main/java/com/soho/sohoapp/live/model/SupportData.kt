@@ -9,6 +9,7 @@ import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
+import com.soho.sohoapp.live.network.response.DataVidRes
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.serialization.SerialName
@@ -78,6 +79,7 @@ data class GoLiveSubmit(
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf(),
+    var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
     var videoItemState: MutableState<VideoItem?> = mutableStateOf(null)
 ) {
     constructor() : this(

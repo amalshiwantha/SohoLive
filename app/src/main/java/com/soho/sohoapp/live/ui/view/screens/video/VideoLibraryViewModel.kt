@@ -64,6 +64,7 @@ class VideoLibraryViewModel(
 
                         if (isSuccess) {
                             mState.value = mState.value.copy(sApiResponse = mutableStateOf(res))
+                            mState.value = mState.value.copy(isSuccess = true)
                         } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.VID_LIB_ERROR.apply {

@@ -88,12 +88,13 @@ import org.koin.compose.koinInject
 
 @Composable
 fun VideoLibraryScreen(
-    goLiveData: GoLiveSubmit,
+    mLiveData: GoLiveSubmit,
     navController: NavController,
     vmVidLib: VideoLibraryViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
 ) {
-    val sVidLib = vmVidLib.mState.value
+    val states = vmVidLib.mState.value
+    val sLiveData = mLiveData.videoLibResState.value
     var showAnalyticsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf<VideoItem?>(null) }
     var isShowAlert by remember { mutableStateOf(false) }
@@ -101,23 +102,34 @@ fun VideoLibraryScreen(
     var isShowProgress by remember { mutableStateOf(false) }
 
     //cal api
-    LaunchedEffect(sVidLib.sApiResponse) {
-        if (sVidLib.sApiResponse == null) {
+    LaunchedEffect(sLiveData) {
+        if (sLiveData == null) {
             vmVidLib.onTriggerEvent(VidLibEvent.CallLoadVideo(VidLibRequest()))
         }
     }
 
-    LaunchedEffect(sVidLib) {
-        //Display alert
-        if (sVidLib.alertState is AlertState.Display) {
+    //save api response in globally
+    LaunchedEffect(states.isSuccess) {
+        if (states.isSuccess) {
+            mLiveData.apply {
+                videoLibResState.value = states.sApiResponse?.value
+            }
+        }
+    }
+
+    //Show Loading view
+    LaunchedEffect(states.loadingState) {
+        isShowProgress = states.loadingState == ProgressBarState.Loading
+    }
+
+    //Display alert
+    LaunchedEffect(states.alertState) {
+        if (states.alertState is AlertState.Display) {
             isShowAlert = true
-            alertConfig = sVidLib.alertState.config
+            alertConfig = states.alertState.config
         } else {
             isShowAlert = false
         }
-
-        //Show Loading view
-        isShowProgress = sVidLib.loadingState == ProgressBarState.Loading
     }
 
 
@@ -136,14 +148,12 @@ fun VideoLibraryScreen(
     }
 
     //display main content
-    Content(isShowProgress, sVidLib, onManageClick = { selectedItem = it })
+    Content(isShowProgress, states, mLiveData, onManageClick = { selectedItem = it })
 
     //open manage screen
     LaunchedEffect(selectedItem) {
         selectedItem?.let {
-            goLiveData.apply {
-                this.videoItemState.value = it
-            }
+            mLiveData.apply { videoItemState.value = it }
             navController.navigate(NavigationPath.VIDEO_MANAGE.name)
         }
     }
@@ -215,7 +225,8 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
 @Composable
 private fun Content(
     isShowProgress: Boolean,
-    sVidLib: VideoLibraryState,
+    state: VideoLibraryState,
+    mLiveData: GoLiveSubmit,
     onManageClick: (VideoItem) -> Unit
 ) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
@@ -233,9 +244,9 @@ private fun Content(
             .fillMaxSize()
     ) {
         if (isShowProgress) {
-            CenterMessageProgress(message = sVidLib.loadingMessage)
+            CenterMessageProgress(message = state.loadingMessage)
         } else {
-            val dataList = sVidLib.sApiResponse?.value?.assets?.filter {
+            val dataList = mLiveData.videoLibResState.value?.assets?.filter {
                 it.status == "ready"
             }
 
