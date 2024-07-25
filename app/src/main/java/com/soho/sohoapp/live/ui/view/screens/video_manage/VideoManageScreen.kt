@@ -50,7 +50,6 @@ import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
-import com.soho.sohoapp.live.ui.components.Text700_8sp
 import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextProgress
@@ -62,6 +61,7 @@ import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
+import com.soho.sohoapp.live.utility.hexToColor
 import com.soho.sohoapp.live.utility.playVideo
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
@@ -299,17 +299,27 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                         .background(Color.Black.copy(alpha = 0.7f))
                         .padding(8.dp)
                 ) {
+                    val agent = vidItem.getAgent()
+                    val agentLogoUrl = agent?.banner_image ?: ""
+                    val agentColor = agent?.agent_bg_colour?.hexToColor() ?: Color.White
+
+                    val logoAgent = rememberAsyncImagePainter(
+                        model = agentLogoUrl,
+                        placeholder = painterResource(id = R.drawable.empty_photo),
+                        error = painterResource(id = R.drawable.empty_photo)
+                    )
+
                     Image(
-                        painter = painterResource(id = R.drawable.logo_soho),
+                        painter = logoAgent,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(42.dp)
                             .clip(CircleShape)
-                            .background(Color.White)
+                            .background(agentColor)
                     )
                     SpacerHorizontal(size = 8.dp)
                     Column {
-                        Text700_8sp(title = "3/19 Weeroona Avenue, Woollahra")
+                        Text700_12sp(label = vidItem.property?.fullAddress().orEmpty(), txtColor = AppWhite)
                         SpacerVertical(size = 2.dp)
                         propInfo?.let {
                             AmenitiesView(it, AppWhite, isCompact = true)

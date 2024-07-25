@@ -41,6 +41,13 @@ data class VideoItem(
     @SerialName("status") val status: String,
     var property: Document? = null,
 ) {
+    fun getAgent(): Agent? {
+        val agentProfile = property?.getAgents()?.find {
+            it.id == agentProfileId
+        }
+        return agentProfile
+    }
+
     fun getDisplayDate(): String {
         return try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())

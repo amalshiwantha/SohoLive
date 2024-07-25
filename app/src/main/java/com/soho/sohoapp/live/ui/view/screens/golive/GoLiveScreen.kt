@@ -104,9 +104,9 @@ import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.Text400_10sp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
-import com.soho.sohoapp.live.ui.components.Text400_8sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
@@ -1817,7 +1817,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
 
         doc.bedroomCount.visibleValue()?.let {
             if (isCompact) {
-                Text400_8sp(label = it, txtColor = textColor)
+                Text400_10sp(label = it, txtColor = textColor)
             } else {
                 Text400_12sp(label = it, txtColor = textColor)
             }
@@ -1826,7 +1826,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
 
         doc.bathroomCount.visibleValue()?.let {
             if (isCompact) {
-                Text400_8sp(label = it, txtColor = textColor)
+                Text400_10sp(label = it, txtColor = textColor)
             } else {
                 Text400_12sp(label = it, txtColor = textColor)
             }
@@ -1835,7 +1835,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
 
         doc.carspotCount.visibleValue()?.let {
             if (isCompact) {
-                Text400_8sp(label = it, txtColor = textColor)
+                Text400_10sp(label = it, txtColor = textColor)
             } else {
                 Text400_12sp(label = it, txtColor = textColor)
             }
@@ -1844,7 +1844,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
 
         doc.areaSize()?.let {
             if (isCompact) {
-                Text400_8sp(label = it.first, txtColor = textColor)
+                Text400_10sp(label = it.first, txtColor = textColor)
             } else {
                 Text400_12sp(label = it.first, txtColor = textColor)
             }
@@ -1855,7 +1855,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
 
 @Composable
 private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite, isCompact: Boolean) {
-    val iconSize = if (isCompact) 10.dp else 14.dp
+    val iconSize = if (isCompact) 12.dp else 14.dp
     Image(
         painter = painterResource(id = icon),
         contentDescription = null,

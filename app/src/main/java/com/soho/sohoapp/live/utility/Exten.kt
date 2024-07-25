@@ -34,6 +34,17 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
 
+import androidx.compose.ui.graphics.Color
+
+fun String.hexToColor(): Color {
+    val hexColor = this.removePrefix("#")
+    val colorLong = hexColor.toLong(16)
+    val alpha = 0xFF000000
+    val colorWithAlpha = colorLong or alpha
+    return Color(colorWithAlpha)
+}
+
+
 fun playVideo(shareableLink: String?) {
     shareableLink?.let {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it)).apply {

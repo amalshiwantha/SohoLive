@@ -174,14 +174,14 @@ fun Text950_16sp(modifier: Modifier = Modifier, title: String) {
     )
 }
 
-@Composable
-fun Text700_8sp(
+/*@Composable
+fun Text700_12sp(
     modifier: Modifier = Modifier,
     title: String
 ) {
     Text(
         text = title,
-        fontSize = 8.sp,
+        fontSize = 12.sp,
         lineHeight = 11.2.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(700),
@@ -189,7 +189,7 @@ fun Text700_8sp(
         letterSpacing = 0.28.sp,
         modifier = modifier
     )
-}
+}*/
 
 @Composable
 fun Text700_14sp(
@@ -347,11 +347,11 @@ fun Text700_12spRight(modifier: Modifier = Modifier, label: String, txtColor: Co
 }
 
 @Composable
-fun Text400_8sp(modifier: Modifier = Modifier, label: String, txtColor: Color = AppWhite) {
+fun Text400_10sp(modifier: Modifier = Modifier, label: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,
         text = label,
-        fontSize = 8.sp,
+        fontSize = 10.sp,
         lineHeight = 12.8.sp,
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         fontWeight = FontWeight(400),

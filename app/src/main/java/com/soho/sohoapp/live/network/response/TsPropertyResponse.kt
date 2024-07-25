@@ -184,6 +184,7 @@ data class RequestParams(
     @SerialName("q") val query: String? = null
 )
 
+@Serializable
 data class Agent(
     val id: Int,
     val slug: String,
