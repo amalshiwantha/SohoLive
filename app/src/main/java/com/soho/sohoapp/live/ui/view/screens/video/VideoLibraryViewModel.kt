@@ -63,7 +63,7 @@ class VideoLibraryViewModel(
                         val res = result.data
 
                         if (isSuccess) {
-                            //mState.value = mState.value.copy(goLiveResults = res)
+                            mState.value = mState.value.copy(sApiResponse = mutableStateOf(res))
                         } else {
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.VID_LIB_ERROR.apply {

@@ -241,7 +241,9 @@ private fun Content(
         if (isShowProgress) {
             CenterMessageProgress(message = sVidLib.loadingMessage)
         } else {
-            val dataList = sVidLib.sApiResponse?.value?.data?.assets
+            val dataList = sVidLib.sApiResponse?.value?.assets?.filter {
+                it.status == "ready"
+            }
 
             dataList?.let {
                 LazyColumn(
