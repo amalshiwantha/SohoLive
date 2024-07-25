@@ -65,24 +65,21 @@ fun VideoManageScreen(
     viewMVidMng: VideoManageViewModel = koinInject(),
     navController: NavHostController,
 ) {
-    val itemData = mLiveData.videoItemState.value
+    val itemData = mLiveData.videoItemState.value?.copy()
 
     MainContent(
         data = itemData,
         onBackClick = { navController.popBackStack() },
-        onSaveClick = { updateVideoItem(navController, mLiveData) },
+        onSaveClick = { updateVideoItem(navController, mLiveData, itemData) },
         onPlayClick = { playVideo(itemData?.downloadLink) })
 }
 
-fun updateVideoItem(navController: NavHostController, mLiveData: GoLiveSubmit) {/*
-    * save updated itemData to the mLiveData videoItemState and
-    * find updated the property  in  videoLibResState -> DataVidRes assets: List<VideoItem> using id
-    * */
-    mLiveData.videoLibResState.value?.assets?.find { it.id == mLiveData.videoItemState.value?.propertyListingId }
-        ?.let {
-            mLiveData.videoItemState.value?.property = it.property
-        }
-
+fun updateVideoItem(
+    navController: NavHostController, mLiveData: GoLiveSubmit,
+    copyVidItem: VideoItem?
+) {
+    //save updated itemData to the mLiveData videoItemState and
+    mLiveData.videoItemState.value?.unlisted = copyVidItem?.unlisted ?: false
     navController.popBackStack()
 }
 
