@@ -51,5 +51,11 @@ enum class AlertConfig(
         message = "Something went wrong. Please re-try later",
         confirmBtnText = "",
         dismissBtnText = "OK",
+    ),
+    VID_LIB_ERROR(
+        title = "Loading Problem",
+        message = "Something went wrong. Please re-try later",
+        confirmBtnText = "",
+        dismissBtnText = "OK",
     )
 }

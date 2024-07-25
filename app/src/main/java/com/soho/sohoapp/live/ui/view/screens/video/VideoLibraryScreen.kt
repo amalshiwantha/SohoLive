@@ -51,12 +51,18 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.model.VideoAnalytics
 import com.soho.sohoapp.live.model.VideoItem
+import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
+import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_12sp
@@ -87,11 +93,56 @@ fun VideoLibraryScreen(
     vmVidLib: VideoLibraryViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
 ) {
+    val sVidLib = vmVidLib.mState.value
     var showAnalyticsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf<VideoItem?>(null) }
+    var isShowAlert by remember { mutableStateOf(false) }
+    var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
+    var isShowProgress by remember { mutableStateOf(false) }
+
+    //cal api
+    LaunchedEffect(sVidLib.sApiResponse) {
+        if (sVidLib.sApiResponse == null) {
+            val req = VidLibRequest().apply {
+                page = 1
+                perPage = 20
+                sortBy = "created_at"
+                sortOrder = "desc"
+            }
+            vmVidLib.onTriggerEvent(VidLibEvent.CallLoadVideo(req))
+        }
+    }
+
+   LaunchedEffect(sVidLib) {
+        //Display alert
+        if (sVidLib.alertState is AlertState.Display) {
+            isShowAlert = true
+            alertConfig = sVidLib.alertState.config
+        } else {
+            isShowAlert = false
+        }
+
+        //Show Loading view
+        isShowProgress = sVidLib.loadingState == ProgressBarState.Loading
+    }
+
+
+    //show api error as alert
+    if (isShowAlert) {
+        alertConfig?.let {
+            AppAlertDialog(
+                alert = it,
+                onConfirm = {
+                    vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
+                },
+                onDismiss = {
+                    vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
+                })
+        }
+    }
 
     //display main content
-    Content(onManageClick = { selectedItem = it })
+    Content(isShowProgress, sVidLib, onManageClick = { selectedItem = it })
 
     //open manage screen
     LaunchedEffect(selectedItem) {
@@ -170,9 +221,12 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
     }
 }
 
-
 @Composable
-private fun Content(onManageClick: (VideoItem) -> Unit) {
+private fun Content(
+    isShowProgress: Boolean,
+    sVidLib: VideoLibraryState,
+    onManageClick: (VideoItem) -> Unit
+) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
 
     //Show download status
@@ -187,24 +241,28 @@ private fun Content(onManageClick: (VideoItem) -> Unit) {
             .background(brushMainGradientBg)
             .fillMaxSize()
     ) {
-        val dataList = sampleData()
+        if (isShowProgress) {
+            CenterMessageProgress(message = sVidLib.loadingMessage)
+        } else {
+            val dataList = sampleData()
 
-        LazyColumn(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            /*item { VideoUploadProgress() }*/
+            LazyColumn(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                /*item { VideoUploadProgress() }*/
 
-            items(dataList) { item ->
-                ListItemView(item,
-                    onClickManage = { onManageClick(it) },
-                    onShareVideo = { shareIntent(it) },
-                    onDownloadVideo = {
-                        downloadFile(it.first, it.second, onDownloadStatus = {
-                            downloadStatus = it
+                items(dataList) { item ->
+                    ListItemView(item,
+                        onClickManage = { onManageClick(it) },
+                        onShareVideo = { shareIntent(it) },
+                        onDownloadVideo = {
+                            downloadFile(it.first, it.second, onDownloadStatus = {
+                                downloadStatus = it
+                            })
                         })
-                    })
+                }
             }
         }
     }
@@ -481,5 +539,5 @@ private fun sampleData(): List<VideoItem> {
 @Preview
 @Composable
 private fun PreviewVidLib() {
-    Content(onManageClick = {})
+    //Content(false,koinInject()onManageClick = {})
 }

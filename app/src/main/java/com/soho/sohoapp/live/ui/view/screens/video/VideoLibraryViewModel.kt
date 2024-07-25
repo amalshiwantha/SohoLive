@@ -11,7 +11,6 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
-import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -21,10 +20,21 @@ class VideoLibraryViewModel(
     private val dataStore: AppDataStoreManager,
 ) : ViewModel() {
 
-    val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
+    val mState: MutableState<VideoLibraryState> = mutableStateOf(VideoLibraryState())
 
+    fun onTriggerEvent(event: VidLibEvent) {
+        when (event) {
+            VidLibEvent.DismissAlert -> {
+                mState.value = mState.value.copy(alertState = AlertState.Idle)
+            }
 
-    fun loadVideoList(request: VidLibRequest) {
+            is VidLibEvent.CallLoadVideo -> {
+                loadVideoList(event.request)
+            }
+        }
+    }
+
+    private fun loadVideoList(request: VidLibRequest) {
         mState.value = mState.value.copy(
             loadingState = ProgressBarState.Loading,
             loadingMessage = "Loading Video Library..."
@@ -53,10 +63,10 @@ class VideoLibraryViewModel(
                         val res = result.data
 
                         if (isSuccess) {
-                            mState.value = mState.value.copy(goLiveResults = res)
+                            //mState.value = mState.value.copy(goLiveResults = res)
                         } else {
                             mState.value =
-                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
+                                mState.value.copy(alertState = AlertState.Display(AlertConfig.VID_LIB_ERROR.apply {
                                     message = errorMsg.orEmpty()
                                 }))
                         }
