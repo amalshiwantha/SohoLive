@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -296,7 +297,16 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Black.copy(alpha = 0.7f))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.1f),
+                                    Color.Black.copy(alpha = 0.6f),
+                                    Color.Black
+                                )
+                            )
+                        )
                         .padding(8.dp)
                 ) {
                     val agent = vidItem.getAgent()
@@ -319,7 +329,10 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                     )
                     SpacerHorizontal(size = 8.dp)
                     Column {
-                        Text700_12sp(label = vidItem.property?.fullAddress().orEmpty(), txtColor = AppWhite)
+                        Text700_12sp(
+                            label = vidItem.property?.fullAddress().orEmpty(),
+                            txtColor = AppWhite
+                        )
                         SpacerVertical(size = 2.dp)
                         propInfo?.let {
                             AmenitiesView(it, AppWhite, isCompact = true)
