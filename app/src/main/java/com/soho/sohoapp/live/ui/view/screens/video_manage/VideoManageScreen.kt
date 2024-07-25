@@ -41,8 +41,8 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
-import com.soho.sohoapp.live.model.VideoItem
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
@@ -58,7 +58,6 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
-import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
@@ -156,7 +155,7 @@ fun MainContent(
 private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
     Column {
         //privacy
-        PrivacySettings(itemInfo.visibility)
+        PrivacySettings(itemInfo.unlisted)
 
         //property
         itemInfo.property?.let {
@@ -278,7 +277,7 @@ private fun PropertyView(doc: Document) {
 }
 
 @Composable
-private fun PrivacySettings(visibility: Int) {
+private fun PrivacySettings(visibility: Boolean) {
 
     val privacyItem = VideoPrivacy.fromId(visibility)
     var selectedOption by remember { mutableStateOf(privacyItem.label) }
@@ -366,5 +365,5 @@ fun NoDataView(modifier: Modifier) {
 @Preview
 @Composable
 private fun PreviewVidManage() {
-    MainContent(VideoItem(), onSaveClick = {}, onBackClick = {}, onPlayClick = {})
+    //MainContent(VideoItem(), onSaveClick = {}, onBackClick = {}, onPlayClick = {})
 }

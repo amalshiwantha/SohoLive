@@ -86,7 +86,6 @@ import com.soho.sohoapp.live.model.ScheduleDateTime
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
-import com.soho.sohoapp.live.model.VideoItem
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
@@ -850,9 +849,6 @@ fun StepContents(
                     SpacerVertical(16.dp)
                     PropertyListing(propList, onItemClicked = {
                         onPropertyItemClicked.invoke(it)
-                        mGoLiveSubmit.apply {
-                            this.videoItemState.value = VideoItem(property = it.propInfo)
-                        }
                     })
                     SpacerVertical(size = 70.dp)
                 }

@@ -57,9 +57,9 @@ import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.model.VideoAnalytics
-import com.soho.sohoapp.live.model.VideoItem
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
@@ -113,7 +113,7 @@ fun VideoLibraryScreen(
         }
     }
 
-   LaunchedEffect(sVidLib) {
+    LaunchedEffect(sVidLib) {
         //Display alert
         if (sVidLib.alertState is AlertState.Display) {
             isShowAlert = true
@@ -147,22 +147,19 @@ fun VideoLibraryScreen(
     //open manage screen
     LaunchedEffect(selectedItem) {
         selectedItem?.let {
-            val savedProp = goLiveData.videoItemState.value?.property
             goLiveData.apply {
-                this.videoItemState.value = it.apply {
-                    property = savedProp
-                }
+                this.videoItemState.value = it
             }
             navController.navigate(NavigationPath.VIDEO_MANAGE.name)
         }
     }
 
     //show analytics data in a bottomSheet view
-    selectedItem?.analytics?.let { analytics ->
+    /*selectedItem?.analytics?.let { analytics ->
         AnalyticsBottomSheet(showAnalyticsBottomSheet, analytics, onVisibility = {
             showAnalyticsBottomSheet = it
         })
-    }
+    }*/
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -244,24 +241,24 @@ private fun Content(
         if (isShowProgress) {
             CenterMessageProgress(message = sVidLib.loadingMessage)
         } else {
-            val dataList = sampleData()
+            val dataList = sVidLib.sApiResponse?.value?.data?.assets
 
-            LazyColumn(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                /*item { VideoUploadProgress() }*/
-
-                items(dataList) { item ->
-                    ListItemView(item,
-                        onClickManage = { onManageClick(it) },
-                        onShareVideo = { shareIntent(it) },
-                        onDownloadVideo = {
-                            downloadFile(it.first, it.second, onDownloadStatus = {
-                                downloadStatus = it
+            dataList?.let {
+                LazyColumn(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    items(it) { item ->
+                        ListItemView(item,
+                            onClickManage = { onManageClick(it) },
+                            onShareVideo = { shareIntent(it) },
+                            onDownloadVideo = {
+                                downloadFile(it.first, it.second, onDownloadStatus = {
+                                    downloadStatus = it
+                                })
                             })
-                        })
+                    }
                 }
             }
         }
@@ -359,30 +356,25 @@ private fun ListItemView(
         //badge time date
         Row(verticalAlignment = Alignment.CenterVertically) {
 
-            item.propertyType?.let {
-                TextBadge(text = it.uppercase(), bgColor = PropertyType.fromString(it).bgColor)
-                Spacer(modifier = Modifier.width(8.dp))
-            }
+            val strm = item.streamType
+            TextBadge(text = strm.uppercase(), bgColor = PropertyType.fromString(strm).bgColor)
+            Spacer(modifier = Modifier.width(8.dp))
 
-            val visiItem = VideoPrivacy.fromId(item.visibility)
+            val visiItem = VideoPrivacy.fromId(item.unlisted)
             TextBadge(text = visiItem.label, bgColor = visiItem.bgColor)
             Spacer(modifier = Modifier.width(8.dp))
 
-            item.duration?.let {
-                TextBadgeDuration(text = it)
-            }
+            TextBadgeDuration(text = item.getDisplayDuration())
 
-            item.date?.let {
-                Spacer(modifier = Modifier.weight(1f))
-                Text700_12spRight(label = it, txtColor = AppWhite)
-            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text700_12spRight(label = item.getDisplayDate(), txtColor = AppWhite)
         }
         SpacerVertical(size = 16.dp)
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
-            PropertyImageCenterPlay(item.imageUrl, onClick = {
-                println("myVid - play ${item.imageUrl}")
+            PropertyImageCenterPlay(item.shareableLink, onClick = {
+
             })
             SpacerHorizontal(size = 16.dp)
             TitleDescription(item)
@@ -406,7 +398,7 @@ private fun ListItemView(
 
             //download btn
             ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
-                item.downloadLink?.let {
+                item.shareableLink?.let {
                     onDownloadVideo(Pair(it, item.title.orEmpty()))
                 } ?: kotlin.run {
                     showToast("Not found a download link")
@@ -462,7 +454,7 @@ fun TitleDescription(item: VideoItem) {
             Text700_14sp(step = it)
             SpacerVertical(size = 8.dp)
         }
-        item.info?.let {
+        item.description?.let {
             Text400_12sp(label = it)
         }
     }
@@ -495,44 +487,6 @@ fun PropertyImageCenterPlay(imageUrl: String?, onClick: () -> Unit) {
                 .align(Alignment.Center)
                 .background(Color.Black.copy(alpha = 0.6f), shape = CircleShape)
         )
-    }
-}
-
-private fun sampleData(): List<VideoItem> {
-    val myItem = VideoItem(
-        propertyType = "action",
-        visibility = 1,
-        duration = "22:31",
-        date = "22 may 2024",
-        title = "1002/6 Little Hay Street, Sydney NSW 2000",
-        info = "Live Auction in 1002/6 Little Hay Street, Sydney NSW 2000, 4/11/17 - 11:00",
-        imageUrl = "https://cdn.britannica.com/05/157305-004-53D5D212",
-        analytics = VideoAnalytics(
-            fb = 10, yt = 20, li = 30, soho = 40, play_min = 120
-        )
-    )
-    val myTestItem = VideoItem(
-        propertyType = "inspection",
-        visibility = 0,
-        imageUrl = "https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg",
-        duration = "11:31",
-        date = "11 may 2022",
-        title = "11/6 Little Hay Street, Sydney NSW 1111",
-        info = "11 Live Auction in 1002/6 Little Hay Street, ",
-        analytics = VideoAnalytics(
-            fb = 11, yt = 222, li = 333, soho = 44, play_min = 5555
-        ),
-        shareableLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        downloadLink = "https://file-examples.com/storage/fe66e2583b669e33b951dc5/2017/04/file_example_MP4_480_1_5MG.mp4",
-    )
-
-    return List(20) { index ->
-        if (index == 1) {
-            myTestItem
-        } else {
-            myItem
-        }
-
     }
 }
 

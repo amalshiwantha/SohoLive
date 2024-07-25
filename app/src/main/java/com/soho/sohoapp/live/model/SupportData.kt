@@ -10,13 +10,14 @@ import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
+/*@Serializable
 data class VideoItem(
     var propertyType: String? = null, //action inspection etc
     var visibility: Int = 0, //public 1, private 0
@@ -29,7 +30,7 @@ data class VideoItem(
     val shareableLink: String? = null,
     val downloadLink: String? = null,
     var property: Document? = null,
-)
+)*/
 
 @Serializable
 data class VideoAnalytics(
