@@ -58,12 +58,15 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 import com.soho.sohoapp.live.utility.showToast
+import org.koin.compose.koinInject
 
 @Composable
 fun VideoManageScreen(
     mLiveData: GoLiveSubmit,
+    viewMVidMng: VideoManageViewModel = koinInject(),
     navController: NavHostController,
 ) {
     val itemData = mLiveData.videoItemState.value

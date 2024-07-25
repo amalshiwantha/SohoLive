@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashViewModel
 import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryViewModel
+import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageViewModel
 import com.soho.sohoapp.live.utility.NetworkUtils
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
@@ -37,4 +38,5 @@ val appModule = module {
     viewModel { MainViewModel(get()) }
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { VideoLibraryViewModel(get(), get()) }
+    viewModel { VideoManageViewModel(get()) }
 }
