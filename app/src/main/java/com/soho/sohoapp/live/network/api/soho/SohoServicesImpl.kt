@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.network.api.soho
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
+import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.core.BASE_URL
 import com.soho.sohoapp.live.network.core.BASE_URL_TS
 import com.soho.sohoapp.live.network.core.TS_API_KEY
@@ -10,6 +11,7 @@ import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.network.response.VidLibResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -87,6 +89,23 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
             setBody(goLiveData)
+        }.body()
+    }
+
+    override suspend fun videoLibrary(authToken: String, request: VidLibRequest): VidLibResponse {
+        return httpClient.get {
+            url {
+                takeFrom(BASE_URL)
+                encodedPath += SohoApiServices.VIDEO_LIBRARY
+                parameters.apply {
+                    append("page", request.page.toString())
+                    append("per_page", request.perPage.toString())
+                    request.sortBy?.let { append("sort_by", it) }
+                    request.sortOrder?.let { append("sort_order", it) }
+                }
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
         }.body()
     }
 }

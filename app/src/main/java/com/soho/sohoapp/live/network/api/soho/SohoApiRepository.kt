@@ -4,6 +4,7 @@ import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
+import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -11,10 +12,28 @@ import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.network.response.VidLibResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
+
+    fun getVideoLibrary(
+        authToken: String,
+        request: VidLibRequest
+    ): Flow<ApiState<VidLibResponse>> =
+        flow {
+            try {
+
+                val apiResponse = service.videoLibrary(authToken = authToken, request = request)
+                emit(ApiState.Data(data = apiResponse))
+
+            } catch (e: Exception) {
+                e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
 
     fun submitGoLiveSchedule(
         authToken: String,
