@@ -419,7 +419,7 @@ fun NoDataView(modifier: Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TextProgress(title = "No Valid Information")
+        TextProgress(title = "No Valid Information", color = AppWhite)
     }
 }
 

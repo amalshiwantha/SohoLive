@@ -2,7 +2,6 @@ package com.soho.sohoapp.live.ui.view.screens.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,10 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,12 +39,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.PropertyType
@@ -61,30 +58,31 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
+import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_12sp
+import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextBadge
 import com.soho.sohoapp.live.ui.components.TextBadgeDuration
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
-import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.playVideo
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
@@ -251,13 +249,15 @@ private fun Content(
                 it.status == "ready"
             }
 
-            dataList?.let {
+            if (dataList.isNullOrEmpty()) {
+                NoDataScreen(onClick = {})
+            } else {
                 LazyColumn(
                     Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    items(it) { item ->
+                    items(dataList) { item ->
                         ListItemView(item,
                             onClickManage = { onManageClick(it) },
                             onShareVideo = { shareIntent(it) },
@@ -269,6 +269,94 @@ private fun Content(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun CenteredScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF2C003E))
+    ) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_videos_play_list), // replace with your icon resource
+                contentDescription = null,
+                modifier = Modifier.size(100.dp),
+                contentScale = ContentScale.Fit
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Watch all your past livecasts",
+                fontSize = 20.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "You can watch and manage your past livecasts here. Remember to download it before it’s deleted!",
+                fontSize = 16.sp,
+                color = Color.White,
+                modifier = Modifier.padding(horizontal = 24.dp),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            ButtonColoredIcon(
+                title = "Schedule a livecast",
+                btnColor = AppGreen,
+                icon = R.drawable.ic_calender,
+                onBtnClick = { }
+            )
+        }
+    }
+}
+
+@Composable
+private fun NoDataScreen(onClick: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_videos_play_list),
+                contentDescription = ""
+            )
+            SpacerVertical(size = 40.dp)
+            Text800_14sp(
+                label = stringResource(R.string.no_data_title),
+                txtAlign = TextAlign.Center
+            )
+            SpacerVertical(size = 8.dp)
+            Text400_14sp(info = stringResource(R.string.no_data_msg), txtAlign = TextAlign.Center)
+
+            SpacerVertical(size = 40.dp)
+            ButtonColoredIcon(
+                title = "Schedule a livecast",
+                btnColor = AppGreen,
+                icon = R.drawable.ic_calender,
+                onBtnClick = { onClick() }
+            )
         }
     }
 }

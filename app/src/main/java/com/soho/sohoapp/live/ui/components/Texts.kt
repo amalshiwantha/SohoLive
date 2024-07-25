@@ -285,7 +285,12 @@ fun TextStarRating(modifier: Modifier = Modifier, rate: String) {
 }
 
 @Composable
-fun Text400_14sp(modifier: Modifier = Modifier, info: String, color: Color = AppWhite) {
+fun Text400_14sp(
+    modifier: Modifier = Modifier,
+    info: String,
+    color: Color = AppWhite,
+    txtAlign: TextAlign = TextAlign.Left
+) {
     Text(
         modifier = modifier,
         text = info,
@@ -294,7 +299,8 @@ fun Text400_14sp(modifier: Modifier = Modifier, info: String, color: Color = App
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         fontWeight = FontWeight(400),
         color = color,
-        letterSpacing = 0.17.sp
+        letterSpacing = 0.17.sp,
+        textAlign = txtAlign
     )
 }
 
@@ -384,7 +390,12 @@ fun Text800_12sp(modifier: Modifier = Modifier, label: String) {
 }
 
 @Composable
-fun Text800_14sp(modifier: Modifier = Modifier, label: String, txtColor: Color = AppWhite) {
+fun Text800_14sp(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtColor: Color = AppWhite,
+    txtAlign: TextAlign = TextAlign.Left
+) {
     Text(
         modifier = modifier,
         text = label,
@@ -394,6 +405,7 @@ fun Text800_14sp(modifier: Modifier = Modifier, label: String, txtColor: Color =
         color = txtColor,
         fontWeight = FontWeight(800),
         fontFamily = FontFamily(Font(R.font.axiforma)),
+        textAlign = txtAlign
     )
 }
 
