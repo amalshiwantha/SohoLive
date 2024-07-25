@@ -1,7 +1,5 @@
 package com.soho.sohoapp.live.ui.view.screens.video_manage
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,9 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
@@ -60,7 +57,6 @@ import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 import com.soho.sohoapp.live.utility.playVideo
-import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 
 @Composable
@@ -154,22 +150,24 @@ private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
 
             //video
             SpacerVertical(size = 24.dp)
-            VideoView(it, onPlayClick = { onPlayClick() })
+            VideoView(itemInfo, onPlayClick = { onPlayClick() })
         }
     }
 }
 
 @Composable
-private fun VideoView(doc: Document, onPlayClick: () -> Unit) {
+private fun VideoView(item: VideoItem, onPlayClick: () -> Unit) {
     Column {
         Text950_16sp(title = "Watch Video")
         SpacerVertical(size = 8.dp)
-        VideoItemContent(doc, onPlayClick = { onPlayClick() })
+        VideoItemContent(item, onPlayClick = { onPlayClick() })
     }
 }
 
 @Composable
-fun VideoItemContent(doc: Document, onPlayClick: () -> Unit) {
+fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
+    val propInfo = vidItem.property
+
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
@@ -178,8 +176,14 @@ fun VideoItemContent(doc: Document, onPlayClick: () -> Unit) {
     ) {
         Box {
             // Background Image
+            val urlPainter = rememberAsyncImagePainter(
+                model = propInfo?.thumbnailUrl(),
+                placeholder = painterResource(id = R.drawable.property_placeholder),
+                error = painterResource(id = R.drawable.property_placeholder)
+            )
+
             Image(
-                painter = rememberImagePainter(data = "https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg"),
+                painter = urlPainter,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
@@ -195,7 +199,7 @@ fun VideoItemContent(doc: Document, onPlayClick: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text700_12sp(
-                        label = "41:33", txtColor = AppWhite, modifier = Modifier
+                        label = vidItem.getDisplayDuration(), txtColor = AppWhite, modifier = Modifier
                             .background(
                                 Color.Black.copy(alpha = 0.7f),
                                 shape = RoundedCornerShape(8.dp)
@@ -204,7 +208,7 @@ fun VideoItemContent(doc: Document, onPlayClick: () -> Unit) {
                     )
 
                     Text700_12sp(
-                        label = "22 May 2024", txtColor = AppWhite, modifier = Modifier
+                        label = vidItem.getDisplayDate(), txtColor = AppWhite, modifier = Modifier
                             .background(
                                 Color.Black.copy(alpha = 0.7f),
                                 shape = RoundedCornerShape(8.dp)
@@ -248,7 +252,9 @@ fun VideoItemContent(doc: Document, onPlayClick: () -> Unit) {
                     Column {
                         Text700_8sp(title = "3/19 Weeroona Avenue, Woollahra")
                         SpacerVertical(size = 2.dp)
-                        AmenitiesView(doc, AppWhite, isCompact = true)
+                        propInfo?.let {
+                            AmenitiesView(it, AppWhite, isCompact = true)
+                        }
                     }
                 }
             }
