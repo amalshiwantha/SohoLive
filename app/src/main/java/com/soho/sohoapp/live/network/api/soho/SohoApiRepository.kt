@@ -24,11 +24,36 @@ class SohoApiRepository(private val service: SohoApiServices) {
     ): Flow<ApiState<VidLibResponse>> =
         flow {
             try {
-
+                //get video list
                 val apiResponse = service.videoLibrary(authToken = authToken, request = request)
-                emit(ApiState.Data(data = apiResponse))
+
+                if (apiResponse.data.assets.isNotEmpty()) {
+                    //get property info from type-sense
+                    val propIdList = apiResponse.data.assets.map { it.propertyListingId }
+                    val filterBy = "objectID:$propIdList"
+                    val tsReq = TsPropertyRequest(
+                        "*", "address_1", filterBy, "20", "1"
+                    )
+                    val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
+
+                    //assign propertyInfo to the main video item
+                    if (apiResponseTs.propertyList.isNotEmpty()) {
+                        apiResponse.data.assets.forEach { videoItem ->
+                            val prop = apiResponseTs.propertyList.first {
+                                it.document.id == videoItem.propertyListingId.toString()
+                            }
+                            videoItem.property = prop.document
+                        }
+                    }
+
+                    emit(ApiState.Data(data = apiResponse))
+
+                } else {
+                    emit(ApiState.Data(data = apiResponse))
+                }
 
             } catch (e: Exception) {
+                e.printStackTrace()
                 e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
             } finally {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
@@ -131,7 +156,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
         }
 
     private fun getAlertState(errorMsg: String): AlertState {
-        val config = AlertConfig.SIGN_IN_ERROR.apply {
+        val config = AlertConfig.API_ERROR.apply {
             message = errorMsg
         }
         return AlertState.Display(config)

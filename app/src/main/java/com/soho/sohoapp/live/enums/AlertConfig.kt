@@ -57,5 +57,11 @@ enum class AlertConfig(
         message = "Something went wrong. Please re-try later",
         confirmBtnText = "",
         dismissBtnText = "OK",
+    ),
+    API_ERROR(
+        title = "Server Problem",
+        message = "Something went wrong. Please re-try later",
+        confirmBtnText = "",
+        dismissBtnText = "OK",
     )
 }
