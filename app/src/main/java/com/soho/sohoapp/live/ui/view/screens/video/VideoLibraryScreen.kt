@@ -103,13 +103,7 @@ fun VideoLibraryScreen(
     //cal api
     LaunchedEffect(sVidLib.sApiResponse) {
         if (sVidLib.sApiResponse == null) {
-            val req = VidLibRequest().apply {
-                page = 1
-                perPage = 20
-                sortBy = "created_at"
-                sortOrder = "desc"
-            }
-            vmVidLib.onTriggerEvent(VidLibEvent.CallLoadVideo(req))
+            vmVidLib.onTriggerEvent(VidLibEvent.CallLoadVideo(VidLibRequest()))
         }
     }
 

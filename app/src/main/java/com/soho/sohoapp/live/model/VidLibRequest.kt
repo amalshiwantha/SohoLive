@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VidLibRequest(
-    @SerialName("page") var page: Int = 0,
-    @SerialName("per_page") var perPage: Int = 0,
-    @SerialName("sort_by") var sortBy: String? = null,
-    @SerialName("sort_order") var sortOrder: String? = null
+    @SerialName("page") var page: Int = 1,
+    @SerialName("per_page") var perPage: Int = 20,
+    @SerialName("sort_by") var sortBy: String = "created_at",
+    @SerialName("sort_order") var sortOrder: String = "desc"
 )
