@@ -66,11 +66,24 @@ fun VideoManageScreen(
     navController: NavHostController,
 ) {
     val itemData = mLiveData.videoItemState.value
+
     MainContent(
         data = itemData,
         onBackClick = { navController.popBackStack() },
-        onSaveClick = { navController.popBackStack() },
+        onSaveClick = { updateVideoItem(navController, mLiveData) },
         onPlayClick = { playVideo(itemData?.downloadLink) })
+}
+
+fun updateVideoItem(navController: NavHostController, mLiveData: GoLiveSubmit) {/*
+    * save updated itemData to the mLiveData videoItemState and
+    * find updated the property  in  videoLibResState -> DataVidRes assets: List<VideoItem> using id
+    * */
+    mLiveData.videoLibResState.value?.assets?.find { it.id == mLiveData.videoItemState.value?.propertyListingId }
+        ?.let {
+            mLiveData.videoItemState.value?.property = it.property
+        }
+
+    navController.popBackStack()
 }
 
 @Composable
@@ -141,7 +154,9 @@ fun MainContent(
 private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
     Column {
         //privacy
-        PrivacySettings(itemInfo.unlisted)
+        PrivacySettings(itemInfo.unlisted, onChangePrivacy = {
+            itemInfo.unlisted = VideoPrivacy.toBool(it)
+        })
 
         //property
         itemInfo.property?.let {
@@ -199,7 +214,9 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text700_12sp(
-                        label = vidItem.getDisplayDuration(), txtColor = AppWhite, modifier = Modifier
+                        label = vidItem.getDisplayDuration(),
+                        txtColor = AppWhite,
+                        modifier = Modifier
                             .background(
                                 Color.Black.copy(alpha = 0.7f),
                                 shape = RoundedCornerShape(8.dp)
@@ -273,7 +290,7 @@ private fun PropertyView(doc: Document) {
 }
 
 @Composable
-private fun PrivacySettings(visibility: Boolean) {
+private fun PrivacySettings(visibility: Boolean, onChangePrivacy: (String) -> Unit) {
 
     val privacyItem = VideoPrivacy.fromId(visibility)
     var selectedOption by remember { mutableStateOf(privacyItem.label) }
@@ -289,14 +306,20 @@ private fun PrivacySettings(visibility: Boolean) {
             text = pub,
             description = "Show publicly on your Property Listing",
             isSelected = selectedOption == pub,
-            onOptionSelected = { selectedOption = pub }
+            onOptionSelected = {
+                selectedOption = pub
+                onChangePrivacy(selectedOption)
+            }
         )
         SpacerVertical(size = 16.dp)
         PrivacyOption(
             text = pvt,
             description = "Keep as public unlisted and share the video link privately",
             isSelected = selectedOption == pvt,
-            onOptionSelected = { selectedOption = pvt }
+            onOptionSelected = {
+                selectedOption = pvt
+                onChangePrivacy(selectedOption)
+            }
         )
     }
 }

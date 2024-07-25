@@ -31,7 +31,7 @@ data class VideoItem(
     @SerialName("duration") val duration: Int?,
     @SerialName("started_at") val startedAt: String,
     @SerialName("playback_ids") val playbackIds: List<String>,
-    @SerialName("unlisted") val unlisted: Boolean,
+    @SerialName("unlisted") var unlisted: Boolean,
     @SerialName("property_listing_id") val propertyListingId: Int,
     @SerialName("agent_profile_id") val agentProfileId: Int,
     @SerialName("live_stream_id") val liveStreamId: Int,
