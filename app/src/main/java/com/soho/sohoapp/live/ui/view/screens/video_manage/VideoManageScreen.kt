@@ -45,7 +45,7 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
-import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -105,6 +105,7 @@ fun VideoManageScreen(
 
     MainContent(
         data = itemData,
+        isShowProgress = isShowProgress,
         onBackClick = { navController.popBackStack() },
         onSaveClick = { updateVideoItem(itemData, vmVidManage) },
         onPlayClick = { playVideo(itemData?.downloadLink) })
@@ -128,6 +129,7 @@ private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageVie
 @Composable
 fun MainContent(
     data: VideoItem?,
+    isShowProgress: Boolean,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     onPlayClick: () -> Unit
@@ -172,10 +174,12 @@ fun MainContent(
 
         //Bottom Button
         data?.let {
-            ButtonColoured(
-                text = "Save Changes",
+            ButtonColouredProgress(text = "Save Changes",
+                isLoading = isShowProgress,
                 color = AppGreen,
-                onBtnClick = { onSaveClick() },
+                onBtnClick = {
+                    onSaveClick()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -183,8 +187,7 @@ fun MainContent(
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
-            )
+                    })
         }
     }
 }
