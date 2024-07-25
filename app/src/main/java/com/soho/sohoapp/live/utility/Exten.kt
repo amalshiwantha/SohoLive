@@ -34,6 +34,17 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
 
+fun playVideo(shareableLink: String?) {
+    shareableLink?.let {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+    } ?: run {
+        showToast("No Video Link")
+    }
+}
+
 @OptIn(DelicateCoroutinesApi::class)
 fun downloadFile(url: String, title: String, onDownloadStatus: (String) -> Unit) {
     var statusMsg: String

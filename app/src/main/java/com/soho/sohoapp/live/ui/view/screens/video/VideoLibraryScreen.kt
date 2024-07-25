@@ -80,6 +80,7 @@ import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
+import com.soho.sohoapp.live.utility.playVideo
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
 import kotlinx.coroutines.delay
@@ -382,7 +383,7 @@ private fun ListItemView(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
             val propImg = item.property?.thumbnailUrl()
             PropertyImageCenterPlay(propImg, onClick = {
-                //TODO on playVideo
+                playVideo(item.downloadLink)
             })
             SpacerHorizontal(size = 16.dp)
             TitleDescription(item)

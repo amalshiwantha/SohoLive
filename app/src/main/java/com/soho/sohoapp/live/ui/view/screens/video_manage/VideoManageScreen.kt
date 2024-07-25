@@ -59,6 +59,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
+import com.soho.sohoapp.live.utility.playVideo
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 
@@ -74,17 +75,6 @@ fun VideoManageScreen(
         onBackClick = { navController.popBackStack() },
         onSaveClick = { navController.popBackStack() },
         onPlayClick = { playVideo(itemData?.downloadLink) })
-}
-
-private fun playVideo(shareableLink: String?) {
-    shareableLink?.let {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it)).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        context.startActivity(intent)
-    } ?: run {
-        showToast("No Video Link")
-    }
 }
 
 @Composable
