@@ -12,11 +12,14 @@ import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
+import com.soho.sohoapp.live.network.response.VidPrivacyRequest
+import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -100,12 +103,31 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
                 parameters.apply {
                     append("page", request.page.toString())
                     append("per_page", request.perPage.toString())
-                    request.sortBy?.let { append("sort_by", it) }
-                    request.sortOrder?.let { append("sort_order", it) }
+                    append("sort_by", request.sortBy)
+                    append("sort_order", request.sortOrder)
                 }
             }
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
+        }.body()
+    }
+
+    override suspend fun videoPrivacyUpdate(
+        authToken: String,
+        privacyReq: VidPrivacyRequest
+    ): VidPrivacyResponse {
+
+        return httpClient.put {
+            url {
+                takeFrom(BASE_URL)
+                encodedPath += SohoApiServices.VIDEO_PRIVACY_UPDATE.replace(
+                    "{propertyId}",
+                    privacyReq.videoId.toString()
+                )
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+            setBody(privacyReq)
         }.body()
     }
 }

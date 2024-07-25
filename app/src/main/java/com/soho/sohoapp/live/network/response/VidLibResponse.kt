@@ -73,3 +73,23 @@ data class MetaVidRes(
     @SerialName("next_page") val nextPage: Int?,
     @SerialName("per_page") val perPage: Int
 )
+
+//Video Manage Req & Res
+@Serializable
+data class VidPrivacyRequest(
+    @SerialName("unlisted") val status: Boolean,
+    @SerialName("video_id") val videoId: Int
+)
+
+@Serializable
+data class VidPrivacyResponse(
+    @SerialName("data") val data: VidPrivacy,
+    @SerialName("response") val response: String? = null,
+    @SerialName("response_type") val responseType: String? = null,
+)
+
+@Serializable
+data class VidPrivacy(
+    @SerialName("id") val id: Int,
+    @SerialName("unlisted") val unlisted: Boolean
+)

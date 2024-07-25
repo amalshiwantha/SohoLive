@@ -38,5 +38,5 @@ val appModule = module {
     viewModel { MainViewModel(get()) }
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { VideoLibraryViewModel(get(), get()) }
-    viewModel { VideoManageViewModel(get()) }
+    viewModel { VideoManageViewModel(get(),get()) }
 }

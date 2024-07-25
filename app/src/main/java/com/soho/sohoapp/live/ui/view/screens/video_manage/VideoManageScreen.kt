@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +36,14 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PropertyItem
+import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
@@ -56,31 +61,68 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
+import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
 import com.soho.sohoapp.live.utility.playVideo
+import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 
 @Composable
 fun VideoManageScreen(
     mLiveData: GoLiveSubmit,
-    viewMVidMng: VideoManageViewModel = koinInject(),
+    vmVidManage: VideoManageViewModel = koinInject(),
     navController: NavHostController,
 ) {
+
+    val states = vmVidManage.mState.value
     val itemData = mLiveData.videoItemState.value?.copy()
+    var isShowProgress by remember { mutableStateOf(false) }
+    var isShowAlert by remember { mutableStateOf(false) }
+    var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
+
+    //save updated itemData to the mLiveData videoItemState
+    LaunchedEffect(states.isSuccess) {
+        if (states.isSuccess) {
+            showToast("Privacy updated")
+            mLiveData.videoItemState.value?.unlisted = states.updatedPrivacy.value
+            navController.popBackStack()
+        }
+    }
+
+    //Show Loading view
+    LaunchedEffect(states.loadingState) {
+        isShowProgress = states.loadingState == ProgressBarState.Loading
+    }
+
+    //Display alert
+    LaunchedEffect(states.alertState) {
+        if (states.alertState is AlertState.Display) {
+            isShowAlert = true
+            alertConfig = states.alertState.config
+        } else {
+            isShowAlert = false
+        }
+    }
 
     MainContent(
         data = itemData,
         onBackClick = { navController.popBackStack() },
-        onSaveClick = { updateVideoItem(navController, mLiveData, itemData) },
+        onSaveClick = { updateVideoItem(itemData, vmVidManage) },
         onPlayClick = { playVideo(itemData?.downloadLink) })
 }
 
-fun updateVideoItem(
-    navController: NavHostController, mLiveData: GoLiveSubmit,
-    copyVidItem: VideoItem?
-) {
-    //save updated itemData to the mLiveData videoItemState and
-    mLiveData.videoItemState.value?.unlisted = copyVidItem?.unlisted ?: false
-    navController.popBackStack()
+private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageViewModel) {
+    copyVidItem?.let {
+        vmVidManage.onTriggerEvent(
+            VidLibEvent.CallUpdateVideo(
+                VidPrivacyRequest(
+                    status = it.unlisted,
+                    videoId = it.id
+                )
+            )
+        )
+    } ?: run {
+        showToast("Video ID not found")
+    }
 }
 
 @Composable

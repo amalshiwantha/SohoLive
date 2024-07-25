@@ -13,10 +13,33 @@ import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
+import com.soho.sohoapp.live.network.response.VidPrivacyRequest
+import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
+
+    fun setVideoPrivacy(
+        authToken: String,
+        privacyReq: VidPrivacyRequest
+    ): Flow<ApiState<VidPrivacyResponse>> =
+        flow {
+            try {
+
+                val apiResponse = service.videoPrivacyUpdate(
+                    authToken = authToken,
+                    privacyReq = privacyReq
+                )
+                emit(ApiState.Data(data = apiResponse))
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
 
     fun getVideoLibrary(
         authToken: String,

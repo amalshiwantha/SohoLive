@@ -31,6 +31,8 @@ class VideoLibraryViewModel(
             is VidLibEvent.CallLoadVideo -> {
                 loadVideoList(event.request)
             }
+
+            else -> {}
         }
     }
 
