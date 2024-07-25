@@ -272,7 +272,7 @@ private fun Content(
     }
 }
 
-@Composable
+/*@Composable
 fun VideoUploadProgress() {
     var progress by remember { mutableStateOf(0f) }
     var isUploading by remember { mutableStateOf(true) }
@@ -349,7 +349,7 @@ fun VideoUploadProgress() {
             }
         }
     }
-}
+}*/
 
 @Composable
 private fun ListItemView(
@@ -380,8 +380,9 @@ private fun ListItemView(
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
-            PropertyImageCenterPlay(item.downloadLink, onClick = {
-
+            val propImg = item.property?.thumbnailUrl()
+            PropertyImageCenterPlay(propImg, onClick = {
+                //TODO on playVideo
             })
             SpacerHorizontal(size = 16.dp)
             TitleDescription(item)
