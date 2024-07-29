@@ -3,7 +3,6 @@ package com.soho.sohoapp.live.ui.view.activity
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Surface
 import android.view.SurfaceHolder
 import android.widget.Button
 import android.widget.EditText
@@ -11,7 +10,6 @@ import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -21,6 +19,7 @@ import com.pedro.encoder.input.video.CameraHelper
 import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityHaishinBinding
 import com.soho.sohoapp.live.enums.StreamResolution
 
@@ -88,6 +87,10 @@ class HaishinActivity : AppCompatActivity() {
             switchCamera()
         }
 
+        binding.imgBtnMic.setOnClickListener {
+            switchMute()
+        }
+
         createRtmpCamera2()
     }
 
@@ -103,6 +106,18 @@ class HaishinActivity : AppCompatActivity() {
 
     private fun switchCamera() {
         rtmpCamera2?.switchCamera()
+    }
+
+    private fun switchMute() {
+        rtmpCamera2?.let {
+            if (it.isAudioMuted) {
+                it.enableAudio()
+                binding.imgBtnMic.setImageResource(R.drawable.ic_mic)
+            } else {
+                it.disableAudio()
+                binding.imgBtnMic.setImageResource(R.drawable.ic_mic_off)
+            }
+        }
     }
 
     //LIVE STREAMING
