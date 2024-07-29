@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
@@ -32,7 +31,6 @@ class HaishinActivity : AppCompatActivity() {
     private var watermark: ImageView? = null
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
-    private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
     private var streamKey: String = "2315b570-51b7-c1ad-6898-1d287eb1a088"
     private val PERMISSION_REQUEST_CODE = 101
@@ -70,18 +68,17 @@ class HaishinActivity : AppCompatActivity() {
 
     private fun init() {
         openGlView = binding.openGlView
-        btnStartLive = binding.btnStartLive
         watermark = binding.imgWatermark
         timerTextHelper = TimerTextHelper(binding.txtLiveTime)
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
 
-        btnStartLive?.setOnClickListener {
+        binding.cardGoLive.setOnClickListener {
             rtmpCamera2?.let {
                 if (it.isStreaming) {
                     stopBroadcast()
                 } else {
-                    btnStartLive?.text = "Stop Live"
+                    updateGoLiveBtn(true)
                     startBroadcast()
                 }
             }
@@ -100,6 +97,11 @@ class HaishinActivity : AppCompatActivity() {
         }
 
         createRtmpCamera2()
+    }
+
+    private fun updateGoLiveBtn(isStart: Boolean) {
+        binding.txtGoLive.text = if (isStart) "Stop" else "Go Live"
+        binding.imgGoLive.setImageResource(if (isStart) R.drawable.liv_cast_stop else R.drawable.livecast)
     }
 
     override fun onPause() {
@@ -200,7 +202,7 @@ class HaishinActivity : AppCompatActivity() {
 
         rtmpCamera2?.let {
             if (it.isStreaming) {
-                btnStartLive?.text = "Go Live"
+                updateGoLiveBtn(false)
                 println("myStream stopBroadcast")
                 it.stopStream()
                 //showToast("Stopped Broadcast")

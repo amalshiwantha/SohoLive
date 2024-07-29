@@ -130,13 +130,44 @@
         </LinearLayout>
 
         <!--start end button-->
-        <Button
-            android:id="@+id/btnStartLive"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_go_live"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="Go Live"
-            android:textSize="20sp" />
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="#E13831"
+            app:cardCornerRadius="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/img_go_live"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/livecast" />
+
+                <TextView
+                    android:id="@+id/txt_go_live"
+                    style="@style/axiforma_800W"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:text="@string/go_live"
+                    tools:ignore="RtlSymmetry" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 </RelativeLayout>

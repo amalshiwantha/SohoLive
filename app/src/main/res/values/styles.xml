@@ -6,4 +6,13 @@
         <item name="android:letterSpacing">0</item>
         <item name="fontFamily">@font/axiforma_800</item>
     </style>
+
+    <style name="CustomButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="icon">@drawable/ic_livestream</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">8dp</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
 </resources>
