@@ -110,6 +110,7 @@ dependencies {
 
     //Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.30.0")
+    implementation(libs.androidx.camera.view)
 
     /*implementation(libs.androidx.appcompat)
     implementation(libs.material)*/

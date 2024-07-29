@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.view.activity.HaishinActivity">
 
+    <!--Camera view-->
     <com.pedro.library.view.OpenGlView
         android:id="@+id/openGlView"
         android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.ui.view.activity
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.Surface
 import android.view.SurfaceHolder
 import android.widget.Button
 import android.widget.EditText
@@ -10,6 +11,7 @@ import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -30,7 +32,7 @@ class HaishinActivity : AppCompatActivity() {
     private var openGlView: OpenGlView? = null
     private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "0495bb6b-1ec2-6183-2b3a-eb4c04091554"
+    private var streamKey: String = "1d1cd471-83ac-dc66-d1be-f54d814df46f"
     private val PERMISSION_REQUEST_CODE = 101
 
     private object StreamParameters {
@@ -63,12 +65,14 @@ class HaishinActivity : AppCompatActivity() {
         checkRequiredPermissions()
     }
 
+
     private fun init() {
         openGlView = binding.openGlView
         btnStartLive = binding.btnStartLive
         watermark = binding.imgWatermark
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
+
         btnStartLive?.setOnClickListener {
             rtmpCamera2?.let {
                 if (it.isStreaming) {
@@ -78,6 +82,10 @@ class HaishinActivity : AppCompatActivity() {
                     startBroadcast()
                 }
             }
+        }
+
+        binding.imgBtnCam.setOnClickListener {
+            switchCamera()
         }
 
         createRtmpCamera2()
@@ -93,6 +101,10 @@ class HaishinActivity : AppCompatActivity() {
         }
     }
 
+    private fun switchCamera() {
+        rtmpCamera2?.switchCamera()
+    }
+
     //LIVE STREAMING
     private fun createRtmpCamera2() {
         openGlView?.let {
@@ -100,19 +112,9 @@ class HaishinActivity : AppCompatActivity() {
                 rtmpCamera2 = RtmpCamera2(it, connectCheckerRtmp).apply {
                     setFpsListener(fpsListenerCallback)
                     enableAutoFocus()
-                    setWatermark()
                 }
             }
         }
-    }
-
-    private fun setWatermark() {
-        /*val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.watermark_logo)
-        rtmpCamera2?.glInterface?.let {
-            val watermarkRender = WatermarkRender(context = SohoLiveApp.context)
-            it.setFilter(watermarkRender)
-            watermarkRender.setWatermark(watermarkBitmap, openGlView!!.width - watermarkBitmap.width - 16, openGlView!!.height - watermarkBitmap.height - 16)
-        }*/
     }
 
     private val fpsListenerCallback = FpsListener.Callback { fps ->
@@ -199,7 +201,22 @@ class HaishinActivity : AppCompatActivity() {
             //viewModel.appInForeground(binding.openGlView)
         }
 
-        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+            /*// Stop the preview if it's running
+            rtmpCamera2?.stopPreview()
+
+            // Re-constrain the layout a little if the rotation of the application has changed
+            val rotation = windowManager.defaultDisplay.rotation
+            val l = openGlView?.layoutParams as ConstraintLayout.LayoutParams
+            when (rotation) {
+                Surface.ROTATION_90, Surface.ROTATION_270 -> l.dimensionRatio = "w,16:9"
+                else -> l.dimensionRatio = "h,9:16"
+            }
+            openGlView?.layoutParams = l
+
+            // Re-start the preview, which will also reset the rotation of the preview
+            rtmpCamera2?.startPreview(1920, 1080)*/
+        }
 
         override fun surfaceDestroyed(holder: SurfaceHolder) {
             //viewModel.appInBackground()
