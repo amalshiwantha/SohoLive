@@ -33,7 +33,7 @@ class HaishinActivity : AppCompatActivity() {
     private var openGlView: OpenGlView? = null
     private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "a3e715e6-375d-0f34-02f6-784883f7f798"
+    private var streamKey: String = "0495bb6b-1ec2-6183-2b3a-eb4c04091554"
     private val PERMISSION_REQUEST_CODE = 101
 
     private object StreamParameters {
