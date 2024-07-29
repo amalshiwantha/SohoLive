@@ -2,13 +2,11 @@ package com.soho.sohoapp.live.ui.view.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,13 +19,12 @@ import com.pedro.encoder.input.video.CameraHelper
 import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
-import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.SohoLiveApp
+import com.soho.sohoapp.live.databinding.ActivityHaishinBinding
 import com.soho.sohoapp.live.enums.StreamResolution
-import com.soho.sohoapp.live.utility.showToast
 
 class HaishinActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityHaishinBinding
     private var watermark: ImageView? = null
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
@@ -53,9 +50,10 @@ class HaishinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        setContentView(R.layout.activity_haishin)
+        binding = ActivityHaishinBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.liveContent) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -66,9 +64,9 @@ class HaishinActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        openGlView = findViewById(R.id.openGlView)
-        btnStartLive = findViewById(R.id.btnStartLive)
-        watermark = findViewById(R.id.img_watermark)
+        openGlView = binding.openGlView
+        btnStartLive = binding.btnStartLive
+        watermark = binding.imgWatermark
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
         btnStartLive?.setOnClickListener {
