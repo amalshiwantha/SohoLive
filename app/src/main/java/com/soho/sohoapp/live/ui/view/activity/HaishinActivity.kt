@@ -91,6 +91,10 @@ class HaishinActivity : AppCompatActivity() {
             switchMute()
         }
 
+        binding.imgBtnClose.setOnClickListener {
+            finish()
+        }
+
         createRtmpCamera2()
     }
 
