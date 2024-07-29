@@ -21,6 +21,7 @@ import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.StreamResolution
+import com.soho.sohoapp.live.utility.showToast
 
 class HaishinActivity : AppCompatActivity() {
 
@@ -30,6 +31,15 @@ class HaishinActivity : AppCompatActivity() {
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
     private var streamKey: String = "a3e715e6-375d-0f34-02f6-784883f7f798"
     private val PERMISSION_REQUEST_CODE = 101
+
+    private object StreamParameters {
+        var resolution = StreamResolution.HD
+        const val FPS = 30
+        const val START_BITRATE = 400 * 1024
+        const val INTERVAL_SEC = 5
+        /*const val maxBitrate = 4000 * 1024
+        const val backgroundStreamingTimeOutInMillis: Long = 60000*/
+    }
 
     companion object {
         const val KEY_STREAM = "streamKey"
@@ -47,10 +57,144 @@ class HaishinActivity : AppCompatActivity() {
             insets
         }
 
-        inits()
+        init()
         checkRequiredPermissions()
     }
 
+    private fun init() {
+        openGlView = findViewById(R.id.openGlView)
+        btnStartLive = findViewById(R.id.btnStartLive)
+
+        openGlView?.holder?.addCallback(surfaceHolderCallback)
+        btnStartLive?.setOnClickListener {
+            rtmpCamera2?.let {
+                if (it.isStreaming) {
+                    stopBroadcast()
+                } else {
+                    btnStartLive?.text = "Stop Live"
+                    startBroadcast()
+                }
+            }
+        }
+
+        createRtmpCamera2()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        rtmpCamera2?.let {
+            if (it.isStreaming) {
+                stopBroadcast()
+            }
+        }
+    }
+
+    //LIVE STREAMING
+    private fun createRtmpCamera2() {
+        openGlView?.let {
+            if (rtmpCamera2 == null) {
+                rtmpCamera2 = RtmpCamera2(it, connectCheckerRtmp).apply {
+                    setFpsListener(fpsListenerCallback)
+                    enableAutoFocus()
+                }
+            }
+        }
+    }
+
+    private val fpsListenerCallback = FpsListener.Callback { fps ->
+        println("myStream fps : $fps")
+    }
+
+    private fun startBroadcast() {
+        if (arePermissionsGranted()) {
+            if (streamKey.isNotEmpty()) {
+                rtmpCamera2?.let {
+                    if (!it.isStreaming) {
+                        if (it.prepareAudio() && it.prepareVideo(
+                                StreamParameters.resolution.width,
+                                StreamParameters.resolution.height,
+                                StreamParameters.FPS,
+                                StreamParameters.START_BITRATE,
+                                StreamParameters.INTERVAL_SEC,
+                                CameraHelper.getCameraOrientation(application)
+                            )
+                        ) {
+                            //showToast("Started Broadcast")
+                            println("myStream startBroadcast")
+                            it.startStream(rtmpEndpoint + streamKey)
+                        } else {
+                            //showToast("Broadcast Error")
+                            println("myStream Error startBroadcast")
+                        }
+                    }
+                }
+            } else {
+                showStreamKeyDialog()
+            }
+        } else {
+            requestPermissions()
+        }
+    }
+
+    private fun stopBroadcast() {
+        rtmpCamera2?.let {
+            if (it.isStreaming) {
+                btnStartLive?.text = "Go Live"
+                println("myStream stopBroadcast")
+                it.stopStream()
+                //showToast("Stopped Broadcast")
+            }
+        }
+    }
+
+    private val connectCheckerRtmp = object : ConnectChecker {
+        override fun onAuthError() {
+            println("myStream onAuthError")
+        }
+
+        override fun onAuthSuccess() {
+            println("myStream onAuthSuccess")
+        }
+
+        override fun onConnectionFailed(reason: String) {
+            println("myStream onConnectionFailed $reason")
+            stopBroadcast()
+            finish()
+        }
+
+        override fun onConnectionStarted(url: String) {
+            println("myStream onConnectionStarted $url")
+        }
+
+        override fun onConnectionSuccess() {
+            println("myStream onConnectionSuccess")
+        }
+
+        override fun onDisconnect() {
+            println("myStream onDisconnect")
+            //showToast("Broadcast Disconnected. Add new Key")
+        }
+
+        override fun onNewBitrate(bitrate: Long) {
+            println("myStream onNewBitrate $bitrate")
+        }
+    }
+
+    private val surfaceHolderCallback = object : SurfaceHolder.Callback {
+        override fun surfaceCreated(holder: SurfaceHolder) {
+            //viewModel.appInForeground(binding.openGlView)
+        }
+
+        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+
+        override fun surfaceDestroyed(holder: SurfaceHolder) {
+            //viewModel.appInBackground()
+        }
+    }
+    //LIVE STREAMING END
+
+    //PERMISSION
     private fun checkRequiredPermissions() {
         if (arePermissionsGranted()) {
             showStreamKeyDialog()
@@ -136,148 +280,5 @@ class HaishinActivity : AppCompatActivity() {
             alertDialog.show()
         }
     }
-
-    private object StreamParameters {
-        var resolution = StreamResolution.HD
-        const val fps = 30
-        const val startBitrate = 400 * 1024
-        const val iFrameIntervalInSeconds = 5
-        const val maxBitrate = 4000 * 1024
-        const val backgroundStreamingTimeOutInMillis: Long = 60000
-    }
-
-    private fun inits() {
-        openGlView = findViewById(R.id.openGlView)
-        btnStartLive = findViewById(R.id.btnStartLive)
-
-        openGlView?.holder?.addCallback(surfaceHolderCallback)
-        btnStartLive?.setOnClickListener {
-            rtmpCamera2?.let {
-                if (it.isStreaming) {
-                    stopBroadcast()
-                } else {
-                    btnStartLive?.text = "Stop Live"
-                    startBroadcast()
-                }
-            }
-        }
-
-        createRtmpCamera2()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        rtmpCamera2?.let {
-            if (it.isStreaming) {
-                stopBroadcast()
-            }
-        }
-    }
-
-    private fun createRtmpCamera2() {
-        openGlView?.let {
-            if (rtmpCamera2 == null) {
-                rtmpCamera2 = RtmpCamera2(it, connectCheckerRtmp).apply {
-                    setFpsListener(fpsListenerCallback)
-                    enableAutoFocus()
-                }
-            }
-        }
-    }
-
-    private val fpsListenerCallback = FpsListener.Callback { fps ->
-        println("myStream fps : $fps")
-    }
-
-    private fun startBroadcast() {
-        if (arePermissionsGranted()) {
-            if (streamKey.isNotEmpty()) {
-                rtmpCamera2?.let {
-                    if (!it.isStreaming) {
-                        if (it.prepareAudio() && it.prepareVideo(
-                                StreamParameters.resolution.width,
-                                StreamParameters.resolution.height,
-                                StreamParameters.fps,
-                                StreamParameters.startBitrate,
-                                StreamParameters.iFrameIntervalInSeconds,
-                                CameraHelper.getCameraOrientation(application)
-                            )
-                        ) {
-                            showToast("Started Broadcast")
-                            println("myStream startBroadcast")
-                            it.startStream(rtmpEndpoint + streamKey)
-                        } else {
-                            showToast("Broadcast Error")
-                            println("myStream Error startBroadcast")
-                        }
-                    }
-                }
-            } else {
-                showStreamKeyDialog()
-            }
-        } else {
-            requestPermissions()
-        }
-    }
-
-    private fun stopBroadcast() {
-        rtmpCamera2?.let {
-            if (it.isStreaming) {
-                btnStartLive?.text = "Go Live"
-                println("myStream stopBroadcast")
-                it.stopStream()
-                showToast("Stopped Broadcast")
-            }
-        }
-    }
-
-    private fun showToast(msg: String) {
-        Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
-    }
-
-    private val connectCheckerRtmp = object : ConnectChecker {
-        override fun onAuthError() {
-            println("myStream onAuthError")
-        }
-
-        override fun onAuthSuccess() {
-            println("myStream onAuthSuccess")
-        }
-
-        override fun onConnectionFailed(reason: String) {
-            println("myStream onConnectionFailed $reason")
-            stopBroadcast()
-            finish()
-        }
-
-        override fun onConnectionStarted(url: String) {
-            println("myStream onConnectionStarted $url")
-        }
-
-        override fun onConnectionSuccess() {
-            println("myStream onConnectionSuccess")
-        }
-
-        override fun onDisconnect() {
-            println("myStream onDisconnect")
-            showToast("Broadcast Disconnected. Add new Key")
-        }
-
-        override fun onNewBitrate(bitrate: Long) {
-            println("myStream onNewBitrate $bitrate")
-        }
-    }
-
-    private val surfaceHolderCallback = object : SurfaceHolder.Callback {
-        override fun surfaceCreated(holder: SurfaceHolder) {
-            //viewModel.appInForeground(binding.openGlView)
-        }
-
-        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
-
-        override fun surfaceDestroyed(holder: SurfaceHolder) {
-            //viewModel.appInBackground()
-        }
-    }
+    //PERMISSION END
 }
