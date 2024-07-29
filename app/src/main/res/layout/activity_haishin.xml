@@ -34,14 +34,14 @@
         <!--live time-->
         <TextView
             android:id="@+id/txt_live_time"
+            style="@style/axiforma_800W"
+            android:background="@drawable/rounded_corner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:background="#800"
             android:padding="8dp"
             android:visibility="gone"
-            tools:text="Live 00:12"
-            android:textColor="#fff" />
+            tools:text="Live 00:12" />
 
         <!--cross btn-->
         <ImageButton
