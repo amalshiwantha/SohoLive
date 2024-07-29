@@ -28,7 +28,7 @@ class HaishinActivity : AppCompatActivity() {
     private var openGlView: OpenGlView? = null
     private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = ""
+    private var streamKey: String = "a3e715e6-375d-0f34-02f6-784883f7f798"
     private val PERMISSION_REQUEST_CODE = 101
 
     companion object {
@@ -107,7 +107,7 @@ class HaishinActivity : AppCompatActivity() {
     }
 
     private fun showStreamKeyDialog() {
-        streamKey = intent.getStringExtra(KEY_STREAM) ?: ""
+        streamKey = streamKey.ifEmpty { intent.getStringExtra(KEY_STREAM) ?: "" }
 
         if (streamKey.isEmpty()) {
             val alertDialogBuilder = AlertDialog.Builder(this)
@@ -134,8 +134,6 @@ class HaishinActivity : AppCompatActivity() {
             alertDialogBuilder.setCancelable(false)
             val alertDialog = alertDialogBuilder.create()
             alertDialog.show()
-        } else {
-            Toast.makeText(applicationContext, "Found Stream Key", Toast.LENGTH_LONG).show()
         }
     }
 
