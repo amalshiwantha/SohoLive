@@ -3,8 +3,6 @@ package com.soho.sohoapp.live.ui.view.activity
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.SurfaceHolder
 import android.view.View
 import android.widget.Button
@@ -25,7 +23,8 @@ import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityHaishinBinding
 import com.soho.sohoapp.live.enums.StreamResolution
-import java.util.concurrent.TimeUnit
+import com.soho.sohoapp.live.utility.TimerTextHelper
+
 
 class HaishinActivity : AppCompatActivity() {
 
@@ -35,10 +34,9 @@ class HaishinActivity : AppCompatActivity() {
     private var openGlView: OpenGlView? = null
     private var btnStartLive: Button? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "1d1cd471-83ac-dc66-d1be-f54d814df46f"
+    private var streamKey: String = "2315b570-51b7-c1ad-6898-1d287eb1a088"
     private val PERMISSION_REQUEST_CODE = 101
-    private val handler = Handler(Looper.getMainLooper())
-    private var startTime = System.currentTimeMillis()
+    private lateinit var timerTextHelper: TimerTextHelper
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -70,11 +68,11 @@ class HaishinActivity : AppCompatActivity() {
         checkRequiredPermissions()
     }
 
-
     private fun init() {
         openGlView = binding.openGlView
         btnStartLive = binding.btnStartLive
         watermark = binding.imgWatermark
+        timerTextHelper = TimerTextHelper(binding.txtLiveTime)
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
 
@@ -112,6 +110,11 @@ class HaishinActivity : AppCompatActivity() {
                 stopBroadcast()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopBroadcast()
     }
 
     private fun switchCamera() {
@@ -184,37 +187,22 @@ class HaishinActivity : AppCompatActivity() {
             binding.txtLiveTime.visibility = if (isStarted) View.VISIBLE else View.GONE
 
             if (isStarted) {
-                val runnable = object : Runnable {
-                    override fun run() {
-                        val elapsedMillis = System.currentTimeMillis() - startTime
-                        val elapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(elapsedMillis)
-
-                        // Convert seconds to mm:ss format
-                        val minutes = (elapsedSeconds / 60).toInt()
-                        val seconds = (elapsedSeconds % 60).toInt()
-                        val formattedTime = String.format("%02d:%02d", minutes, seconds)
-                        binding.txtLiveTime.text = "Live $formattedTime"
-
-                        // Post the runnable again after 1 second
-                        handler.postDelayed(this, 1000)
-                    }
-                }
-
-                // Start the timer
-                handler.post(runnable)
+                timerTextHelper.start()
             } else {
-                handler.removeCallbacksAndMessages(null)
+                binding.txtLiveTime.text = "Live 00:00"
+                timerTextHelper.stop()
             }
         }
     }
 
     private fun stopBroadcast() {
+        showLiveTime(false)
+
         rtmpCamera2?.let {
             if (it.isStreaming) {
                 btnStartLive?.text = "Go Live"
                 println("myStream stopBroadcast")
                 it.stopStream()
-                showLiveTime(false)
                 //showToast("Stopped Broadcast")
             }
         }
