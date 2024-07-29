@@ -2,10 +2,12 @@ package com.soho.sohoapp.live.ui.view.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -20,11 +22,13 @@ import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.utility.showToast
 
 class HaishinActivity : AppCompatActivity() {
 
+    private var watermark: ImageView? = null
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
     private var btnStartLive: Button? = null
@@ -33,7 +37,7 @@ class HaishinActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST_CODE = 101
 
     private object StreamParameters {
-        var resolution = StreamResolution.HD
+        var resolution = StreamResolution.FULL_HD
         const val FPS = 30
         const val START_BITRATE = 400 * 1024
         const val INTERVAL_SEC = 5
@@ -64,6 +68,7 @@ class HaishinActivity : AppCompatActivity() {
     private fun init() {
         openGlView = findViewById(R.id.openGlView)
         btnStartLive = findViewById(R.id.btnStartLive)
+        watermark = findViewById(R.id.img_watermark)
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
         btnStartLive?.setOnClickListener {
@@ -97,9 +102,19 @@ class HaishinActivity : AppCompatActivity() {
                 rtmpCamera2 = RtmpCamera2(it, connectCheckerRtmp).apply {
                     setFpsListener(fpsListenerCallback)
                     enableAutoFocus()
+                    setWatermark()
                 }
             }
         }
+    }
+
+    private fun setWatermark() {
+        /*val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.watermark_logo)
+        rtmpCamera2?.glInterface?.let {
+            val watermarkRender = WatermarkRender(context = SohoLiveApp.context)
+            it.setFilter(watermarkRender)
+            watermarkRender.setWatermark(watermarkBitmap, openGlView!!.width - watermarkBitmap.width - 16, openGlView!!.height - watermarkBitmap.height - 16)
+        }*/
     }
 
     private val fpsListenerCallback = FpsListener.Callback { fps ->
