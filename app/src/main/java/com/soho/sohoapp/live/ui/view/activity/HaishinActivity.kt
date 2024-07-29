@@ -3,6 +3,8 @@ package com.soho.sohoapp.live.ui.view.activity
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.SurfaceHolder
 import android.view.View
 import android.widget.Button
@@ -23,6 +25,7 @@ import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityHaishinBinding
 import com.soho.sohoapp.live.enums.StreamResolution
+import java.util.concurrent.TimeUnit
 
 class HaishinActivity : AppCompatActivity() {
 
@@ -34,6 +37,8 @@ class HaishinActivity : AppCompatActivity() {
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
     private var streamKey: String = "1d1cd471-83ac-dc66-d1be-f54d814df46f"
     private val PERMISSION_REQUEST_CODE = 101
+    private val handler = Handler(Looper.getMainLooper())
+    private var startTime = System.currentTimeMillis()
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -177,6 +182,29 @@ class HaishinActivity : AppCompatActivity() {
         rtmpCamera2?.let {
             binding.imgBtnClose.visibility = if (isStarted) View.GONE else View.VISIBLE
             binding.txtLiveTime.visibility = if (isStarted) View.VISIBLE else View.GONE
+
+            if (isStarted) {
+                val runnable = object : Runnable {
+                    override fun run() {
+                        val elapsedMillis = System.currentTimeMillis() - startTime
+                        val elapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(elapsedMillis)
+
+                        // Convert seconds to mm:ss format
+                        val minutes = (elapsedSeconds / 60).toInt()
+                        val seconds = (elapsedSeconds % 60).toInt()
+                        val formattedTime = String.format("%02d:%02d", minutes, seconds)
+                        binding.txtLiveTime.text = "Live $formattedTime"
+
+                        // Post the runnable again after 1 second
+                        handler.postDelayed(this, 1000)
+                    }
+                }
+
+                // Start the timer
+                handler.post(runnable)
+            } else {
+                handler.removeCallbacksAndMessages(null)
+            }
         }
     }
 

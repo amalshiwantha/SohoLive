@@ -40,7 +40,7 @@
             android:background="#800"
             android:padding="8dp"
             android:visibility="gone"
-            android:text="Live 00:12"
+            tools:text="Live 00:12"
             android:textColor="#fff" />
 
         <!--cross btn-->
