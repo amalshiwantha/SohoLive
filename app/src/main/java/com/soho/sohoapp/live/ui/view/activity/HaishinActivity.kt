@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.SurfaceHolder
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -157,6 +158,7 @@ class HaishinActivity : AppCompatActivity() {
                             //showToast("Started Broadcast")
                             println("myStream startBroadcast")
                             it.startStream(rtmpEndpoint + streamKey)
+                            showLiveTime(true)
                         } else {
                             //showToast("Broadcast Error")
                             println("myStream Error startBroadcast")
@@ -171,12 +173,20 @@ class HaishinActivity : AppCompatActivity() {
         }
     }
 
+    private fun showLiveTime(isStarted: Boolean) {
+        rtmpCamera2?.let {
+            binding.imgBtnClose.visibility = if (isStarted) View.GONE else View.VISIBLE
+            binding.txtLiveTime.visibility = if (isStarted) View.VISIBLE else View.GONE
+        }
+    }
+
     private fun stopBroadcast() {
         rtmpCamera2?.let {
             if (it.isStreaming) {
                 btnStartLive?.text = "Go Live"
                 println("myStream stopBroadcast")
                 it.stopStream()
+                showLiveTime(false)
                 //showToast("Stopped Broadcast")
             }
         }
