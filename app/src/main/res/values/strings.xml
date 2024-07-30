@@ -58,6 +58,7 @@
     <string name="go_live">Go Live</string>
     <string name="livecast_start">livecast starting in...</string>
     <string name="livecast_end">Ending livecast in...</string>
+    <string name="livecast_ended">livecast ended</string>
     <plurals name="livecast">
         <item quantity="one">We’ve scheduled one livecast</item>
         <item quantity="other">We’ve scheduled %d livecasts</item>

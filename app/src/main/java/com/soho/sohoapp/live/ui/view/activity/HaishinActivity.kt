@@ -39,7 +39,7 @@ class HaishinActivity : AppCompatActivity() {
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "a02ad830-027a-11ec-be21-5d988c60d608"
+    private var streamKey: String = "387d87aa-0942-4f26-9ea5-75c9d8b06966"
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
 
@@ -125,7 +125,7 @@ class HaishinActivity : AppCompatActivity() {
                     binding.txtCountdownMsg.text = getString(R.string.livecast_end)
                     goLiveNow()
                 } else {
-                    binding.txtCountdownMsg.text = "livecast ended"
+                    binding.txtCountdownMsg.text = getString(R.string.livecast_ended)
                     binding.txtCountdown.visibility = View.GONE
                     binding.imgDoneTick.visibility = View.VISIBLE
                     binding.imgBtnAbort.visibility = View.GONE
