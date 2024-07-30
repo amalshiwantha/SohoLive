@@ -25,6 +25,11 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityHaishinBinding
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.utility.TimerTextHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class HaishinActivity : AppCompatActivity() {
@@ -78,7 +83,7 @@ class HaishinActivity : AppCompatActivity() {
         binding.cardGoLive.setOnClickListener {
             rtmpCamera2?.let {
                 if (it.isStreaming) {
-                    stopBroadcast()
+                    showCountDownOverlay(isStart = false)
                 } else {
                     showCountDownOverlay()
                 }
@@ -100,7 +105,11 @@ class HaishinActivity : AppCompatActivity() {
         createRtmpCamera2()
     }
 
-    private fun showCountDownOverlay() {
+    /*
+    * isStart = true mean going to start liveCast if false
+    * going to end and have to change the text as well as tick icon for end
+    * */
+    private fun showCountDownOverlay(isStart: Boolean = true) {
         binding.layoutCountdown.visibility = View.VISIBLE
 
         //show 3 to 1 countdown using countdownTimer
@@ -111,15 +120,45 @@ class HaishinActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                binding.layoutCountdown.visibility = View.GONE
-                goLiveNow()
+                if (isStart) {
+                    binding.layoutCountdown.visibility = View.GONE
+                    binding.txtCountdownMsg.text = getString(R.string.livecast_end)
+                    goLiveNow()
+                } else {
+                    binding.txtCountdownMsg.text = "livecast ended"
+                    binding.txtCountdown.visibility = View.GONE
+                    binding.imgDoneTick.visibility = View.VISIBLE
+                    binding.imgBtnAbort.visibility = View.GONE
+                    callLiveEndApi()
+                }
+
+                if (isStart) {
+                    binding.layoutCountdown.visibility = View.GONE
+                }
             }
         }
         countdownTimer.start()
 
+        //abort button
         binding.imgBtnAbort.setOnClickListener {
             countdownTimer.cancel()
             binding.layoutCountdown.visibility = View.GONE
+        }
+    }
+
+    private fun callLiveEndApi() {
+        GlobalScope.launch {
+            delay(1000)
+            withContext(Dispatchers.Main) {
+                binding.layoutCountdown.visibility = View.GONE
+                stopBroadcast()
+
+                //reset
+                binding.txtCountdownMsg.text = getString(R.string.livecast_start)
+                binding.txtCountdown.visibility = View.VISIBLE
+                binding.imgBtnAbort.visibility = View.VISIBLE
+                binding.imgDoneTick.visibility = View.GONE
+            }
         }
     }
 

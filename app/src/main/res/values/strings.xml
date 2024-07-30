@@ -56,7 +56,8 @@
     <string name="no_data_msg">You can watch and manage your past livecasts here. Remember to download it before it’s deleted!</string>
     <string name="no_data_title">Watch all your past livecasts</string>
     <string name="go_live">Go Live</string>
-    <string name="livecast_starting_in">livecast starting in...</string>
+    <string name="livecast_start">livecast starting in...</string>
+    <string name="livecast_end">Ending livecast in...</string>
     <plurals name="livecast">
         <item quantity="one">We’ve scheduled one livecast</item>
         <item quantity="other">We’ve scheduled %d livecasts</item>
