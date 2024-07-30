@@ -1,8 +1,10 @@
 package com.soho.sohoapp.live.ui.view.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.SurfaceHolder
 import android.view.View
 import android.widget.EditText
@@ -78,7 +80,7 @@ class HaishinActivity : AppCompatActivity() {
                 if (it.isStreaming) {
                     stopBroadcast()
                 } else {
-                    showStartTimer()
+                    showCountDownOverlay()
                 }
             }
         }
@@ -98,16 +100,32 @@ class HaishinActivity : AppCompatActivity() {
         createRtmpCamera2()
     }
 
-    private fun showStartTimer() {
-        showCountDownOverlay()
+    private fun showCountDownOverlay() {
+        binding.layoutCountdown.visibility = View.VISIBLE
 
-        //if countdown is finished, start broadcast
-        /*updateGoLiveBtn(true)
-        startBroadcast()*/
+        //show 3 to 1 countdown using countdownTimer
+        val countdownTimer = object : CountDownTimer(3000, 1000) {
+            @SuppressLint("SetTextI18n")
+            override fun onTick(millisUntilFinished: Long) {
+                binding.txtCountdown.text = (millisUntilFinished / 1000 + 1).toString()
+            }
+
+            override fun onFinish() {
+                binding.layoutCountdown.visibility = View.GONE
+                goLiveNow()
+            }
+        }
+        countdownTimer.start()
+
+        binding.imgBtnAbort.setOnClickListener {
+            countdownTimer.cancel()
+            binding.layoutCountdown.visibility = View.GONE
+        }
     }
 
-    private fun showCountDownOverlay() {
-        TODO("Not yet implemented")
+    private fun goLiveNow() {
+        updateGoLiveBtn(true)
+        startBroadcast()
     }
 
     private fun updateGoLiveBtn(isStart: Boolean) {
