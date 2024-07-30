@@ -32,7 +32,7 @@ class HaishinActivity : AppCompatActivity() {
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "2315b570-51b7-c1ad-6898-1d287eb1a088"
+    private var streamKey: String = "a02ad830-027a-11ec-be21-5d988c60d608"
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
 
@@ -78,8 +78,7 @@ class HaishinActivity : AppCompatActivity() {
                 if (it.isStreaming) {
                     stopBroadcast()
                 } else {
-                    updateGoLiveBtn(true)
-                    startBroadcast()
+                    showStartTimer()
                 }
             }
         }
@@ -97,6 +96,18 @@ class HaishinActivity : AppCompatActivity() {
         }
 
         createRtmpCamera2()
+    }
+
+    private fun showStartTimer() {
+        showCountDownOverlay()
+
+        //if countdown is finished, start broadcast
+        /*updateGoLiveBtn(true)
+        startBroadcast()*/
+    }
+
+    private fun showCountDownOverlay() {
+        TODO("Not yet implemented")
     }
 
     private fun updateGoLiveBtn(isStart: Boolean) {
