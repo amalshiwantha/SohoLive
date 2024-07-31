@@ -78,7 +78,6 @@ class LiveStreamActivity : AppCompatActivity() {
 
         init()
         checkRequiredPermissions()
-        viewModel.appInBackground()
     }
 
     private fun init() {
@@ -172,9 +171,11 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun goLiveNow() {
         //connect api
+        streamKey = streamKey.ifEmpty { intent.getStringExtra(KEY_STREAM) ?: "" }
+        viewModel.callLiveStreamApi(streamKey)
 
-        updateGoLiveBtn(true)
-        startBroadcast()
+        /*updateGoLiveBtn(true)
+        startBroadcast()*/
     }
 
     private fun updateGoLiveBtn(isStart: Boolean) {

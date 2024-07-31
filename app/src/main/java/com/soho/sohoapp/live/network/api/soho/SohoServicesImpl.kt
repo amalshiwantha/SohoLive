@@ -10,6 +10,8 @@ import com.soho.sohoapp.live.network.core.TS_API_KEY
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
+import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -128,6 +130,21 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
             setBody(privacyReq)
+        }.body()
+    }
+
+    override suspend fun liveStream(authToken: String, liveReq: LiveRequest): LiveResponse {
+        return httpClient.post {
+            url {
+                takeFrom(BASE_URL)
+                encodedPath += SohoApiServices.LIVE_STREAM.replace(
+                    "{live_stream_id}",
+                    liveReq.liveStreamId.toString()
+                )
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+            setBody(liveReq)
         }.body()
     }
 }

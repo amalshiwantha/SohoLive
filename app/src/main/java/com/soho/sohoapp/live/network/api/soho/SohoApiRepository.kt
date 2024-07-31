@@ -11,6 +11,8 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
+import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -19,6 +21,27 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
+
+    fun onAirLiveCast(
+        authToken: String,
+        liveReq: LiveRequest
+    ): Flow<ApiState<LiveResponse>> =
+        flow {
+            try {
+
+                val apiResponse = service.liveStream(
+                    authToken = authToken,
+                    liveReq = liveReq
+                )
+                emit(ApiState.Data(data = apiResponse))
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
 
     fun setVideoPrivacy(
         authToken: String,

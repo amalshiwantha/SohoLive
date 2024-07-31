@@ -7,6 +7,8 @@ import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
+import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -23,6 +25,7 @@ interface SohoApiServices {
         const val TS_PROPERTY = "collections/property_listings/documents/search"
         const val VIDEO_LIBRARY = "asset"
         const val VIDEO_PRIVACY_UPDATE = "asset/{propertyId}"
+        const val LIVE_STREAM = "live_stream/{live_stream_id}/simulcast_target"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
@@ -40,4 +43,6 @@ interface SohoApiServices {
         authToken: String,
         privacyReq: VidPrivacyRequest
     ): VidPrivacyResponse
+
+    suspend fun liveStream(authToken: String, liveReq: LiveRequest): LiveResponse
 }
