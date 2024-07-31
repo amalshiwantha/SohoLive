@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -38,9 +37,9 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 
 @Composable
 fun LiveEndScreen(
-    mLiveData: GoLiveSubmit,
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    goVideoLibrary: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -52,13 +51,21 @@ fun LiveEndScreen(
                     .calculateTopPadding()
             )
     ) {
-        CenterImgText(modifier, mLiveData)
-        BottomButtons(modifier.align(alignment = Alignment.BottomCenter), navController)
+        CenterImgText(modifier)
+        BottomButtons(
+            modifier.align(alignment = Alignment.BottomCenter),
+            navController,
+            goVideoLibrary
+        )
     }
 }
 
 @Composable
-fun BottomButtons(modifier: Modifier, navController: NavHostController) {
+fun BottomButtons(
+    modifier: Modifier,
+    navController: NavHostController,
+    goVideoLibrary: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -67,18 +74,18 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         ButtonOutlineWhite(
-            text = "Manage Scheduled livecasts",
+            text = "Video Library",
             modifier = Modifier.fillMaxWidth(),
-            onBtnClick = { navController.popBackStack() })
+            onBtnClick = { goVideoLibrary() })
 
-        ButtonColoured(text = "Schedule Another livecast",
+        ButtonColoured(text = "Leave Live Studio",
             color = AppGreen,
             onBtnClick = { navController.popBackStack() })
     }
 }
 
 @Composable
-fun CenterImgText(modifier: Modifier, goLiveData: GoLiveSubmit) {
+fun CenterImgText(modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -86,18 +93,15 @@ fun CenterImgText(modifier: Modifier, goLiveData: GoLiveSubmit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.success_calender),
+            painter = painterResource(id = R.drawable.done_circle),
             contentDescription = null,
             modifier = Modifier.wrapContentSize()
         )
 
         SpacerVertical(size = 40.dp)
 
-        val countSlots = goLiveData.scheduleSlots.size
-        val title = pluralStringResource(R.plurals.livecast, countSlots, countSlots)
-
         Text(
-            text = title,
+            text = "Livecast has ended",
             fontSize = 20.sp,
             lineHeight = 28.sp,
             fontFamily = FontFamily(Font(R.font.axiforma)),
@@ -110,7 +114,7 @@ fun CenterImgText(modifier: Modifier, goLiveData: GoLiveSubmit) {
         SpacerVertical(size = 8.dp)
 
         Text(
-            text = "We will promote your scheduled livecasts to prospective buyers or renters and we will notify you when it’s time to go live!",
+            text = "Your livecast has been uploaded to your selected social media and you can watch the live stream playback in your video library",
             fontSize = 14.sp,
             lineHeight = 19.6.sp,
             fontFamily = FontFamily(Font(R.font.axiforma_regular)),
@@ -122,24 +126,11 @@ fun CenterImgText(modifier: Modifier, goLiveData: GoLiveSubmit) {
     }
 }
 
-@Composable
-fun CenterImage() {
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.success_calender),
-            contentDescription = null,
-            modifier = Modifier.wrapContentSize()
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewGoLiveOkScreen() {
     LiveEndScreen(
         navController = NavHostController(LocalContext.current),
-        mLiveData = GoLiveSubmit()
+        goVideoLibrary = {}
     )
 }

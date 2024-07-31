@@ -83,7 +83,7 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         composable(route = NavigationPath.LIVE_CAST_END.name) {
             LiveEndScreen(
                 navController = navController,
-                mLiveData = mGoLiveSubmit
+                goVideoLibrary = { navController.navigate(NavigationPath.VIDEO_LIBRARY.name) }
             )
         }
     }
