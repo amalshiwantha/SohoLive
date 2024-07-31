@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
-import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.LiveRequest
@@ -14,27 +13,27 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-data class StateLive(
-    val isSuccess: Boolean = false,
-    val loadingMessage: String? = null,
-    val loadingState: ProgressBarState = ProgressBarState.Idle,
-    val alertState: AlertState = AlertState.Idle,
-    val errorMsg: String? = null,
+data class AlertData(
+    val isShow: Boolean = false,
+    val title: String? = null,
+    val message: String? = null,
 )
+
 
 class LiveStreamViewModel(
     private val apiRepo: SohoApiRepository,
     private val dataStore: AppDataStoreManager,
 ) : ViewModel() {
 
-    private val _mState = MutableStateFlow(StateLive())
-    val mState: StateFlow<StateLive> = _mState
+    private val _msLoading = MutableStateFlow(false)
+    val msLoading: StateFlow<Boolean> = _msLoading
 
-    private fun setLoading(message: String, state: ProgressBarState) {
-        _mState.value = _mState.value.copy(
-            loadingState = state,
-            loadingMessage = if (state == ProgressBarState.Loading) message else null
-        )
+    private val _msAlert = MutableStateFlow(AlertData())
+    val msAlert: StateFlow<AlertData> = _msAlert
+
+    fun resetStates(){
+        _msLoading.value = false
+        _msAlert.value = AlertData()
     }
 
     fun callLiveStreamApi(muxKey: String) {
@@ -62,28 +61,31 @@ class LiveStreamViewModel(
             when (apiState) {
 
                 is ApiState.Data -> {
-
                     apiState.data?.let { result ->
 
                         val isSuccess = !result.responseType.equals("error")
                         val errorMsg = result.response
                         //val responsePrivacy = result.data
 
-                        /*if (isSuccess) {
-                            mState = mState.copy(isSuccess = true)
+                        if (isSuccess) {
+                            //mState = mState.copy(isSuccess = true)
                         } else {
-                            mState = mState.copy(errorMsg = errorMsg)
-                        }*/
+                            _msAlert.value =
+                                AlertData(isShow = true, title = "Error", message = errorMsg)
+                        }
                     }
                 }
 
                 is ApiState.Loading -> {
-                    //mState = mState.copy(loadingState = apiState.progressBarState)
-                    setLoading("Connecting to livecast", apiState.progressBarState)
+                    _msLoading.value = apiState.progressBarState == ProgressBarState.Loading
                 }
 
                 is ApiState.Alert -> {
-                    //mState = mState.copy(alertState = apiState.alertState)
+                    _msAlert.value = AlertData(
+                        isShow = true,
+                        title = "Problem",
+                        message = "Something went wrong, Please try again."
+                    )
                 }
             }
         }.launchIn(viewModelScope)

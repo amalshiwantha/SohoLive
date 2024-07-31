@@ -28,8 +28,8 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.LiveCastStatus
-import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.utility.TimerTextHelper
+import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -88,20 +88,32 @@ class LiveStreamActivity : AppCompatActivity() {
     // Observe state changes
     private fun mStateObserveable() {
         lifecycleScope.launch {
-            viewModel.mState.collect { state ->
-                handleState(state)
+            viewModel.msLoading.collect { state ->
+                handleLoadingState(state)
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.msAlert.collect {
+                handleAlertState(it)
             }
         }
     }
 
-    // Update UI elements based on the state
-    private fun handleState(state: StateLive) {
-        when (state.loadingState) {
-            ProgressBarState.Loading -> {
+    private fun handleAlertState(alertState: AlertData) {
+        if(alertState.isShow){
+            viewModel.resetStates()
+            showAlertMessage(this, alertState)
+        }
+    }
+
+    private fun handleLoadingState(progState: Boolean) {
+        when (progState) {
+            true -> {
                 progDialog = showProgressDialog(this, "Connecting to livecast")
             }
 
-            ProgressBarState.Idle -> {
+            false -> {
                 showProgressDialog(
                     activity = this,
                     currentDialog = progDialog,

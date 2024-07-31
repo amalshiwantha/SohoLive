@@ -24,6 +24,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.ui.view.activity.live.AlertData
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -32,6 +33,21 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
+/*
+* Display alert box with ok and cancel buttons
+* */
+fun showAlertMessage(activity: Activity, alertState: AlertData) {
+    val builder = AlertDialog.Builder(activity)
+    builder
+        .setTitle(alertState.title)
+        .setMessage(alertState.message)
+        .setCancelable(false)
+        .setPositiveButton("OK") { dialog, id ->
+            dialog.dismiss()
+        }
+    val dialog = builder.create()
+    dialog.show()
+}
 
 /*
 * show progress login view when api call or long time tasks
