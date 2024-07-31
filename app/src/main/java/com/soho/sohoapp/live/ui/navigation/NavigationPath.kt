@@ -13,5 +13,6 @@ enum class NavigationPath {
     PROFILE,
     SET_SCHEDULE,
     GO_LIVE_SUCCESS,
-    VIDEO_MANAGE
+    VIDEO_MANAGE,
+    LIVE_CAST_END
 }

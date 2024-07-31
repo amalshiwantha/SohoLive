@@ -187,6 +187,7 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
+    var liveCastStatus by remember { mutableStateOf(LiveCastStatus()) }
     val launcherLiveCast = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -194,18 +195,32 @@ fun GoLiveScreen(
             result.data?.let { data ->
                 val json = data.getStringExtra(KEY_LIVE_STATUS)
                 val status = json?.let { Json.decodeFromString<LiveCastStatus>(it) }
+                status?.let {
+                    liveCastStatus = it
+                }
                 println("LiveCast status $status")
             }
         }
     }
 
+    /*
+    * show live cast end screen
+    * */
+    LaunchedEffect(liveCastStatus.statusCode) {
+        if (liveCastStatus.statusCode != 0) {
+            navController.navigate(NavigationPath.LIVE_CAST_END.name)
+        }
+    }
+
+    /*
+    * get updated SM list
+    * */
     LaunchedEffect(stateRecentSM) {
         stateRecentSM.collect { list ->
             recentLoggedSM = list
             println("RecentSM list: $list")
         }
     }
-
 
     /*
     * if goLiveApi got success response then want to open the LiveCast Screen
@@ -487,6 +502,11 @@ fun GoLiveScreen(
             })
         }
     }
+}
+
+@Composable
+fun ShowLiveCastEndScreen() {
+
 }
 
 /*

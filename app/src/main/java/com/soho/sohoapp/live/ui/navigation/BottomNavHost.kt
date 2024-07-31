@@ -19,6 +19,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveAssets
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.golive_success.GoLiveOkScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
+import com.soho.sohoapp.live.ui.view.screens.liveEnd.LiveEndScreen
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
@@ -79,6 +80,11 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
                 mLiveData = mGoLiveSubmit
             )
         }
-
+        composable(route = NavigationPath.LIVE_CAST_END.name) {
+            LiveEndScreen(
+                navController = navController,
+                mLiveData = mGoLiveSubmit
+            )
+        }
     }
 }
