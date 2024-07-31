@@ -94,14 +94,21 @@ class LiveStreamActivity : AppCompatActivity() {
         jsonModel?.let {
             reqLive = Json.decodeFromString<LiveRequest>(it)
         } ?: run {
-            handleAlertState(
+            //TODO this is for temp
+            reqLive = LiveRequest(
+                platform = listOf("facebook"),
+                streamKey = "1c1e2836-2e03-a263-ee49-00cc9cfa3bb4",
+                url = "https://stream.mux.com/vIOuzubEq6rHbEropUXpgRxE51MuRUzEcFMItnZiM8w/capped-1080p.mp4",
+                liveStreamId = 81039
+            )
+            /*handleAlertState(
                 AlertData(
                     isFinish = true,
                     isShow = true,
                     title = "Error",
                     message = "Required valid stream data to start live cast"
                 )
-            )
+            )*/
         }
     }
 

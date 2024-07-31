@@ -20,7 +20,6 @@ data class AlertData(
     val isFinish: Boolean= false,
 )
 
-
 class LiveStreamViewModel(
     private val apiRepo: SohoApiRepository,
     private val dataStore: AppDataStoreManager,
