@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.pedro.common.ConnectChecker
 import com.pedro.encoder.input.video.CameraHelper
 import com.pedro.library.rtmp.RtmpCamera2
@@ -27,6 +28,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.LiveCastStatus
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -48,6 +50,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
     private val viewModel: LiveStreamViewModel by viewModel()
+    //val mState = viewModel.mState.value
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -78,6 +81,30 @@ class LiveStreamActivity : AppCompatActivity() {
 
         init()
         checkRequiredPermissions()
+
+        mStateObserveable()
+    }
+
+    // Observe state changes
+    private fun mStateObserveable() {
+        lifecycleScope.launch {
+            viewModel.mState.collect { state ->
+                handleState(state)
+            }
+        }
+    }
+
+    // Update UI elements based on the state
+    private fun handleState(state: StateLive) {
+        when (state.loadingState) {
+            ProgressBarState.Loading -> {
+                println("mState showProg")
+            }
+
+            ProgressBarState.Idle -> {
+                println("mState hideProg")
+            }
+        }
     }
 
     private fun init() {

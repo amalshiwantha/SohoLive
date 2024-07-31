@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.ui.view.activity.live
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
@@ -9,13 +8,16 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.LiveRequest
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 data class StateLive(
     val isSuccess: Boolean = false,
-    val isLoading: ProgressBarState = ProgressBarState.Idle,
+    val loadingMessage: String? = null,
+    val loadingState: ProgressBarState = ProgressBarState.Idle,
     val alertState: AlertState = AlertState.Idle,
     val errorMsg: String? = null,
 )
@@ -25,23 +27,27 @@ class LiveStreamViewModel(
     private val dataStore: AppDataStoreManager,
 ) : ViewModel() {
 
-    val mState = mutableStateOf(StateLive())
+    private val _mState = MutableStateFlow(StateLive())
+    val mState: StateFlow<StateLive> = _mState
+
+    private fun setLoading(message: String, state: ProgressBarState) {
+        _mState.value = _mState.value.copy(
+            loadingState = state,
+            loadingMessage = if (state == ProgressBarState.Loading) message else null
+        )
+    }
 
     fun callLiveStreamApi(muxKey: String) {
-        /*mState.value = mState.value.copy(
-            loadingState = ProgressBarState.Loading,
-            loadingMessage = context.getString(R.string.requesting_golive)
-        )*/
-
-        val request =
-            LiveRequest(
-                platform = listOf("facebook"),
-                streamKey = muxKey,
-                url = "http://",
-                liveStreamId = 12342
-            )
-
         viewModelScope.launch {
+
+            val request =
+                LiveRequest(
+                    platform = listOf("facebook"),
+                    streamKey = muxKey,
+                    url = "http://",
+                    liveStreamId = 12342
+                )
+
             dataStore.userProfile.collect { profile ->
                 profile?.let {
                     onAirLiveStream(it.authenticationToken, request)
@@ -63,20 +69,21 @@ class LiveStreamViewModel(
                         val errorMsg = result.response
                         //val responsePrivacy = result.data
 
-                        if (isSuccess) {
-                            mState.value = mState.value.copy(isSuccess = true)
+                        /*if (isSuccess) {
+                            mState = mState.copy(isSuccess = true)
                         } else {
-                            mState.value = mState.value.copy(errorMsg = errorMsg)
-                        }
+                            mState = mState.copy(errorMsg = errorMsg)
+                        }*/
                     }
                 }
 
                 is ApiState.Loading -> {
-                    mState.value = mState.value.copy(isLoading = apiState.progressBarState)
+                    //mState = mState.copy(loadingState = apiState.progressBarState)
+                    setLoading("Connecting to livecast", apiState.progressBarState)
                 }
 
                 is ApiState.Alert -> {
-                    mState.value = mState.value.copy(alertState = apiState.alertState)
+                    //mState = mState.copy(alertState = apiState.alertState)
                 }
             }
         }.launchIn(viewModelScope)

@@ -32,6 +32,7 @@ import java.util.Locale
 
 import androidx.compose.ui.graphics.Color
 
+
 fun String.hexToColor(): Color {
     val hexColor = this.removePrefix("#")
     val colorLong = hexColor.toLong(16)
@@ -39,7 +40,6 @@ fun String.hexToColor(): Color {
     val colorWithAlpha = colorLong or alpha
     return Color(colorWithAlpha)
 }
-
 
 fun playVideo(shareableLink: String?) {
     shareableLink?.let {

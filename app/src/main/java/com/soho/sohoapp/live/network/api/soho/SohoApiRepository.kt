@@ -28,6 +28,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
     ): Flow<ApiState<LiveResponse>> =
         flow {
             try {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
                 val apiResponse = service.liveStream(
                     authToken = authToken,
