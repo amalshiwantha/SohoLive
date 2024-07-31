@@ -24,7 +24,7 @@
         android:theme="@style/Theme.SohoLive"
         tools:targetApi="31">
         <activity
-            android:name=".ui.view.activity.HaishinActivity"
+            android:name=".ui.view.activity.LiveStreamActivity"
             android:exported="true"
             android:theme="@style/Theme.Broadcast" >
             <intent-filter>

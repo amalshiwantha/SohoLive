@@ -22,7 +22,7 @@ import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.databinding.ActivityHaishinBinding
+import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import kotlinx.coroutines.Dispatchers
@@ -32,14 +32,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class HaishinActivity : AppCompatActivity() {
+class LiveStreamActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityHaishinBinding
+    private lateinit var binding: ActivityLiveStreamBinding
     private var watermark: ImageView? = null
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "387d87aa-0942-4f26-9ea5-75c9d8b06966"
+    private var streamKey: String = "cf46cfcb-7423-0252-9892-dcc46c15a297"
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
 
@@ -60,7 +60,7 @@ class HaishinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        binding = ActivityHaishinBinding.inflate(layoutInflater)
+        binding = ActivityLiveStreamBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.liveContent) { v, insets ->
@@ -163,6 +163,8 @@ class HaishinActivity : AppCompatActivity() {
     }
 
     private fun goLiveNow() {
+        //connect api
+
         updateGoLiveBtn(true)
         startBroadcast()
     }
@@ -216,7 +218,7 @@ class HaishinActivity : AppCompatActivity() {
     }
 
     private val fpsListenerCallback = FpsListener.Callback { fps ->
-        println("myStream fps : $fps")
+        //println("myStream fps : $fps")
     }
 
     private fun startBroadcast() {

@@ -44,7 +44,7 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
+import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 
 @Composable
@@ -132,7 +132,7 @@ fun GoLiveScreenActivity(uiState: UiState, context: Context) {
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
             Button(onClick = {
                 //homeVm.setMessage("Updated")
-                val intent = Intent(context, HaishinActivity::class.java)
+                val intent = Intent(context, LiveStreamActivity::class.java)
                 context.startActivity(intent)
             }) {
                 Text("Update Message")

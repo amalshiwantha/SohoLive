@@ -22,14 +22,13 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.network.response.DataGoLiveSubmit
-import com.soho.sohoapp.live.ui.view.activity.HaishinActivity
-import com.soho.sohoapp.live.ui.view.activity.HaishinActivity.Companion.KEY_STREAM
+import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity
+import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.File
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.Locale
@@ -132,7 +131,7 @@ fun showToast(msg: String) {
 
 
 fun openLiveCaster(apiRes: DataGoLiveSubmit) {
-    val intent = Intent(context, HaishinActivity::class.java).apply {
+    val intent = Intent(context, LiveStreamActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK
     }
     intent.putExtra(KEY_STREAM, apiRes.streamKey)

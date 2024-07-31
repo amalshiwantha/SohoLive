@@ -5,7 +5,7 @@
     android:id="@+id/live_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.view.activity.HaishinActivity">
+    tools:context=".ui.view.activity.LiveStreamActivity">
 
     <!--Camera view-->
     <com.pedro.library.view.OpenGlView
