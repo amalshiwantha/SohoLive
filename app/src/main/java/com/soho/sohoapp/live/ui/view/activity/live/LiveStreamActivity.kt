@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.view.activity
+package com.soho.sohoapp.live.ui.view.activity.live
 
 import android.Manifest
 import android.annotation.SuppressLint

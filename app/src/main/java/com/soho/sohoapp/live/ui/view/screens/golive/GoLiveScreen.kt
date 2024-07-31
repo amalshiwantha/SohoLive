@@ -134,11 +134,11 @@ import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity
-import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity.Companion.KEY_LIVE_STATUS
-import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity.Companion.KEY_STREAM
-import com.soho.sohoapp.live.ui.view.activity.MainActivity.Companion.maxSteps
-import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_LIVE_STATUS
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_STREAM
+import com.soho.sohoapp.live.ui.view.activity.main.MainActivity.Companion.maxSteps
+import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
 import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert

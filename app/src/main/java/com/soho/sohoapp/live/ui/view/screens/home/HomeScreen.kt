@@ -44,8 +44,8 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity
-import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity
+import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 
 @Composable
 fun HomeScreen(

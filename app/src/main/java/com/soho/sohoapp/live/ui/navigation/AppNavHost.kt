@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.soho.sohoapp.live.ui.view.activity.MainViewModel
+import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.forget_pw.ForgetPwScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeScreen
 import com.soho.sohoapp.live.ui.view.screens.pre_access.PreAccessScreen

@@ -1,6 +1,6 @@
 package com.soho.sohoapp.live.enums
 
-import com.soho.sohoapp.live.ui.view.activity.MainActivity.Companion.maxSteps
+import com.soho.sohoapp.live.ui.view.activity.main.MainActivity.Companion.maxSteps
 
 
 enum class StepInfo(

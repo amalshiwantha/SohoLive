@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.view.activity
+package com.soho.sohoapp.live.ui.view.activity.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

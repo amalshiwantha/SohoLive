@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.view.activity
+package com.soho.sohoapp.live.ui.view.activity.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
