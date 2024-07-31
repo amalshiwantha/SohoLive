@@ -15,6 +15,13 @@ import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+data class AlertData(
+    val isShow: Boolean = false,
+    val title: String? = null,
+    val message: String? = null,
+    val isFinish: Boolean = false,
+)
+
 @Serializable
 data class LiveCastStatus(val statusCode: Int = 0, val message: String? = null)
 

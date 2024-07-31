@@ -24,7 +24,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
-import com.soho.sohoapp.live.ui.view.activity.live.AlertData
+import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -36,7 +36,7 @@ import java.security.NoSuchAlgorithmException
 /*
 * Display alert box with ok and cancel buttons
 * */
-fun showAlertMessage(activity: Activity, alertState: AlertData, onClick: () -> Unit ) {
+fun showAlertMessage(activity: Activity, alertState: AlertData, onClick: () -> Unit) {
     val builder = AlertDialog.Builder(activity)
     builder
         .setTitle(alertState.title)

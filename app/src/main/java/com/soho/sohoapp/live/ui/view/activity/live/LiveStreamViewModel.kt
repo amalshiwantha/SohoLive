@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.ui.view.activity.live
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -12,13 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-
-data class AlertData(
-    val isShow: Boolean = false,
-    val title: String? = null,
-    val message: String? = null,
-    val isFinish: Boolean= false,
-)
 
 class LiveStreamViewModel(
     private val apiRepo: SohoApiRepository,
