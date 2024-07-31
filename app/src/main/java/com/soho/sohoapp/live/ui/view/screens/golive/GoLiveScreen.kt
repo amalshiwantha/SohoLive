@@ -96,6 +96,7 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -147,6 +148,7 @@ import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
@@ -228,11 +230,23 @@ fun GoLiveScreen(
     LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
 
+            val platformList = it.simulcastTargets.map { target ->
+                target.platform
+            }
+
+            val requestLive = LiveRequest(
+                platform = platformList,
+                streamKey = it.streamKey,
+                url = it.shareableLink,
+                liveStreamId = it.id
+            )
+            val jsonStr = Json.encodeToString(requestLive)
+
             if (isNowSelected) {
                 val intent = Intent(context, LiveStreamActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
-                intent.putExtra(KEY_STREAM, it.streamKey)
+                intent.putExtra(KEY_STREAM, jsonStr)
                 launcherLiveCast.launch(intent)
             } else {
                 isShowScheduleOkScreen = true

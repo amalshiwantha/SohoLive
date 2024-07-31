@@ -17,6 +17,7 @@ data class AlertData(
     val isShow: Boolean = false,
     val title: String? = null,
     val message: String? = null,
+    val isFinish: Boolean= false,
 )
 
 
@@ -39,22 +40,18 @@ class LiveStreamViewModel(
         _msAlert.value = AlertData()
     }
 
-    fun callLiveStreamApi(muxKey: String) {
-        viewModelScope.launch {
-
-            val request =
-                LiveRequest(
-                    platform = listOf("facebook"),
-                    streamKey = muxKey,
-                    url = "http://",
-                    liveStreamId = 12342
-                )
-
-            dataStore.userProfile.collect { profile ->
-                profile?.let {
-                    onAirLiveStream(it.authenticationToken, request)
+    fun callLiveStreamApi(liveReq: LiveRequest?) {
+        liveReq?.let { liveReqData ->
+            viewModelScope.launch {
+                dataStore.userProfile.collect { profile ->
+                    profile?.let {
+                        onAirLiveStream(it.authenticationToken, liveReqData)
+                    }
                 }
             }
+        } ?: run {
+            _msAlert.value =
+                AlertData(isShow = true, title = "Error", message = "Stream key is empty")
         }
     }
 

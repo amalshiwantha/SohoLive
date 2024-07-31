@@ -36,14 +36,14 @@ import java.security.NoSuchAlgorithmException
 /*
 * Display alert box with ok and cancel buttons
 * */
-fun showAlertMessage(activity: Activity, alertState: AlertData) {
+fun showAlertMessage(activity: Activity, alertState: AlertData, onClick: () -> Unit ) {
     val builder = AlertDialog.Builder(activity)
     builder
         .setTitle(alertState.title)
         .setMessage(alertState.message)
         .setCancelable(false)
         .setPositiveButton("OK") { dialog, id ->
-            dialog.dismiss()
+            onClick()
         }
     val dialog = builder.create()
     dialog.show()

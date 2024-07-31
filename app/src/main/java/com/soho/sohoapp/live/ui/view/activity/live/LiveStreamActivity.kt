@@ -28,6 +28,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.LiveCastStatus
+import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
@@ -42,14 +43,16 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LiveStreamActivity : AppCompatActivity() {
 
+    private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
+    private var streamKey: String = "1c1e2836-2e03-a263-ee49-00cc9cfa3bb4"
+
     private lateinit var binding: ActivityLiveStreamBinding
     private var watermark: ImageView? = null
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
-    private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "3a2a142c-ca1a-9f02-c230-a591e7d77300"
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
+    private lateinit var reqLive: LiveRequest
     private val viewModel: LiveStreamViewModel by viewModel()
     private var progDialog: AlertDialog? = null
 
@@ -83,6 +86,23 @@ class LiveStreamActivity : AppCompatActivity() {
         init()
         checkRequiredPermissions()
         mStateObserveable()
+        checkEssentialData()
+    }
+
+    private fun checkEssentialData() {
+        val jsonModel = intent.getStringExtra(KEY_STREAM)
+        jsonModel?.let {
+            reqLive = Json.decodeFromString<LiveRequest>(it)
+        } ?: run {
+            handleAlertState(
+                AlertData(
+                    isFinish = true,
+                    isShow = true,
+                    title = "Error",
+                    message = "Required valid stream data to start live cast"
+                )
+            )
+        }
     }
 
     // Observe state changes
@@ -112,7 +132,11 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun handleAlertState(alertState: AlertData) {
         if (alertState.isShow) {
             viewModel.resetStates()
-            showAlertMessage(this, alertState)
+            showAlertMessage(this, alertState, onClick = {
+                if (alertState.isFinish) {
+                    finish()
+                }
+            })
         }
     }
 
@@ -222,8 +246,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun goLiveNow() {
-        streamKey = streamKey.ifEmpty { intent.getStringExtra(KEY_STREAM) ?: "" }
-        viewModel.callLiveStreamApi(streamKey)
+        viewModel.callLiveStreamApi(reqLive)
     }
 
     private fun updateGoLiveBtn(isStart: Boolean) {
@@ -466,7 +489,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun showStreamKeyDialog() {
-        streamKey = streamKey.ifEmpty { intent.getStringExtra(KEY_STREAM) ?: "" }
+        streamKey = streamKey.ifEmpty { reqLive.streamKey }
 
         if (streamKey.isEmpty()) {
             val alertDialogBuilder = AlertDialog.Builder(this)
