@@ -2,6 +2,8 @@ package com.soho.sohoapp.live.ui.view.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -24,12 +26,15 @@ import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.StreamResolution
+import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 
 class LiveStreamActivity : AppCompatActivity() {
@@ -39,7 +44,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "cf46cfcb-7423-0252-9892-dcc46c15a297"
+    private var streamKey: String = "3a2a142c-ca1a-9f02-c230-a591e7d77300"
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
 
@@ -54,6 +59,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
     companion object {
         const val KEY_STREAM = "streamKey"
+        const val KEY_LIVE_STATUS = "liveStatus"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -273,11 +279,22 @@ class LiveStreamActivity : AppCompatActivity() {
         rtmpCamera2?.let {
             if (it.isStreaming) {
                 updateGoLiveBtn(false)
-                println("myStream stopBroadcast")
                 it.stopStream()
-                //showToast("Stopped Broadcast")
             }
         }
+
+        finishSendStatus()
+    }
+
+    private fun finishSendStatus() {
+        val status = LiveCastStatus(1, "LiveCast Ended")
+        val jsonString = Json.encodeToString(status)
+
+        val resultIntent = Intent().apply {
+            putExtra(KEY_LIVE_STATUS, jsonString)
+        }
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
     }
 
     private val connectCheckerRtmp = object : ConnectChecker {

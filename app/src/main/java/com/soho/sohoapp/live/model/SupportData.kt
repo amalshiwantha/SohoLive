@@ -16,6 +16,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class LiveCastStatus(val statusCode: Int, val message: String)
+
+@Serializable
 data class VideoAnalytics(
     val fb: Int = 0,
     val yt: Int = 0,

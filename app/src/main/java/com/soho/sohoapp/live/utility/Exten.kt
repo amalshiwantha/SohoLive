@@ -129,15 +129,6 @@ fun showToast(msg: String) {
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }
 
-
-fun openLiveCaster(apiRes: DataGoLiveSubmit) {
-    val intent = Intent(context, LiveStreamActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    }
-    intent.putExtra(KEY_STREAM, apiRes.streamKey)
-    context.startActivity(intent)
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun isPermissionsGranted(): Boolean {

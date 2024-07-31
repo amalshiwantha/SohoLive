@@ -1,7 +1,11 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.util.Size
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -80,6 +84,7 @@ import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.ScheduleDateTime
@@ -129,6 +134,9 @@ import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity
+import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity.Companion.KEY_LIVE_STATUS
+import com.soho.sohoapp.live.ui.view.activity.LiveStreamActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.activity.MainActivity.Companion.maxSteps
 import com.soho.sohoapp.live.ui.view.activity.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
@@ -137,9 +145,9 @@ import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NetworkUtils
-import com.soho.sohoapp.live.utility.openLiveCaster
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
+import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -179,7 +187,17 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
-
+    val launcherLiveCast = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { data ->
+                val json = data.getStringExtra(KEY_LIVE_STATUS)
+                val status = json?.let { Json.decodeFromString<LiveCastStatus>(it) }
+                println("LiveCast status $status")
+            }
+        }
+    }
 
     LaunchedEffect(stateRecentSM) {
         stateRecentSM.collect { list ->
@@ -196,7 +214,11 @@ fun GoLiveScreen(
         stateVm.goLiveResults?.let {
 
             if (isNowSelected) {
-                openLiveCaster(it)
+                val intent = Intent(context, LiveStreamActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                intent.putExtra(KEY_STREAM, it.streamKey)
+                launcherLiveCast.launch(intent)
             } else {
                 isShowScheduleOkScreen = true
             }
