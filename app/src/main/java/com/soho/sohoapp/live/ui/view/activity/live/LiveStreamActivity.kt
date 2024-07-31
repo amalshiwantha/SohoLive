@@ -30,6 +30,7 @@ import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.utility.TimerTextHelper
+import com.soho.sohoapp.live.utility.showProgressDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -50,7 +51,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
     private val viewModel: LiveStreamViewModel by viewModel()
-    //val mState = viewModel.mState.value
+    private var progDialog: AlertDialog? = null
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -81,7 +82,6 @@ class LiveStreamActivity : AppCompatActivity() {
 
         init()
         checkRequiredPermissions()
-
         mStateObserveable()
     }
 
@@ -98,11 +98,15 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun handleState(state: StateLive) {
         when (state.loadingState) {
             ProgressBarState.Loading -> {
-                println("mState showProg")
+                progDialog = showProgressDialog(this, "Connecting to livecast")
             }
 
             ProgressBarState.Idle -> {
-                println("mState hideProg")
+                showProgressDialog(
+                    activity = this,
+                    currentDialog = progDialog,
+                    isVisible = false
+                )
             }
         }
     }

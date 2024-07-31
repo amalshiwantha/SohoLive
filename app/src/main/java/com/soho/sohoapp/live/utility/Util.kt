@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.utility
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
@@ -11,7 +12,9 @@ import android.net.Uri
 import android.os.Environment
 import android.util.Base64
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -29,6 +32,37 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
+
+/*
+* show progress login view when api call or long time tasks
+* */
+fun showProgressDialog(
+    activity: Activity,
+    message: String? = null,
+    currentDialog: AlertDialog? = null,
+    isVisible: Boolean = true
+): AlertDialog? {
+    var dialog: AlertDialog? = currentDialog
+
+    if (isVisible) {
+        if (dialog == null || !dialog.isShowing) {
+            val builder = AlertDialog.Builder(activity)
+            val inflater = activity.layoutInflater
+            val dialogView = inflater.inflate(R.layout.dialog_progress, null)
+            builder.setView(dialogView)
+            builder.setCancelable(false)
+            dialog = builder.create()
+            dialog.show()
+        }
+
+        dialog.findViewById<TextView>(R.id.txt_msg)?.text = message
+    } else {
+        dialog?.dismiss()
+        dialog = null
+    }
+
+    return dialog
+}
 
 fun shareIntent(shareLink: String) {
     val shareIntent = Intent().apply {
