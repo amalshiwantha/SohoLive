@@ -31,7 +31,10 @@ class LiveStreamViewModel(
     private val _msAlert = MutableStateFlow(AlertData())
     val msAlert: StateFlow<AlertData> = _msAlert
 
-    fun resetStates(){
+    private val _msStartLiveSuccess = MutableStateFlow(false)
+    val msStartLiveSuccess: StateFlow<Boolean> = _msStartLiveSuccess
+
+    fun resetStates() {
         _msLoading.value = false
         _msAlert.value = AlertData()
     }
@@ -68,7 +71,7 @@ class LiveStreamViewModel(
                         //val responsePrivacy = result.data
 
                         if (isSuccess) {
-                            //mState = mState.copy(isSuccess = true)
+                            _msStartLiveSuccess.value = true
                         } else {
                             _msAlert.value =
                                 AlertData(isShow = true, title = "Error", message = errorMsg)

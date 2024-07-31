@@ -98,10 +98,19 @@ class LiveStreamActivity : AppCompatActivity() {
                 handleAlertState(it)
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.msStartLiveSuccess.collect {
+                if (it) {
+                    updateGoLiveBtn(true)
+                    startBroadcast()
+                }
+            }
+        }
     }
 
     private fun handleAlertState(alertState: AlertData) {
-        if(alertState.isShow){
+        if (alertState.isShow) {
             viewModel.resetStates()
             showAlertMessage(this, alertState)
         }
@@ -213,12 +222,8 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun goLiveNow() {
-        //connect api
         streamKey = streamKey.ifEmpty { intent.getStringExtra(KEY_STREAM) ?: "" }
         viewModel.callLiveStreamApi(streamKey)
-
-        /*updateGoLiveBtn(true)
-        startBroadcast()*/
     }
 
     private fun updateGoLiveBtn(isStart: Boolean) {
