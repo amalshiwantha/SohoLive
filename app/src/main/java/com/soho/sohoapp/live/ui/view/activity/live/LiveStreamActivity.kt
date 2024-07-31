@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LiveStreamActivity : AppCompatActivity() {
 
@@ -47,6 +47,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private var streamKey: String = "3a2a142c-ca1a-9f02-c230-a591e7d77300"
     private val PERMISSION_REQUEST_CODE = 101
     private lateinit var timerTextHelper: TimerTextHelper
+    private val viewModel: LiveStreamViewModel by viewModel()
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -77,6 +78,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
         init()
         checkRequiredPermissions()
+        viewModel.appInBackground()
     }
 
     private fun init() {
