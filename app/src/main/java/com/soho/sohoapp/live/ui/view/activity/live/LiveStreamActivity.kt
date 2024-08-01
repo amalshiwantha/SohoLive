@@ -240,10 +240,10 @@ class LiveStreamActivity : AppCompatActivity() {
             delay(1000)
 
             runOnUiThread {
-                binding.layoutCountdown.visibility = View.GONE
                 stopBroadcast()
 
                 //reset
+                binding.layoutCountdown.visibility = View.GONE
                 binding.txtCountdownMsg.text = getString(R.string.livecast_start)
                 binding.txtCountdown.visibility = View.VISIBLE
                 binding.imgBtnAbort.visibility = View.VISIBLE
