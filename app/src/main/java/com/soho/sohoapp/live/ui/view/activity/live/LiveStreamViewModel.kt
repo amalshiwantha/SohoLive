@@ -31,24 +31,9 @@ class LiveStreamViewModel(
     private val _msRollBackCast = MutableStateFlow(false)
     val msRollBackCast: StateFlow<Boolean> = _msRollBackCast
 
-    fun resetStates() {
-        _msLoading.value = false
-        _msAlert.value = AlertData()
-    }
-
-    fun rollbackLiveStream(reqLive: LiveRequest) {
-        viewModelScope.launch {
-            dataStore.userProfile.collect { profile ->
-                profile?.let {
-                    onRollBackLiveStream(it.authenticationToken, reqLive)
-                } ?: run {
-                    _msAlert.value =
-                        AlertData(isShow = true, title = "Error", message = "User not logged")
-                }
-            }
-        }
-    }
-
+    /*
+    * this will call end of the liveCast End button Pressed
+    * */
     fun completeLiveStream(streamId: Int) {
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
@@ -77,9 +62,8 @@ class LiveStreamViewModel(
                         if (isSuccess) {
                             _msEndCast.value = true
                         } else {
-                            _msEndCast.value = true
-                            /*_msAlert.value =
-                                AlertData(isShow = true, title = "Error", message = errorMsg)*/
+                            _msAlert.value =
+                                AlertData(isShow = true, title = "Error", message = errorMsg)
                         }
                     }
                 }
@@ -97,6 +81,22 @@ class LiveStreamViewModel(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    /*
+    * this api will call when close the live screen without start the streaming (cross & back button click)
+    * */
+    fun rollbackLiveStream(reqLive: LiveRequest) {
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    onRollBackLiveStream(it.authenticationToken, reqLive)
+                } ?: run {
+                    _msAlert.value =
+                        AlertData(isShow = true, title = "Error", message = "User not logged")
+                }
+            }
+        }
     }
 
     private fun onRollBackLiveStream(
@@ -138,4 +138,11 @@ class LiveStreamViewModel(
         }.launchIn(viewModelScope)
     }
 
+    /*
+    * reset fun call state
+    * */
+    fun resetStates() {
+        _msLoading.value = false
+        _msAlert.value = AlertData()
+    }
 }

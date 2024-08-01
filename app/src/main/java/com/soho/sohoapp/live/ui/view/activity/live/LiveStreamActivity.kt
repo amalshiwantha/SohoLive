@@ -97,7 +97,7 @@ class LiveStreamActivity : AppCompatActivity() {
             reqLive = Json.decodeFromString<LiveRequest>(it)
         } ?: run {
             //TODO this is for temp
-            val targetLive = LiveTarget()
+            /*val targetLive = LiveTarget()
             targetLive.apply {
                 platform = listOf("facebook")
                 accessToken = listOf("add23")
@@ -109,16 +109,16 @@ class LiveStreamActivity : AppCompatActivity() {
                 simulcastTargets = targetLive,
                 streamKey = streamKey,
                 liveStreamId = 731
-            )
+            )*/
             //TODO this is for temp end
-            /*handleAlertState(
+            handleAlertState(
                 AlertData(
                     isFinish = true,
                     isShow = true,
                     title = "Error",
                     message = "Required valid stream data to start live cast"
                 )
-            )*/
+            )
         }
     }
 
