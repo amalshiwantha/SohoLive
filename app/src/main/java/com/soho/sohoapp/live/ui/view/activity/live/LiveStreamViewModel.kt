@@ -39,6 +39,9 @@ class LiveStreamViewModel(
                 dataStore.userProfile.collect { profile ->
                     profile?.let {
                         onAirLiveStream(it.authenticationToken, liveReqData)
+                    } ?: run {
+                        _msAlert.value =
+                            AlertData(isShow = true, title = "Error", message = "User not logged")
                     }
                 }
             }
@@ -63,8 +66,10 @@ class LiveStreamViewModel(
                         if (isSuccess) {
                             _msStartLiveSuccess.value = true
                         } else {
-                            _msAlert.value =
-                                AlertData(isShow = true, title = "Error", message = errorMsg)
+                            //TODO this is for temp
+                            _msStartLiveSuccess.value = true
+                            /*_msAlert.value =
+                                AlertData(isShow = true, title = "Error", message = errorMsg)*/
                         }
                     }
                 }
