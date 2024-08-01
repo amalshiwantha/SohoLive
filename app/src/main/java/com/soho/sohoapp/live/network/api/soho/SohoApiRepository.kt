@@ -164,6 +164,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Data(data = apiResponse))
 
             } catch (e: Exception) {
+                e.printStackTrace()
                 e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
             } finally {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))

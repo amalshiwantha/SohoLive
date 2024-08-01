@@ -51,7 +51,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.VideoPrivacy
-import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.GlobleState
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.model.VideoAnalytics
 import com.soho.sohoapp.live.network.common.AlertState
@@ -87,13 +87,13 @@ import org.koin.compose.koinInject
 
 @Composable
 fun VideoLibraryScreen(
-    mLiveData: GoLiveSubmit,
+    mGState: GlobleState,
     navController: NavController,
     vmVidLib: VideoLibraryViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
 ) {
     val states = vmVidLib.mState.value
-    val sLiveData = mLiveData.videoLibResState.value
+    val sLiveData = mGState.videoLibResState.value
     var showAnalyticsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf<VideoItem?>(null) }
     var isShowAlert by remember { mutableStateOf(false) }
@@ -110,7 +110,7 @@ fun VideoLibraryScreen(
     //save api response in globally
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
-            mLiveData.apply {
+            mGState.apply {
                 videoLibResState.value = states.sApiResponse?.value
             }
         }
@@ -147,12 +147,12 @@ fun VideoLibraryScreen(
     }
 
     //display main content
-    Content(isShowProgress, states, mLiveData, onManageClick = { selectedItem = it })
+    Content(isShowProgress, states, mGState, onManageClick = { selectedItem = it })
 
     //open manage screen
     LaunchedEffect(selectedItem) {
         selectedItem?.let {
-            mLiveData.apply { videoItemState.value = it }
+            mGState.apply { videoItemState.value = it }
             navController.navigate(NavigationPath.VIDEO_MANAGE.name)
         }
     }
@@ -225,7 +225,7 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
 private fun Content(
     isShowProgress: Boolean,
     state: VideoLibraryState,
-    mLiveData: GoLiveSubmit,
+    mGState: GlobleState,
     onManageClick: (VideoItem) -> Unit
 ) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
@@ -245,7 +245,7 @@ private fun Content(
         if (isShowProgress) {
             CenterMessageProgress(message = state.loadingMessage)
         } else {
-            val dataList = mLiveData.videoLibResState.value?.assets?.filter {
+            val dataList = mGState.videoLibResState.value?.assets?.filter {
                 it.status == "ready"
             }
 

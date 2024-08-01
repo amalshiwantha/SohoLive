@@ -89,9 +89,7 @@ data class GoLiveSubmit(
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
-    var checkedPlatforms: MutableList<String> = mutableListOf(),
-    var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
-    var videoItemState: MutableState<VideoItem?> = mutableStateOf(null)
+    var checkedPlatforms: MutableList<String> = mutableListOf()
 ) {
     constructor() : this(
         purpose = null,
@@ -99,6 +97,12 @@ data class GoLiveSubmit(
         description = null
     )
 }
+
+@Serializable
+data class GlobleState(
+    var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
+    var videoItemState: MutableState<VideoItem?> = mutableStateOf(null)
+)
 
 @Serializable
 data class PlatformToken(

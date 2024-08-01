@@ -39,7 +39,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.VideoPrivacy
-import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.GlobleState
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -69,13 +69,13 @@ import org.koin.compose.koinInject
 
 @Composable
 fun VideoManageScreen(
-    mLiveData: GoLiveSubmit,
+    mGState: GlobleState,
     vmVidManage: VideoManageViewModel = koinInject(),
     navController: NavHostController,
 ) {
 
     val states = vmVidManage.mState.value
-    val itemData = mLiveData.videoItemState.value?.copy()
+    val itemData = mGState.videoItemState.value?.copy()
     var isShowProgress by remember { mutableStateOf(false) }
     var isShowAlert by remember { mutableStateOf(false) }
     var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
@@ -84,7 +84,7 @@ fun VideoManageScreen(
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
             showToast("Privacy updated")
-            mLiveData.videoItemState.value?.unlisted = states.updatedPrivacy.value
+            mGState.videoItemState.value?.unlisted = states.updatedPrivacy.value
             navController.popBackStack()
         }
     }
