@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.ui.view.activity.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
@@ -23,6 +24,9 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
 
     private val _stateRecentLoggedSM = MutableStateFlow(mutableListOf<String>())
     val stateRecentLoggedSM = _stateRecentLoggedSM.asStateFlow()
+
+    private val _stateOpenLiveCast = MutableStateFlow("")
+    val stateOpenLiveCast: StateFlow<String> = _stateOpenLiveCast.asStateFlow()
 
 
     //update LiveData
@@ -114,6 +118,16 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     fun resetSendEvent() {
         viewModelScope.launch {
             AppEventBus.sendEvent(AppEvent.SMProfile(SocialMediaProfile()))
+        }
+    }
+
+    fun openLiveCastScreen(jsonStr: String) {
+        _stateOpenLiveCast.value = jsonStr
+    }
+
+    fun updateLiveCastState(castEnd: CastEnd) {
+        viewModelScope.launch {
+            AppEventBus.sendEvent(AppEvent.LiveEndStatus(castEnd))
         }
     }
 }

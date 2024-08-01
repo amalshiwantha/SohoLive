@@ -1,11 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.util.Size
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -85,7 +81,6 @@ import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
-import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.ScheduleDateTime
@@ -137,9 +132,6 @@ import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity
-import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_LIVE_STATUS
-import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.activity.main.MainActivity.Companion.maxSteps
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
@@ -189,40 +181,34 @@ fun GoLiveScreen(
     var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
     val eventState =
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
+    val eventStateLiveEnd =
+        AppEventBus.events.collectAsState(initial = AppEvent.LiveEndStatus(CastEnd.NONE))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
-    var liveCastStatus by remember { mutableStateOf(LiveCastStatus()) }
-    val launcherLiveCast = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { data ->
-                val json = data.getStringExtra(KEY_LIVE_STATUS)
-                val status = json?.let { Json.decodeFromString<LiveCastStatus>(it) }
-                status?.let {
-                    liveCastStatus = it
 
-                    when(status.castEnd){
-                        CastEnd.CANCEL -> {}
-                        CastEnd.COMPLETE -> {
-                            //Reset steps flow
-                            currentStepId = 0
-                            resetSteps(currentStepId, mGoLiveSubmit, assetsState)
-                        }
-                        CastEnd.NONE -> {}
-                    }
-                }
-                println("LiveCast status $status")
-            }
-        }
-    }
 
     /*
-    * show live cast end screen
+    * check liveCast how to end, if completed then clean all of savedData or else keepIt as
     * */
-    LaunchedEffect(liveCastStatus.statusCode) {
-        if (liveCastStatus.statusCode != 0) {
-            navController.navigate(NavigationPath.LIVE_CAST_END.name)
+    LaunchedEffect(eventStateLiveEnd.value) {
+
+        val liveEndStatus = when (val event = eventStateLiveEnd.value) {
+            is AppEvent.LiveEndStatus -> event
+            else -> {}
+        }
+
+        when (liveEndStatus) {
+            CastEnd.CANCEL -> {}
+            CastEnd.COMPLETE -> {
+                //Reset steps flow
+                currentStepId = 0
+                resetSteps(currentStepId, mGoLiveSubmit, assetsState)
+
+                //Open end screen
+                navController.navigate(NavigationPath.LIVE_CAST_END.name)
+            }
+
+            CastEnd.NONE -> {}
         }
     }
 
@@ -232,7 +218,6 @@ fun GoLiveScreen(
     LaunchedEffect(stateRecentSM) {
         stateRecentSM.collect { list ->
             recentLoggedSM = list
-            println("RecentSM list: $list")
         }
     }
 
@@ -259,11 +244,7 @@ fun GoLiveScreen(
             val jsonStr = Json.encodeToString(requestLive)
 
             if (isNowSelected) {
-                val intent = Intent(context, LiveStreamActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                intent.putExtra(KEY_STREAM, jsonStr)
-                launcherLiveCast.launch(intent)
+                viewMMain.openLiveCastScreen(jsonStr)
             } else {
                 isShowScheduleOkScreen = true
             }

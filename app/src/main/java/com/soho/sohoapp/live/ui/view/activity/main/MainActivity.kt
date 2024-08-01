@@ -1,9 +1,11 @@
 package com.soho.sohoapp.live.ui.view.activity.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -60,9 +62,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
+import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -84,6 +88,9 @@ import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_LIVE_STATUS
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.screens.golive.DoConnectFacebook
 import com.soho.sohoapp.live.ui.view.screens.golive.doConnectGoogle
 import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
@@ -99,13 +106,28 @@ import com.ssw.linkedinmanager.ui.LinkedInRequestManager
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
+import kotlinx.serialization.json.Json
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     companion object {
         var maxSteps = 4
+    }
+    private val viewMMain: MainViewModel by viewModel()
+
+    private val liveCastLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            val strData = data?.getStringExtra(KEY_LIVE_STATUS)
+            val status = strData?.let { Json.decodeFromString<LiveCastStatus>(it) }
+            status?.let {
+                viewMMain.updateLiveCastState(it.castEnd)
+            }
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -120,8 +142,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
 
-                    val viewMMain: MainViewModel = koinInject()
+                    //val viewMMain: MainViewModel = koinInject()
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
+                    val msOpenLiveCaster by viewMMain.stateOpenLiveCast.collectAsState()
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
                     val stateSMConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
@@ -129,6 +152,15 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
+
+                    /*
+                    * open liveCast screen
+                    * */
+                    LaunchedEffect(msOpenLiveCaster) {
+                        if (msOpenLiveCaster.isNotEmpty()) {
+                            openLiveScreen(msOpenLiveCaster)
+                        }
+                    }
 
                     /*
                     * open SM connect button bottomSheet and
@@ -240,6 +272,12 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
             }
         }
+    }
+
+    private fun openLiveScreen(msOpenLiveCaster: String) {
+        val intent = Intent(this, LiveStreamActivity::class.java)
+        intent.putExtra(KEY_STREAM, msOpenLiveCaster)
+        liveCastLauncher.launch(intent)
     }
 
     @Composable
@@ -510,7 +548,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     ButtonOutlineWhite(text = "Disconnect",
-                        modifier = Modifier.weight(1f).fillMaxWidth(), onBtnClick = { onDisconnect() })
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        onBtnClick = { onDisconnect() })
                     SpacerHorizontal(size = 8.dp)
                     ButtonColoured(
                         text = "Done",
