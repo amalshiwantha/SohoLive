@@ -26,6 +26,7 @@
         <activity
             android:name=".ui.view.activity.live.LiveStreamActivity"
             android:exported="true"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Broadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

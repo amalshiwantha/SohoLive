@@ -56,6 +56,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private lateinit var reqLive: LiveRequest
     private val viewModel: LiveStreamViewModel by viewModel()
     private var progDialog: AlertDialog? = null
+    private var countBitrateError = 0
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -238,23 +239,22 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun callLiveEndApi() {
-        GlobalScope.launch {
-            delay(1000)
-            withContext(Dispatchers.Main) {
-                binding.layoutCountdown.visibility = View.GONE
-                stopBroadcast()
+        binding.layoutCountdown.visibility = View.GONE
+        stopBroadcast()
 
-                //reset
-                binding.txtCountdownMsg.text = getString(R.string.livecast_start)
-                binding.txtCountdown.visibility = View.VISIBLE
-                binding.imgBtnAbort.visibility = View.VISIBLE
-                binding.imgDoneTick.visibility = View.GONE
-            }
-        }
+        //reset
+        binding.txtCountdownMsg.text = getString(R.string.livecast_start)
+        binding.txtCountdown.visibility = View.VISIBLE
+        binding.imgBtnAbort.visibility = View.VISIBLE
+        binding.imgDoneTick.visibility = View.GONE
+
+        //call endApi
+        viewModel.callLiveStreamApi(reqLive)
     }
 
     private fun goLiveNow() {
-        viewModel.callLiveStreamApi(reqLive)
+        updateGoLiveBtn(true)
+        startBroadcast()
     }
 
     private fun updateGoLiveBtn(isStart: Boolean) {
@@ -365,7 +365,7 @@ class LiveStreamActivity : AppCompatActivity() {
             }
         }
 
-        finishSendStatus()
+        //finishSendStatus()
     }
 
     private fun finishSendStatus() {
@@ -391,7 +391,6 @@ class LiveStreamActivity : AppCompatActivity() {
         override fun onConnectionFailed(reason: String) {
             println("myStream onConnectionFailed $reason")
             stopBroadcast()
-            finish()
         }
 
         override fun onConnectionStarted(url: String) {
@@ -409,6 +408,16 @@ class LiveStreamActivity : AppCompatActivity() {
 
         override fun onNewBitrate(bitrate: Long) {
             println("myStream onNewBitrate $bitrate")
+
+            //if onNewBitrate  = 0 take longer then stop lve cast and reconnect
+            if (bitrate == 0L) {
+                countBitrateError++
+
+                if (countBitrateError == 5) {
+                    countBitrateError = 0
+                    //stop liveCast and reconnect
+                }
+            }
         }
     }
 
