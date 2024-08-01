@@ -33,6 +33,8 @@ import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -234,17 +236,23 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun callLiveEndApi() {
-        binding.layoutCountdown.visibility = View.GONE
-        stopBroadcast()
+        GlobalScope.launch {
+            delay(1000)
 
-        //reset
-        binding.txtCountdownMsg.text = getString(R.string.livecast_start)
-        binding.txtCountdown.visibility = View.VISIBLE
-        binding.imgBtnAbort.visibility = View.VISIBLE
-        binding.imgDoneTick.visibility = View.GONE
+            runOnUiThread {
+                binding.layoutCountdown.visibility = View.GONE
+                stopBroadcast()
 
-        //call endApi
-        viewModel.completeLiveStream(reqLive.liveStreamId)
+                //reset
+                binding.txtCountdownMsg.text = getString(R.string.livecast_start)
+                binding.txtCountdown.visibility = View.VISIBLE
+                binding.imgBtnAbort.visibility = View.VISIBLE
+                binding.imgDoneTick.visibility = View.GONE
+
+                //call endApi
+                viewModel.completeLiveStream(reqLive.liveStreamId)
+            }
+        }
     }
 
     private fun goLiveNow() {
