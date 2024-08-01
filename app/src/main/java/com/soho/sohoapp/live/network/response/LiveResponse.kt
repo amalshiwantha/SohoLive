@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LiveRequest(
-    @SerialName("simulcast_targets") val simulcastTargets: LiveTarget,
+    @SerialName("simulcast_targets") val simulcastTargets: List<SimulcastTarget>,
     val streamKey: String,
     val liveStreamId: String,
 )
