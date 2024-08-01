@@ -76,6 +76,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
@@ -200,6 +201,16 @@ fun GoLiveScreen(
                 val status = json?.let { Json.decodeFromString<LiveCastStatus>(it) }
                 status?.let {
                     liveCastStatus = it
+
+                    when(status.castEnd){
+                        CastEnd.CANCEL -> {}
+                        CastEnd.COMPLETE -> {
+                            //Reset steps flow
+                            currentStepId = 0
+                            resetSteps(currentStepId, mGoLiveSubmit, assetsState)
+                        }
+                        CastEnd.NONE -> {}
+                    }
                 }
                 println("LiveCast status $status")
             }
@@ -256,10 +267,6 @@ fun GoLiveScreen(
             } else {
                 isShowScheduleOkScreen = true
             }
-
-            //Reset steps flow
-            currentStepId = 0
-            resetSteps(currentStepId, mGoLiveSubmit, assetsState)
         }
     }
 

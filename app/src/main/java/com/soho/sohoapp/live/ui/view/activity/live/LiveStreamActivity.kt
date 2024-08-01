@@ -31,7 +31,6 @@ import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
-import com.soho.sohoapp.live.network.response.LiveTarget
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
@@ -57,6 +56,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private val viewModel: LiveStreamViewModel by viewModel()
     private var progDialog: AlertDialog? = null
     private var countBitrateError = 0
+    private var isDidLiveCast = false
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -147,7 +147,7 @@ class LiveStreamActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.msRollBackCast.collect {
                 if (it) {
-                    finishSendStatus(CastEnd.CANCEL)
+                    finishSendStatus(if (isDidLiveCast) CastEnd.COMPLETE else CastEnd.CANCEL)
                 }
             }
         }
@@ -385,6 +385,12 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun stopBroadcast() {
+        /*
+        * isDidLiveCast if sometimes completeApi will fail. so the screen will not close automatically
+        * so when go back want to identify is it actually the liveCast done or not
+        * */
+        isDidLiveCast = true
+
         showLiveTime(false)
 
         rtmpCamera2?.let {
