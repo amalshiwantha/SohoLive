@@ -11,7 +11,6 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
-import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
@@ -22,17 +21,17 @@ import kotlinx.coroutines.flow.flow
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
-    fun onAirLiveCast(
+    fun onEndLiveCast(
         authToken: String,
-        liveReq: LiveRequest
+        streamId: Int
     ): Flow<ApiState<LiveResponse>> =
         flow {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
-                val apiResponse = service.liveStream(
+                val apiResponse = service.endStream(
                     authToken = authToken,
-                    liveReq = liveReq
+                    streamId = streamId
                 )
                 emit(ApiState.Data(data = apiResponse))
 

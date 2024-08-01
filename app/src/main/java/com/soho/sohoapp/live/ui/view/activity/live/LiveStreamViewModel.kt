@@ -7,7 +7,6 @@ import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
-import com.soho.sohoapp.live.network.response.LiveRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -25,34 +24,29 @@ class LiveStreamViewModel(
     private val _msAlert = MutableStateFlow(AlertData())
     val msAlert: StateFlow<AlertData> = _msAlert
 
-    private val _msStartLiveSuccess = MutableStateFlow(false)
-    val msStartLiveSuccess: StateFlow<Boolean> = _msStartLiveSuccess
+    private val _msEndCast = MutableStateFlow(false)
+    val msEndCast: StateFlow<Boolean> = _msEndCast
 
     fun resetStates() {
         _msLoading.value = false
         _msAlert.value = AlertData()
     }
 
-    fun callLiveStreamApi(liveReq: LiveRequest?) {
-        liveReq?.let { liveReqData ->
-            viewModelScope.launch {
-                dataStore.userProfile.collect { profile ->
-                    profile?.let {
-                        onAirLiveStream(it.authenticationToken, liveReqData)
-                    } ?: run {
-                        _msAlert.value =
-                            AlertData(isShow = true, title = "Error", message = "User not logged")
-                    }
+    fun completeLiveStream(streamId: Int) {
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    onEndLiveStream(it.authenticationToken, streamId)
+                } ?: run {
+                    _msAlert.value =
+                        AlertData(isShow = true, title = "Error", message = "User not logged")
                 }
             }
-        } ?: run {
-            _msAlert.value =
-                AlertData(isShow = true, title = "Error", message = "Stream key is empty")
         }
     }
 
-    private fun onAirLiveStream(authToken: String, liveReq: LiveRequest) {
-        apiRepo.onAirLiveCast(authToken, liveReq).onEach { apiState ->
+    private fun onEndLiveStream(authToken: String, streamId: Int) {
+        apiRepo.onEndLiveCast(authToken, streamId).onEach { apiState ->
 
             when (apiState) {
 
@@ -64,10 +58,9 @@ class LiveStreamViewModel(
                         //val responsePrivacy = result.data
 
                         if (isSuccess) {
-                            _msStartLiveSuccess.value = true
+                            _msEndCast.value = true
                         } else {
-                            //TODO this is for temp
-                            _msStartLiveSuccess.value = true
+                            _msEndCast.value = true
                             /*_msAlert.value =
                                 AlertData(isShow = true, title = "Error", message = errorMsg)*/
                         }

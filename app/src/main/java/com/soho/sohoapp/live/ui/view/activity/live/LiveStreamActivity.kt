@@ -33,11 +33,7 @@ import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -45,7 +41,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LiveStreamActivity : AppCompatActivity() {
 
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "5e953961-cf66-a9a1-d23b-24928a2a52f0"
+    private var streamKey: String = "c316d217-e658-c17f-bb82-972cf7e1fea7"
 
     private lateinit var binding: ActivityLiveStreamBinding
     private var watermark: ImageView? = null
@@ -129,10 +125,9 @@ class LiveStreamActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.msStartLiveSuccess.collect {
+            viewModel.msEndCast.collect {
                 if (it) {
-                    updateGoLiveBtn(true)
-                    startBroadcast()
+                    finishSendStatus()
                 }
             }
         }
@@ -152,7 +147,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun handleLoadingState(progState: Boolean) {
         when (progState) {
             true -> {
-                progDialog = showProgressDialog(this, "Connecting to livecast")
+                progDialog = showProgressDialog(this, "Completing livecast")
             }
 
             false -> {
@@ -249,7 +244,7 @@ class LiveStreamActivity : AppCompatActivity() {
         binding.imgDoneTick.visibility = View.GONE
 
         //call endApi
-        viewModel.callLiveStreamApi(reqLive)
+        viewModel.completeLiveStream(reqLive.liveStreamId)
     }
 
     private fun goLiveNow() {
@@ -270,6 +265,11 @@ class LiveStreamActivity : AppCompatActivity() {
                 stopBroadcast()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        //TODO call rallback apicall
     }
 
     override fun onDestroy() {
@@ -364,8 +364,6 @@ class LiveStreamActivity : AppCompatActivity() {
                 it.stopStream()
             }
         }
-
-        //finishSendStatus()
     }
 
     private fun finishSendStatus() {
