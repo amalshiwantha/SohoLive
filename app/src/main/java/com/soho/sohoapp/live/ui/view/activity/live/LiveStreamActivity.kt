@@ -45,7 +45,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LiveStreamActivity : AppCompatActivity() {
 
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "e269fcb7-7bfa-a47c-de87-3a9d2f8c9081"
+    private var streamKey: String = "5e953961-cf66-a9a1-d23b-24928a2a52f0"
 
     private lateinit var binding: ActivityLiveStreamBinding
     private var watermark: ImageView? = null
@@ -98,7 +98,7 @@ class LiveStreamActivity : AppCompatActivity() {
             //TODO this is for temp
             reqLive = LiveRequest(
                 platform = listOf("facebook"),
-                streamKey = "e269fcb7-7bfa-a47c-de87-3a9d2f8c9081",
+                streamKey = streamKey,
                 url = "https://facebook.com/7734770983310518/videos/1008131113921907",
                 liveStreamId = 731
             )
