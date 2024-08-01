@@ -23,14 +23,19 @@ data class DataGoLiveSubmit(
     @SerialName("unlisted") val unlisted: Boolean,
     @SerialName("agent_profile_id") val agentProfileId: Int,
     @SerialName("shareable_link") val shareableLink: String,
-    @SerialName("simulcast_targets") val simulcastTargets: List<SimulcastTarget>
+    @SerialName("simulcast_targets") val simulcastTargets: List<SimulcastTarget>,
+    @SerialName("mux_status") val muxStatus: String,
+    @SerialName("soho_link") val sohoLink: String,
+    @SerialName("thumbnail_url") val thumbnailUrl: String? = null,
+    @SerialName("playback_id") val playbackId: String,
 )
 
 @Serializable
 data class SimulcastTarget(
     @SerialName("platform") val platform: String,
     @SerialName("feed_id") val feedId: String,
-    @SerialName("shareable_link") val shareableLink: String
+    @SerialName("shareable_link") val shareableLink: String,
+    @SerialName("shareable_post") val shareablePost: String? = null
 )
 
 @Serializable

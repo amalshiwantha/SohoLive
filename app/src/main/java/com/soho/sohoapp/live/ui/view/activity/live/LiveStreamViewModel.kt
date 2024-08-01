@@ -8,6 +8,7 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.LiveRequest
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -119,6 +120,10 @@ class LiveStreamViewModel(
                         } else {
                             _msAlert.value =
                                 AlertData(isShow = true, title = "Error", message = errorMsg)
+
+                            //todo this is for temp
+                            _msRollBackCast.value = true
+                            //todo this is for temp end
                         }
                     }
                 }
