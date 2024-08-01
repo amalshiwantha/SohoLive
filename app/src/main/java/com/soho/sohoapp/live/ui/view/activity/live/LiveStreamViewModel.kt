@@ -34,7 +34,7 @@ class LiveStreamViewModel(
     /*
     * this will call end of the liveCast End button Pressed
     * */
-    fun completeLiveStream(streamId: Int) {
+    fun completeLiveStream(streamId: String) {
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let {
@@ -47,7 +47,7 @@ class LiveStreamViewModel(
         }
     }
 
-    private fun onEndLiveStream(authToken: String, streamId: Int) {
+    private fun onEndLiveStream(authToken: String, streamId: String) {
         apiRepo.onEndLiveCast(authToken, streamId).onEach { apiState ->
 
             when (apiState) {

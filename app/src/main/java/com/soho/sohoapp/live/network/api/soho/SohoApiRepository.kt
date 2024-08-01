@@ -46,7 +46,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
 
     fun onEndLiveCast(
         authToken: String,
-        streamId: Int
+        streamId: String
     ): Flow<ApiState<LiveResponse>> =
         flow {
             try {

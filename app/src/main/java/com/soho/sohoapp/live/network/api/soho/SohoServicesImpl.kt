@@ -134,13 +134,13 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         }.body()
     }
 
-    override suspend fun endStream(authToken: String, streamId: Int): LiveResponse {
+    override suspend fun endStream(authToken: String, streamId: String): LiveResponse {
         return httpClient.put {
             url {
                 takeFrom(BASE_URL)
                 encodedPath += SohoApiServices.END_STREAM.replace(
                     "{live_stream_id}",
-                    streamId.toString()
+                    streamId
                 )
             }
             contentType(ContentType.Application.Json)

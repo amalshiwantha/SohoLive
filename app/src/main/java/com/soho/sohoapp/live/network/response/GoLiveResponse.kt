@@ -12,7 +12,7 @@ data class GoLiveSubmitResponse(
 
 @Serializable
 data class DataGoLiveSubmit(
-    @SerialName("id") val id: Int,
+    @SerialName("id") val id: String,
     @SerialName("property_listing_id") val propertyListingId: Int,
     @SerialName("live_stream_at") val liveStreamAt: String?,
     @SerialName("stream_type") val streamType: String,
