@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -23,7 +24,7 @@ data class AlertData(
 )
 
 @Serializable
-data class LiveCastStatus(val statusCode: Int = 0, val message: String? = null)
+data class LiveCastStatus(val statusCode: Int = 0, val castEnd: CastEnd = CastEnd.NONE)
 
 @Serializable
 data class VideoAnalytics(

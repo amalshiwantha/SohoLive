@@ -26,10 +26,12 @@ import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
+import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.network.response.LiveTarget
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
@@ -95,12 +97,20 @@ class LiveStreamActivity : AppCompatActivity() {
             reqLive = Json.decodeFromString<LiveRequest>(it)
         } ?: run {
             //TODO this is for temp
+            val targetLive = LiveTarget()
+            targetLive.apply {
+                platform = listOf("facebook")
+                accessToken = listOf("add23")
+                targetFeedId = listOf("me", "facebook")
+                privacy = listOf("p1", "p2")
+            }
+
             reqLive = LiveRequest(
-                platform = listOf("facebook"),
+                simulcastTargets = targetLive,
                 streamKey = streamKey,
-                url = "https://facebook.com/7734770983310518/videos/1008131113921907",
                 liveStreamId = 731
             )
+            //TODO this is for temp end
             /*handleAlertState(
                 AlertData(
                     isFinish = true,
@@ -129,7 +139,15 @@ class LiveStreamActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.msEndCast.collect {
                 if (it) {
-                    finishSendStatus()
+                    finishSendStatus(CastEnd.COMPLETE)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.msRollBackCast.collect {
+                if (it) {
+                    finishSendStatus(CastEnd.CANCEL)
                 }
             }
         }
@@ -188,7 +206,7 @@ class LiveStreamActivity : AppCompatActivity() {
         }
 
         binding.imgBtnClose.setOnClickListener {
-            finish()
+            callRollbackApi()
         }
 
         createRtmpCamera2()
@@ -255,6 +273,10 @@ class LiveStreamActivity : AppCompatActivity() {
         }
     }
 
+    private fun callRollbackApi() {
+        viewModel.rollbackLiveStream(reqLive)
+    }
+
     private fun goLiveNow() {
         updateGoLiveBtn(true)
         startBroadcast()
@@ -276,8 +298,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        //TODO call rallback apicall
+        callRollbackApi()
     }
 
     override fun onDestroy() {
@@ -374,8 +395,8 @@ class LiveStreamActivity : AppCompatActivity() {
         }
     }
 
-    private fun finishSendStatus() {
-        val status = LiveCastStatus(1, "LiveCast Ended")
+    private fun finishSendStatus(castEnd: CastEnd) {
+        val status = LiveCastStatus(1, castEnd)
         val jsonString = Json.encodeToString(status)
 
         val resultIntent = Intent().apply {

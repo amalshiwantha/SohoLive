@@ -97,6 +97,7 @@ import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.network.response.LiveTarget
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -234,10 +235,14 @@ fun GoLiveScreen(
                 target.platform
             }
 
+            val targetLive = LiveTarget()
+            targetLive.apply {
+                platform = platformList
+            }
+
             val requestLive = LiveRequest(
-                platform = platformList,
+                simulcastTargets = targetLive,
                 streamKey = it.streamKey,
-                url = it.shareableLink,
                 liveStreamId = it.id
             )
             val jsonStr = Json.encodeToString(requestLive)

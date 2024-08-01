@@ -5,10 +5,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LiveRequest(
-    @SerialName("platform") val platform: List<String>,
-    @SerialName("url") val url: String,
-    @SerialName("stream_key") val streamKey: String,
-    @SerialName("live_stream_id") val liveStreamId: Int,
+    @SerialName("simulcast_targets") val simulcastTargets: LiveTarget,
+    val streamKey: String,
+    val liveStreamId: Int,
+)
+
+@Serializable
+data class LiveTarget(
+    @SerialName("platform") var platform: List<String> = mutableListOf(),
+    @SerialName("access_token") var accessToken: List<String> = mutableListOf(),
+    @SerialName("target_feed_id") var targetFeedId: List<String> = mutableListOf(),
+    @SerialName("privacy") var privacy: List<String> = mutableListOf()
 )
 
 @Serializable

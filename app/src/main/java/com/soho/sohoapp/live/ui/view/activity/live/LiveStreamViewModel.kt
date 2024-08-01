@@ -7,6 +7,7 @@ import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.network.response.LiveRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -27,9 +28,25 @@ class LiveStreamViewModel(
     private val _msEndCast = MutableStateFlow(false)
     val msEndCast: StateFlow<Boolean> = _msEndCast
 
+    private val _msRollBackCast = MutableStateFlow(false)
+    val msRollBackCast: StateFlow<Boolean> = _msRollBackCast
+
     fun resetStates() {
         _msLoading.value = false
         _msAlert.value = AlertData()
+    }
+
+    fun rollbackLiveStream(reqLive: LiveRequest) {
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    onRollBackLiveStream(it.authenticationToken, reqLive)
+                } ?: run {
+                    _msAlert.value =
+                        AlertData(isShow = true, title = "Error", message = "User not logged")
+                }
+            }
+        }
     }
 
     fun completeLiveStream(streamId: Int) {
@@ -76,6 +93,45 @@ class LiveStreamViewModel(
                         isShow = true,
                         title = "Problem",
                         message = "Something went wrong, Please try again."
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun onRollBackLiveStream(
+        authToken: String,
+        liveReq: LiveRequest
+    ) {
+        apiRepo.onRollBackLiveCast(authToken, liveReq).onEach { apiState ->
+
+            when (apiState) {
+
+                is ApiState.Data -> {
+                    apiState.data?.let { result ->
+
+                        val isSuccess = !result.responseType.equals("error")
+                        val errorMsg = result.response
+                        //val responsePrivacy = result.data
+
+                        if (isSuccess) {
+                            _msRollBackCast.value = true
+                        } else {
+                            _msAlert.value =
+                                AlertData(isShow = true, title = "Error", message = errorMsg)
+                        }
+                    }
+                }
+
+                is ApiState.Loading -> {
+                    _msLoading.value = apiState.progressBarState == ProgressBarState.Loading
+                }
+
+                is ApiState.Alert -> {
+                    _msAlert.value = AlertData(
+                        isShow = true,
+                        title = "Problem",
+                        message = "Something went wrong on live cast cancel, Please try again."
                     )
                 }
             }

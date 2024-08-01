@@ -7,6 +7,7 @@ import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
+import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
@@ -25,6 +26,7 @@ interface SohoApiServices {
         const val VIDEO_LIBRARY = "asset"
         const val VIDEO_PRIVACY_UPDATE = "asset/{propertyId}"
         const val END_STREAM = "live_stream/{live_stream_id}/complete"
+        const val ROLLBACK_STREAM = "live_stream/{live_stream_id}"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
@@ -44,4 +46,5 @@ interface SohoApiServices {
     ): VidPrivacyResponse
 
     suspend fun endStream(authToken: String, streamId: Int): LiveResponse
+    suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
 }
