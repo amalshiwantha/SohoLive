@@ -44,7 +44,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LiveStreamActivity : AppCompatActivity() {
 
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "c316d217-e658-c17f-bb82-972cf7e1fea7"
+    private var streamKey: String = "0513e709-ec52-dd52-6485-e461f01e7ef5"
 
     private lateinit var binding: ActivityLiveStreamBinding
     private var watermark: ImageView? = null
@@ -92,25 +92,14 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun checkEssentialData() {
+        val strKey = streamKey
         val jsonModel = intent.getStringExtra(KEY_STREAM)
         jsonModel?.let {
             reqLive = Json.decodeFromString<LiveRequest>(it)
-        } ?: run {
-            //TODO this is for temp
-            /*val targetLive = LiveTarget()
-            targetLive.apply {
-                platform = listOf("facebook")
-                accessToken = listOf("add23")
-                targetFeedId = listOf("me", "facebook")
-                privacy = listOf("p1", "p2")
+            reqLive.apply {
+                this.streamKey = strKey
             }
-
-            reqLive = LiveRequest(
-                simulcastTargets = targetLive,
-                streamKey = streamKey,
-                liveStreamId = 731
-            )*/
-            //TODO this is for temp end
+        } ?: run {
             handleAlertState(
                 AlertData(
                     isFinish = true,
@@ -299,6 +288,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         callRollbackApi()
+        //super.onBackPressed()
     }
 
     override fun onDestroy() {
@@ -354,7 +344,8 @@ class LiveStreamActivity : AppCompatActivity() {
                         ) {
                             //showToast("Started Broadcast")
                             println("myStream startBroadcast")
-                            it.startStream(rtmpEndpoint + streamKey)
+                            val finalKey = "0513e709-ec52-dd52-6485-e461f01e7ef5"
+                            it.startStream(rtmpEndpoint + finalKey)
                             showLiveTime(true)
                         } else {
                             //showToast("Broadcast Error")

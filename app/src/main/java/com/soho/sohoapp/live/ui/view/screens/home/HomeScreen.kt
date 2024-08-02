@@ -112,6 +112,7 @@ fun isBottomBarVisible(backStack: NavBackStackEntry?): Boolean {
             NavigationPath.GO_LIVE_SUCCESS.name -> return false
             NavigationPath.SET_SCHEDULE.name -> return false
             NavigationPath.VIDEO_MANAGE.name -> return false
+            NavigationPath.LIVE_CAST_END.name -> return false
             else -> return true
         }
     } ?: run {

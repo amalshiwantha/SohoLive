@@ -191,24 +191,15 @@ fun GoLiveScreen(
     * check liveCast how to end, if completed then clean all of savedData or else keepIt as
     * */
     LaunchedEffect(eventStateLiveEnd.value) {
+        val str = eventStateLiveEnd.value.toString()
 
-        val liveEndStatus = when (val event = eventStateLiveEnd.value) {
-            is AppEvent.LiveEndStatus -> event
-            else -> {}
-        }
+        if (str == "LiveEndStatus(castEnd=COMPLETE)") {
+            //Reset steps flow
+            currentStepId = 0
+            resetSteps(currentStepId, mGoLiveSubmit, assetsState)
 
-        when (liveEndStatus) {
-            CastEnd.CANCEL -> {}
-            CastEnd.COMPLETE -> {
-                //Reset steps flow
-                currentStepId = 0
-                resetSteps(currentStepId, mGoLiveSubmit, assetsState)
-
-                //Open end screen
-                navController.navigate(NavigationPath.LIVE_CAST_END.name)
-            }
-
-            CastEnd.NONE -> {}
+            //Open end screen
+            navController.navigate(NavigationPath.LIVE_CAST_END.name)
         }
     }
 
