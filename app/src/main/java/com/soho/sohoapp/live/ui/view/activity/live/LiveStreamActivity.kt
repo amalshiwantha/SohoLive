@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.SurfaceHolder
@@ -20,6 +21,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.pedro.common.ConnectChecker
+import com.pedro.encoder.input.gl.render.filters.`object`.ImageObjectFilterRender
 import com.pedro.encoder.input.video.CameraHelper
 import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
@@ -201,6 +203,38 @@ class LiveStreamActivity : AppCompatActivity() {
         createRtmpCamera2()
     }
 
+    //Watermark
+    private fun getWatermarkLogo(): ImageObjectFilterRender {
+        // Calculate scale relative to stream size
+        val streamWidth = 10
+        val streamHeight = 10
+
+        val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.sample_cover_image)
+        val imgWidth = watermarkBitmap.width
+        val imgHeight = watermarkBitmap.height
+
+        val imgRender = ImageObjectFilterRender()
+        imgRender.setImage(watermarkBitmap)
+
+        // Calculate the scale
+        val scaleFactor =
+            minOf(streamWidth.toFloat() / imgWidth, streamHeight.toFloat() / imgHeight)
+        imgRender.setScale(imgWidth * scaleFactor, imgHeight * scaleFactor)
+
+        // Padding in dp
+        val paddingDp = 5
+        val scale = resources.displayMetrics.density
+        val paddingPx = (paddingDp * scale + 0.5f).toInt()
+
+        /*
+        * initial view this setPosition willNot show, so have to set it manual fake view
+        * when start the live setPosition is correct
+        * */
+        imgRender.setPosition(paddingPx.toFloat() - 6, 2f)
+
+        return imgRender
+    }
+
     /*
     * isStart = true mean going to start liveCast if false
     * going to end and have to change the text as well as tick icon for end
@@ -333,6 +367,12 @@ class LiveStreamActivity : AppCompatActivity() {
             if (streamKey.isNotEmpty()) {
                 rtmpCamera2?.let {
                     if (!it.isStreaming) {
+
+
+                        //watermark
+                        watermark?.visibility = View.GONE
+                        it.glInterface.setFilter(getWatermarkLogo())
+
                         if (it.prepareAudio() && it.prepareVideo(
                                 StreamParameters.resolution.width,
                                 StreamParameters.resolution.height,
