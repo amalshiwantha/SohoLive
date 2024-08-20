@@ -6,28 +6,28 @@ import com.soho.sohoapp.live.ui.theme.PublicGreen
 
 enum class VideoPrivacy(val bgColor: Color, val label: String) {
     PUBLIC(PublicGreen, "PUBLIC"),
-    PRIVATE(PrivateGray, "PRIVATE");
+    UNLISTED(PrivateGray, "UNLISTED");
 
     companion object {
         fun fromId(value: Boolean): VideoPrivacy {
             return when (value) {
                 true -> PUBLIC
-                false -> PRIVATE
+                false -> UNLISTED
             }
         }
 
         fun fromLabel(value: String): VideoPrivacy {
             return when (value) {
                 PUBLIC.label -> PUBLIC
-                PRIVATE.label -> PRIVATE
-                else -> PRIVATE
+                UNLISTED.label -> UNLISTED
+                else -> UNLISTED
             }
         }
 
         fun toBool(value: String): Boolean {
             return when (value) {
                 PUBLIC.label -> true
-                PRIVATE.label -> false
+                UNLISTED.label -> false
                 else -> false
             }
         }

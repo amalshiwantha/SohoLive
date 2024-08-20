@@ -355,7 +355,7 @@ fun PrivacySettings(
     val privacyItem = VideoPrivacy.fromId(visibility)
     var selectedOption by remember { mutableStateOf(privacyItem.label) }
     val pub = VideoPrivacy.PUBLIC.label
-    val pvt = VideoPrivacy.PRIVATE.label
+    val pvt = VideoPrivacy.UNLISTED.label
 
     val bgColor = if (isWhiteTheme) AppWhite else OptionDarkBg
     val txtColor = if (isWhiteTheme) OptionDarkBg else AppWhite
