@@ -12,12 +12,6 @@ data class BottomNavigationItem(
     fun navigationItems(): List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(
-                label = "Scheduled",
-                iconOn = R.drawable.ic_bottom_schadule,
-                iconOff = R.drawable.ic_bottom_schadule_off,
-                route = NavigationPath.SCHEDULED.name
-            ),
-            BottomNavigationItem(
                 label = "Go Live",
                 iconOn = R.drawable.ic_bottom_live,
                 iconOff = R.drawable.ic_bottom_live_off,
@@ -30,10 +24,10 @@ data class BottomNavigationItem(
                 route = NavigationPath.VIDEO_LIBRARY.name
             ),
             BottomNavigationItem(
-                label = "",
-                iconOn = R.drawable.ic_bottom_profile,
-                iconOff = R.drawable.ic_bottom_profile,
-                route = NavigationPath.PROFILE.name
+                label = "Account",
+                iconOn = R.drawable.ic_bottom_schadule,
+                iconOff = R.drawable.ic_bottom_schadule_off,
+                route = NavigationPath.SCHEDULED.name
             ),
         )
     }
