@@ -25,9 +25,9 @@ data class BottomNavigationItem(
             ),
             BottomNavigationItem(
                 label = "Account",
-                iconOn = R.drawable.ic_bottom_schadule,
-                iconOff = R.drawable.ic_bottom_schadule_off,
-                route = NavigationPath.SCHEDULED.name
+                iconOn = R.drawable.ic_profile_on,
+                iconOff = R.drawable.ic_profile_off,
+                route = NavigationPath.PROFILE.name
             ),
         )
     }
