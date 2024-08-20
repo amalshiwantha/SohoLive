@@ -1726,7 +1726,7 @@ private fun SocialMediaItemContent(
                 })
             } else {
                 //button
-                ButtonConnect(text = "Connect Now", color = AppGreen) {
+                ButtonConnect(text = "Connect", color = info.btnColor) {
                     onSMItemClicked.invoke(info.name)
                 }
             }
