@@ -125,14 +125,12 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.BorderGray
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
-import com.soho.sohoapp.live.ui.theme.PublicGreen
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.main.MainActivity.Companion.maxSteps
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
@@ -924,6 +922,7 @@ fun StepContents(
             SocialMediaListing(
                 recentLoggedSM = recentLoggedSM,
                 stateSMConnected = stateSMConnected,
+                isSohoPublic = mGoLiveSubmit.isSohoPublic.value,
                 onSMItemClicked = { selectedSM ->
                     when (selectedSM) {
                         SocialMediaInfo.FACEBOOK.name -> {
@@ -941,6 +940,9 @@ fun StepContents(
                 },
                 onSMItemChecked = { smInfo ->
                     onSMItemClicked.invoke(smInfo)
+                },
+                onSohoItemChecked = {
+                    mGoLiveSubmit.isSohoPublic.value = it
                 })
             SpacerVertical(size = 70.dp)
         }
@@ -1476,12 +1478,13 @@ private fun NextBackButtons(
 private fun SocialMediaListing(
     recentLoggedSM: MutableList<String>,
     stateSMConnected: MutableList<SocialMediaInfo>,
+    isSohoPublic: Boolean,
     onSMItemClicked: (String) -> Unit,
-    onSMItemChecked: (SocialMediaInfo) -> Unit
+    onSMItemChecked: (SocialMediaInfo) -> Unit,
+    onSohoItemChecked: (Boolean) -> Unit
 ) {
 
     /*this is for each SM checkBox*/
-    var isCheckedSOHO by rememberSaveable { mutableStateOf(false) }
     var isCheckedYT by rememberSaveable { mutableStateOf(false) }
     var isCheckedFB by rememberSaveable { mutableStateOf(false) }
     var isCheckedLI by rememberSaveable { mutableStateOf(false) }
@@ -1532,13 +1535,17 @@ private fun SocialMediaListing(
     smList.forEach { item ->
         SocialMediaItemContent(
             item,
-            isCheckedSOHO,
+            isSohoPublic,
             isCheckedYT,
             isCheckedFB,
             isCheckedLI,
             onSMItemClicked = {
                 /*this is for open connect model*/
                 onSMItemClicked.invoke(it)
+            },
+            onSohoItemChecked = {
+                /*check and unCheck state update on toggle*/
+                onSohoItemChecked(it)
             },
             onSMItemChecked = { smInfo ->
                 /*check and unCheck state update on toggle*/
@@ -1560,10 +1567,6 @@ private fun SocialMediaListing(
 
                     SocialMediaInfo.LINKEDIN.name -> {
                         isCheckedLI = smInfo.isItemChecked
-                    }
-
-                    else -> {
-                        isCheckedSOHO = smInfo.isItemChecked
                     }
                 }
 
@@ -1653,12 +1656,13 @@ private fun ProfileHideItem(
 @Composable
 private fun SocialMediaItemContent(
     info: SocialMediaInfo,
-    isCheckedSoho: Boolean,
+    isSohoPublic: Boolean,
     isCheckedYT: Boolean,
     isCheckedFB: Boolean,
     isCheckedLI: Boolean,
     onSMItemClicked: (String) -> Unit,
-    onSMItemChecked: (SocialMediaInfo) -> Unit
+    onSMItemChecked: (SocialMediaInfo) -> Unit,
+    onSohoItemChecked: (Boolean) -> Unit
 ) {
 
     Card(
@@ -1687,8 +1691,9 @@ private fun SocialMediaItemContent(
 
                 if (info == SocialMediaInfo.SOHO) {
                     SpacerVertical(size = 12.dp)
-                    PrivacySettings(true, isWhiteTheme = true, onChangePrivacy = {
-                        //itemInfo.unlisted = VideoPrivacy.toBool(it)
+                    PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
+                        val isPublic = it == VideoPrivacy.PUBLIC.label
+                        onSohoItemChecked.invoke(isPublic)
                     })
                 }
             }
@@ -1711,7 +1716,7 @@ private fun SocialMediaItemContent(
                     }
 
                     else -> {
-                        isCheckedSoho
+                        false
                     }
                 }
                 SwitchCompo(isChecked, modifier = Modifier.height(35.dp), onCheckedChange = {

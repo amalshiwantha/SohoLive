@@ -89,7 +89,8 @@ data class GoLiveSubmit(
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
-    var checkedPlatforms: MutableList<String> = mutableListOf()
+    var checkedPlatforms: MutableList<String> = mutableListOf(),
+    var isSohoPublic: MutableState<Boolean> = mutableStateOf(true)
 ) {
     constructor() : this(
         purpose = null,
