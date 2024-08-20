@@ -78,6 +78,7 @@ import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
+import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
@@ -131,12 +132,14 @@ import com.soho.sohoapp.live.ui.theme.BorderGray
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.PublicGreen
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.main.MainActivity.Companion.maxSteps
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
 import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert
+import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacySettings
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -1670,12 +1673,6 @@ private fun SocialMediaItemContent(
 
             //logo
             Column {
-
-                if (info == SocialMediaInfo.SOHO) {
-                    Text400_14sp(info = info.title, color = AppPrimaryDark)
-                    SpacerVertical(size = 8.dp)
-                }
-
                 val imgSize = getImageWidth(info.icon)
                 Image(
                     painter = painterResource(id = info.icon),
@@ -1687,6 +1684,13 @@ private fun SocialMediaItemContent(
                         Modifier.size(imgSize.width.dp, imgSize.height.dp)
                     }
                 )
+
+                if (info == SocialMediaInfo.SOHO) {
+                    SpacerVertical(size = 12.dp)
+                    PrivacySettings(true, isWhiteTheme = true, onChangePrivacy = {
+                        //itemInfo.unlisted = VideoPrivacy.toBool(it)
+                    })
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -2059,7 +2063,7 @@ fun SwitchCompo(
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         val countSteps = 5
-        val currentStep = 4
+        val currentStep = 2
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)

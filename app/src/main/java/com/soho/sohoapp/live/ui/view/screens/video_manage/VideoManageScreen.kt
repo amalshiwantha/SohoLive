@@ -104,8 +104,7 @@ fun VideoManageScreen(
         }
     }
 
-    MainContent(
-        data = itemData,
+    MainContent(data = itemData,
         isShowProgress = isShowProgress,
         onBackClick = { navController.popBackStack() },
         onSaveClick = { updateVideoItem(itemData, vmVidManage) },
@@ -117,8 +116,7 @@ private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageVie
         vmVidManage.onTriggerEvent(
             VidLibEvent.CallUpdateVideo(
                 VidPrivacyRequest(
-                    status = it.unlisted,
-                    videoId = it.id
+                    status = it.unlisted, videoId = it.id
                 )
             )
         )
@@ -143,8 +141,7 @@ fun MainContent(
         val (topAppBar, content, button) = createRefs()
 
         //action bar
-        TopAppBarCustomClose(
-            title = "Manage Video",
+        TopAppBarCustomClose(title = "Manage Video",
             rightIcon = R.drawable.ic_cross,
             modifier = Modifier.constrainAs(topAppBar) {
                 top.linkTo(parent.top)
@@ -154,16 +151,14 @@ fun MainContent(
             onCloseClick = { onBackClick() })
 
         //content
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .constrainAs(content) {
-                    top.linkTo(topAppBar.bottom)
-                    bottom.linkTo(button.top)
-                    height = Dimension.fillToConstraints
-                }
-                .padding(16.dp)
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .constrainAs(content) {
+                top.linkTo(topAppBar.bottom)
+                bottom.linkTo(button.top)
+                height = Dimension.fillToConstraints
+            }
+            .padding(16.dp)) {
             data?.let {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item { InnerContent(it, onPlayClick = { onPlayClick() }) }
@@ -227,8 +222,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
     val propInfo = vidItem.property
 
     Card(
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
+        shape = RoundedCornerShape(16.dp), modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
@@ -261,30 +255,28 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                         txtColor = AppWhite,
                         modifier = Modifier
                             .background(
-                                Color.Black.copy(alpha = 0.7f),
-                                shape = RoundedCornerShape(8.dp)
+                                Color.Black.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)
                             )
                             .padding(8.dp)
                     )
 
                     Text700_12sp(
-                        label = vidItem.getDisplayDate(), txtColor = AppWhite, modifier = Modifier
+                        label = vidItem.getDisplayDate(),
+                        txtColor = AppWhite,
+                        modifier = Modifier
                             .background(
-                                Color.Black.copy(alpha = 0.7f),
-                                shape = RoundedCornerShape(8.dp)
+                                Color.Black.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)
                             )
                             .padding(8.dp)
                     )
                 }
 
                 // Play Button
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { onPlayClick() }
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { onPlayClick() }
+                    .weight(1f),
+                    contentAlignment = Alignment.Center) {
                     Icon(
                         painter = painterResource(id = R.drawable.center_play),
                         contentDescription = "Play",
@@ -330,8 +322,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                     SpacerHorizontal(size = 8.dp)
                     Column {
                         Text700_12sp(
-                            label = vidItem.property?.fullAddress().orEmpty(),
-                            txtColor = AppWhite
+                            label = vidItem.property?.fullAddress().orEmpty(), txtColor = AppWhite
                         )
                         SpacerVertical(size = 2.dp)
                         propInfo?.let {
@@ -355,53 +346,55 @@ private fun PropertyView(doc: Document) {
 }
 
 @Composable
-private fun PrivacySettings(visibility: Boolean, onChangePrivacy: (String) -> Unit) {
+fun PrivacySettings(
+    visibility: Boolean,
+    isWhiteTheme: Boolean = false,
+    onChangePrivacy: (String) -> Unit,
+) {
 
     val privacyItem = VideoPrivacy.fromId(visibility)
     var selectedOption by remember { mutableStateOf(privacyItem.label) }
     val pub = VideoPrivacy.PUBLIC.label
     val pvt = VideoPrivacy.PRIVATE.label
 
+    val bgColor = if (isWhiteTheme) AppWhite else OptionDarkBg
+    val txtColor = if (isWhiteTheme) OptionDarkBg else AppWhite
+
     Column(
         modifier = Modifier
-            .background(OptionDarkBg, shape = RoundedCornerShape(12.dp))
+            .background(bgColor, shape = RoundedCornerShape(12.dp))
             .padding(16.dp)
     ) {
-        PrivacyOption(
-            text = pub,
+        PrivacyOption(text = pub,
             description = "Show publicly on your Property Listing",
             isSelected = selectedOption == pub,
+            txtColor = txtColor,
             onOptionSelected = {
                 selectedOption = pub
                 onChangePrivacy(selectedOption)
-            }
-        )
+            })
         SpacerVertical(size = 16.dp)
-        PrivacyOption(
-            text = pvt,
+        PrivacyOption(text = pvt,
             description = "Keep as public unlisted and share the video link privately",
             isSelected = selectedOption == pvt,
+            txtColor = txtColor,
             onOptionSelected = {
                 selectedOption = pvt
                 onChangePrivacy(selectedOption)
-            }
-        )
+            })
     }
 }
 
 @Composable
 private fun PrivacyOption(
-    text: String,
-    description: String,
-    isSelected: Boolean,
-    onOptionSelected: () -> Unit
+    text: String, description: String, isSelected: Boolean, onOptionSelected: () -> Unit,
+    txtColor: Color
 ) {
     val privacyConfig = VideoPrivacy.fromLabel(text)
 
     Column(modifier = Modifier
         .fillMaxWidth()
-        .clickable { onOptionSelected() }
-    ) {
+        .clickable { onOptionSelected() }) {
 
         //Radio button
         Row(
@@ -409,11 +402,9 @@ private fun PrivacyOption(
             horizontalArrangement = Arrangement.Center,
         ) {
             //privacy radio button
-            val radioIcon = if (isSelected)
-                R.drawable.radio_active else R.drawable.radio_inactive
+            val radioIcon = if (isSelected) R.drawable.radio_active else R.drawable.radio_inactive
             Image(
-                painter = painterResource(id = radioIcon),
-                contentDescription = null
+                painter = painterResource(id = radioIcon), contentDescription = null
             )
             SpacerHorizontal(size = 8.dp)
 
@@ -421,7 +412,9 @@ private fun PrivacyOption(
                 //box privacy name
                 Box(
                     modifier = Modifier
-                        .background(privacyConfig.bgColor, shape = RoundedCornerShape(8.dp))
+                        .background(
+                            privacyConfig.bgColor, shape = RoundedCornerShape(8.dp)
+                        )
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text800_12sp(label = text)
@@ -431,7 +424,7 @@ private fun PrivacyOption(
 
         //info
         SpacerVertical(size = 8.dp)
-        Text400_14sp(info = description, modifier = Modifier.padding(start = 24.dp))
+        Text400_14sp(info = description, modifier = Modifier.padding(start = 24.dp), color = txtColor)
     }
 }
 
@@ -449,5 +442,5 @@ fun NoDataView(modifier: Modifier) {
 @Preview
 @Composable
 private fun PreviewVidManage() {
-    //MainContent(VideoItem(), onSaveClick = {}, onBackClick = {}, onPlayClick = {})
+    //VideoManageScreen(mGState = GlobleState(), navController = NavHostController(LocalContext.current))
 }
