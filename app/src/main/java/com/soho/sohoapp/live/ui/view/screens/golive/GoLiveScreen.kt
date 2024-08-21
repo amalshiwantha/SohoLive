@@ -922,7 +922,7 @@ fun StepContents(
             SocialMediaListing(
                 recentLoggedSM = recentLoggedSM,
                 stateSMConnected = stateSMConnected,
-                isSohoPublic = mGoLiveSubmit.isSohoPublic.value,
+                isSohoPublic = mGoLiveSubmit.isSohoPublic,
                 onSMItemClicked = { selectedSM ->
                     when (selectedSM) {
                         SocialMediaInfo.FACEBOOK.name -> {
@@ -942,7 +942,7 @@ fun StepContents(
                     onSMItemClicked.invoke(smInfo)
                 },
                 onSohoItemChecked = {
-                    mGoLiveSubmit.isSohoPublic.value = it
+                    mGoLiveSubmit.isSohoPublic = it
                 })
             SpacerVertical(size = 70.dp)
         }

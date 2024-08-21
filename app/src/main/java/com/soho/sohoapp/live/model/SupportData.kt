@@ -90,7 +90,7 @@ data class GoLiveSubmit(
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf(),
-    var isSohoPublic: MutableState<Boolean> = mutableStateOf(true)
+    var isSohoPublic: Boolean = true
 ) {
     constructor() : this(
         purpose = null,
