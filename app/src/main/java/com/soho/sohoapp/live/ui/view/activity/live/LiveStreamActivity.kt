@@ -46,7 +46,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LiveStreamActivity : AppCompatActivity() {
 
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "0513e709-ec52-dd52-6485-e461f01e7ef5"
+    private var streamKey: String = "1234"
 
     private lateinit var binding: ActivityLiveStreamBinding
     private var watermark: ImageView? = null
@@ -98,9 +98,9 @@ class LiveStreamActivity : AppCompatActivity() {
         val jsonModel = intent.getStringExtra(KEY_STREAM)
         jsonModel?.let {
             reqLive = Json.decodeFromString<LiveRequest>(it)
-            reqLive.apply {
+            /*reqLive.apply {
                 this.streamKey = strKey
-            }
+            }*/
         } ?: run {
             handleAlertState(
                 AlertData(
@@ -384,8 +384,7 @@ class LiveStreamActivity : AppCompatActivity() {
                         ) {
                             //showToast("Started Broadcast")
                             println("myStream startBroadcast")
-                            val finalKey = "0513e709-ec52-dd52-6485-e461f01e7ef5"
-                            it.startStream(rtmpEndpoint + finalKey)
+                            it.startStream(rtmpEndpoint + reqLive.streamKey)
                             showLiveTime(true)
                         } else {
                             //showToast("Broadcast Error")
