@@ -21,7 +21,7 @@ data class DataGoLiveSubmit(
     @SerialName("description") val description: String?,
     @SerialName("stream_key") val streamKey: String,
     @SerialName("unlisted") val unlisted: Boolean,
-    @SerialName("agent_profile_id") val agentProfileId: Int,
+    @SerialName("agent_profile_id") val agentProfileId: Int?,
     @SerialName("shareable_link") val shareableLink: String,
     @SerialName("simulcast_targets") val simulcastTargets: List<SimulcastTarget>,
     @SerialName("mux_status") val muxStatus: String,
@@ -54,7 +54,7 @@ data class DataGoLive(
 @Serializable
 data class Listing(
     @SerialName("id") val id: Int,
-    @SerialName("agent_profile_ids") val agentProfileIds: List<Int>,
+    @SerialName("agent_profile_ids") val agentProfileIds: List<Int?>,
     //@SerialName("live_streams_ids") val liveStreamsIds: List<Int>
 )
 

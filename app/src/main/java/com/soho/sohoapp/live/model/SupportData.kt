@@ -82,15 +82,15 @@ data class GoLiveSubmit(
     @SerialName("property_listing_id") var propertyId: Int = 0,
     @SerialName("title") var title: String? = null,
     @SerialName("description") var description: String? = null,
-    @SerialName("agent_profile_id") var agentId: Int = 0,
-    @SerialName("unlisted") var unlisted: Boolean = false,
+    @SerialName("agent_profile_id") var agentId: Int? = null,
     @SerialName("simulcast_targets") var targets: MutableList<GoLivePlatform> = mutableListOf(),
     @SerialName("schedules_at") var schedulesAt: MutableList<ScheduleDateTime> = mutableListOf(),
+    @SerialName("unlisted") var isSohoPublic: Boolean = true,
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf(),
-    var isSohoPublic: Boolean = true
+    var isHideAgent: Boolean = false
 ) {
     constructor() : this(
         purpose = null,

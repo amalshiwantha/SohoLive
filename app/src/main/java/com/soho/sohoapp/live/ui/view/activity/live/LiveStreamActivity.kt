@@ -209,7 +209,7 @@ class LiveStreamActivity : AppCompatActivity() {
         val streamWidth = 10
         val streamHeight = 10
 
-        val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.sample_cover_image)
+        val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
         val imgWidth = watermarkBitmap.width
         val imgHeight = watermarkBitmap.height
 
@@ -368,11 +368,11 @@ class LiveStreamActivity : AppCompatActivity() {
                 rtmpCamera2?.let {
                     if (!it.isStreaming) {
 
-
                         //watermark
                         watermark?.visibility = View.GONE
                         it.glInterface.setFilter(getWatermarkLogo())
 
+                        //start live
                         if (it.prepareAudio() && it.prepareVideo(
                                 StreamParameters.resolution.width,
                                 StreamParameters.resolution.height,

@@ -175,7 +175,7 @@ fun GoLiveScreen(
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected by remember { mutableStateOf(assetsState.isNowSelected.value) }
     var isNoSlots by rememberSaveable { mutableStateOf(false) }
-    var isDontShowProfile by remember { mutableStateOf(mGoLiveSubmit.unlisted) }
+    var isDontShowProfile by remember { mutableStateOf(mGoLiveSubmit.isHideAgent) }
     var isShowScheduleOkScreen by remember { mutableStateOf(false) }
     val stateSMConnected by goLiveVm.connectedProfileNames.collectAsStateWithLifecycle()
     val checkedSM = remember { mutableStateListOf<String>() }
@@ -360,7 +360,10 @@ fun GoLiveScreen(
                                     assetsState.isNowSelected.value = it
                                 },
                                 onNotShowProfileChange = {
-                                    mGoLiveSubmit.apply { unlisted = it }
+                                    mGoLiveSubmit.apply {
+                                        agentId = null
+                                        isHideAgent = it
+                                    }
                                     isDontShowProfile = it
                                 },
                                 onPropertyItemClicked = { selectedProperty ->
@@ -592,8 +595,7 @@ fun resetSteps(currentStepId: Int, mGoLiveSubmit: GoLiveSubmit, assetsState: GoL
         propertyId = 0
         title = null
         description = null
-        agentId = 0
-        unlisted = false
+        agentId = null
         targets.clear()
         platformToken.clear()
         scheduleSlots.clear()
@@ -624,10 +626,11 @@ fun isAllowGoNext(
         }
 
         1 -> {
-            if (mGoLiveSubmit.unlisted) {
+            if (mGoLiveSubmit.isHideAgent) {
+                mGoLiveSubmit.apply { agentId = null }
                 true
             } else {
-                if (mGoLiveSubmit.agentId == 0) {
+                if (mGoLiveSubmit.agentId == null) {
                     goLiveVm.showAlert(
                         getAlertConfig(
                             context.getString(R.string.selection_required),

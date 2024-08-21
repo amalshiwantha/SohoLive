@@ -33,7 +33,7 @@ data class VideoItem(
     @SerialName("playback_ids") val playbackIds: List<String>,
     @SerialName("unlisted") var unlisted: Boolean,
     @SerialName("property_listing_id") val propertyListingId: Int,
-    @SerialName("agent_profile_id") val agentProfileId: Int,
+    @SerialName("agent_profile_id") val agentProfileId: Int?,
     @SerialName("live_stream_id") val liveStreamId: Int,
     @SerialName("shareable_link") val shareableLink: String?,
     @SerialName("download_link") val downloadLink: String?,
