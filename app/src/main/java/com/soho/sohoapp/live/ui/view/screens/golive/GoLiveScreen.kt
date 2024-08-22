@@ -196,8 +196,7 @@ fun GoLiveScreen(
 
         if (str == "LiveEndStatus(castEnd=COMPLETE)") {
             //Reset steps flow
-            currentStepId = 0
-            resetSteps(currentStepId, mGoLiveSubmit, assetsState)
+            resetSteps(mGoLiveSubmit, assetsState)
 
             //Open end screen
             navController.navigate(NavigationPath.LIVE_CAST_END.name)
@@ -586,19 +585,21 @@ fun callApi(
     }
 }
 
-fun resetSteps(currentStepId: Int, mGoLiveSubmit: GoLiveSubmit, assetsState: GoLiveAssets) {
-    assetsState.stepId.value = currentStepId
+fun resetSteps(mGoLiveSubmit: GoLiveSubmit, assetsState: GoLiveAssets) {
+    //move to step #1
+    assetsState.stepId.value = 0
 
-    assetsState.agencyListState?.value =
-        assetsState.agencyListState?.value?.map { item ->
-            if (item.isChecked) item.copy(isChecked = false) else item
-        } ?: listOf()
+    //unchecked all agents
+    assetsState.agencyListState?.value = assetsState.agencyListState?.value?.map { item ->
+        item.copy(isChecked = false)
+    } ?: emptyList()
 
-    assetsState.propertyListState?.value =
-        assetsState.propertyListState?.value?.map { item ->
-            if (item.isChecked) item.copy(isChecked = false) else item
-        } ?: listOf()
+    //unchecked all properties
+    assetsState.propertyListState?.value = assetsState.propertyListState?.value?.map { item ->
+        item.copy(isChecked = false)
+    } ?: emptyList()
 
+    //set default step #4 form data and other
     mGoLiveSubmit.apply {
         purpose = null
         propertyId = 0
@@ -610,6 +611,8 @@ fun resetSteps(currentStepId: Int, mGoLiveSubmit: GoLiveSubmit, assetsState: GoL
         scheduleSlots.clear()
         errors.clear()
         checkedPlatforms.clear()
+        isHideAgent = false
+        isSohoPublic = true
     }
 }
 
