@@ -23,3 +23,8 @@ data class LiveResponse(
     @SerialName("response") val response: String? = null,
     @SerialName("response_type") val responseType: String? = null,
 )
+
+@Serializable
+data class LiveEndRequest(
+    @SerialName("id") val status: String
+)

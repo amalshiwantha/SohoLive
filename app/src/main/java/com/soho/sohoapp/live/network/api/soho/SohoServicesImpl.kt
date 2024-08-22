@@ -10,6 +10,7 @@ import com.soho.sohoapp.live.network.core.TS_API_KEY
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
+import com.soho.sohoapp.live.network.response.LiveEndRequest
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
@@ -135,6 +136,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     }
 
     override suspend fun endStream(authToken: String, streamId: String): LiveResponse {
+        val liveEndReq = LiveEndRequest(streamId)
         return httpClient.put {
             url {
                 takeFrom(BASE_URL)
@@ -145,7 +147,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             }
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
-            setBody("{\"id\": $streamId}")
+            setBody(liveEndReq)
         }.body()
     }
 
@@ -155,7 +157,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
                 takeFrom(BASE_URL)
                 encodedPath += SohoApiServices.ROLLBACK_STREAM.replace(
                     "{live_stream_id}",
-                    liveReq.liveStreamId.toString()
+                    liveReq.liveStreamId
                 )
             }
             contentType(ContentType.Application.Json)
