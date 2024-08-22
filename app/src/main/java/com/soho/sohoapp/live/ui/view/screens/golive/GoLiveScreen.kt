@@ -645,7 +645,12 @@ fun isAllowGoNext(
         }
 
         2 -> {
-            if (mGoLiveSubmit.platformToken.isNotEmpty()) {
+            /*
+            * recently added soho pub and priv. so its default public, so no need to check other SM checked or not
+            * */
+            true
+
+            /*if (mGoLiveSubmit.platformToken.isNotEmpty()) {
                 true
             } else {
                 goLiveVm.showAlert(
@@ -655,7 +660,7 @@ fun isAllowGoNext(
                     )
                 )
                 false
-            }
+            }*/
         }
 
         3 -> {
