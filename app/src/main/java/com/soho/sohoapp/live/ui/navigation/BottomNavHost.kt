@@ -85,7 +85,15 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
         composable(route = NavigationPath.LIVE_CAST_END.name) {
             LiveEndScreen(
                 navController = navController,
-                goVideoLibrary = { navController.navigate(NavigationPath.VIDEO_LIBRARY.name) }
+                goVideoLibrary = {
+                    // Navigate to VideoLibraryScreen and clear the back stack
+                    navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
+                        // Pop up to the start destination, or any other destination as needed
+                        popUpTo(NavigationPath.LIVE_CAST_END.name) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }
