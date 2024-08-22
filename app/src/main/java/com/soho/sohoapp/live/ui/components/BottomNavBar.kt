@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,12 +18,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.BottomNavigationItem
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomBarSelect
 import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
+import com.soho.sohoapp.live.ui.view.activity.main.MainActivity
 
 @Composable
 fun BottomNavigationBar(
@@ -105,14 +108,19 @@ fun BottomNavigationBar(
             }, onClick = {
                 onTabClick(index)
                 navigationSelectedItem = index
+
                 navController.navigate(navigationItem.route) {
                     popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
+                        inclusive = true
                     }
                     launchSingleTop = true
-                    restoreState = true
                 }
             })
         }
     }
+}
+
+@Composable
+fun HandleBackPress(navController: NavHostController) {
+    BackHandler { (navController.context as? MainActivity)?.finish() }
 }

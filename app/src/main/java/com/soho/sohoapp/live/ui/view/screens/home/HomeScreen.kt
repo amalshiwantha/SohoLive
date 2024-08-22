@@ -40,6 +40,7 @@ import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.model.UiState
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
+import com.soho.sohoapp.live.ui.components.HandleBackPress
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -72,6 +73,9 @@ fun HomeScreen(
             }
         }
     }
+
+    //HandleBackPress
+    HandleBackPress(navController = navController)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
