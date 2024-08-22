@@ -365,6 +365,13 @@ fun GoLiveScreen(
                                         isHideAgent = it
                                     }
                                     isDontShowProfile = it
+
+                                    /*
+                                    * if checked don't Show then removed selections all of items
+                                    * */
+                                    if (it) {
+                                        goLiveVm.unSelectAgentSelectionList()
+                                    }
                                 },
                                 onPropertyItemClicked = { selectedProperty ->
                                     mGoLiveSubmit.apply {
@@ -384,6 +391,8 @@ fun GoLiveScreen(
                                 onAgentItemClicked = { selectedAgent ->
                                     mGoLiveSubmit.apply {
                                         agentId = if (selectedAgent.isChecked) {
+                                            isHideAgent = false
+                                            isDontShowProfile = false
                                             selectedAgent.agentProfile.id
                                         } else {
                                             0

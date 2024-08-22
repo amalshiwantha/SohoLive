@@ -254,6 +254,14 @@ class GoLiveViewModel(
         }
     }
 
+    fun unSelectAgentSelectionList() {
+        val agentList = assetsState.value.agencyListState
+
+        agentList?.value = agentList?.value?.map { item ->
+            item.copy(isChecked = false)
+        } ?: emptyList()
+    }
+
     fun updateAgentSelectionList(updatedAgent: AgencyItem) {
         val agentList = assetsState.value.agencyListState?.value
 
