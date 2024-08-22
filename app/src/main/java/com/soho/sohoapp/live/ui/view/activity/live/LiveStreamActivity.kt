@@ -51,17 +51,18 @@ class LiveStreamActivity : AppCompatActivity() {
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
     private var streamKey: String = "1234"
 
+    private val viewModel: LiveStreamViewModel by viewModel()
     private lateinit var binding: ActivityLiveStreamBinding
+    private lateinit var timerTextHelper: TimerTextHelper
+    private lateinit var reqLive: LiveRequest
+
     private var watermark: ImageView? = null
     private var rtmpCamera2: RtmpCamera2? = null
     private var openGlView: OpenGlView? = null
-    private val PERMISSION_REQUEST_CODE = 101
-    private lateinit var timerTextHelper: TimerTextHelper
-    private lateinit var reqLive: LiveRequest
-    private val viewModel: LiveStreamViewModel by viewModel()
     private var progDialog: AlertDialog? = null
     private var countBitrateError = 0
     private var isDidLiveCast = false
+    private val PERMISSION_REQUEST_CODE = 101
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -425,7 +426,9 @@ class LiveStreamActivity : AppCompatActivity() {
 
         rtmpCamera2?.let {
             if (it.isStreaming) {
+                binding.txtCountdownMsg.text = getString(R.string.livecast_start)
                 updateGoLiveBtn(false)
+
                 it.stopStream()
             }
         }
