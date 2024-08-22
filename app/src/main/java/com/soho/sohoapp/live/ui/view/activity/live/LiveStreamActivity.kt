@@ -5,7 +5,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.SurfaceHolder
@@ -33,6 +35,7 @@ import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamParameters.resolution
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
@@ -94,13 +97,9 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun checkEssentialData() {
-        val strKey = streamKey
         val jsonModel = intent.getStringExtra(KEY_STREAM)
         jsonModel?.let {
             reqLive = Json.decodeFromString<LiveRequest>(it)
-            /*reqLive.apply {
-                this.streamKey = strKey
-            }*/
         } ?: run {
             handleAlertState(
                 AlertData(
@@ -206,14 +205,15 @@ class LiveStreamActivity : AppCompatActivity() {
     //Watermark
     private fun getWatermarkLogo(): ImageObjectFilterRender {
         // Calculate scale relative to stream size
-        val streamWidth = 10
-        val streamHeight = 10
+        val streamWidth = resolution.width
+        val streamHeight = 5 // if change this image size will update
 
         val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
-        val imgWidth = watermarkBitmap.width
+        val imgWidth = 260
         val imgHeight = watermarkBitmap.height
 
         val imgRender = ImageObjectFilterRender()
+        imgRender.setAlpha(2.0f)//if increase this img color get more bright but not perfect
         imgRender.setImage(watermarkBitmap)
 
         // Calculate the scale
