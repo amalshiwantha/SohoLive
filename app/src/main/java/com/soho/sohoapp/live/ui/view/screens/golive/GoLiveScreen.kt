@@ -197,16 +197,10 @@ fun GoLiveScreen(
 
         if (str == "LiveEndStatus(castEnd=COMPLETE)") {
             //Reset steps flow
-            //resetSteps(mGoLiveSubmit, assetsState)
-
-            //Open end screen
-            navController.navigate(NavigationPath.LIVE_CAST_END.name)
-
-            /*//Reset steps flow
             resetSteps(mGoLiveSubmit, assetsState)
 
             //Open end screen
-            navController.navigate(NavigationPath.LIVE_CAST_END.name)*/
+            navController.navigate(NavigationPath.LIVE_CAST_END.name)
         }
     }
 

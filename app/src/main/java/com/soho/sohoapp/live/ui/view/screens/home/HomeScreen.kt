@@ -58,7 +58,7 @@ fun HomeScreen(
     val uiState by homeVm.uiState.collectAsState()
     val navController = rememberNavController()
     var navigationSelectedItem by remember { mutableIntStateOf(0) }
-    var selectedTabTitle by remember { mutableStateOf("SCHEDULED") }
+    var selectedTabTitle by remember { mutableStateOf(context.getString(R.string.create_livestream)) }
     var showBottomBar by remember { mutableStateOf(true) }
 
     LaunchedEffect(navController) {
@@ -97,7 +97,9 @@ fun HomeScreen(
                 .background(brushMainGradientBg)
                 .padding(innerPadding)
         ) {
-            BottomNavHost(navController, viewMMain)
+            BottomNavHost(navController, viewMMain, onTabMoveClick = {
+                navigationSelectedItem = it
+            })
 
             val currentBackStackEntry by navController.currentBackStackEntryAsState()
             showBottomBar = isBottomBarVisible(currentBackStackEntry)
@@ -121,28 +123,6 @@ fun isBottomBarVisible(backStack: NavBackStackEntry?): Boolean {
 }
 
 @Composable
-fun GoLiveScreenActivity(uiState: UiState, context: Context) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(), contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Welcome to the SohoLive ${uiState.loadingMessage}")
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
-            Button(onClick = {
-                //homeVm.setMessage("Updated")
-                val intent = Intent(context, LiveStreamActivity::class.java)
-                context.startActivity(intent)
-            }) {
-                Text("Update Message")
-            }
-        }
-    }
-}
-
-@Composable
 fun HomeContent(navController: NavController, title: String) {
 
     Box(
@@ -158,9 +138,6 @@ fun HomeContent(navController: NavController, title: String) {
                 modifier = Modifier
                     .padding(vertical = 20.dp)
             )
-            Button(onClick = { }) {
-                Text(text = "Connect")
-            }
         }
     }
 }

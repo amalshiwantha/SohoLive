@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,7 +29,10 @@ import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel) {
+fun BottomNavHost(
+    navController: NavHostController, mainViewModel: MainViewModel,
+    onTabMoveClick: (Int) -> Unit
+) {
 
     var onGoLiveResult by remember { mutableStateOf<DataGoLive?>(null) }
     var onGoLiveTsResult by remember { mutableStateOf<TsPropertyResponse?>(null) }
@@ -86,12 +90,17 @@ fun BottomNavHost(navController: NavHostController, mainViewModel: MainViewModel
             LiveEndScreen(
                 navController = navController,
                 goVideoLibrary = {
+                    //tab move
+                    onTabMoveClick(1)
+
                     // Navigate to VideoLibraryScreen and clear the back stack
                     navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
-                        // Pop up to the start destination, or any other destination as needed
-                        popUpTo(NavigationPath.LIVE_CAST_END.name) {
+                        // Pop up to the start destination (or a specific destination) and clear the stack
+                        popUpTo(navController.graph.findStartDestination().id) {
                             inclusive = true
                         }
+                        // Ensure the new screen is the top-most screen
+                        launchSingleTop = true
                     }
                 }
             )
