@@ -395,7 +395,7 @@ fun GoLiveScreen(
                                             isDontShowProfile = false
                                             selectedAgent.agentProfile.id
                                         } else {
-                                            0
+                                            null
                                         }
                                     }
                                     goLiveVm.updateAgentSelectionList(selectedAgent)
