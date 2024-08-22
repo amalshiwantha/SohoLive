@@ -65,6 +65,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -196,10 +197,16 @@ fun GoLiveScreen(
 
         if (str == "LiveEndStatus(castEnd=COMPLETE)") {
             //Reset steps flow
-            resetSteps(mGoLiveSubmit, assetsState)
+            //resetSteps(mGoLiveSubmit, assetsState)
 
             //Open end screen
             navController.navigate(NavigationPath.LIVE_CAST_END.name)
+
+            /*//Reset steps flow
+            resetSteps(mGoLiveSubmit, assetsState)
+
+            //Open end screen
+            navController.navigate(NavigationPath.LIVE_CAST_END.name)*/
         }
     }
 

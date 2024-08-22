@@ -79,7 +79,9 @@ fun BottomButtons(
 
         ButtonColoured(text = "Leave Live Studio",
             color = AppGreen,
-            onBtnClick = { navController.popBackStack() })
+            onBtnClick = {
+                navController.popBackStack(navController.graph.startDestinationId, false)
+            })
     }
 }
 
