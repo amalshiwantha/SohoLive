@@ -105,6 +105,7 @@ import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
+import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_10sp
@@ -871,9 +872,62 @@ fun TopContent(stepCount: Int, currentStepId: Int) {
 
 @Composable
 fun PropertyItemRow(
-    propertyItem: PropertyItem, isSelected: Boolean, onSelect: (PropertyItem) -> Unit
+    item: PropertyItem, isSelected: Boolean, onSelect: (PropertyItem) -> Unit
 ) {
-    Row(modifier = Modifier
+    val cardBgColor = if (isSelected) AppWhite else ItemCardBg
+    val textColor = if (isSelected) ItemCardBg else AppWhite
+    val property = item.propInfo
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+            .clickable { onSelect(item) },
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = cardBgColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(modifier = Modifier.padding(14.dp)) {
+            //image
+            val urlPainter = rememberAsyncImagePainter(
+                model = property.thumbnailUrl(),
+                placeholder = painterResource(id = R.drawable.property_placeholder),
+                error = painterResource(id = R.drawable.property_placeholder)
+            )
+
+            Image(
+                painter = urlPainter,
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .size(width = 70.dp, height = 68.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            //info
+            Column(
+                modifier = Modifier
+                    .padding(start = 14.dp)
+                    .fillMaxWidth()
+            ) {
+
+                TypeAndCheckBox(isSelected,
+                    true,
+                    property,
+                    txtColor = textColor,
+                    onCheckedChange = {
+                        onSelect(item)
+                    })
+                SpacerVertical(size = 8.dp)
+                Text700_14sp(step = property.fullAddress(), color = textColor)
+                SpacerVertical(size = 8.dp)
+                if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
+                SpacerVertical(size = 8.dp)
+                AmenitiesView(property, textColor)
+            }
+        }
+    }
+
+    /*Row(modifier = Modifier
         .fillMaxWidth()
         .clickable { onSelect(propertyItem) }
         .background(if (isSelected) Color.LightGray else Color.Transparent)
@@ -881,7 +935,7 @@ fun PropertyItemRow(
         // Displaying Property Name
         Text700_14sp(step = propertyItem.propInfo.title ?: "", modifier = Modifier.weight(1f))
         Text400_10sp(label = propertyItem.propInfo.fullAddress())
-    }
+    }*/
 }
 
 
@@ -911,46 +965,20 @@ fun StepContents(
     when (currentStepId) {
         // step #1
         0 -> {
-            val savedProperty = screenAssets?.selectedProperty?.value
-            var selectedProperty by remember { mutableStateOf(savedProperty) }
-
-            Column {
-                propertyList?.forEach { propertyItem ->
-
-                    PropertyItemRow(propertyItem = propertyItem,
-                        isSelected = propertyItem == selectedProperty,
-                        onSelect = { selectedItem ->
-
-                            selectedProperty = if (selectedProperty == selectedItem) {
-                                null
-                            } else {
-                                selectedItem
-                            }
-
-                            // Update the isChecked state for selected item
-                            selectedItem.apply {
-                                isChecked = selectedProperty != null
-                            }
-
-                            onPropertyItemClicked(selectedItem)
-                        })
-                }
-            }
-
-            /*propertyList?.let { propList ->
+            propertyList?.let { propList ->
                 if (propList.isEmpty()) {
                     DisplayNoData(message = "Not Found Properties")
                 } else {
                     SearchBar()
                     SpacerVertical(16.dp)
-                    PropertyListing(propList, onItemClicked = {
+                    PropertyListing(screenAssets, propList, onItemClicked = {
                         onPropertyItemClicked.invoke(it)
                     })
                     SpacerVertical(size = 70.dp)
                 }
             } ?: run {
                 DisplayNoData(message = "Property Information Serves Failed")
-            }*/
+            }
         }
 
         // step #2
@@ -1627,13 +1655,39 @@ private fun AgentListing(
 
 @Composable
 private fun PropertyListing(
-    listings: List<PropertyItem>?, onItemClicked: (PropertyItem) -> Unit = {}
+    screenAssets: GoLiveAssets? = null,
+    listings: List<PropertyItem>?,
+    onItemClicked: (PropertyItem) -> Unit = {}
 ) {
-    listings?.forEach { item ->
+    val savedProperty = screenAssets?.selectedProperty?.value
+    var selectedProperty by remember { mutableStateOf(savedProperty) }
+
+    listings?.forEach { propertyItem ->
+
+        PropertyItemRow(item = propertyItem,
+            isSelected = propertyItem == selectedProperty,
+            onSelect = { selectedItem ->
+
+                selectedProperty = if (selectedProperty == selectedItem) {
+                    null
+                } else {
+                    selectedItem
+                }
+
+                // Update the isChecked state for selected item
+                selectedItem.apply {
+                    isChecked = selectedProperty != null
+                }
+
+                onItemClicked(selectedItem)
+            })
+    }
+
+    /*listings?.forEach { item ->
         PropertyItemContent(item, onItemClicked = { selected ->
             onItemClicked.invoke(selected)
         })
-    }
+    }*/
 }
 
 @Composable
