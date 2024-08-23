@@ -71,15 +71,13 @@ fun SignInScreen(
         }
     }
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
+    Scaffold(modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackBarState) },
         topBar = {
-            AppTopBar(
-                title = stringResource(R.string.signin_title),
-                onBackClick = { navController.popBackStack() }, onRightClick = {})
-        }
-    ) { innerPadding ->
+            AppTopBar(title = stringResource(R.string.signin_title),
+                onBackClick = { navController.popBackStack() },
+                onRightClick = {})
+        }) { innerPadding ->
 
         Column(
             modifier = Modifier
@@ -97,8 +95,7 @@ fun SignInScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .weight(1f)
-                        .verticalScroll(scrollState),
-                    verticalArrangement = Arrangement.Top
+                        .verticalScroll(scrollState), verticalArrangement = Arrangement.Top
                 ) {
 
                     //Display login form
@@ -115,14 +112,11 @@ fun SignInScreen(
                     if (stateVm.alertState is AlertState.Display) {
                         val alertConfig = stateVm.alertState.config
 
-                        AppAlertDialog(
-                            alert = alertConfig,
-                            onConfirm = {
-                                vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
-                            },
-                            onDismiss = {
-                                vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
-                            })
+                        AppAlertDialog(alert = alertConfig, onConfirm = {
+                            vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+                        }, onDismiss = {
+                            vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+                        })
                     }
                 }
 
@@ -149,30 +143,22 @@ fun SignInScreen(
 
 @Composable
 private fun LoginForm(
-    viewModel: SignInViewModel,
-    loginState: SignInState,
-    onForgetPwClick: () -> Unit
+    viewModel: SignInViewModel, loginState: SignInState, onForgetPwClick: () -> Unit
 ) {
 
     Column {
         val requestData = loginState.request
         val errorState = loginState.errorStates
 
-        //TODO loginHardCoded
-        requestData.apply {
-            email = "samuel@drewlindsaysir.com"
-            //email = "1170.14373@leaddrop.rexsoftware.com"
-            password = "password"
-        }
-
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerVertical(8.dp)
-        TextFieldWhite(
-            fieldConfig = FieldConfig.NEXT.apply { placeholder = stringResource(R.string.email) },
-            onTextChange = {
-                requestData.apply { email = it }
-                viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
-            })
+        TextFieldWhite(fieldConfig = FieldConfig.NEXT.apply {
+            placeholder = stringResource(R.string.email)
+            input = "samuel@drewlindsaysir."
+        }, onTextChange = {
+            requestData.apply { email = it }
+            viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+        })
 
         //error email visibility
         errorState[FieldType.LOGIN_EMAIL]?.let {
@@ -183,7 +169,7 @@ private fun LoginForm(
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerVertical(8.dp)
-        PasswordTextFieldWhite(onTextChange = {
+        PasswordTextFieldWhite(tempPw = "passwor", onTextChange = {
             requestData.apply { password = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
         })
@@ -194,11 +180,13 @@ private fun LoginForm(
 
         SpacerVertical(24.dp)
 
-        TextButtonBlue(text = stringResource(R.string.forgot_password), modifier = Modifier
-            .fillMaxWidth()
-            .align(CenterHorizontally), onBtnClick = {
-            onForgetPwClick()
-        })
+        TextButtonBlue(text = stringResource(R.string.forgot_password),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(CenterHorizontally),
+            onBtnClick = {
+                onForgetPwClick()
+            })
     }
 }
 
