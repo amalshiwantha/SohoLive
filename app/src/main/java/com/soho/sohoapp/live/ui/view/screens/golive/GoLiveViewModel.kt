@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,7 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import io.ktor.utils.io.printStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -296,21 +298,28 @@ class GoLiveViewModel(
         selectedAgent: AgencyItem?
     ): List<AgencyItem> {
         return listIds?.let { lists ->
-            if (lists.isNotEmpty()) {
-                val id = lists[0][0]
-                agentProfiles.filter { it.id == id }.map {
+            try {
+                if (lists.isNotEmpty()) {
+                    val id = lists[0][0]
+                    agentProfiles.filter { it.id == id }.map {
 
-                    val isChecked = selectedAgent?.let { selAgent ->
-                        it.id == selAgent.id
-                    } ?: kotlin.run {
-                        false
+                        val isChecked = selectedAgent?.let { selAgent ->
+                            it.id == selAgent.id
+                        } ?: kotlin.run {
+                            false
+                        }
+
+                        AgencyItem(id = it.id, agentProfile = it, isChecked = isChecked)
                     }
-
-                    AgencyItem(id = it.id, agentProfile = it, isChecked = isChecked)
+                } else {
+                    emptyList()
                 }
-            } else {
+            } catch (e: Exception) {
+                e.printStack()
+                Log.e("agentFind", "Error : ${e.message}")
                 emptyList()
             }
+
         } ?: run {
             emptyList()
         }

@@ -65,7 +65,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -106,7 +105,6 @@ import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
-import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_10sp
@@ -187,7 +185,6 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.LiveEndStatus(CastEnd.NONE))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
-
 
     /*
     * check liveCast how to end, if completed then clean all of savedData or else keepIt as
@@ -341,9 +338,8 @@ fun GoLiveScreen(
                             val agencyList = assetsState.agencyListState?.value
 
                             //All Steps
-                            StepContents(
-                                currentStepId = currentStepId,
-                                savedResults = savedData,
+                            StepContents(currentStepId = currentStepId,
+                                screenAssets = savedState,
                                 tsResults = savedTsResults,
                                 propertyList = propertyList,
                                 mainAgencyList = agencyList,
@@ -374,18 +370,23 @@ fun GoLiveScreen(
                                     }
                                 },
                                 onPropertyItemClicked = { selectedProperty ->
+
+                                    //Global state update for selected property
+                                    assetsState.selectedProperty.value =
+                                        if (selectedProperty.isChecked) selectedProperty else null
+
+                                    //submit data update
                                     mGoLiveSubmit.apply {
-                                        propertyId = if (selectedProperty.isChecked) {
-                                            selectedProperty.propInfo.id?.toInt() ?: 0
+                                        if (selectedProperty.isChecked) {
+                                            propertyId = selectedProperty.propInfo.id?.toInt() ?: 0
+                                            title = selectedProperty.propInfo.fullAddress()
                                         } else {
-                                            0
-                                        }
-                                        title = if (selectedProperty.isChecked) {
-                                            selectedProperty.propInfo.fullAddress()
-                                        } else {
-                                            ""
+                                            propertyId = 0
+                                            title = null
                                         }
                                     }
+
+                                    //pre-load agent list from selection
                                     goLiveVm.updatePropertyList(selectedProperty)
                                 },
                                 onAgentItemClicked = { selectedAgent ->
@@ -446,14 +447,12 @@ fun GoLiveScreen(
                     stepCount = stepCount,
                     isNowSelected = isNowSelected,
                     onClickedNext = {
-                        val isAllowGo = isAllowGoNext(
-                            currentStepId = currentStepId,
+                        val isAllowGo = isAllowGoNext(currentStepId = currentStepId,
                             mGoLiveSubmit = mGoLiveSubmit,
                             goLiveVm = goLiveVm,
                             onValidateRes = {
                                 mFieldsError = it.errors
-                            }
-                        )
+                            })
 
                         if (currentStepId < stepCount - 1 && isAllowGo) {
                             currentStepId++
@@ -471,8 +470,7 @@ fun GoLiveScreen(
                             //add utc dateFormat for schedules
                             convertScheduleUtc(mGoLiveSubmit)
 
-                            callApi(
-                                mGoLiveSubmit,
+                            callApi(mGoLiveSubmit,
                                 mFieldsError,
                                 netUtil,
                                 goLiveVm,
@@ -483,18 +481,15 @@ fun GoLiveScreen(
                         }
                     },
                     onClickedLive = {
-                        val isAllowGo = isAllowGoNext(
-                            currentStepId = currentStepId,
+                        val isAllowGo = isAllowGoNext(currentStepId = currentStepId,
                             mGoLiveSubmit = mGoLiveSubmit,
                             goLiveVm = goLiveVm,
                             onValidateRes = {
                                 mFieldsError = it.errors
-                            }
-                        )
+                            })
 
                         if (isAllowGo) {
-                            callApi(
-                                mGoLiveSubmit,
+                            callApi(mGoLiveSubmit,
                                 mFieldsError,
                                 netUtil,
                                 goLiveVm,
@@ -579,8 +574,7 @@ fun callApi(
     } else {
         goLiveVm.showAlert(
             getAlertConfig(
-                context.getString(R.string.connection_lost),
-                context.getString(R.string.no_net_msg)
+                context.getString(R.string.connection_lost), context.getString(R.string.no_net_msg)
             )
         )
     }
@@ -657,8 +651,7 @@ fun isAllowGoNext(
             }
         }
 
-        2 -> {
-            /*
+        2 -> {/*
             * recently added soho pub and priv. so its default public, so no need to check other SM checked or not
             * */
             true
@@ -801,8 +794,7 @@ fun saveSMProfileInGoLiveData(
             currentPlatformToken.removeIf { it.platform == platformName }
             currentPlatformToken.add(
                 PlatformToken(
-                    platform = platformName,
-                    accessToken = token.toString()
+                    platform = platformName, accessToken = token.toString()
                 )
             )
 
@@ -878,9 +870,25 @@ fun TopContent(stepCount: Int, currentStepId: Int) {
 }
 
 @Composable
+fun PropertyItemRow(
+    propertyItem: PropertyItem, isSelected: Boolean, onSelect: (PropertyItem) -> Unit
+) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { onSelect(propertyItem) }
+        .background(if (isSelected) Color.LightGray else Color.Transparent)
+        .padding(16.dp)) {
+        // Displaying Property Name
+        Text700_14sp(step = propertyItem.propInfo.title ?: "", modifier = Modifier.weight(1f))
+        Text400_10sp(label = propertyItem.propInfo.fullAddress())
+    }
+}
+
+
+@Composable
 fun StepContents(
     currentStepId: Int,
-    savedResults: DataGoLive,
+    screenAssets: GoLiveAssets? = null,
     tsResults: TsPropertyResponse? = null,
     propertyList: List<PropertyItem>? = null,
     mainAgencyList: List<AgencyItem>? = null,
@@ -903,7 +911,33 @@ fun StepContents(
     when (currentStepId) {
         // step #1
         0 -> {
-            propertyList?.let { propList ->
+            val savedProperty = screenAssets?.selectedProperty?.value
+            var selectedProperty by remember { mutableStateOf(savedProperty) }
+
+            Column {
+                propertyList?.forEach { propertyItem ->
+
+                    PropertyItemRow(propertyItem = propertyItem,
+                        isSelected = propertyItem == selectedProperty,
+                        onSelect = { selectedItem ->
+
+                            selectedProperty = if (selectedProperty == selectedItem) {
+                                null
+                            } else {
+                                selectedItem
+                            }
+
+                            // Update the isChecked state for selected item
+                            selectedItem.apply {
+                                isChecked = selectedProperty != null
+                            }
+
+                            onPropertyItemClicked(selectedItem)
+                        })
+                }
+            }
+
+            /*propertyList?.let { propList ->
                 if (propList.isEmpty()) {
                     DisplayNoData(message = "Not Found Properties")
                 } else {
@@ -916,7 +950,7 @@ fun StepContents(
                 }
             } ?: run {
                 DisplayNoData(message = "Property Information Serves Failed")
-            }
+            }*/
         }
 
         // step #2
@@ -940,8 +974,7 @@ fun StepContents(
 
         // step #3
         2 -> {
-            SocialMediaListing(
-                recentLoggedSM = recentLoggedSM,
+            SocialMediaListing(recentLoggedSM = recentLoggedSM,
                 stateSMConnected = stateSMConnected,
                 isSohoPublic = mGoLiveSubmit.isSohoPublic,
                 onSMItemClicked = { selectedSM ->
@@ -971,16 +1004,13 @@ fun StepContents(
         // step #4
         3 -> {
             Content4(
-                optionList = optionList,
-                mGoLiveSubmit = mGoLiveSubmit,
-                mFieldsError = mFieldsError
+                optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
             )
         }
 
         // step #5
         4 -> {
-            Content5(
-                goLiveData = mGoLiveSubmit,
+            Content5(goLiveData = mGoLiveSubmit,
                 isNowSelected = isNowSelected,
                 isNoSlots = isNoSlots,
                 onSwipeIsNowSelected = { onSwipeIsNowSelected(it) })
@@ -1115,8 +1145,7 @@ private fun Content5(
 
     //confirmation to delete time slot
     if (isShowDialog) {
-        ShowDeleteAlert(
-            isShowDialog = isShowDialog,
+        ShowDeleteAlert(isShowDialog = isShowDialog,
             slotToDelete = slotToDelete,
             onDismiss = { isShowDialog = it },
             onDelete = {
@@ -1124,8 +1153,7 @@ private fun Content5(
                 goLiveData.apply {
                     this.scheduleSlots = slots
                 }
-            }
-        )
+            })
     }
 
     //open DateTimePicker
@@ -1181,9 +1209,7 @@ private fun Content5(
             if (goLiveData.scheduleSlots.isEmpty()) {
                 SpacerVertical(size = 8.dp)
                 Text700_14sp(
-                    step = "Please set at least 1 schedule",
-                    isBold = false,
-                    color = ErrorRed
+                    step = "Please set at least 1 schedule", isBold = false, color = ErrorRed
                 )
             }
         }
@@ -1470,25 +1496,21 @@ private fun NextBackButtons(
                             })
                     } else {
                         //FinaliseSchedule Button
-                        ButtonColouredWrap(
-                            text = "Finalise Schedule",
+                        ButtonColouredWrap(text = "Finalise Schedule",
                             color = AppGreen,
                             modifier = rightModify,
                             onBtnClick = {
                                 onClickedFinalise.invoke()
-                            }
-                        )
+                            })
                     }
                 } else {
                     //Next Button
-                    ButtonColouredWrap(
-                        text = stringResource(R.string.next),
+                    ButtonColouredWrap(text = stringResource(R.string.next),
                         color = AppGreen,
                         modifier = rightModify,
                         onBtnClick = {
                             onClickedNext.invoke()
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -1516,15 +1538,12 @@ private fun SocialMediaListing(
     val savedLI = stateSMConnected.find { it.name == SocialMediaInfo.LINKEDIN.name }
 
     /*if SM recentLogged first piroty to checked state or else change state*/
-    isCheckedYT =
-        if (recentLoggedSM.contains(SocialMediaInfo.YOUTUBE.name)) true
-        else savedYT?.isItemChecked ?: false
-    isCheckedFB =
-        if (recentLoggedSM.contains(SocialMediaInfo.FACEBOOK.name)) true
-        else savedFB?.isItemChecked ?: false
-    isCheckedLI =
-        if (recentLoggedSM.contains(SocialMediaInfo.LINKEDIN.name)) true
-        else savedLI?.isItemChecked ?: false
+    isCheckedYT = if (recentLoggedSM.contains(SocialMediaInfo.YOUTUBE.name)) true
+    else savedYT?.isItemChecked ?: false
+    isCheckedFB = if (recentLoggedSM.contains(SocialMediaInfo.FACEBOOK.name)) true
+    else savedFB?.isItemChecked ?: false
+    isCheckedLI = if (recentLoggedSM.contains(SocialMediaInfo.LINKEDIN.name)) true
+    else savedLI?.isItemChecked ?: false
 
     val visibleSMList = SocialMediaInfo.entries.filter {
         it.name != SocialMediaInfo.NONE.name
@@ -1554,8 +1573,7 @@ private fun SocialMediaListing(
 
     /*finally display SM list with checkBox or connect button*/
     smList.forEach { item ->
-        SocialMediaItemContent(
-            item,
+        SocialMediaItemContent(item,
             isSohoPublic,
             isCheckedYT,
             isCheckedFB,
@@ -1647,9 +1665,7 @@ private fun ProfileHideItem(
             Text700_14spBold(step = "Do not show profile", txtColor = textColor)
             Spacer(modifier = Modifier.weight(1f))
             Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.padding(horizontal = 8.dp), contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
                 Image(
@@ -1819,9 +1835,7 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
 
 @Composable
 fun PropertyItemContent(
-    item: PropertyItem,
-    isClickable: Boolean = true,
-    onItemClicked: (PropertyItem) -> Unit = {}
+    item: PropertyItem, isClickable: Boolean = true, onItemClicked: (PropertyItem) -> Unit = {}
 ) {
     val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
     val textColor = if (item.isChecked) ItemCardBg else AppWhite
@@ -1859,8 +1873,7 @@ fun PropertyItemContent(
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(
-                    item.isChecked,
+                TypeAndCheckBox(item.isChecked,
                     isClickable,
                     property,
                     txtColor = textColor,
@@ -2099,7 +2112,7 @@ private fun PreviewGoLiveScreen() {
             }
             item {
                 StepContents(currentStepId = currentStep,
-                    savedResults = DataGoLive(emptyList(), emptyList()),
+                    screenAssets = GoLiveAssets(),
                     optionList = mutableListOf(),
                     isNowSelected = true,
                     isNoSlots = false,
