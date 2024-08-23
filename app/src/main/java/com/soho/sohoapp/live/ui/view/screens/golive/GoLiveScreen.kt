@@ -80,6 +80,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.AgencyItem
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.PlatformToken
@@ -159,13 +160,13 @@ fun GoLiveScreen(
     savedTsResults: TsPropertyResponse? = null,
     savedState: GoLiveAssets? = null,
     mGoLiveSubmit: GoLiveSubmit,
+    mGState: GlobalState,
     goLiveVm: GoLiveViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
     onLoadApiResults: (DataGoLive) -> Unit,
     onLoadTSResults: (TsPropertyResponse) -> Unit,
     onUpdateState: (GoLiveAssets) -> Unit
 ) {
-
     val stateVm = goLiveVm.mState.value
     val stateRecentSM = viewMMain.stateRecentLoggedSM
     val assetsState = savedState ?: goLiveVm.assetsState.value
@@ -186,6 +187,8 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.LiveEndStatus(CastEnd.NONE))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
+    var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), false)) }
+
 
     /*
     * check liveCast how to end, if completed then clean all of savedData or else keepIt as
@@ -298,6 +301,23 @@ fun GoLiveScreen(
         }
     }
 
+    /*
+    * Globally saved selected property item
+    * */
+    LaunchedEffect(rSelPropItem) {
+        if (rSelPropItem.id != 0) {
+
+            mGState.apply {
+                propertyItemState.value = if (rSelPropItem.isChecked) rSelPropItem else null
+            }
+
+            //this is for reset rSelPropItem value to accept new save value
+            rSelPropItem = PropertyItem(0, Document(), false)
+        }
+    }
+
+
+    //MAIN CONTENT
     Box(
         modifier = Modifier
             .background(brushMainGradientBg)
@@ -340,8 +360,7 @@ fun GoLiveScreen(
 
                             //All Steps
                             StepContents(currentStepId = currentStepId,
-                                screenAssets = savedState,
-                                tsResults = savedTsResults,
+                                mGState = mGState,
                                 propertyList = propertyList,
                                 mainAgencyList = agencyList,
                                 optionList = optionList,
@@ -373,8 +392,7 @@ fun GoLiveScreen(
                                 onPropertyItemClicked = { selectedProperty ->
 
                                     //Global state update for selected property
-                                    assetsState.selectedProperty.value =
-                                        if (selectedProperty.isChecked) selectedProperty else null
+                                    rSelPropItem = selectedProperty
 
                                     //submit data update
                                     mGoLiveSubmit.apply {
@@ -942,8 +960,7 @@ fun PropertyItemRow(
 @Composable
 fun StepContents(
     currentStepId: Int,
-    screenAssets: GoLiveAssets? = null,
-    tsResults: TsPropertyResponse? = null,
+    mGState: GlobalState,
     propertyList: List<PropertyItem>? = null,
     mainAgencyList: List<AgencyItem>? = null,
     mGoLiveSubmit: GoLiveSubmit,
@@ -971,7 +988,7 @@ fun StepContents(
                 } else {
                     SearchBar()
                     SpacerVertical(16.dp)
-                    PropertyListing(screenAssets, propList, onItemClicked = {
+                    PropertyListing(mGState, propList, onItemClicked = {
                         onPropertyItemClicked.invoke(it)
                     })
                     SpacerVertical(size = 70.dp)
@@ -1655,15 +1672,12 @@ private fun AgentListing(
 
 @Composable
 private fun PropertyListing(
-    screenAssets: GoLiveAssets? = null,
+    mGState: GlobalState,
     listings: List<PropertyItem>?,
     onItemClicked: (PropertyItem) -> Unit = {}
 ) {
-    val savedProperty = screenAssets?.selectedProperty?.value
+    val savedProperty = mGState.propertyItemState.value
     var selectedProperty by remember { mutableStateOf(savedProperty) }
-
-    println("mySavd "+savedProperty)
-    println("mySavd "+selectedProperty)
 
     listings?.forEach { propertyItem ->
 
@@ -2169,8 +2183,8 @@ private fun PreviewGoLiveScreen() {
             }
             item {
                 StepContents(currentStepId = currentStep,
-                    screenAssets = GoLiveAssets(),
                     optionList = mutableListOf(),
+                    mGState = GlobalState(),
                     isNowSelected = true,
                     isNoSlots = false,
                     isNotShowProfile = true,

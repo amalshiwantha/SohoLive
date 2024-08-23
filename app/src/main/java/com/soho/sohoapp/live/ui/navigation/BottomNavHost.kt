@@ -54,6 +54,7 @@ fun BottomNavHost(
                 onGoLiveTsResult,
                 mState,
                 mGoLiveSubmit,
+                mGlobalState,
                 onLoadApiResults = { onGoLiveResult = it },
                 onLoadTSResults = { onGoLiveTsResult = it },
                 onUpdateState = { mState = it })

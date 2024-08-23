@@ -103,7 +103,7 @@ data class GoLiveSubmit(
 data class GlobalState(
     var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
     var videoItemState: MutableState<VideoItem?> = mutableStateOf(null),
-    var selectedProperty: MutableState<PropertyItem?> = mutableStateOf(null)
+    var propertyItemState: MutableState<PropertyItem?> = mutableStateOf(null)
 )
 
 @Serializable
