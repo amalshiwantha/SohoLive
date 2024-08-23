@@ -11,7 +11,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.soho.sohoapp.live.model.GlobleState
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.network.response.DataGoLive
@@ -39,7 +39,7 @@ fun BottomNavHost(
     var mState by remember { mutableStateOf(GoLiveAssets()) }
     val scheduleSlots = remember { mutableStateListOf<ScheduleSlots>() }
     val mGoLiveSubmit by remember { mutableStateOf(GoLiveSubmit()) }
-    val mGlobleState by remember { mutableStateOf(GlobleState()) }
+    val mGlobalState by remember { mutableStateOf(GlobalState()) }
 
     NavHost(
         navController = navController, startDestination = NavigationPath.GO_LIVE.name
@@ -60,7 +60,7 @@ fun BottomNavHost(
         }
         composable(route = NavigationPath.VIDEO_LIBRARY.name) {
             VideoLibraryScreen(
-                mGState = mGlobleState,
+                mGState = mGlobalState,
                 navController = navController
             )
         }
@@ -83,7 +83,7 @@ fun BottomNavHost(
         composable(route = NavigationPath.VIDEO_MANAGE.name) {
             VideoManageScreen(
                 navController = navController,
-                mGState = mGlobleState
+                mGState = mGlobalState
             )
         }
         composable(route = NavigationPath.LIVE_CAST_END.name) {

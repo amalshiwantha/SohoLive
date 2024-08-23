@@ -58,7 +58,7 @@ data class VideoAnalytics(
         }
     }
 }
-
+@Serializable
 data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
 
 data class AgencyItem(
@@ -100,9 +100,10 @@ data class GoLiveSubmit(
 }
 
 @Serializable
-data class GlobleState(
+data class GlobalState(
     var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
-    var videoItemState: MutableState<VideoItem?> = mutableStateOf(null)
+    var videoItemState: MutableState<VideoItem?> = mutableStateOf(null),
+    var selectedProperty: MutableState<PropertyItem?> = mutableStateOf(null)
 )
 
 @Serializable

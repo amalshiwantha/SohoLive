@@ -51,7 +51,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.VideoPrivacy
-import com.soho.sohoapp.live.model.GlobleState
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.model.VideoAnalytics
 import com.soho.sohoapp.live.network.common.AlertState
@@ -87,7 +87,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun VideoLibraryScreen(
-    mGState: GlobleState,
+    mGState: GlobalState,
     navController: NavController,
     vmVidLib: VideoLibraryViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
@@ -225,7 +225,7 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
 private fun Content(
     isShowProgress: Boolean,
     state: VideoLibraryState,
-    mGState: GlobleState,
+    mGState: GlobalState,
     onManageClick: (VideoItem) -> Unit
 ) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }

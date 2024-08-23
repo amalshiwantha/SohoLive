@@ -1662,6 +1662,9 @@ private fun PropertyListing(
     val savedProperty = screenAssets?.selectedProperty?.value
     var selectedProperty by remember { mutableStateOf(savedProperty) }
 
+    println("mySavd "+savedProperty)
+    println("mySavd "+selectedProperty)
+
     listings?.forEach { propertyItem ->
 
         PropertyItemRow(item = propertyItem,
