@@ -1,16 +1,10 @@
 package com.soho.sohoapp.live.ui.view.screens.home
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -26,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,7 +30,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
-import com.soho.sohoapp.live.model.UiState
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
 import com.soho.sohoapp.live.ui.components.HandleBackPress
@@ -45,7 +38,6 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 
 @Composable
@@ -54,7 +46,6 @@ fun HomeScreen(
     homeVm: HomeViewModel = viewModel(),
     viewMMain: MainViewModel
 ) {
-
     val context = LocalContext.current
     val uiState by homeVm.uiState.collectAsState()
     val navController = rememberNavController()
@@ -77,24 +68,20 @@ fun HomeScreen(
     //HandleBackPress
     HandleBackPress(navController = navController)
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            if (showBottomBar) {
-                AppTopBar(
-                    title = selectedTabTitle,
-                    isAllowBack = false,
-                    onBackClick = { }, onRightClick = {})
-            }
-        },
-        bottomBar = {
-            if (showBottomBar) {
-                BottomNavigationBar(navController, navigationSelectedItem, onTabClick = {
-                    navigationSelectedItem = it
-                })
-            }
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        if (showBottomBar) {
+            AppTopBar(title = selectedTabTitle,
+                isAllowBack = false,
+                onBackClick = { },
+                onRightClick = {})
         }
-    ) { innerPadding ->
+    }, bottomBar = {
+        if (showBottomBar) {
+            BottomNavigationBar(navController, navigationSelectedItem, onTabClick = {
+                navigationSelectedItem = it
+            })
+        }
+    }) { innerPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -139,8 +126,7 @@ fun HomeContent(navController: NavController, title: String) {
                 title,
                 style = MaterialTheme.typography.titleLarge,
                 color = AppGreen,
-                modifier = Modifier
-                    .padding(vertical = 20.dp)
+                modifier = Modifier.padding(vertical = 20.dp)
             )
         }
     }

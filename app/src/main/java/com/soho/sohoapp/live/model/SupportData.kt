@@ -8,6 +8,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
+import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataVidRes
@@ -15,6 +16,14 @@ import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+/*
+* This state help for store value when globally access
+* */
+@Serializable
+data class MainState(
+    var liveOrientation: MutableState<String> = mutableStateOf(Orientation.PORT.name),
+)
 
 data class AlertData(
     val isShow: Boolean = false,
@@ -58,6 +67,7 @@ data class VideoAnalytics(
         }
     }
 }
+
 @Serializable
 data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
 

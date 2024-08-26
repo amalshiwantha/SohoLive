@@ -27,13 +27,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.soho.sohoapp.live.enums.Orientation
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import kotlinx.coroutines.launch
@@ -42,9 +43,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun SelectOrientationBottomSheet(onGoLive: () -> Unit, onCancel: () -> Unit) {
 
+    val mState = MainStateHolder.mState
     val bottomSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var selectedOrientation by remember { mutableStateOf("Vertical") }
+    val selectedOrientation by remember { mutableStateOf(mState.liveOrientation) }
 
     ModalBottomSheet(
         containerColor = BottomBarBg,
@@ -75,14 +77,14 @@ fun SelectOrientationBottomSheet(onGoLive: () -> Unit, onCancel: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 RadioButtonWithText(
-                    selected = selectedOrientation == "Vertical",
+                    selected = selectedOrientation.value == Orientation.PORT.name,
                     text = "Vertical",
-                    onClick = { selectedOrientation = "Vertical" }
+                    onClick = { selectedOrientation.value = Orientation.PORT.name }
                 )
                 RadioButtonWithText(
-                    selected = selectedOrientation == "Horizontal",
+                    selected = selectedOrientation.value == Orientation.LAND.name,
                     text = "Horizontal",
-                    onClick = { selectedOrientation = "Horizontal" }
+                    onClick = { selectedOrientation.value = Orientation.LAND.name }
                 )
             }
 
