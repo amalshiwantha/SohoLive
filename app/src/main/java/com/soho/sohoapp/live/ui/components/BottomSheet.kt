@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -23,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
@@ -55,21 +53,9 @@ fun SelectOrientationBottomSheet(onGoLive: () -> Unit, onCancel: () -> Unit) {
             Text400_14sp(info = "This will determine the orientation for this livecast.")
             SpacerUp(size = 24.dp)
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                RadioButtonWithText(
-                    selected = selectedOrientation.value == Orientation.PORT.name,
-                    text = "Vertical",
-                    onClick = { selectedOrientation.value = Orientation.PORT.name }
-                )
-                RadioButtonWithText(
-                    selected = selectedOrientation.value == Orientation.LAND.name,
-                    text = "Horizontal",
-                    onClick = { selectedOrientation.value = Orientation.LAND.name }
-                )
-            }
+            SwipeSwitchOrientation(selectedOrientation, onSwipeChange = {
+                selectedOrientation.value = it
+            })
 
             SpacerUp(size = 24.dp)
 
