@@ -1123,6 +1123,12 @@ private fun Content4(
     )
 
     //what for livestream
+
+    //save default value
+    val defaultSelection =optionList[0]
+    mGoLiveSubmit.apply { purpose = defaultSelection }
+    configPurpose.input = defaultSelection
+
     Text700_14sp(step = "What is this livestream for?")
     DropDownWhatForLiveStream(
         options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
