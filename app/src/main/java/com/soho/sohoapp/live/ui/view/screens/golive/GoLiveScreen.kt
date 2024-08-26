@@ -107,6 +107,7 @@ import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
+import com.soho.sohoapp.live.ui.components.SelectOrientationBottomSheet
 import com.soho.sohoapp.live.ui.components.SpacerHorizontal
 import com.soho.sohoapp.live.ui.components.SpacerVertical
 import com.soho.sohoapp.live.ui.components.Text400_10sp
@@ -188,7 +189,26 @@ fun GoLiveScreen(
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
     var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), false)) }
+    var isShowOrientationModel by remember { mutableStateOf(false) }
 
+    /*
+    * show select orientation view
+    * */
+    if (isShowOrientationModel) {
+        SelectOrientationBottomSheet(onGoLive = {
+            isShowOrientationModel = false
+
+            callApi(mGoLiveSubmit,
+                mFieldsError,
+                netUtil,
+                goLiveVm,
+                onErrorsUpdate = {
+                    mFieldsError = it
+                })
+        }, onCancel = {
+            isShowOrientationModel = false
+        })
+    }
 
     /*
     * check liveCast how to end, if completed then clean all of savedData or else keepIt as
@@ -508,13 +528,7 @@ fun GoLiveScreen(
                             })
 
                         if (isAllowGo) {
-                            callApi(mGoLiveSubmit,
-                                mFieldsError,
-                                netUtil,
-                                goLiveVm,
-                                onErrorsUpdate = {
-                                    mFieldsError = it
-                                })
+                            isShowOrientationModel = true
                         }
                     })
             }
@@ -527,11 +541,6 @@ fun GoLiveScreen(
             })
         }
     }
-}
-
-@Composable
-fun ShowLiveCastEndScreen() {
-
 }
 
 /*
