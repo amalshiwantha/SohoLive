@@ -35,7 +35,7 @@ import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.TextButtonBlue
 import com.soho.sohoapp.live.ui.components.TextError
 import com.soho.sohoapp.live.ui.components.TextFieldWhite
@@ -120,7 +120,7 @@ fun SignInScreen(
                     }
                 }
 
-                SpacerVertical(24.dp)
+                SpacerUp(24.dp)
 
                 //Display bottom login button
                 BottomLoginBtn(modifier, isShowProgress) {
@@ -151,7 +151,7 @@ private fun LoginForm(
         val errorState = loginState.errorStates
 
         TextLabelWhite14(label = stringResource(R.string.email))
-        SpacerVertical(8.dp)
+        SpacerUp(8.dp)
         TextFieldWhite(fieldConfig = FieldConfig.NEXT.apply {
             placeholder = stringResource(R.string.email)
             input = "samuel@drewlindsaysir."
@@ -165,10 +165,10 @@ private fun LoginForm(
             TextError(errorMsg = it)
         }
 
-        SpacerVertical(24.dp)
+        SpacerUp(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.password))
-        SpacerVertical(8.dp)
+        SpacerUp(8.dp)
         PasswordTextFieldWhite(tempPw = "passwor", onTextChange = {
             requestData.apply { password = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
@@ -178,7 +178,7 @@ private fun LoginForm(
             TextError(errorMsg = it)
         }
 
-        SpacerVertical(24.dp)
+        SpacerUp(24.dp)
 
         TextButtonBlue(text = stringResource(R.string.forgot_password),
             modifier = Modifier

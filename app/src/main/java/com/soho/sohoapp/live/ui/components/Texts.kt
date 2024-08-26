@@ -456,7 +456,7 @@ fun TextIconSwipeSelection(modifier: Modifier, title: String, textColor: Color, 
                 painter = painterResource(id = icon),
                 contentDescription = null
             )
-            SpacerVertical(size = 8.dp)
+            SpacerUp(size = 8.dp)
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,

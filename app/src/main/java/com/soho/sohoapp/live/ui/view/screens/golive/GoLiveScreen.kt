@@ -108,8 +108,8 @@ import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SelectOrientationBottomSheet
-import com.soho.sohoapp.live.ui.components.SpacerHorizontal
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_10sp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -881,9 +881,9 @@ fun NoInternetScreen(onRetryClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text950_20sp(title = "No Internet Connection")
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
         Text700_14sp(step = "Please check your internet connection and try again.")
-        SpacerVertical(size = 24.dp)
+        SpacerUp(size = 24.dp)
         ButtonColoured(text = "Retry", color = AppGreen, onBtnClick = {
             onRetryClick()
         })
@@ -893,7 +893,7 @@ fun NoInternetScreen(onRetryClick: () -> Unit) {
 @Composable
 fun TopContent(stepCount: Int, currentStepId: Int) {
     StepIndicator(totalSteps = stepCount, currentStep = currentStepId)
-    SpacerVertical(16.dp)
+    SpacerUp(16.dp)
     StepCountTitleInfo(currentStepId)
 }
 
@@ -944,11 +944,11 @@ fun PropertyItemRow(
                     onCheckedChange = {
                         onSelect(item)
                     })
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 Text700_14sp(step = property.fullAddress(), color = textColor)
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 AmenitiesView(property, textColor)
             }
         }
@@ -986,7 +986,7 @@ fun StepContents(
     onAgentItemClicked: (AgencyItem) -> Unit,
     onSMItemClicked: (SocialMediaInfo) -> Unit
 ) {
-    SpacerVertical(40.dp)
+    SpacerUp(40.dp)
 
     when (currentStepId) {
         // step #1
@@ -996,11 +996,11 @@ fun StepContents(
                     DisplayNoData(message = "Not Found Properties")
                 } else {
                     SearchBar()
-                    SpacerVertical(16.dp)
+                    SpacerUp(16.dp)
                     PropertyListing(mGState, propList, onItemClicked = {
                         onPropertyItemClicked.invoke(it)
                     })
-                    SpacerVertical(size = 70.dp)
+                    SpacerUp(size = 70.dp)
                 }
             } ?: run {
                 DisplayNoData(message = "Property Information Serves Failed")
@@ -1052,7 +1052,7 @@ fun StepContents(
                 onSohoItemChecked = {
                     mGoLiveSubmit.isSohoPublic = it
                 })
-            SpacerVertical(size = 70.dp)
+            SpacerUp(size = 70.dp)
         }
 
         // step #4
@@ -1074,7 +1074,7 @@ fun StepContents(
 
 @Composable
 fun DisplayNoData(message: String) {
-    SpacerVertical(size = 150.dp)
+    SpacerUp(size = 150.dp)
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -1140,7 +1140,7 @@ private fun Content4(
     }
 
     //title
-    SpacerVertical(size = 24.dp)
+    SpacerUp(size = 24.dp)
     Text700_14sp(step = "Stream title")
     TextFieldOutlined(tfConfig = configTitle, onTextChange = {
         mGoLiveSubmit.apply { title = it }
@@ -1150,7 +1150,7 @@ private fun Content4(
     }
 
     //description
-    SpacerVertical(size = 24.dp)
+    SpacerUp(size = 24.dp)
     Row {
         Text700_14sp(step = "Description", modifier = Modifier.weight(1f))
         Text700_14sp(step = txtCounter, isBold = false)
@@ -1162,11 +1162,11 @@ private fun Content4(
 
     //cover image
     if (false) {
-        SpacerVertical(size = 40.dp)
+        SpacerUp(size = 40.dp)
         Text700_14sp(step = "Livestream cover image")
         Text400_14sp(info = "We’ve generated a cover image for your livestream. Cover image may be seen by viewers on connected social platforms and when you share your livestream link.")
 
-        SpacerVertical(size = 16.dp)
+        SpacerUp(size = 16.dp)
         Image(
             painter = painterResource(id = R.drawable.sample_cover_image),
             contentDescription = "",
@@ -1174,21 +1174,21 @@ private fun Content4(
             modifier = Modifier.fillMaxWidth()
         )
 
-        SpacerVertical(size = 16.dp)
+        SpacerUp(size = 16.dp)
         ShareDownloadButtons()
 
-        SpacerVertical(size = 24.dp)
+        SpacerUp(size = 24.dp)
         CustomizeCoverImageCard(isOnCoverOption, onCheckedChange = {
             isOnCoverOption = it
         })
 
         if (isOnCoverOption) {
-            SpacerVertical(size = 16.dp)
+            SpacerUp(size = 16.dp)
             CustomizeCoverOptionCards()
         }
     }
 
-    SpacerVertical(size = 140.dp)
+    SpacerUp(size = 140.dp)
 }
 
 @Composable
@@ -1231,20 +1231,20 @@ private fun Content5(
 
     //swipe selection
     Text700_14sp(step = "When do you want to go live?")
-    SpacerVertical(size = 8.dp)
+    SpacerUp(size = 8.dp)
     SwipeSwitchWhenGo(isNowSelected, onSwipeChange = {
         onSwipeIsNowSelected(it)
     })
 
     //this is for Schedule section content
     if (!isNowSelected) {
-        SpacerVertical(size = 40.dp)
+        SpacerUp(size = 40.dp)
         Text700_14sp(step = "Set date & time")
 
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
         Text700_14sp(step = "You can schedule multiple livecast for this listing", isBold = false)
 
-        SpacerVertical(size = 16.dp)
+        SpacerUp(size = 16.dp)
 
         //Schedule List
         if (slots.isNotEmpty()) {
@@ -1255,7 +1255,7 @@ private fun Content5(
                 })
             }
 
-            SpacerVertical(size = 16.dp)
+            SpacerUp(size = 16.dp)
         }
 
         //Add Button
@@ -1267,7 +1267,7 @@ private fun Content5(
 
         if (isNoSlots) {
             if (goLiveData.scheduleSlots.isEmpty()) {
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 Text700_14sp(
                     step = "Please set at least 1 schedule", isBold = false, color = ErrorRed
                 )
@@ -1276,7 +1276,7 @@ private fun Content5(
     }
 
     //add more bottom spaces
-    SpacerVertical(size = 100.dp)
+    SpacerUp(size = 100.dp)
 }
 
 @Composable
@@ -1338,10 +1338,10 @@ fun CustomizeCoverImageCard(isOnCoverOption: Boolean, onCheckedChange: (Boolean)
 
             //if true hide view plan button and show sub options
             if (!isOnCoverOption) {
-                SpacerVertical(size = 20.dp)
+                SpacerUp(size = 20.dp)
                 UpgradedPlansText()
 
-                SpacerVertical(size = 16.dp)
+                SpacerUp(size = 16.dp)
                 ButtonGradientIcon(text = "View Plans",
                     icon = R.drawable.ic_upgrade,
                     gradientBrush = brushPlanBtnGradientBg,
@@ -1383,7 +1383,7 @@ fun ShareDownloadButtons() {
         ButtonOutLinedIcon(
             text = "Share", icon = R.drawable.ic_eye_vec, modifier = Modifier.weight(1f)
         ) {}
-        SpacerHorizontal(size = 16.dp)
+        SpacerSide(size = 16.dp)
         ButtonOutLinedIcon(
             text = "Download", icon = R.drawable.ic_download, modifier = Modifier.weight(1f)
         ) {}
@@ -1813,7 +1813,7 @@ private fun SocialMediaItemContent(
                 )
 
                 if (info == SocialMediaInfo.SOHO) {
-                    SpacerVertical(size = 12.dp)
+                    SpacerUp(size = 12.dp)
                     PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
                         val isPublic = it == VideoPrivacy.PUBLIC.label
                         onSohoItemChecked.invoke(isPublic)
@@ -1910,7 +1910,7 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
                     .fillMaxWidth()
             ) {
                 ProfileNameCheckBox(agent, item.isChecked, textColor)
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 agent.email?.let {
                     Text400_14sp(info = it, color = textColor)
                 }
@@ -1966,11 +1966,11 @@ fun PropertyItemContent(
                     onCheckedChange = {
                         onItemClicked(item.apply { isChecked = !isChecked })
                     })
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 Text700_14sp(step = property.fullAddress(), color = textColor)
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 AmenitiesView(property, textColor)
             }
         }
@@ -2118,7 +2118,7 @@ private fun ProfileNameCheckBox(
                 TextStarRating(rate = "* ${profile.rating}")
             }
 
-            SpacerHorizontal(size = 16.dp)
+            SpacerSide(size = 16.dp)
 
             Box(
                 modifier = Modifier.padding(horizontal = 8.dp), contentAlignment = Alignment.Center
@@ -2155,9 +2155,9 @@ private fun StepCountTitleInfo(currentStepId: Int) {
     val stepInfo = getStepInfo(currentStepId)
 
     Text700_14sp(step = stepInfo.counter)
-    SpacerVertical(8.dp)
+    SpacerUp(8.dp)
     Text950_20sp(title = stepInfo.title)
-    SpacerVertical(8.dp)
+    SpacerUp(8.dp)
     Text400_14sp(info = stepInfo.info)
 }
 

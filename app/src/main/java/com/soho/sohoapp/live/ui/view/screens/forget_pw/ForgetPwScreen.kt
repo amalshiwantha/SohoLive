@@ -23,7 +23,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.ui.components.TextSubtitleWhite14
@@ -69,7 +69,7 @@ fun ForgetPwScreen(
                     LoginForm()
                 }
 
-                SpacerVertical(24.dp)
+                SpacerUp(24.dp)
                 BottomLoginBtn(modifier, navController)
             }
         }
@@ -83,10 +83,10 @@ private fun LoginForm() {
 
         TextSubtitleWhite14(label = stringResource(R.string.forgot_pw_msg))
 
-        SpacerVertical(24.dp)
+        SpacerUp(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.email))
-        SpacerVertical(8.dp)
+        SpacerUp(8.dp)
         TextFieldWhite(
             fieldConfig = FieldConfig.NEXT.apply {
                 placeholder = stringResource(R.string.email)
@@ -95,7 +95,7 @@ private fun LoginForm() {
             },
             onTextChange = {})
 
-        SpacerVertical(24.dp)
+        SpacerUp(24.dp)
     }
 }
 

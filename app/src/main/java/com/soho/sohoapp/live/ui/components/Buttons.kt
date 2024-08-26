@@ -60,7 +60,7 @@ fun ButtonOutLinedIcon(
                 contentDescription = "null",
                 contentScale = ContentScale.Crop
             )
-            SpacerHorizontal(size = 8.dp)
+            SpacerSide(size = 8.dp)
             Text800_12sp(label = text)
         }
     }
@@ -188,7 +188,7 @@ fun ButtonGradientIcon(
                     contentDescription = "",
                     tint = Color.White
                 )
-                SpacerHorizontal(size = 8.dp)
+                SpacerSide(size = 8.dp)
                 TextWhite14(title = text)
             }
         }

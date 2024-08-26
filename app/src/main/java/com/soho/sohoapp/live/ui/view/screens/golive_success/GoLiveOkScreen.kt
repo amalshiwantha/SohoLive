@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -33,7 +32,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 
@@ -92,7 +91,7 @@ fun CenterImgText(modifier: Modifier, goLiveData: GoLiveSubmit) {
             modifier = Modifier.wrapContentSize()
         )
 
-        SpacerVertical(size = 40.dp)
+        SpacerUp(size = 40.dp)
 
         val countSlots = goLiveData.scheduleSlots.size
         val title = pluralStringResource(R.plurals.livecast,countSlots,countSlots)
@@ -108,7 +107,7 @@ fun CenterImgText(modifier: Modifier, goLiveData: GoLiveSubmit) {
             letterSpacing = 0.24.sp,
         )
 
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
 
         Text(
             text = "We will promote your scheduled livecasts to prospective buyers or renters and we will notify you when it’s time to go live!",

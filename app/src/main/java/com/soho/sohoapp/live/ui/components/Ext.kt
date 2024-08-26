@@ -39,11 +39,11 @@ val brushGradientLive = Brush.horizontalGradient(
 )
 
 @Composable
-fun SpacerVertical(size: Dp) {
+fun SpacerUp(size: Dp) {
     Spacer(modifier = Modifier.height(size))
 }
 
 @Composable
-fun SpacerHorizontal(size: Dp) {
+fun SpacerSide(size: Dp) {
     Spacer(modifier = Modifier.width(size))
 }

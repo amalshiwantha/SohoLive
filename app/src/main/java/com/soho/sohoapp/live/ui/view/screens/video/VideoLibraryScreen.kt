@@ -61,8 +61,8 @@ import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
-import com.soho.sohoapp.live.ui.components.SpacerHorizontal
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
@@ -192,7 +192,7 @@ fun ViewersAnalyticsContent(data: VideoAnalytics) {
             .padding(horizontal = 16.dp)
     ) {
         Text800_20sp(label = "Viewers Analytics")
-        SpacerVertical(size = 24.dp)
+        SpacerUp(size = 24.dp)
 
         AnalyticsItem(label = "Total Views", value = data.getTotalPlayTime().toString())
         AnalyticsItem(label = "Facebook", value = data.fb.toString(), isSubItem = true)
@@ -200,7 +200,7 @@ fun ViewersAnalyticsContent(data: VideoAnalytics) {
         AnalyticsItem(label = "LinkedIn", value = data.li.toString(), isSubItem = true)
         AnalyticsItem(label = "Soho.com.au", value = data.soho.toString(), isSubItem = true)
         AnalyticsItem(label = "Average Playing Minutes", value = data.getFormattedPlayTime())
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
     }
 }
 
@@ -342,15 +342,15 @@ private fun NoDataScreen(onClick: () -> Unit) {
                 painter = painterResource(id = R.drawable.ic_videos_play_list),
                 contentDescription = ""
             )
-            SpacerVertical(size = 40.dp)
+            SpacerUp(size = 40.dp)
             Text800_14sp(
                 label = stringResource(R.string.no_data_title),
                 txtAlign = TextAlign.Center
             )
-            SpacerVertical(size = 8.dp)
+            SpacerUp(size = 8.dp)
             Text400_14sp(info = stringResource(R.string.no_data_msg), txtAlign = TextAlign.Center)
 
-            SpacerVertical(size = 40.dp)
+            SpacerUp(size = 40.dp)
             ButtonColoredIcon(
                 title = "Schedule a livecast",
                 btnColor = AppGreen,
@@ -465,7 +465,7 @@ private fun ListItemView(
             Spacer(modifier = Modifier.weight(1f))
             Text700_12spRight(label = item.getDisplayDate(), txtColor = AppWhite)
         }
-        SpacerVertical(size = 16.dp)
+        SpacerUp(size = 16.dp)
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
@@ -473,10 +473,10 @@ private fun ListItemView(
             PropertyImageCenterPlay(propImg, onClick = {
                 playVideo(item.downloadLink)
             })
-            SpacerHorizontal(size = 16.dp)
+            SpacerSide(size = 16.dp)
             TitleDescription(item)
         }
-        SpacerVertical(size = 16.dp)
+        SpacerUp(size = 16.dp)
 
         //bottom action button list
         Row(
@@ -491,7 +491,7 @@ private fun ListItemView(
                 onBtnClick = {
                     onClickManage(item)
                 })
-            SpacerHorizontal(size = 8.dp)
+            SpacerSide(size = 8.dp)
 
             //download btn
             ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
@@ -501,7 +501,7 @@ private fun ListItemView(
                     showToast("Not found a download link")
                 }
             })
-            SpacerHorizontal(size = 8.dp)
+            SpacerSide(size = 8.dp)
 
             //chart btn
             /*ActionIconButton(R.drawable.ic_chart, onClickAction = {
@@ -549,7 +549,7 @@ fun TitleDescription(item: VideoItem) {
     Column {
         item.title?.let {
             Text700_14sp(step = it)
-            SpacerVertical(size = 8.dp)
+            SpacerUp(size = 8.dp)
         }
         item.description?.let {
             Text400_12sp(label = it)

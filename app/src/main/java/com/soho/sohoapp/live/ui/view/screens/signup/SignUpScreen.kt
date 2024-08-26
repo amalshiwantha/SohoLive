@@ -25,7 +25,7 @@ import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -70,7 +70,7 @@ fun SignUpScreen(
                     SignupFormContent()
                 }
 
-                SpacerVertical(24.dp)
+                SpacerUp(24.dp)
                 BottomLoginBtn(modifier, navController)
             }
         }
@@ -88,7 +88,7 @@ private fun SignupFormContent() {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.fName))
-                SpacerVertical(8.dp)
+                SpacerUp(8.dp)
                 TextFieldWhite(
                     fieldConfig = FieldConfig.NEXT.apply {
                         placeholder = stringResource(R.string.fName)
@@ -99,7 +99,7 @@ private fun SignupFormContent() {
 
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.lName))
-                SpacerVertical(8.dp)
+                SpacerUp(8.dp)
                 TextFieldWhite(
                     fieldConfig = FieldConfig.NEXT.apply {
                         placeholder = stringResource(R.string.lName)
@@ -109,10 +109,10 @@ private fun SignupFormContent() {
             }
         }
 
-        SpacerVertical(24.dp)
+        SpacerUp(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.email))
-        SpacerVertical(8.dp)
+        SpacerUp(8.dp)
         TextFieldWhite(
             fieldConfig = FieldConfig.NEXT.apply {
                 placeholder = stringResource(R.string.email)
@@ -120,13 +120,13 @@ private fun SignupFormContent() {
             },
             onTextChange = {})
 
-        SpacerVertical(24.dp)
+        SpacerUp(24.dp)
 
         TextLabelWhite14(label = stringResource(R.string.password))
-        SpacerVertical(8.dp)
+        SpacerUp(8.dp)
         PasswordTextFieldWhite(onTextChange = {})
 
-        SpacerVertical(24.dp)
+        SpacerUp(24.dp)
     }
 }
 

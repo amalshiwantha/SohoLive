@@ -47,8 +47,8 @@ import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
-import com.soho.sohoapp.live.ui.components.SpacerHorizontal
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text800_12sp
@@ -198,11 +198,11 @@ private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
 
         //property
         itemInfo.property?.let {
-            SpacerVertical(size = 40.dp)
+            SpacerUp(size = 40.dp)
             PropertyView(it)
 
             //video
-            SpacerVertical(size = 24.dp)
+            SpacerUp(size = 24.dp)
             VideoView(itemInfo, onPlayClick = { onPlayClick() })
         }
     }
@@ -212,7 +212,7 @@ private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
 private fun VideoView(item: VideoItem, onPlayClick: () -> Unit) {
     Column {
         Text950_16sp(title = "Watch Video")
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
         VideoItemContent(item, onPlayClick = { onPlayClick() })
     }
 }
@@ -319,12 +319,12 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                             .clip(CircleShape)
                             .background(agentColor)
                     )
-                    SpacerHorizontal(size = 8.dp)
+                    SpacerSide(size = 8.dp)
                     Column {
                         Text700_12sp(
                             label = vidItem.property?.fullAddress().orEmpty(), txtColor = AppWhite
                         )
-                        SpacerVertical(size = 2.dp)
+                        SpacerUp(size = 2.dp)
                         propInfo?.let {
                             AmenitiesView(it, AppWhite, isCompact = true)
                         }
@@ -340,7 +340,7 @@ private fun PropertyView(doc: Document) {
     val propItem = PropertyItem(1, doc)
     Column {
         Text950_16sp(title = "Linked Listing")
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
         PropertyItemContent(propItem, isClickable = false)
     }
 }
@@ -373,7 +373,7 @@ fun PrivacySettings(
                 selectedOption = pub
                 onChangePrivacy(selectedOption)
             })
-        SpacerVertical(size = 16.dp)
+        SpacerUp(size = 16.dp)
         PrivacyOption(text = pvt,
             description = "Keep as public unlisted and share the video link privately",
             isSelected = selectedOption == pvt,
@@ -406,7 +406,7 @@ private fun PrivacyOption(
             Image(
                 painter = painterResource(id = radioIcon), contentDescription = null
             )
-            SpacerHorizontal(size = 8.dp)
+            SpacerSide(size = 8.dp)
 
             Column {
                 //box privacy name
@@ -423,7 +423,7 @@ private fun PrivacyOption(
         }
 
         //info
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
         Text400_14sp(info = description, modifier = Modifier.padding(start = 24.dp), color = txtColor)
     }
 }

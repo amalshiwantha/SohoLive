@@ -54,7 +54,7 @@ import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonConnect
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
@@ -65,7 +65,6 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
-import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
@@ -301,7 +300,7 @@ fun ScheduleItemView(slot: ScheduleSlots, onItemClick: (ScheduleSlots) -> Unit) 
                     .weight(1f)
             ) {
                 Text800_14sp(label = slot.date.orEmpty(), txtColor = TextDark)
-                SpacerVertical(size = 8.dp)
+                SpacerUp(size = 8.dp)
                 Text400_14sp(info = slot.time.orEmpty(), color = TextDark)
             }
 
@@ -331,7 +330,7 @@ fun TopContent(
         verticalArrangement = Arrangement.Top
     ) {
         Text700_14sp(step = "Choose Date & Time")
-        SpacerVertical(size = 8.dp)
+        SpacerUp(size = 8.dp)
 
         TextFieldWhiteIcon(
             fieldConfig = FieldConfig.DONE.apply {
@@ -344,7 +343,7 @@ fun TopContent(
             onTextChange = {}, onClick = {
                 onClickShowDateTimePicker(true)
             })
-        SpacerVertical(size = 24.dp)
+        SpacerUp(size = 24.dp)
 
         ButtonOutLinedIcon(
             text = "Add to Schedule",
@@ -352,7 +351,7 @@ fun TopContent(
             onBtnClick = {
                 onClickAdd()
             })
-        SpacerVertical(size = 40.dp)
+        SpacerUp(size = 40.dp)
 
         Text950_16sp(
             title = "Your Scheduled Livestreams",

@@ -62,7 +62,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
@@ -72,8 +71,8 @@ import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
-import com.soho.sohoapp.live.ui.components.SpacerHorizontal
-import com.soho.sohoapp.live.ui.components.SpacerVertical
+import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_16sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
@@ -436,7 +435,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         .fillMaxWidth()
                 ) {
                     Text700_16sp(title = fbView.title, modifier = Modifier.weight(1f))
-                    SpacerHorizontal(size = 8.dp)
+                    SpacerSide(size = 8.dp)
                     Image(
                         painter = painterResource(id = if (selectedIndex == index) R.drawable.fb_item_active else R.drawable.fb_item_inactive),
                         contentDescription = ""
@@ -467,7 +466,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         ) {
 
             Text800_20sp(label = smInfo.title)
-            SpacerVertical(size = 8.dp)
+            SpacerUp(size = 8.dp)
 
             //Connect Button
             Column(
@@ -476,7 +475,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text400_14sp(info = smInfo.info)
-                SpacerVertical(size = 16.dp)
+                SpacerUp(size = 16.dp)
 
                 //if fb add custom tab view for pages,groups etc...
                 if (smInfo.name == SocialMediaInfo.FACEBOOK.name) {
@@ -485,7 +484,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         selectedOption = it
                         fbViewType = getSelectedTab(selectedOption)
                     })
-                    SpacerVertical(size = 16.dp)
+                    SpacerUp(size = 16.dp)
 
                     //Display Content for each tab
                     val fbSubList = when (fbViewType) {
@@ -542,7 +541,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
 
                 //Button buttons
-                SpacerVertical(size = 40.dp)
+                SpacerUp(size = 40.dp)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -552,7 +551,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             .weight(1f)
                             .fillMaxWidth(),
                         onBtnClick = { onDisconnect() })
-                    SpacerHorizontal(size = 8.dp)
+                    SpacerSide(size = 8.dp)
                     ButtonColoured(
                         text = "Done",
                         color = AppGreen,
@@ -699,7 +698,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         .fillMaxWidth()
                 ) {
                     Text400_14sp(info = "Connected to $socialMediaName as")
-                    SpacerVertical(size = 8.dp)
+                    SpacerUp(size = 8.dp)
                     profile.fullName?.let { Text700_16sp(title = it) }
                 }
             }
@@ -719,7 +718,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         ) {
 
             Text800_20sp(label = smInfoConnect.title)
-            SpacerVertical(size = 8.dp)
+            SpacerUp(size = 8.dp)
 
             //Connect Button
             Column(
@@ -728,7 +727,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text400_14sp(info = smInfoConnect.info)
-                SpacerVertical(size = 40.dp)
+                SpacerUp(size = 40.dp)
                 ButtonColoredIcon(title = smInfoConnect.btnTitle,
                     icon = smInfoConnect.btnIcon,
                     btnColor = smInfoConnect.btnColor,
