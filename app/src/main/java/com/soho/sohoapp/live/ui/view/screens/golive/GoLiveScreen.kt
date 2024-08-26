@@ -84,6 +84,7 @@ import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.model.MainStateHolder.mState
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.ScheduleDateTime
@@ -169,11 +170,12 @@ fun GoLiveScreen(
     onLoadTSResults: (TsPropertyResponse) -> Unit,
     onUpdateState: (GoLiveAssets) -> Unit
 ) {
+    val mState = MainStateHolder.mState
     val stateVm = goLiveVm.mState.value
     val stateRecentSM = viewMMain.stateRecentLoggedSM
     val assetsState = savedState ?: goLiveVm.assetsState.value
     val stepCount = maxSteps
-    var currentStepId by remember { mutableIntStateOf(assetsState.stepId.value) }
+    var currentStepId by remember { mutableIntStateOf(mState.stepId.value) }
     val optionList = mutableListOf("Inspection", "Auction", "Other")
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected by remember { mutableStateOf(assetsState.isNowSelected.value) }
@@ -499,12 +501,12 @@ fun GoLiveScreen(
 
                         if (currentStepId < stepCount - 1 && isAllowGo) {
                             currentStepId++
-                            assetsState.stepId.value = currentStepId
+                            mState.stepId.value = currentStepId
                         }
                     },
                     onClickedBack = {
                         currentStepId = (currentStepId - 1) % stepCount
-                        assetsState.stepId.value = currentStepId
+                        mState.stepId.value = currentStepId
                     },
                     onClickedFinalise = {
                         isNoSlots = mGoLiveSubmit.scheduleSlots.isEmpty()
@@ -613,9 +615,6 @@ fun callApi(
 }
 
 fun resetSteps(mGoLiveSubmit: GoLiveSubmit, assetsState: GoLiveAssets) {
-    //move to step #1
-    assetsState.stepId.value = 0
-
     //unchecked all agents
     assetsState.agencyListState?.value = assetsState.agencyListState?.value?.map { item ->
         item.copy(isChecked = false)

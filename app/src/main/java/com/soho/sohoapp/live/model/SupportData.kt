@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.model
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
@@ -23,6 +24,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MainState(
     var liveOrientation: MutableState<String> = mutableStateOf(Orientation.PORT.name),
+    var stepId: MutableState<Int> = mutableIntStateOf(0)
 )
 
 data class AlertData(

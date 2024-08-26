@@ -12,6 +12,7 @@ object MainStateHolder {
     fun resetLive() {
         mState.apply {
             liveOrientation.value = Orientation.PORT.name
+            stepId.value = 0
         }
     }
 }
@@ -26,7 +27,7 @@ object MainStateHolder {
 *
 * Assign
 * ----------
-* val mState = GlobalStateHolder.mState
+* val mState = MainStateHolder.mState
 * val selectedOrientation by remember { mutableStateOf(mState.liveOrientation) }
 *
 * add new value
