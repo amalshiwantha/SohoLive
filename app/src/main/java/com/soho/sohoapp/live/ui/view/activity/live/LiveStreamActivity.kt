@@ -12,9 +12,10 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.SurfaceHolder
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -82,7 +83,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdgeFullScreen()
 
         binding = ActivityLiveStreamBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -98,6 +99,19 @@ class LiveStreamActivity : AppCompatActivity() {
         checkRequiredPermissions()
         mStateObserveable()
         checkEssentialData()
+    }
+
+    // Function to enable edge-to-edge mode and set full screen
+    private fun enableEdgeToEdgeFullScreen() {
+        window.decorView.post {
+            window.decorView.windowInsetsController?.let { controller ->
+                // Hide system bars
+                controller.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                // Make sure that the system bars remain hidden
+                controller.systemBarsBehavior =
+                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        }
     }
 
     private fun changeOrientation() {
