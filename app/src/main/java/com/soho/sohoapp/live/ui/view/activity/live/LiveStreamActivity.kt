@@ -4,10 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.SurfaceHolder
@@ -31,6 +31,7 @@ import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.CastEnd
+import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
@@ -101,7 +102,11 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun changeOrientation() {
         val orientation = intent.getStringExtra(KEY_ORIENTATION)
-        println("orientation $orientation")
+        val isLand = orientation == Orientation.LAND.name
+        if (isLand) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+
     }
 
     private fun checkEssentialData() {
@@ -442,6 +447,9 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun finishSendStatus(castEnd: CastEnd) {
+
+        rotateToPortrait()
+
         val status = LiveCastStatus(1, castEnd)
         val jsonString = Json.encodeToString(status)
 
@@ -450,6 +458,16 @@ class LiveStreamActivity : AppCompatActivity() {
         }
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
+    }
+
+    private fun rotateToPortrait() {
+        // Check the current orientation
+        val currentOrientation = resources.configuration.orientation
+
+        // If the current orientation is landscape, change it to portrait
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     private val connectCheckerRtmp = object : ConnectChecker {
