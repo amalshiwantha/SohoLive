@@ -83,6 +83,7 @@ import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.ScheduleDateTime
@@ -219,6 +220,9 @@ fun GoLiveScreen(
         if (str == "LiveEndStatus(castEnd=COMPLETE)") {
             //Reset steps flow
             resetSteps(mGoLiveSubmit, assetsState)
+
+            //Reset orientation
+            MainStateHolder.resetLive()
 
             //Open end screen
             navController.navigate(NavigationPath.LIVE_CAST_END.name)
@@ -1125,7 +1129,7 @@ private fun Content4(
     //what for livestream
 
     //save default value
-    val defaultSelection =optionList[0]
+    val defaultSelection = optionList[0]
     mGoLiveSubmit.apply { purpose = defaultSelection }
     configPurpose.input = defaultSelection
 

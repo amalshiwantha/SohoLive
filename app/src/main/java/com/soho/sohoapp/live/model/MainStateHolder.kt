@@ -3,13 +3,16 @@ package com.soho.sohoapp.live.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.soho.sohoapp.live.enums.Orientation
 
 object MainStateHolder {
     var mState by mutableStateOf(MainState())
         private set
 
-    fun updateState(newState: MainState) {
-        mState = newState
+    fun resetLive() {
+        mState.apply {
+            liveOrientation.value = Orientation.PORT.name
+        }
     }
 }
 
