@@ -140,7 +140,7 @@ class GoLiveViewModel(
                         val res = result.data
 
                         if (isSuccess) {
-                            resetSMState()
+                            //resetSMState()
                             mState.value = mState.value.copy(goLiveResults = res)
                         } else {
                             mState.value =

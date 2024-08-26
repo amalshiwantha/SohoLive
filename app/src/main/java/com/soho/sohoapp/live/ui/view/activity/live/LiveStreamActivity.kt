@@ -74,6 +74,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val KEY_ORIENTATION = "orientation"
         const val KEY_STREAM = "streamKey"
         const val KEY_LIVE_STATUS = "liveStatus"
     }
@@ -91,10 +92,16 @@ class LiveStreamActivity : AppCompatActivity() {
             insets
         }
 
+        changeOrientation()
         init()
         checkRequiredPermissions()
         mStateObserveable()
         checkEssentialData()
+    }
+
+    private fun changeOrientation() {
+        val orientation = intent.getStringExtra(KEY_ORIENTATION)
+        println("orientation $orientation")
     }
 
     private fun checkEssentialData() {

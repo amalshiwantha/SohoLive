@@ -66,6 +66,7 @@ import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
 import com.soho.sohoapp.live.model.LiveCastStatus
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -89,6 +90,7 @@ import com.soho.sohoapp.live.ui.theme.SohoLiveTheme
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_LIVE_STATUS
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_ORIENTATION
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.screens.golive.DoConnectFacebook
 import com.soho.sohoapp.live.ui.view.screens.golive.doConnectGoogle
@@ -114,6 +116,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     companion object {
         var maxSteps = 4
     }
+
     private val viewMMain: MainViewModel by viewModel()
 
     private val liveCastLauncher = registerForActivityResult(
@@ -157,7 +160,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     * */
                     LaunchedEffect(msOpenLiveCaster) {
                         if (msOpenLiveCaster.isNotEmpty()) {
-                            openLiveScreen(msOpenLiveCaster)
+                            val orientation = MainStateHolder.mState.liveOrientation.value
+                            openLiveScreen(msOpenLiveCaster, orientation)
                         }
                     }
 
@@ -273,9 +277,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
-    private fun openLiveScreen(msOpenLiveCaster: String) {
+    private fun openLiveScreen(msOpenLiveCaster: String, orientation: String) {
         val intent = Intent(this, LiveStreamActivity::class.java)
         intent.putExtra(KEY_STREAM, msOpenLiveCaster)
+        intent.putExtra(KEY_ORIENTATION, orientation)
         liveCastLauncher.launch(intent)
     }
 
