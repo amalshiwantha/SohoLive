@@ -31,9 +31,9 @@
         <activity
             android:name=".ui.view.activity.main.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.SohoLive">
+            android:theme="@style/Theme.SohoLive"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
