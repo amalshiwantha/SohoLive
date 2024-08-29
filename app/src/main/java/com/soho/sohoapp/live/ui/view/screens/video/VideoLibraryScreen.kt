@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.PropertyType
@@ -99,6 +101,7 @@ fun VideoLibraryScreen(
     var isShowAlert by remember { mutableStateOf(false) }
     var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
     var isShowProgress by remember { mutableStateOf(false) }
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
     //cal api
     LaunchedEffect(sLiveData) {
@@ -131,7 +134,6 @@ fun VideoLibraryScreen(
         }
     }
 
-
     //show api error as alert
     if (isShowAlert) {
         alertConfig?.let {
@@ -146,8 +148,16 @@ fun VideoLibraryScreen(
         }
     }
 
-    //display main content
-    Content(isShowProgress, states, mGState, onManageClick = { selectedItem = it })
+    //display main content with pull to refresh
+    SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = {
+            vmVidLib.reLoadData()
+        }
+    ) {
+        Content(isShowProgress, states, mGState, onManageClick = { selectedItem = it })
+    }
+
 
     //open manage screen
     LaunchedEffect(selectedItem) {

@@ -116,6 +116,9 @@ dependencies {
     /*implementation(libs.androidx.appcompat)
     implementation(libs.material)*/
 
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -21,6 +21,7 @@ class VideoLibraryViewModel(
 ) : ViewModel() {
 
     val mState: MutableState<VideoLibraryState> = mutableStateOf(VideoLibraryState())
+    var mReqData : VidLibRequest = VidLibRequest()
 
     fun onTriggerEvent(event: VidLibEvent) {
         when (event) {
@@ -29,11 +30,16 @@ class VideoLibraryViewModel(
             }
 
             is VidLibEvent.CallLoadVideo -> {
-                loadVideoList(event.request)
+                mReqData = event.request
+                loadVideoList(mReqData)
             }
 
             else -> {}
         }
+    }
+
+    fun reLoadData() {
+        loadVideoList(mReqData)
     }
 
     private fun loadVideoList(request: VidLibRequest) {
@@ -86,5 +92,4 @@ class VideoLibraryViewModel(
             }
         }.launchIn(viewModelScope)
     }
-
 }
