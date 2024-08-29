@@ -107,7 +107,7 @@ class LiveStreamActivity : AppCompatActivity() {
         init()
         checkRequiredPermissions()
         mStateObserveable()
-        //checkEssentialData()
+        checkEssentialData()
     }
 
     // Function to enable edge-to-edge mode and set full screen
@@ -466,8 +466,7 @@ class LiveStreamActivity : AppCompatActivity() {
                         ) {
                             //showToast("Started Broadcast")
                             println("myStream startBroadcast")
-                            //it.startStream(rtmpEndpoint + reqLive.streamKey)
-                            it.startStream(rtmpEndpoint + streamKey)
+                            it.startStream(rtmpEndpoint + reqLive.streamKey)
                             showLiveTime(true)
                         } else {
                             //showToast("Broadcast Error")
