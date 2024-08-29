@@ -253,7 +253,7 @@ class LiveStreamActivity : AppCompatActivity() {
     //Watermark
     private fun getWatermarkLogoLandscape(): ImageObjectFilterRender {
         // Calculate scale relative to stream size
-        val streamWidth = resolution.width / 2
+        val streamWidth = resolution.width
         val streamHeight = 8 // if change this image size will update
 
         val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
@@ -278,7 +278,7 @@ class LiveStreamActivity : AppCompatActivity() {
         * initial view this setPosition willNot show, so have to set it manual fake view
         * when start the live setPosition is correct
         * */
-        imgRender.setPosition(paddingPx.toFloat() - 11, 18f)
+        imgRender.setPosition(paddingPx.toFloat() - 11, 6f)
         println("imgSize QQ : $imgWidth - $imgHeight")
         return imgRender
     }
@@ -450,8 +450,9 @@ class LiveStreamActivity : AppCompatActivity() {
 
                         //watermark
                         watermark?.visibility = View.GONE
+                        isLand = true
                         val watermarkLogo =
-                            if (isLand) getWatermarkLogoPortrait() else getWatermarkLogoPortrait()
+                            if (isLand) getWatermarkLogoLandscape() else getWatermarkLogoPortrait()
                         it.glInterface.setFilter(watermarkLogo)
 
                         //start live
