@@ -450,7 +450,6 @@ class LiveStreamActivity : AppCompatActivity() {
 
                         //watermark
                         watermark?.visibility = View.GONE
-                        isLand = true
                         val watermarkLogo =
                             if (isLand) getWatermarkLogoLandscape() else getWatermarkLogoPortrait()
                         it.glInterface.setFilter(watermarkLogo)
