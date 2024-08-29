@@ -8,13 +8,28 @@
     tools:context=".ui.view.activity.live.LiveStreamActivity">
 
     <!--Camera view-->
-    <com.pedro.library.view.OpenGlView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.pedro.library.view.OpenGlView
+            android:id="@+id/openGlView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--<com.pedro.library.view.OpenGlView
         android:id="@+id/openGlView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/layout_bottom"
         android:keepScreenOn="true"
-        app:aspectRatioMode="fill" />
+        app:aspectRatioMode="fill" />-->
 
     <!--watermark and live time-->
     <RelativeLayout
@@ -87,7 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/black"
+        android:background="#3B000000"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp">
@@ -204,13 +219,13 @@
                 tools:text="3" />
 
             <ImageView
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
                 android:id="@+id/img_done_tick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_done_tick" />
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_done_tick"
+                android:visibility="gone" />
 
         </LinearLayout>
 

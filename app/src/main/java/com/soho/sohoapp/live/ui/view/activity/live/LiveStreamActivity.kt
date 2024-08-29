@@ -3,22 +3,27 @@ package com.soho.sohoapp.live.ui.view.activity.live
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
+import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -27,10 +32,12 @@ import androidx.lifecycle.lifecycleScope
 import com.pedro.common.ConnectChecker
 import com.pedro.encoder.input.gl.render.filters.`object`.ImageObjectFilterRender
 import com.pedro.encoder.input.video.CameraHelper
+import com.pedro.encoder.utils.gl.AspectRatioMode
 import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.Orientation
@@ -52,7 +59,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LiveStreamActivity : AppCompatActivity() {
 
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
-    private var streamKey: String = "1234"
+    private var streamKey: String = "9b5c8b83-950f-1b09-88ad-8a3dc76c4efd"
 
     private val viewModel: LiveStreamViewModel by viewModel()
     private lateinit var binding: ActivityLiveStreamBinding
@@ -444,7 +451,7 @@ class LiveStreamActivity : AppCompatActivity() {
                         //watermark
                         watermark?.visibility = View.GONE
                         val watermarkLogo =
-                            if (isLand) getWatermarkLogoLandscape() else getWatermarkLogoPortrait()
+                            if (isLand) getWatermarkLogoPortrait() else getWatermarkLogoPortrait()
                         it.glInterface.setFilter(watermarkLogo)
 
                         //start live
@@ -460,7 +467,7 @@ class LiveStreamActivity : AppCompatActivity() {
                             //showToast("Started Broadcast")
                             println("myStream startBroadcast")
                             //it.startStream(rtmpEndpoint + reqLive.streamKey)
-                            it.startStream(rtmpEndpoint + "89e656f5-b6b9-75af-b163-14877ede2473")
+                            it.startStream(rtmpEndpoint + streamKey)
                             showLiveTime(true)
                         } else {
                             //showToast("Broadcast Error")
@@ -520,7 +527,7 @@ class LiveStreamActivity : AppCompatActivity() {
             putExtra(KEY_LIVE_STATUS, jsonString)
         }
         setResult(Activity.RESULT_OK, resultIntent)
-        //finish()
+        finish()
     }
 
     private fun rotateToPortrait() {
@@ -581,6 +588,29 @@ class LiveStreamActivity : AppCompatActivity() {
         }
 
         override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+            println("myrotation ZZ surfaceChanged")
+
+            //change rtmpCamera2 orientation
+            val rotation = windowManager.defaultDisplay.rotation
+            openGlView?.setStreamRotation(rotation)
+            val layParam = openGlView?.layoutParams as ConstraintLayout.LayoutParams
+            when (rotation) {
+                0 -> layParam.dimensionRatio = "w,16:9"
+                1 -> layParam.dimensionRatio = "h,9:16"
+            }
+            openGlView?.layoutParams = layParam
+
+
+            /*val rotation = windowManager.defaultDisplay.rotation
+            val layoutParams = openGlView?.layoutParams as ConstraintLayout.LayoutParams
+            openGlView?.setStreamRotation(rotation)
+            layoutParams.width = resolution.width
+            layoutParams.height = resolution.height
+            layoutParams.dimensionRatio = "w,16:9"
+            openGlView?.layoutParams = layoutParams*/
+
+
+            //ORIGINAL
             /*// Stop the preview if it's running
             rtmpCamera2?.stopPreview()
 
