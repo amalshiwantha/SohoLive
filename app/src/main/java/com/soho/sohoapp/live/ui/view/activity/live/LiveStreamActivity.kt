@@ -66,6 +66,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private var countBitrateError = 0
     private var isDidLiveCast = false
     private val PERMISSION_REQUEST_CODE = 101
+    private var isLand = false
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -99,7 +100,7 @@ class LiveStreamActivity : AppCompatActivity() {
         init()
         checkRequiredPermissions()
         mStateObserveable()
-        checkEssentialData()
+        //checkEssentialData()
     }
 
     // Function to enable edge-to-edge mode and set full screen
@@ -129,7 +130,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun changeOrientation() {
         val orientation = intent.getStringExtra(KEY_ORIENTATION)
-        val isLand = orientation == Orientation.LAND.name
+        isLand = orientation == Orientation.LAND.name
         if (isLand) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
@@ -243,7 +244,39 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     //Watermark
-    private fun getWatermarkLogo(): ImageObjectFilterRender {
+    private fun getWatermarkLogoLandscape(): ImageObjectFilterRender {
+        // Calculate scale relative to stream size
+        val streamWidth = resolution.width / 2
+        val streamHeight = 8 // if change this image size will update
+
+        val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
+        val imgWidth = 25
+        val imgHeight = 25
+
+        val imgRender = ImageObjectFilterRender()
+        imgRender.setAlpha(2.0f)//if increase this img color get more bright but not perfect
+        imgRender.setImage(watermarkBitmap)
+
+        // Calculate the scale
+        val scaleFactor =
+            minOf(streamWidth.toFloat() / imgWidth, streamHeight.toFloat() / imgHeight)
+        imgRender.setScale(imgWidth * scaleFactor, imgHeight * scaleFactor)
+
+        // Padding in dp
+        val paddingDp = 5
+        val scale = resources.displayMetrics.density
+        val paddingPx = (paddingDp * scale + 0.5f).toInt()
+
+        /*
+        * initial view this setPosition willNot show, so have to set it manual fake view
+        * when start the live setPosition is correct
+        * */
+        imgRender.setPosition(paddingPx.toFloat() - 11, 18f)
+        println("imgSize QQ : $imgWidth - $imgHeight")
+        return imgRender
+    }
+
+    private fun getWatermarkLogoPortrait(): ImageObjectFilterRender {
         // Calculate scale relative to stream size
         val streamWidth = resolution.width
         val streamHeight = 5 // if change this image size will update
@@ -410,7 +443,9 @@ class LiveStreamActivity : AppCompatActivity() {
 
                         //watermark
                         watermark?.visibility = View.GONE
-                        it.glInterface.setFilter(getWatermarkLogo())
+                        val watermarkLogo =
+                            if (isLand) getWatermarkLogoLandscape() else getWatermarkLogoPortrait()
+                        it.glInterface.setFilter(watermarkLogo)
 
                         //start live
                         if (it.prepareAudio() && it.prepareVideo(
@@ -424,7 +459,8 @@ class LiveStreamActivity : AppCompatActivity() {
                         ) {
                             //showToast("Started Broadcast")
                             println("myStream startBroadcast")
-                            it.startStream(rtmpEndpoint + reqLive.streamKey)
+                            //it.startStream(rtmpEndpoint + reqLive.streamKey)
+                            it.startStream(rtmpEndpoint + "89e656f5-b6b9-75af-b163-14877ede2473")
                             showLiveTime(true)
                         } else {
                             //showToast("Broadcast Error")
@@ -484,7 +520,7 @@ class LiveStreamActivity : AppCompatActivity() {
             putExtra(KEY_LIVE_STATUS, jsonString)
         }
         setResult(Activity.RESULT_OK, resultIntent)
-        finish()
+        //finish()
     }
 
     private fun rotateToPortrait() {
