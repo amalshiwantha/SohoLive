@@ -52,6 +52,7 @@ fun HomeScreen(
     var navigationSelectedItem by remember { mutableIntStateOf(0) }
     var selectedTabTitle by remember { mutableStateOf(context.getString(R.string.create_livestream)) }
     var showBottomBar by remember { mutableStateOf(true) }
+    var showTopBar by remember { mutableStateOf(true) }
 
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collect { backStackEntry ->
@@ -69,7 +70,7 @@ fun HomeScreen(
     HandleBackPress(navController = navController)
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        if (showBottomBar) {
+        if (showBottomBar && showTopBar) {
             AppTopBar(title = selectedTabTitle,
                 isAllowBack = false,
                 onBackClick = { },
@@ -94,6 +95,7 @@ fun HomeScreen(
 
             val currentBackStackEntry by navController.currentBackStackEntryAsState()
             showBottomBar = isBottomBarVisible(currentBackStackEntry)
+            showTopBar = isTopBarVisible(currentBackStackEntry)
 
         }
     }
@@ -113,22 +115,14 @@ fun isBottomBarVisible(backStack: NavBackStackEntry?): Boolean {
     }
 }
 
-@Composable
-fun HomeContent(navController: NavController, title: String) {
-
-    Box(
-        modifier = Modifier
-            .background(brushMainGradientBg)
-            .fillMaxSize()
-    ) {
-        Column(modifier = Modifier.align(Alignment.Center)) {
-            Text(
-                title,
-                style = MaterialTheme.typography.titleLarge,
-                color = AppGreen,
-                modifier = Modifier.padding(vertical = 20.dp)
-            )
+fun isTopBarVisible(backStack: NavBackStackEntry?): Boolean {
+    backStack?.let {
+        when (backStack.destination.route) {
+            NavigationPath.PROFILE.name -> return false
+            else -> return true
         }
+    } ?: run {
+        return true
     }
 }
 

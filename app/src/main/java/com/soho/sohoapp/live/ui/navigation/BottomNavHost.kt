@@ -20,7 +20,6 @@ import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveAssets
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
 import com.soho.sohoapp.live.ui.view.screens.golive_success.GoLiveOkScreen
-import com.soho.sohoapp.live.ui.view.screens.home.HomeContent
 import com.soho.sohoapp.live.ui.view.screens.liveEnd.LiveEndScreen
 import com.soho.sohoapp.live.ui.view.screens.profile.ProfileScreen
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
@@ -46,7 +45,11 @@ fun BottomNavHost(
         navController = navController, startDestination = NavigationPath.GO_LIVE.name
     ) {
         composable(route = NavigationPath.SCHEDULED.name) {
-            HomeContent(navController, "SCHEDULED")
+            ScheduleScreen(
+                goLiveData = mGoLiveSubmit,
+                scheduleSlots = scheduleSlots,
+                navController = navController
+            )
         }
         composable(route = NavigationPath.GO_LIVE.name) {
             GoLiveScreen(navController,
