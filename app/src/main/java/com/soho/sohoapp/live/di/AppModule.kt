@@ -8,6 +8,7 @@ import com.soho.sohoapp.live.network.core.KtorHttpClient
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamViewModel
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
+import com.soho.sohoapp.live.ui.view.screens.profile.ProfileViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashViewModel
@@ -41,4 +42,5 @@ val appModule = module {
     viewModel { VideoLibraryViewModel(get(), get()) }
     viewModel { VideoManageViewModel(get(), get()) }
     viewModel { LiveStreamViewModel(get(), get()) }
+    viewModel { ProfileViewModel(get()) }
 }

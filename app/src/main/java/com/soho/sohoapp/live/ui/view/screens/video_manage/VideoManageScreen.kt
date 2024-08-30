@@ -126,7 +126,7 @@ private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageVie
 }
 
 @Composable
-fun MainContent(
+private fun MainContent(
     data: VideoItem?,
     isShowProgress: Boolean,
     onBackClick: () -> Unit,
