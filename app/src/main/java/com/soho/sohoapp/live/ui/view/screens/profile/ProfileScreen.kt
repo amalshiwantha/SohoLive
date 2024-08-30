@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,10 +24,13 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spLink
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarProfile
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import org.koin.compose.koinInject
 
@@ -97,8 +101,11 @@ private fun MainContent(
             }
         }
 
-        //Bottom Button
-        Text800_20sp(label = "Version ${sProfile.appVersion}", modifier = Modifier
+        //Version View
+        Text400_14sp(info = "Version ${sProfile.appVersion}",
+            txtAlign = TextAlign.Center,
+            color = HintGray,
+            modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .constrainAs(text) {

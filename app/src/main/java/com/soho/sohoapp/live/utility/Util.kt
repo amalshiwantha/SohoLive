@@ -33,6 +33,20 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
+fun getAppVersion(): String {
+    val packageManager = context.packageManager
+    val packageName = context.packageName
+
+    val versionName = try {
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        packageInfo.versionName
+    } catch (e: PackageManager.NameNotFoundException) {
+        "Unknown"
+    }
+
+    return versionName
+}
+
 /*
 * Display alert box with ok and cancel buttons
 * */
