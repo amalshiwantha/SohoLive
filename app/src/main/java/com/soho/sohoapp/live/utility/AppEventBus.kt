@@ -10,6 +10,7 @@ sealed class AppEvent {
     data class SMProfile(val smProfile: SocialMediaProfile) : AppEvent()
     data class LiveEndStatus(val castEnd: CastEnd) : AppEvent()
     data class NavigateToLogin(val isLogout: Boolean) : AppEvent()
+    data class OpenWebView(val url: String) : AppEvent()
 }
 
 object AppEventBus {

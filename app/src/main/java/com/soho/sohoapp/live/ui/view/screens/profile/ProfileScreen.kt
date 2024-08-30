@@ -36,6 +36,7 @@ import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spLink
 import com.soho.sohoapp.live.ui.components.TopAppBarProfile
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import org.koin.compose.koinInject
@@ -104,7 +105,7 @@ private fun MainContent(
 
             Column {
                 Text700_14spLink(name = "Terms", onClick = {
-                    //navController.navigate("terms")
+                    navController.navigate(NavigationPath.WEB_VIEW.name)
                 })
 
                 SpacerUp(size = 24.dp)

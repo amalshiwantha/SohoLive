@@ -25,6 +25,7 @@ import com.soho.sohoapp.live.ui.view.screens.profile.ProfileScreen
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
+import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -33,7 +34,6 @@ fun BottomNavHost(
     navController: NavHostController, mainViewModel: MainViewModel,
     onTabMoveClick: (Int) -> Unit
 ) {
-
     var onGoLiveResult by remember { mutableStateOf<DataGoLive?>(null) }
     var onGoLiveTsResult by remember { mutableStateOf<TsPropertyResponse?>(null) }
     var mState by remember { mutableStateOf(GoLiveAssets()) }
@@ -109,6 +109,9 @@ fun BottomNavHost(
                     }
                 }
             )
+        }
+        composable(route = NavigationPath.WEB_VIEW.name) {
+            WebViewScreen(navController = navController, title = "Privacy Policy", url = "https://soho.com.au/articles/terms-and-conditions")
         }
     }
 }

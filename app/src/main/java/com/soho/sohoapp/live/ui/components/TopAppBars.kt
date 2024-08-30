@@ -89,6 +89,30 @@ fun TopAppBarCustomClose(
     }
 }
 
+
+@Composable
+fun AppTopBarCustom(
+    title: String,
+    modifier: Modifier,
+    onBackClick: () -> Unit = {}
+) {
+    Row(
+        modifier = modifier.padding(bottom = 8.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = { onBackClick() }) {
+            Icon(
+                imageVector = Icons.Sharp.ArrowBackIosNew,
+                tint = AppWhite,
+                contentDescription = "Back"
+            )
+        }
+
+        TextTopBarTitle(title = title, modifier = Modifier.weight(1f))
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
