@@ -18,8 +18,8 @@ class ProfileViewModel(
             dataStore.userProfile.collect { profile ->
                 profile?.let {
                     mState.value = mState.value.copy(
-                        profileName = "Jhone Smith",
-                        profileImage = "http://www.",
+                        profileName = "Smith Jhone ",
+                        profileImage = "https://img.freepik.com/free-photo/portrait-man-laughing_23-2148859448.jpg?size=338&ext=jpg",
                         appVersion = "1.0.0.9"
                     )
                 }

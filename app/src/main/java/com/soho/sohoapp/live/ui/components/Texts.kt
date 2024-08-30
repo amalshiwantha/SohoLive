@@ -35,12 +35,12 @@ fun TextTopBarTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = title,
-        fontSize = 24.sp,
-        lineHeight = 33.6.sp,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(950),
         color = AppWhite,
-        letterSpacing = 0.28.sp,
+        letterSpacing = 0.24.sp,
     )
 }
 

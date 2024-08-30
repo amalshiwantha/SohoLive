@@ -10,5 +10,5 @@ data class ProfileState(
     val alertState: AlertState = AlertState.Idle,
     val profileName: String? = null,
     val profileImage: String? = null,
-    val appVersion: String? = null,
+    val appVersion: String = "1.0",
 )

@@ -1,9 +1,13 @@
 package com.soho.sohoapp.live.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,34 +18,59 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @Composable
-fun TopAppBarProfile(title: String, rightIcon: Int,modifier: Modifier, onCloseClick: () -> Unit = {}) {
+fun TopAppBarProfile(
+    name: String,
+    imageUrl: String,
+    modifier: Modifier
+) {
     Row(
         modifier = modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        TextTopBarTitle(title = title, modifier = Modifier.weight(1f))
-        IconButton(onClick = { onCloseClick() }) {
-            Icon(
-                painter = painterResource(id = rightIcon),
-                tint = AppWhite,
-                contentDescription = "Back"
-            )
-        }
+        // Profile image
+        val urlPainter = rememberAsyncImagePainter(
+            model = imageUrl,
+            placeholder = painterResource(id = R.drawable.profile_placeholder),
+            error = painterResource(id = R.drawable.profile_placeholder)
+        )
+
+        Image(painter = urlPainter,
+            contentDescription = "Profile Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+        )
+
+        SpacerSide(size = 12.dp)
+
+        //Profile Name
+        TextTopBarTitle(title = "Hi, $name")
     }
 }
 
 @Composable
-fun TopAppBarCustomClose(title: String, rightIcon: Int,modifier: Modifier, onCloseClick: () -> Unit = {}) {
+fun TopAppBarCustomClose(
+    title: String,
+    rightIcon: Int,
+    modifier: Modifier,
+    onCloseClick: () -> Unit = {}
+) {
     Row(
         modifier = modifier
             .padding(horizontal = 16.dp)

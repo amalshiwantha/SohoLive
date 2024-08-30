@@ -44,14 +44,13 @@ private fun MainContent(vmProfile: ProfileViewModel, sProfile: ProfileState) {
         val (topAppBar, content, text) = createRefs()
 
         //action bar
-        TopAppBarProfile(title = "Profile",
-            rightIcon = R.drawable.ic_cross,
+        TopAppBarProfile(name = sProfile.profileName.orEmpty(),
+            imageUrl = sProfile.profileImage.orEmpty(),
             modifier = Modifier.constrainAs(topAppBar) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            },
-            onCloseClick = { })
+            })
 
         //content
         Box(modifier = Modifier
