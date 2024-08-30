@@ -19,7 +19,7 @@ import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextWhite12
-import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
+import com.soho.sohoapp.live.ui.components.TopAppBarProfile
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppRed
 import org.koin.compose.koinInject
@@ -29,11 +29,13 @@ fun ProfileScreen(
     vmProfile: ProfileViewModel = koinInject(),
     navController: NavHostController,
 ) {
-    MainContent()
+    val sProfile = vmProfile.mState.value
+
+    MainContent(vmProfile, sProfile)
 }
 
 @Composable
-private fun MainContent() {
+private fun MainContent(vmProfile: ProfileViewModel, sProfile: ProfileState) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +44,7 @@ private fun MainContent() {
         val (topAppBar, content, text) = createRefs()
 
         //action bar
-        TopAppBarCustomClose(title = "Profile",
+        TopAppBarProfile(title = "Profile",
             rightIcon = R.drawable.ic_cross,
             modifier = Modifier.constrainAs(topAppBar) {
                 top.linkTo(parent.top)
@@ -71,7 +73,7 @@ private fun MainContent() {
         }
 
         //Bottom Button
-        Text800_20sp(label = "Version 1.0.0.4", modifier = Modifier
+        Text800_20sp(label = "Version ${sProfile.appVersion}", modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .constrainAs(text) {

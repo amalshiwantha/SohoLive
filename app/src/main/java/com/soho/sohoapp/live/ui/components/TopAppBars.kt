@@ -21,6 +21,26 @@ import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @Composable
+fun TopAppBarProfile(title: String, rightIcon: Int,modifier: Modifier, onCloseClick: () -> Unit = {}) {
+    Row(
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        TextTopBarTitle(title = title, modifier = Modifier.weight(1f))
+        IconButton(onClick = { onCloseClick() }) {
+            Icon(
+                painter = painterResource(id = rightIcon),
+                tint = AppWhite,
+                contentDescription = "Back"
+            )
+        }
+    }
+}
+
+@Composable
 fun TopAppBarCustomClose(title: String, rightIcon: Int,modifier: Modifier, onCloseClick: () -> Unit = {}) {
     Row(
         modifier = modifier
