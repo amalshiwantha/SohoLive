@@ -62,4 +62,12 @@ class AppDataStoreManager(private val context: Context) {
                 Json.decodeFromString<Data>(jsonString)
             }
         }
+
+    // Clear all data on logout
+    suspend fun clearAllData() {
+        //sharedPref.edit().clear().apply()
+        context.dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
 }

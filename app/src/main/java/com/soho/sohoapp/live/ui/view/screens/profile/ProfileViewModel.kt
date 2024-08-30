@@ -2,7 +2,6 @@ package com.soho.sohoapp.live.ui.view.screens.profile
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
@@ -30,7 +29,9 @@ class ProfileViewModel(
     }
 
     fun logout() {
-        //dataStore.clearData()
+        viewModelScope.launch {
+            dataStore.clearAllData()
+        }
     }
 
 }

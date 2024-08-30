@@ -26,10 +26,8 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spLink
-import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarProfile
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import org.koin.compose.koinInject
@@ -106,13 +104,13 @@ private fun MainContent(
             txtAlign = TextAlign.Center,
             color = HintGray,
             modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .constrainAs(text) {
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            })
+                .fillMaxWidth()
+                .padding(16.dp)
+                .constrainAs(text) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
     }
 }
 
