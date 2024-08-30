@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.getAppVersion
 import kotlinx.coroutines.launch
 
@@ -24,8 +26,10 @@ class ProfileViewModel(
 
             ProfileEvent.LogoutDismissAlert -> {
                 mState.value = mState.value.copy(alertState = AlertState.Idle)
+
                 viewModelScope.launch {
                     dataStore.clearAllData()
+                    AppEventBus.sendEvent(AppEvent.NavigateToLogin(true))
                 }
             }
         }
