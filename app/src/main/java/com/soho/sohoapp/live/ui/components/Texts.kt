@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -191,6 +192,27 @@ fun Text700_12sp(
         modifier = modifier
     )
 }*/
+
+@Composable
+fun Text700_14spLink(
+    name: String,
+    color: Color = AppWhite,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Text(
+        textAlign = TextAlign.Left,
+        modifier = modifier.fillMaxWidth()
+            .clickable { onClick() },
+        text = name,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(700),
+        color = color,
+        letterSpacing = 0.17.sp
+    )
+}
 
 @Composable
 fun Text700_14sp(
