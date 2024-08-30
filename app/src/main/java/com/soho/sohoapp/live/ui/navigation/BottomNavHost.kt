@@ -9,8 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.ScheduleSlots
@@ -110,8 +112,19 @@ fun BottomNavHost(
                 }
             )
         }
-        composable(route = NavigationPath.WEB_VIEW.name) {
-            WebViewScreen(navController = navController, title = "Privacy Policy", url = "https://soho.com.au/articles/terms-and-conditions")
+        composable(
+            route = "${NavigationPath.WEB_VIEW.name}/{title}/{url}",
+            arguments = listOf(
+                navArgument("title") { type = NavType.StringType },
+                navArgument("url") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            // Extract the arguments from the back stack entry
+            val title = backStackEntry.arguments?.getString("title") ?: ""
+            val url = backStackEntry.arguments?.getString("url") ?: ""
+
+            // Pass the arguments to the WebViewScreen
+            WebViewScreen(navController = navController, title = title, url = url)
         }
     }
 }

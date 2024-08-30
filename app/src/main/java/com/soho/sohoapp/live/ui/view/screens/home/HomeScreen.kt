@@ -118,7 +118,7 @@ fun isBottomBarVisible(backStack: NavBackStackEntry?): Boolean {
             NavigationPath.SET_SCHEDULE.name -> return false
             NavigationPath.VIDEO_MANAGE.name -> return false
             NavigationPath.LIVE_CAST_END.name -> return false
-            NavigationPath.WEB_VIEW.name -> return false
+            "${NavigationPath.WEB_VIEW.name}/{title}/{url}" -> return false
             else -> return true
         }
     } ?: run {

@@ -40,6 +40,8 @@ import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import org.koin.compose.koinInject
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun ProfileScreen(
@@ -75,7 +77,7 @@ fun ProfileScreen(
 private fun MainContent(
     vmProfile: ProfileViewModel,
     sProfile: ProfileState,
-    navController: NavHostController
+    navCont: NavHostController
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -105,19 +107,31 @@ private fun MainContent(
 
             Column {
                 Text700_14spLink(name = "Terms", onClick = {
-                    navController.navigate(NavigationPath.WEB_VIEW.name)
+                    openWebView(
+                        title = "Terms And Conditions",
+                        url = "https://soho.com.au/articles/terms-and-conditions",
+                        navCont = navCont
+                    )
                 })
 
                 SpacerUp(size = 24.dp)
 
                 Text700_14spLink(name = "Privacy Policy", onClick = {
-                    //navController.navigate("terms")
+                    openWebView(
+                        title = "Privacy Policy",
+                        url = "https://soho.com.au/articles/privacy",
+                        navCont = navCont
+                    )
                 })
 
                 SpacerUp(size = 24.dp)
 
                 Text700_14spLink(name = "Support", onClick = {
-                    //navController.navigate("terms")
+                    openWebView(
+                        title = "Support",
+                        url = "https://support.soho.com.au/hc/en-us",
+                        navCont = navCont
+                    )
                 })
 
                 SpacerUp(size = 24.dp)
@@ -157,6 +171,11 @@ fun LogoutView(onLogout: () -> Unit) {
         SpacerSide(size = 8.dp)
         Text700_14spLink(name = "Logout", color = logoutRed, onClick = { onLogout() })
     }
+}
+
+private fun openWebView(title: String, url: String, navCont: NavHostController) {
+    val encodeUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+    navCont.navigate("${NavigationPath.WEB_VIEW.name}/$title/$encodeUrl")
 }
 
 @Preview(showBackground = true)
