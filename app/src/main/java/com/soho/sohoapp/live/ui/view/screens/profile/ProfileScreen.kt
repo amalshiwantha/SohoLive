@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,6 +27,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -38,6 +46,26 @@ fun ProfileScreen(
     navController: NavHostController,
 ) {
     val sProfile = vmProfile.mState.value
+    var isShowAlert by remember { mutableStateOf(false) }
+
+    //Display alert
+    LaunchedEffect(sProfile) {
+        isShowAlert = sProfile.alertState is AlertState.Display
+    }
+
+    //Show Alert when logout
+    if (isShowAlert) {
+        AppAlertDialog(
+            alert = AlertConfig.SIGN_OUT_ALERT.apply {
+                isConfirm = true
+            },
+            onConfirm = {
+                vmProfile.onTriggerEvent(ProfileEvent.LogoutDismissAlert)
+            },
+            onDismiss = {
+                vmProfile.onTriggerEvent(ProfileEvent.DismissAlert)
+            })
+    }
 
     MainContent(vmProfile, sProfile, navController)
 }
@@ -94,7 +122,7 @@ private fun MainContent(
                 SpacerUp(size = 24.dp)
 
                 LogoutView(onLogout = {
-                    vmProfile.logout()
+                    vmProfile.showLogoutConfirm()
                 })
             }
         }
@@ -126,7 +154,7 @@ fun LogoutView(onLogout: () -> Unit) {
     ) {
         Image(painter = painterResource(id = R.drawable.ic_log_out), contentDescription = "logout")
         SpacerSide(size = 8.dp)
-        Text700_14spLink(name = "Logout", color = logoutRed, onClick = {})
+        Text700_14spLink(name = "Logout", color = logoutRed, onClick = { onLogout() })
     }
 }
 

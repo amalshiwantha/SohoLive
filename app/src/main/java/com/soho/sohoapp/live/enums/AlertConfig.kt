@@ -23,10 +23,10 @@ enum class AlertConfig(
         dismissBtnText = "No",
     ),
     SIGN_OUT_ALERT(
-        title = "Sign Out Alert",
-        message = "Do you want to sign out?",
-        confirmBtnText = "Sign Out",
-        dismissBtnText = "Cancel"
+        title = "Confirm",
+        message = "Do you want to log-out?",
+        confirmBtnText = "Yes",
+        dismissBtnText = "No"
     ),
     DELETE_ALERT(
         title = "Delete Alert",
