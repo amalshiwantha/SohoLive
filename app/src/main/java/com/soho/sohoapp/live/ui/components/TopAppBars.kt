@@ -56,6 +56,9 @@ fun TopAppBarProfile(
                     .clip(CircleShape)
             )
         } ?: kotlin.run {
+            val nameInitial = name.split(" ")
+                .mapNotNull { it.firstOrNull()?.toString() }
+                .joinToString("")
 
         }
 
