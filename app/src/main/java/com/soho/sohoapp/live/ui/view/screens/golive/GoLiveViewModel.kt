@@ -285,7 +285,8 @@ class GoLiveViewModel(
 
     private fun updateAgentList(propertyList: List<PropertyItem>, updatedItem: PropertyItem) {
 
-        val agentProfiles = liveState.value.apiResults?.agentProfiles
+        //val agentProfiles = liveState.value.apiResults?.agentProfiles
+        val agentProfiles = mState.goLiveApiRes?.agentProfiles
 
         agentProfiles?.let { agent ->
             val selectedAgentId =
