@@ -13,6 +13,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
@@ -31,7 +32,9 @@ import kotlinx.coroutines.launch
 class GoLiveViewModel(
     private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager,
 ) : ViewModel() {
-    val mState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
+
+    val mState = MainStateHolder.mState
+    val liveState: MutableState<GoLiveState> = mutableStateOf(GoLiveState())
     val assetsState: MutableState<GoLiveAssets> = mutableStateOf(GoLiveAssets())
 
     private val _connectedProfileNames =
@@ -45,7 +48,7 @@ class GoLiveViewModel(
             }
 
             GoLiveEvent.DismissAlert -> {
-                mState.value = mState.value.copy(alertState = AlertState.Idle)
+                liveState.value = liveState.value.copy(alertState = AlertState.Idle)
             }
 
             is GoLiveEvent.CallSubmitGoLive -> {
@@ -59,7 +62,7 @@ class GoLiveViewModel(
     }
 
     private fun submitGoLiveData(submitData: GoLiveSubmit) {
-        mState.value = mState.value.copy(
+        liveState.value = liveState.value.copy(
             loadingState = ProgressBarState.Loading,
             loadingMessage = context.getString(R.string.requesting_golive)
         )
@@ -74,7 +77,7 @@ class GoLiveViewModel(
     }
 
     private fun submitGoLiveSchedule(submitData: GoLiveSubmit) {
-        mState.value = mState.value.copy(
+        liveState.value = liveState.value.copy(
             loadingState = ProgressBarState.Loading,
             loadingMessage = context.getString(R.string.scheduling_golive)
         )
@@ -103,10 +106,10 @@ class GoLiveViewModel(
                         val res = result.data
 
                         if (isSuccess) {
-                            mState.value = mState.value.copy(goLiveResults = res)
+                            liveState.value = liveState.value.copy(goLiveResults = res)
                         } else {
-                            mState.value =
-                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
+                            liveState.value =
+                                liveState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
                                     message = errorMsg.orEmpty()
                                 }))
                         }
@@ -114,11 +117,11 @@ class GoLiveViewModel(
                 }
 
                 is ApiState.Loading -> {
-                    mState.value = mState.value.copy(loadingState = apiState.progressBarState)
+                    liveState.value = liveState.value.copy(loadingState = apiState.progressBarState)
                 }
 
                 is ApiState.Alert -> {
-                    mState.value = mState.value.copy(alertState = apiState.alertState)
+                    liveState.value = liveState.value.copy(alertState = apiState.alertState)
                 }
             }
         }.launchIn(viewModelScope)
@@ -141,10 +144,10 @@ class GoLiveViewModel(
 
                         if (isSuccess) {
                             //resetSMState()
-                            mState.value = mState.value.copy(goLiveResults = res)
+                            liveState.value = liveState.value.copy(goLiveResults = res)
                         } else {
-                            mState.value =
-                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
+                            liveState.value =
+                                liveState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
                                     message = errorMsg.orEmpty()
                                 }))
                         }
@@ -152,18 +155,18 @@ class GoLiveViewModel(
                 }
 
                 is ApiState.Loading -> {
-                    mState.value = mState.value.copy(loadingState = apiState.progressBarState)
+                    liveState.value = liveState.value.copy(loadingState = apiState.progressBarState)
                 }
 
                 is ApiState.Alert -> {
-                    mState.value = mState.value.copy(alertState = apiState.alertState)
+                    liveState.value = liveState.value.copy(alertState = apiState.alertState)
                 }
             }
         }.launchIn(viewModelScope)
     }
 
     private fun loadProfile() {
-        mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
+        liveState.value = liveState.value.copy(loadingState = ProgressBarState.Loading)
 
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
@@ -210,11 +213,11 @@ class GoLiveViewModel(
                     assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
             }
 
-            if (mState.value.tsResults == null) {
-                mState.value = mState.value.copy(tsResults = savedTsResults)
+            if (liveState.value.tsResults == null) {
+                liveState.value = liveState.value.copy(tsResults = savedTsResults)
             }
 
-            mState.value = mState.value.copy(isSuccess = true)
+            liveState.value = liveState.value.copy(isSuccess = true)
         }
     }
 
@@ -282,7 +285,7 @@ class GoLiveViewModel(
 
     private fun updateAgentList(propertyList: List<PropertyItem>, updatedItem: PropertyItem) {
 
-        val agentProfiles = mState.value.apiResults?.agentProfiles
+        val agentProfiles = liveState.value.apiResults?.agentProfiles
 
         agentProfiles?.let { agent ->
             val selectedAgentId =
@@ -344,19 +347,24 @@ class GoLiveViewModel(
                                 )
                             }
 
-                            mState.value = mState.value.copy(apiResults = listingData.data)
-                            mState.value = mState.value.copy(tsResults = tsData)
+                            //save in global
+                            mState.goLiveApiRes = listingData.data
+                            mState.propertyTsRes = tsData
+                            mState.sPropList = mutableStateOf(foundPropList)
+
+                            liveState.value = liveState.value.copy(apiResults = listingData.data)
+                            liveState.value = liveState.value.copy(tsResults = tsData)
                             assetsState.value =
                                 assetsState.value.copy(
                                     propertyListState = mutableStateOf(
                                         foundPropList
                                     )
                                 )
-                            mState.value = mState.value.copy(isSuccess = true)
+                            liveState.value = liveState.value.copy(isSuccess = true)
 
                         } else {
-                            mState.value =
-                                mState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_ERROR.apply {
+                            liveState.value =
+                                liveState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_ERROR.apply {
                                     listingData.response?.let {
                                         message = it
                                     }
@@ -366,11 +374,11 @@ class GoLiveViewModel(
                 }
 
                 is ApiState.Loading -> {
-                    mState.value = mState.value.copy(loadingState = apiState.progressBarState)
+                    liveState.value = liveState.value.copy(loadingState = apiState.progressBarState)
                 }
 
                 is ApiState.Alert -> {
-                    mState.value = mState.value.copy(alertState = apiState.alertState)
+                    liveState.value = liveState.value.copy(alertState = apiState.alertState)
                 }
             }
         }.launchIn(viewModelScope)
@@ -418,7 +426,7 @@ class GoLiveViewModel(
     }
 
     fun showAlert(config: AlertConfig) {
-        mState.value = mState.value.copy(alertState = AlertState.Display(config))
+        liveState.value = liveState.value.copy(alertState = AlertState.Display(config))
     }
 
 }

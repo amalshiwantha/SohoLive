@@ -84,7 +84,6 @@ import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
-import com.soho.sohoapp.live.model.MainStateHolder.mState
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.ScheduleDateTime
@@ -170,8 +169,8 @@ fun GoLiveScreen(
     onLoadTSResults: (TsPropertyResponse) -> Unit,
     onUpdateState: (GoLiveAssets) -> Unit
 ) {
-    val mState = MainStateHolder.mState
-    val stateVm = goLiveVm.mState.value
+    val mState = goLiveVm.mState
+    val stateVm = goLiveVm.liveState.value
     val stateRecentSM = viewMMain.stateRecentLoggedSM
     val assetsState = savedState ?: goLiveVm.assetsState.value
     val stepCount = maxSteps

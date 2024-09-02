@@ -12,8 +12,10 @@ import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
+import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.DataVidRes
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -24,7 +26,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MainState(
     var liveOrientation: MutableState<String> = mutableStateOf(Orientation.PORT.name),
-    var stepId: MutableState<Int> = mutableIntStateOf(0)
+    var stepId: MutableState<Int> = mutableIntStateOf(0),
+
+    //Step #1
+    var goLiveApiRes: DataGoLive? = null,
+    var propertyTsRes: TsPropertyResponse? = null,
+    var sPropList: MutableState<List<PropertyItem>>? = null,
+    var sAgencyList: MutableState<List<AgencyItem>>? = null,
 )
 
 data class AlertData(
@@ -73,6 +81,7 @@ data class VideoAnalytics(
 @Serializable
 data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
 
+@Serializable
 data class AgencyItem(
     val id: Int, val agentProfile: AgentProfileGoLive, var isChecked: Boolean = false
 )
