@@ -32,6 +32,24 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+fun getInitialBg(initials: String): Int {
+    val patternAe = Regex("[a-e]")
+    val patternFj = Regex("[f-j]")
+    val patternKo = Regex("[k-o]")
+    val patternPt = Regex("[p-t]")
+
+    return if (patternAe.containsMatchIn(initials)) {
+        R.drawable.initial_bg_blue
+    } else if (patternFj.containsMatchIn(initials)) {
+        R.drawable.initial_bg_yellow
+    } else if (patternKo.containsMatchIn(initials)) {
+        R.drawable.initial_bg_green
+    } else if (patternPt.containsMatchIn(initials)) {
+        R.drawable.initial_bg_purple
+    } else {
+        R.drawable.initial_bg_grey
+    }
+}
 
 fun getAppVersion(): String {
     val packageManager = context.packageManager
