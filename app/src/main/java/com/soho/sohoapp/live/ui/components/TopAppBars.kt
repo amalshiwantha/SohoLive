@@ -1,7 +1,6 @@
 package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,16 +23,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.theme.AppWhite
 
 @Composable
 fun TopAppBarProfile(
     name: String,
-    imageUrl: String,
+    imageUrl: String?,
     modifier: Modifier
 ) {
     Row(
@@ -43,19 +40,24 @@ fun TopAppBarProfile(
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Profile image
-        val urlPainter = rememberAsyncImagePainter(
-            model = imageUrl,
-            placeholder = painterResource(id = R.drawable.profile_placeholder),
-            error = painterResource(id = R.drawable.profile_placeholder)
-        )
+        imageUrl?.let {
+            val urlPainter = rememberAsyncImagePainter(
+                model = imageUrl,
+                placeholder = painterResource(id = R.drawable.profile_placeholder),
+                error = painterResource(id = R.drawable.profile_placeholder)
+            )
 
-        Image(painter = urlPainter,
-            contentDescription = "Profile Image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-        )
+            Image(
+                painter = urlPainter,
+                contentDescription = "Profile Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+            )
+        } ?: kotlin.run {
+
+        }
 
         SpacerSide(size = 12.dp)
 
@@ -97,7 +99,8 @@ fun AppTopBarCustom(
     onBackClick: () -> Unit = {}
 ) {
     Row(
-        modifier = modifier.padding(bottom = 8.dp)
+        modifier = modifier
+            .padding(bottom = 8.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {

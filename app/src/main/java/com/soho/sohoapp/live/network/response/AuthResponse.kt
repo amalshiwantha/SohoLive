@@ -16,7 +16,11 @@ data class Data(
     @SerialName("authentication_token") val authenticationToken: String,
     @SerialName("email") val email: String,
     @SerialName("last_session_profile_id") val lastSessionProfileId: Int? = null,
-    @SerialName("agent_profiles") val agentProfiles: List<AgentProfile>
+    @SerialName("agent_profiles") val agentProfiles: List<AgentProfile>,
+
+    // Add other properties as needed
+    val name: String = agentProfiles[0].name,
+    val imageUrl: String? = agentProfiles[0].profileImageUrl
 )
 
 @Serializable

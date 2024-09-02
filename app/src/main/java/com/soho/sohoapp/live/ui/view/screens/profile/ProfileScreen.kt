@@ -88,7 +88,7 @@ private fun MainContent(
 
         //action bar
         TopAppBarProfile(name = sProfile.profileName.orEmpty(),
-            imageUrl = sProfile.profileImage.orEmpty(),
+            imageUrl = sProfile.profileImage,
             modifier = Modifier.constrainAs(topAppBar) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
