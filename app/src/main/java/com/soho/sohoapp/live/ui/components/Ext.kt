@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
@@ -17,6 +18,14 @@ import com.soho.sohoapp.live.ui.theme.PlanBtnGradientEnd
 import com.soho.sohoapp.live.ui.theme.PlanBtnGradientStart
 import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientEnd
 import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientStart
+
+val brushLiveGradientBg = Brush.horizontalGradient(
+    colors = listOf(
+        Color(0xFFEC3A44), // Start color (Red)
+        Color(0xFF793AAB),  // End color (Purple)
+        Color(0xFF793AAB)  // End color (Purple)
+    )
+)
 
 val brushMainGradientBg = Brush.verticalGradient(
     colors = listOf(BgGradientPurpleLight, BgGradientPurpleDark)

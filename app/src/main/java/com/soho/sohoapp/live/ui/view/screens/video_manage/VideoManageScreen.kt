@@ -55,6 +55,7 @@ import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextProgress
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
+import com.soho.sohoapp.live.ui.components.brushLiveGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -412,8 +413,12 @@ private fun PrivacyOption(
             )
             SpacerSide(size = 8.dp)
 
-            Column {
-                //box privacy name
+            //labels public, unlisted and live
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                //label privacy name
                 Box(
                     modifier = Modifier
                         .background(
@@ -433,6 +438,32 @@ private fun PrivacyOption(
                         Text800_12sp(label = text)
                     }
                 }
+
+                //label live
+                if (text == VideoPrivacy.PUBLIC.label) {
+                    SpacerSide(size = 8.dp)
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                brush = brushLiveGradientBg,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_lightning),
+                                contentDescription = ""
+                            )
+                            SpacerSide(size = 4.dp)
+                            Text800_12sp(label = "LIVE INSTANTLY")
+                        }
+                    }
+                }
+
             }
         }
 
