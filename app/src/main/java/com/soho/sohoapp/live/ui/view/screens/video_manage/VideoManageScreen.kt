@@ -367,6 +367,7 @@ fun PrivacySettings(
     ) {
         PrivacyOption(text = pvt,
             description = "Livecast will not be visible publicly on your listing. Anyone with the direct share link can view the video.",
+            eyeImgId = R.drawable.ic_hide_eye,
             isSelected = selectedOption == pvt,
             txtColor = txtColor,
             onOptionSelected = {
@@ -376,6 +377,7 @@ fun PrivacySettings(
         SpacerUp(size = 16.dp)
         PrivacyOption(text = pub,
             description = "Livecast will be visible immediately on your property listing.",
+            eyeImgId = R.drawable.ic_view_eye,
             isSelected = selectedOption == pub,
             txtColor = txtColor,
             onOptionSelected = {
@@ -387,7 +389,9 @@ fun PrivacySettings(
 
 @Composable
 private fun PrivacyOption(
-    text: String, description: String, isSelected: Boolean, onOptionSelected: () -> Unit,
+    text: String, description: String, isSelected: Boolean,
+    eyeImgId: Int,
+    onOptionSelected: () -> Unit,
     txtColor: Color
 ) {
     val privacyConfig = VideoPrivacy.fromLabel(text)
@@ -417,14 +421,28 @@ private fun PrivacyOption(
                         )
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
-                    Text800_12sp(label = text)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Image(
+                            painter = painterResource(id = eyeImgId),
+                            contentDescription = ""
+                        )
+                        SpacerSide(size = 4.dp)
+                        Text800_12sp(label = text)
+                    }
                 }
             }
         }
 
         //info
         SpacerUp(size = 8.dp)
-        Text400_14sp(info = description, modifier = Modifier.padding(start = 24.dp), color = txtColor)
+        Text400_14sp(
+            info = description,
+            modifier = Modifier.padding(start = 24.dp),
+            color = txtColor
+        )
     }
 }
 
