@@ -16,7 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,6 +62,8 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
+import com.soho.sohoapp.live.ui.theme.infoGray
+import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
@@ -364,7 +368,6 @@ fun PrivacySettings(
     Column(
         modifier = Modifier
             .background(bgColor, shape = RoundedCornerShape(12.dp))
-            .padding(16.dp)
     ) {
         PrivacyOption(text = pvt,
             description = "Livecast will not be visible publicly on your listing. Anyone with the direct share link can view the video.",
@@ -375,7 +378,9 @@ fun PrivacySettings(
                 selectedOption = pvt
                 onChangePrivacy(selectedOption)
             })
+
         SpacerUp(size = 16.dp)
+
         PrivacyOption(text = pub,
             description = "Livecast will be visible immediately on your property listing.",
             eyeImgId = R.drawable.ic_view_eye,
@@ -385,6 +390,32 @@ fun PrivacySettings(
                 selectedOption = pub
                 onChangePrivacy(selectedOption)
             })
+
+        SpacerUp(size = 16.dp)
+
+        VisibleInfoView()
+    }
+}
+
+@Composable
+fun VisibleInfoView() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = infoGray)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Image(painter = painterResource(id = R.drawable.ic_info), contentDescription = "")
+            SpacerSide(size = 8.dp)
+            Text400_14sp(
+                info = "You can change the video status or delete the video after going live.",
+                color = infoText
+            )
+        }
     }
 }
 
