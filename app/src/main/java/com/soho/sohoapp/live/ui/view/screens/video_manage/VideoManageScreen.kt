@@ -365,21 +365,21 @@ fun PrivacySettings(
             .background(bgColor, shape = RoundedCornerShape(12.dp))
             .padding(16.dp)
     ) {
-        PrivacyOption(text = pub,
-            description = "Show publicly on your Property Listing",
-            isSelected = selectedOption == pub,
-            txtColor = txtColor,
-            onOptionSelected = {
-                selectedOption = pub
-                onChangePrivacy(selectedOption)
-            })
-        SpacerUp(size = 16.dp)
         PrivacyOption(text = pvt,
-            description = "Keep as public unlisted and share the video link privately",
+            description = "Livecast will not be visible publicly on your listing. Anyone with the direct share link can view the video.",
             isSelected = selectedOption == pvt,
             txtColor = txtColor,
             onOptionSelected = {
                 selectedOption = pvt
+                onChangePrivacy(selectedOption)
+            })
+        SpacerUp(size = 16.dp)
+        PrivacyOption(text = pub,
+            description = "Livecast will be visible immediately on your property listing.",
+            isSelected = selectedOption == pub,
+            txtColor = txtColor,
+            onOptionSelected = {
+                selectedOption = pub
                 onChangePrivacy(selectedOption)
             })
     }
