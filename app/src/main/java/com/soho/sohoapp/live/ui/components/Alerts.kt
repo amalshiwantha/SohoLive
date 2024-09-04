@@ -33,8 +33,13 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppGreenDark
 import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
+import com.soho.sohoapp.live.ui.theme.FacebookBlue
+import com.soho.sohoapp.live.ui.theme.FacebookBlueDark
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
+
+
+data class SmBtn(val color: Color, val txt: String, val icon: Int?)
 
 @Composable
 fun ShareableLinkDialog(
@@ -45,13 +50,26 @@ fun ShareableLinkDialog(
     isShowLiveBtn: Boolean = false
 ) {
     var isCopiedSoho by remember { mutableStateOf(false) }
-    var isCopiedYoutube by remember { mutableStateOf(false) }
     var isCopiedFacebook by remember { mutableStateOf(false) }
+    var isCopiedYoutube by remember { mutableStateOf(false) }
     var isCopiedLinkedIn by remember { mutableStateOf(false) }
 
+    //SOHO copy event
     val btnColorSoho = if (isCopiedSoho) AppGreenDark else AppGreen
-    val btnTickSoho = if (isCopiedSoho) R.drawable.ic_tick else null
+    val btnTickSoho = if (isCopiedSoho) R.drawable.copy_tick else null
     val btnTxtSoho = if (isCopiedSoho) "Copied" else "Copy Listing URL"
+
+    //FB copy event
+    var smBtnFb by remember {
+        mutableStateOf(
+            SmBtn(FacebookBlue, "Copy Link", null)
+        )
+    }
+
+    if (isCopiedFacebook) {
+        smBtnFb = SmBtn(FacebookBlueDark, "Copied", R.drawable.copy_tick)
+    }
+
 
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
@@ -143,15 +161,24 @@ fun ShareableLinkDialog(
                         Column {
                             SocialLinkButton(
                                 smItem = SocialMediaInfo.FACEBOOK,
-                                onClick = { onClickCopy(SocialMediaInfo.FACEBOOK.name) })
+                                onClick = {
+                                    onClickCopy(SocialMediaInfo.FACEBOOK.name)
+                                    isCopiedFacebook = true
+                                },
+                                smBtn = smBtnFb
+                            )
                             SpacerUp(size = 16.dp)
                             SocialLinkButton(
                                 smItem = SocialMediaInfo.YOUTUBE,
-                                onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) })
+                                onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) },
+                                smBtn = smBtnFb
+                            )
                             SpacerUp(size = 16.dp)
                             SocialLinkButton(
                                 smItem = SocialMediaInfo.LINKEDIN,
-                                onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) })
+                                onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) },
+                                smBtn = smBtnFb
+                            )
                         }
                     }
 
@@ -181,7 +208,7 @@ fun ShareableLinkDialog(
 }
 
 @Composable
-private fun SocialLinkButton(smItem: SocialMediaInfo, onClick: () -> Unit) {
+private fun SocialLinkButton(smItem: SocialMediaInfo, onClick: () -> Unit, smBtn: SmBtn) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -199,9 +226,10 @@ private fun SocialLinkButton(smItem: SocialMediaInfo, onClick: () -> Unit) {
             }
         )
         Spacer(modifier = Modifier.weight(1f))
-        ButtonConnect(
-            color = smItem.btnColor,
-            text = "Copy Link",
+        ButtonConnectIcon(
+            color = smBtn.color,
+            text = smBtn.txt,
+            icon = smBtn.icon,
             onBtnClick = { onClick() }
         )
     }

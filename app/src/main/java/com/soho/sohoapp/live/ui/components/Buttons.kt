@@ -294,6 +294,40 @@ fun ButtonConnect(
 }
 
 @Composable
+fun ButtonConnectIcon(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color,
+    icon: Int?,
+    txtColor: Color = AppWhite,
+    onBtnClick: () -> Unit
+) {
+    Button(
+        modifier = modifier.height(40.dp),
+        shape = RoundedCornerShape(16.dp),
+        onClick = { onBtnClick() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = color
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon?.let {
+                Image(
+                    painter = painterResource(id = it),
+                    contentDescription = "null",
+                    contentScale = ContentScale.Crop
+                )
+            }
+            SpacerSide(size = 8.dp)
+            TextWhite12(title = text, txtColor = txtColor)
+        }
+    }
+}
+
+@Composable
 fun ButtonOutlineWhite(
     text: String,
     modifier: Modifier = Modifier.height(48.dp),
