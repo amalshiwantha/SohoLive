@@ -36,7 +36,8 @@ fun ShareableLinkDialog(
     onClickCopy: (String) -> Unit,
     onClickLive: () -> Unit,
     onDismiss: () -> Unit,
-    isHasSMLinks: Boolean = false
+    isHasSMLinks: Boolean = true,
+    isShowLiveBtn: Boolean = false
 ) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
@@ -95,11 +96,13 @@ fun ShareableLinkDialog(
                     ButtonColoured(text = "Copy Listing URL", color = AppGreen, onBtnClick = {
                         onClickCopy(SocialMediaInfo.SOHO.name)
                     })
+                    SpacerUp(size = 16.dp)
                 }
 
-                SpacerUp(size = 16.dp)
-                Divider(color = BottomBarUnselect)
-                SpacerUp(size = 16.dp)
+                if (isShowLiveBtn) {
+                    Divider(color = BottomBarUnselect)
+                    SpacerUp(size = 16.dp)
+                }
 
                 // Social Link
                 if (isHasSMLinks) {
@@ -135,21 +138,23 @@ fun ShareableLinkDialog(
 
                     SpacerUp(size = 24.dp)
                     Divider(color = BottomBarUnselect)
-                    SpacerUp(size = 8.dp)
                 }
 
                 // Go Live Now Button
-                Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                ) {
-                    ButtonGradientIcon(
-                        text = "Go Live Now",
-                        modifier = Modifier.fillMaxWidth(),
-                        gradientBrush = brushGradientLive,
-                        icon = R.drawable.livecast_color,
-                        onBtnClick = {
-                            onClickLive()
-                        })
+                if (isShowLiveBtn) {
+                    SpacerUp(size = 8.dp)
+                    Column(
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    ) {
+                        ButtonGradientIcon(
+                            text = "Go Live Now",
+                            modifier = Modifier.fillMaxWidth(),
+                            gradientBrush = brushGradientLive,
+                            icon = R.drawable.livecast_color,
+                            onBtnClick = {
+                                onClickLive()
+                            })
+                    }
                 }
             }
         }
