@@ -21,6 +21,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -110,10 +113,13 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun composeView() {
         binding.composeView.setContent {
+            val clipboardManager: ClipboardManager = LocalClipboardManager.current
             val showDialog = remember { mutableStateOf(true) }
 
             if (showDialog.value) {
-                ShareableLinkDialog(onClickCopy = {}, onClickLive = {}, onDismiss = {
+                ShareableLinkDialog(onClickCopy = {
+                    clipboardManager.setText(AnnotatedString(it))
+                }, onClickLive = {}, onDismiss = {
                     showDialog.value = false
                 })
             }
