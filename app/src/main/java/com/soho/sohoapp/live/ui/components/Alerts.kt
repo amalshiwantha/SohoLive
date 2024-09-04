@@ -36,6 +36,7 @@ fun ShareableLinkDialog(
     onClickCopy: (String) -> Unit,
     onClickLive: () -> Unit,
     onDismiss: () -> Unit,
+    isHasSMLinks: Boolean = false
 ) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
@@ -101,39 +102,41 @@ fun ShareableLinkDialog(
                 SpacerUp(size = 16.dp)
 
                 // Social Link
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Text700_14sp(
-                        step = "Social Links",
-                        color = infoText
-                    )
-                    SpacerUp(size = 8.dp)
-                    Text400_14sp(
-                        info = "You can also share watching links for your connected socials",
-                        color = infoText
-                    )
+                if (isHasSMLinks) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Text700_14sp(
+                            step = "Social Links",
+                            color = infoText
+                        )
+                        SpacerUp(size = 8.dp)
+                        Text400_14sp(
+                            info = "You can also share watching links for your connected socials",
+                            color = infoText
+                        )
 
-                    // Social Media Buttons
-                    SpacerUp(size = 24.dp)
-                    Column {
-                        SocialLinkButton(
-                            smItem = SocialMediaInfo.FACEBOOK,
-                            onClick = { onClickCopy(SocialMediaInfo.FACEBOOK.name) })
-                        SpacerUp(size = 16.dp)
-                        SocialLinkButton(
-                            smItem = SocialMediaInfo.YOUTUBE,
-                            onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) })
-                        SpacerUp(size = 16.dp)
-                        SocialLinkButton(
-                            smItem = SocialMediaInfo.LINKEDIN,
-                            onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) })
+                        // Social Media Buttons
+                        SpacerUp(size = 24.dp)
+                        Column {
+                            SocialLinkButton(
+                                smItem = SocialMediaInfo.FACEBOOK,
+                                onClick = { onClickCopy(SocialMediaInfo.FACEBOOK.name) })
+                            SpacerUp(size = 16.dp)
+                            SocialLinkButton(
+                                smItem = SocialMediaInfo.YOUTUBE,
+                                onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) })
+                            SpacerUp(size = 16.dp)
+                            SocialLinkButton(
+                                smItem = SocialMediaInfo.LINKEDIN,
+                                onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) })
+                        }
                     }
-                }
 
-                SpacerUp(size = 24.dp)
-                Divider(color = BottomBarUnselect)
-                SpacerUp(size = 8.dp)
+                    SpacerUp(size = 24.dp)
+                    Divider(color = BottomBarUnselect)
+                    SpacerUp(size = 8.dp)
+                }
 
                 // Go Live Now Button
                 Column(
