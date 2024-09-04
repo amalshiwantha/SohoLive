@@ -16,6 +16,10 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +31,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppGreenDark
 import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
@@ -39,6 +44,15 @@ fun ShareableLinkDialog(
     isHasSMLinks: Boolean = true,
     isShowLiveBtn: Boolean = false
 ) {
+    var isCopiedSoho by remember { mutableStateOf(false) }
+    var isCopiedYoutube by remember { mutableStateOf(false) }
+    var isCopiedFacebook by remember { mutableStateOf(false) }
+    var isCopiedLinkedIn by remember { mutableStateOf(false) }
+
+    val btnColorSoho = if (isCopiedSoho) AppGreenDark else AppGreen
+    val btnTickSoho = if (isCopiedSoho) R.drawable.ic_tick else null
+    val btnTxtSoho = if (isCopiedSoho) "Copied" else "Copy Listing URL"
+
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
             shape = RoundedCornerShape(16.dp),
@@ -93,9 +107,14 @@ fun ShareableLinkDialog(
 
                     //Copy Btn
                     SpacerUp(size = 16.dp)
-                    ButtonColoured(text = "Copy Listing URL", color = AppGreen, onBtnClick = {
-                        onClickCopy(SocialMediaInfo.SOHO.name)
-                    })
+                    ButtonColoredIcon(
+                        title = btnTxtSoho,
+                        btnColor = btnColorSoho,
+                        icon = btnTickSoho,
+                        onBtnClick = {
+                            onClickCopy(SocialMediaInfo.SOHO.name)
+                            isCopiedSoho = true
+                        })
                     SpacerUp(size = 16.dp)
                 }
 

@@ -239,7 +239,7 @@ fun ButtonGradientIcon(
 fun ButtonColoredIcon(
     title: String,
     btnColor: Color,
-    icon: Int,
+    icon: Int? = null,
     modifier: Modifier = Modifier,
     onBtnClick: () -> Unit
 ) {
@@ -260,11 +260,13 @@ fun ButtonColoredIcon(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             ) {
-                Image(
-                    painter = painterResource(id = icon),
-                    contentDescription = "null",
-                    contentScale = ContentScale.Crop
-                )
+                if (icon != null) {
+                    Image(
+                        painter = painterResource(id = icon),
+                        contentDescription = "null",
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Text800_14sp(label = title)
             }
         }
