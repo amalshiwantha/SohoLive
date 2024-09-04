@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.infoText
 
 @Composable
@@ -56,33 +58,48 @@ fun ShareableLinkDialog(
                     )
                     Image(
                         painter = painterResource(id = R.drawable.ic_round_cross),
-                        contentDescription = null
+                        contentDescription = null,
+                        modifier = Modifier.clickable { onDismiss() }
                     )
                 }
 
                 // Description
-                Text(
-                    text = "Copy and share your links before you go live. This will reduce disruptions once you are live.",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                SpacerUp(size = 8.dp)
+                Text400_14sp(
+                    info = "Copy and share your links before you go live. This will reduce disruptions once you are live.",
+                    color = infoText
                 )
 
-                // Website Link
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                ) {
-                    // Add an icon or image here if needed
-                    Text(
-                        text = "soho.com.au",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = Color.Gray,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Button(onClick = { onClickCopy("https://soho.com.au") }) {
-                        Text(text = "Copy Listing URL")
-                    }
-                }
+                //SohoLogo
+                SpacerUp(size = 24.dp)
+                Image(
+                    painter = painterResource(id = R.drawable.logo_soho),
+                    contentDescription = null,
+                    modifier = Modifier.clickable { onDismiss() }
+                )
+                SpacerUp(size = 8.dp)
+                Text400_14sp(
+                    info = "Videos will be shown on the property listing.",
+                    color = infoText
+                )
+
+                //Copy Btn
+                SpacerUp(size = 16.dp)
+                ButtonColoured(text = "Copy Listing URL", color = AppGreen, onBtnClick = {
+                    onClickCopy("https://soho.com.au")
+                })
+
+                // Social Link
+                SpacerUp(size = 32.dp)
+                Text700_14sp(
+                    step = "Social Links",
+                    color = infoText
+                )
+                SpacerUp(size = 8.dp)
+                Text400_14sp(
+                    info = "You can also share watching links for your connected socials",
+                    color = infoText
+                )
 
                 // Social Links
                 Text(
