@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 
@@ -41,95 +43,111 @@ fun ShareableLinkDialog(
             color = Color.White,
             modifier = Modifier
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
+            Column {
+
                 // Title and close btn
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_share),
-                        contentDescription = null,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_share),
+                            contentDescription = null,
+                        )
+                        SpacerSide(size = 8.dp)
+                        Text950_20sp(
+                            title = "Shareable Links",
+                            txtColor = infoText,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_round_cross),
+                            contentDescription = null,
+                            modifier = Modifier.clickable { onDismiss() }
+                        )
+                    }
+
+                    // Description
+                    SpacerUp(size = 8.dp)
+                    Text400_14sp(
+                        info = "Copy and share your links before you go live. This will reduce disruptions once you are live.",
+                        color = infoText
                     )
-                    SpacerSide(size = 8.dp)
-                    Text950_20sp(
-                        title = "Shareable Links",
-                        txtColor = infoText,
-                        modifier = Modifier.weight(1f)
-                    )
+
+                    //SohoLogo
+                    SpacerUp(size = 24.dp)
                     Image(
-                        painter = painterResource(id = R.drawable.ic_round_cross),
+                        painter = painterResource(id = R.drawable.logo_soho),
                         contentDescription = null,
                         modifier = Modifier.clickable { onDismiss() }
                     )
+                    SpacerUp(size = 8.dp)
+                    Text400_14sp(
+                        info = "Videos will be shown on the property listing.",
+                        color = infoText
+                    )
+
+                    //Copy Btn
+                    SpacerUp(size = 16.dp)
+                    ButtonColoured(text = "Copy Listing URL", color = AppGreen, onBtnClick = {
+                        onClickCopy(SocialMediaInfo.SOHO.name)
+                    })
                 }
 
-                // Description
-                SpacerUp(size = 8.dp)
-                Text400_14sp(
-                    info = "Copy and share your links before you go live. This will reduce disruptions once you are live.",
-                    color = infoText
-                )
-
-                //SohoLogo
-                SpacerUp(size = 24.dp)
-                Image(
-                    painter = painterResource(id = R.drawable.logo_soho),
-                    contentDescription = null,
-                    modifier = Modifier.clickable { onDismiss() }
-                )
-                SpacerUp(size = 8.dp)
-                Text400_14sp(
-                    info = "Videos will be shown on the property listing.",
-                    color = infoText
-                )
-
-                //Copy Btn
                 SpacerUp(size = 16.dp)
-                ButtonColoured(text = "Copy Listing URL", color = AppGreen, onBtnClick = {
-                    onClickCopy(SocialMediaInfo.SOHO.name)
-                })
+                Divider(color = BottomBarUnselect)
+                SpacerUp(size = 16.dp)
 
                 // Social Link
-                SpacerUp(size = 32.dp)
-                Text700_14sp(
-                    step = "Social Links",
-                    color = infoText
-                )
-                SpacerUp(size = 8.dp)
-                Text400_14sp(
-                    info = "You can also share watching links for your connected socials",
-                    color = infoText
-                )
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text700_14sp(
+                        step = "Social Links",
+                        color = infoText
+                    )
+                    SpacerUp(size = 8.dp)
+                    Text400_14sp(
+                        info = "You can also share watching links for your connected socials",
+                        color = infoText
+                    )
 
-                // Social Media Buttons
-                SpacerUp(size = 24.dp)
-                Column {
-                    SocialLinkButton(
-                        smItem = SocialMediaInfo.FACEBOOK,
-                        onClick = { onClickCopy(SocialMediaInfo.FACEBOOK.name) })
-                    SpacerUp(size = 16.dp)
-                    SocialLinkButton(
-                        smItem = SocialMediaInfo.YOUTUBE,
-                        onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) })
-                    SpacerUp(size = 16.dp)
-                    SocialLinkButton(
-                        smItem = SocialMediaInfo.LINKEDIN,
-                        onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) })
+                    // Social Media Buttons
+                    SpacerUp(size = 24.dp)
+                    Column {
+                        SocialLinkButton(
+                            smItem = SocialMediaInfo.FACEBOOK,
+                            onClick = { onClickCopy(SocialMediaInfo.FACEBOOK.name) })
+                        SpacerUp(size = 16.dp)
+                        SocialLinkButton(
+                            smItem = SocialMediaInfo.YOUTUBE,
+                            onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) })
+                        SpacerUp(size = 16.dp)
+                        SocialLinkButton(
+                            smItem = SocialMediaInfo.LINKEDIN,
+                            onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) })
+                    }
                 }
 
                 SpacerUp(size = 24.dp)
+                Divider(color = BottomBarUnselect)
+                SpacerUp(size = 8.dp)
 
                 // Go Live Now Button
-                ButtonGradientIcon(
-                    text = "Go Live Now",
-                    modifier = Modifier.fillMaxWidth(),
-                    gradientBrush = brushGradientLive,
-                    icon = R.drawable.livecast_color,
-                    onBtnClick = {
-                        onClickLive()
-                    })
+                Column(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                ) {
+                    ButtonGradientIcon(
+                        text = "Go Live Now",
+                        modifier = Modifier.fillMaxWidth(),
+                        gradientBrush = brushGradientLive,
+                        icon = R.drawable.livecast_color,
+                        onBtnClick = {
+                            onClickLive()
+                        })
+                }
             }
         }
     }
