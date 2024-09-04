@@ -175,14 +175,18 @@ fun ButtonGradientIcon(
         contentPadding = PaddingValues()
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .background(
                     brush = gradientBrush,
                     shape = RoundedCornerShape(radius)
                 )
-                .padding(horizontal = 24.dp, vertical = 12.dp)
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = icon),
                     contentDescription = "",

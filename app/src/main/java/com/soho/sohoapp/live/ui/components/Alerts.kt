@@ -2,30 +2,32 @@ package com.soho.sohoapp.live.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.infoText
+import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 
 @Composable
 fun ShareableLinkDialog(
@@ -86,7 +88,7 @@ fun ShareableLinkDialog(
                 //Copy Btn
                 SpacerUp(size = 16.dp)
                 ButtonColoured(text = "Copy Listing URL", color = AppGreen, onBtnClick = {
-                    onClickCopy("https://soho.com.au")
+                    onClickCopy(SocialMediaInfo.SOHO.name)
                 })
 
                 // Social Link
@@ -101,59 +103,62 @@ fun ShareableLinkDialog(
                     color = infoText
                 )
 
-                // Social Links
-                Text(
-                    text = "Social Links",
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
                 // Social Media Buttons
+                SpacerUp(size = 24.dp)
                 Column {
                     SocialLinkButton(
-                        platform = "Facebook",
-                        color = Color.Blue,
-                        onClick = { onClickCopy("facebook.com/link") })
+                        smItem = SocialMediaInfo.FACEBOOK,
+                        onClick = { onClickCopy(SocialMediaInfo.FACEBOOK.name) })
+                    SpacerUp(size = 16.dp)
                     SocialLinkButton(
-                        platform = "YouTube",
-                        color = Color.Red,
-                        onClick = { onClickCopy("youtube.com/link") })
+                        smItem = SocialMediaInfo.YOUTUBE,
+                        onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) })
+                    SpacerUp(size = 16.dp)
                     SocialLinkButton(
-                        platform = "LinkedIn",
-                        color = Color.Cyan,
-                        onClick = { onClickCopy("linkedin.com/link") })
+                        smItem = SocialMediaInfo.LINKEDIN,
+                        onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) })
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                SpacerUp(size = 24.dp)
 
                 // Go Live Now Button
-                Button(
-                    onClick = { onClickLive() },
-                    colors = ButtonDefaults.buttonColors(contentColor = Color.Red),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Go Live Now", color = Color.White)
-                }
+                ButtonGradientIcon(
+                    text = "Go Live Now",
+                    modifier = Modifier.fillMaxWidth(),
+                    gradientBrush = brushGradientLive,
+                    icon = R.drawable.livecast_color,
+                    onBtnClick = {
+                        onClickLive()
+                    })
             }
         }
     }
 }
 
 @Composable
-fun SocialLinkButton(platform: String, color: Color, onClick: () -> Unit) {
+private fun SocialLinkButton(smItem: SocialMediaInfo, onClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 4.dp)
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        // Icon or platform logo
-        Text(
-            text = platform,
-            color = color,
-            modifier = Modifier.weight(1f)
+        val imgSize = getImageWidth(smItem.icon)
+        Image(
+            painter = painterResource(id = smItem.icon),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = if (imgSize.width == 0) {
+                Modifier
+            } else {
+                Modifier.size(imgSize.width.dp, imgSize.height.dp)
+            }
         )
-        Button(onClick = onClick) {
-            Text(text = "Copy Link")
-        }
+        Spacer(modifier = Modifier.weight(1f))
+        ButtonConnect(
+            color = smItem.btnColor,
+            text = "Copy Link",
+            onBtnClick = { onClick() }
+        )
     }
 }
 

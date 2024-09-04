@@ -1860,7 +1860,7 @@ private fun SocialMediaItemContent(
 }
 
 @Composable
-private fun getImageWidth(drawableResId: Int): Size {
+fun getImageWidth(drawableResId: Int): Size {
     val context = LocalContext.current
     val drawable = ResourcesCompat.getDrawable(context.resources, drawableResId, null)
     val width = drawable?.intrinsicWidth ?: 0
