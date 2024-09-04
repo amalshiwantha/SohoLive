@@ -35,6 +35,10 @@ import com.soho.sohoapp.live.ui.theme.AppGreenDark
 import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
 import com.soho.sohoapp.live.ui.theme.FacebookBlue
 import com.soho.sohoapp.live.ui.theme.FacebookBlueDark
+import com.soho.sohoapp.live.ui.theme.LinkedInBlue
+import com.soho.sohoapp.live.ui.theme.LinkedInBlueDark
+import com.soho.sohoapp.live.ui.theme.YoutubeRed
+import com.soho.sohoapp.live.ui.theme.YoutubeRedDark
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 
@@ -49,6 +53,8 @@ fun ShareableLinkDialog(
     isHasSMLinks: Boolean = true,
     isShowLiveBtn: Boolean = false
 ) {
+    val txtCopy = "Copy Link"
+    val txtCopied = "Copied"
     var isCopiedSoho by remember { mutableStateOf(false) }
     var isCopiedFacebook by remember { mutableStateOf(false) }
     var isCopiedYoutube by remember { mutableStateOf(false) }
@@ -57,17 +63,39 @@ fun ShareableLinkDialog(
     //SOHO copy event
     val btnColorSoho = if (isCopiedSoho) AppGreenDark else AppGreen
     val btnTickSoho = if (isCopiedSoho) R.drawable.copy_tick else null
-    val btnTxtSoho = if (isCopiedSoho) "Copied" else "Copy Listing URL"
+    val btnTxtSoho = if (isCopiedSoho) txtCopied else "Copy Listing URL"
 
     //FB copy event
     var smBtnFb by remember {
         mutableStateOf(
-            SmBtn(FacebookBlue, "Copy Link", null)
+            SmBtn(FacebookBlue, txtCopy, null)
         )
     }
 
     if (isCopiedFacebook) {
-        smBtnFb = SmBtn(FacebookBlueDark, "Copied", R.drawable.copy_tick)
+        smBtnFb = SmBtn(FacebookBlueDark, txtCopied, R.drawable.copy_tick)
+    }
+
+    //YT copy event
+    var smBtnYt by remember {
+        mutableStateOf(
+            SmBtn(YoutubeRed, txtCopy, null)
+        )
+    }
+
+    if (isCopiedYoutube) {
+        smBtnYt = SmBtn(YoutubeRedDark, txtCopied, R.drawable.copy_tick)
+    }
+
+    //LI copy event
+    var smBtnLi by remember {
+        mutableStateOf(
+            SmBtn(LinkedInBlue, txtCopy, null)
+        )
+    }
+
+    if (isCopiedLinkedIn) {
+        smBtnLi = SmBtn(LinkedInBlueDark, txtCopied, R.drawable.copy_tick)
     }
 
 
@@ -170,14 +198,20 @@ fun ShareableLinkDialog(
                             SpacerUp(size = 16.dp)
                             SocialLinkButton(
                                 smItem = SocialMediaInfo.YOUTUBE,
-                                onClick = { onClickCopy(SocialMediaInfo.YOUTUBE.name) },
-                                smBtn = smBtnFb
+                                onClick = {
+                                    onClickCopy(SocialMediaInfo.YOUTUBE.name)
+                                    isCopiedYoutube = true
+                                },
+                                smBtn = smBtnYt
                             )
                             SpacerUp(size = 16.dp)
                             SocialLinkButton(
                                 smItem = SocialMediaInfo.LINKEDIN,
-                                onClick = { onClickCopy(SocialMediaInfo.LINKEDIN.name) },
-                                smBtn = smBtnFb
+                                onClick = {
+                                    onClickCopy(SocialMediaInfo.LINKEDIN.name)
+                                    isCopiedLinkedIn = true
+                                },
+                                smBtn = smBtnLi
                             )
                         }
                     }
