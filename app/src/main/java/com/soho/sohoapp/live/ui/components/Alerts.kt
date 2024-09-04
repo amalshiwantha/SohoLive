@@ -60,40 +60,36 @@ fun ShareableLinkDialog(
     var isCopiedYoutube by remember { mutableStateOf(false) }
     var isCopiedLinkedIn by remember { mutableStateOf(false) }
 
-    //SOHO copy event
-    val btnColorSoho = if (isCopiedSoho) AppGreenDark else AppGreen
-    val btnTickSoho = if (isCopiedSoho) R.drawable.copy_tick else null
-    val btnTxtSoho = if (isCopiedSoho) txtCopied else "Copy Listing URL"
-
-    //FB copy event
+    var smBtnSoho by remember {
+        mutableStateOf(
+            SmBtn(AppGreen, "Copy Listing URL", null)
+        )
+    }
     var smBtnFb by remember {
         mutableStateOf(
             SmBtn(FacebookBlue, txtCopy, null)
         )
     }
-
-    if (isCopiedFacebook) {
-        smBtnFb = SmBtn(FacebookBlueDark, txtCopied, R.drawable.copy_tick)
-    }
-
-    //YT copy event
     var smBtnYt by remember {
         mutableStateOf(
             SmBtn(YoutubeRed, txtCopy, null)
         )
     }
-
-    if (isCopiedYoutube) {
-        smBtnYt = SmBtn(YoutubeRedDark, txtCopied, R.drawable.copy_tick)
-    }
-
-    //LI copy event
     var smBtnLi by remember {
         mutableStateOf(
             SmBtn(LinkedInBlue, txtCopy, null)
         )
     }
 
+    if (isCopiedSoho) {
+        smBtnSoho = SmBtn(AppGreenDark, txtCopied, R.drawable.copy_tick)
+    }
+    if (isCopiedFacebook) {
+        smBtnFb = SmBtn(FacebookBlueDark, txtCopied, R.drawable.copy_tick)
+    }
+    if (isCopiedYoutube) {
+        smBtnYt = SmBtn(YoutubeRedDark, txtCopied, R.drawable.copy_tick)
+    }
     if (isCopiedLinkedIn) {
         smBtnLi = SmBtn(LinkedInBlueDark, txtCopied, R.drawable.copy_tick)
     }
@@ -154,9 +150,9 @@ fun ShareableLinkDialog(
                     //Copy Btn
                     SpacerUp(size = 16.dp)
                     ButtonColoredIcon(
-                        title = btnTxtSoho,
-                        btnColor = btnColorSoho,
-                        icon = btnTickSoho,
+                        title = smBtnSoho.txt,
+                        btnColor = smBtnSoho.color,
+                        icon = smBtnSoho.icon,
                         onBtnClick = {
                             onClickCopy(SocialMediaInfo.SOHO.name)
                             isCopiedSoho = true
