@@ -7,6 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.view.activity.live.LiveStreamActivity">
 
+    <!-- ComposeView for Jetpack Compose content -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
+
     <!--Camera view-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

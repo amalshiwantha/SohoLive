@@ -3,26 +3,24 @@ package com.soho.sohoapp.live.ui.view.activity.live
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
-import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,19 +30,19 @@ import androidx.lifecycle.lifecycleScope
 import com.pedro.common.ConnectChecker
 import com.pedro.encoder.input.gl.render.filters.`object`.ImageObjectFilterRender
 import com.pedro.encoder.input.video.CameraHelper
-import com.pedro.encoder.utils.gl.AspectRatioMode
 import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamParameters.resolution
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
@@ -107,7 +105,24 @@ class LiveStreamActivity : AppCompatActivity() {
         init()
         checkRequiredPermissions()
         mStateObserveable()
-        checkEssentialData()
+        //checkEssentialData()
+        composeView()
+    }
+
+    private fun composeView() {
+        binding.composeView.setContent {
+            val showDialog = remember { mutableStateOf(true) }
+
+            if (showDialog.value) {
+                AppAlertDialog(AlertConfig.COMMON_OK, onConfirm = {
+                    showDialog.value = false
+                }, onDismiss = {
+                    showDialog.value = false
+                })
+            }
+        }
+
+        binding.composeView.visibility = View.VISIBLE
     }
 
     // Function to enable edge-to-edge mode and set full screen
