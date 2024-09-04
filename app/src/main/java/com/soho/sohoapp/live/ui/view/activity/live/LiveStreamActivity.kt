@@ -35,14 +35,13 @@ import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
-import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
-import com.soho.sohoapp.live.ui.components.AppAlertDialog
+import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamParameters.resolution
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
@@ -114,9 +113,7 @@ class LiveStreamActivity : AppCompatActivity() {
             val showDialog = remember { mutableStateOf(true) }
 
             if (showDialog.value) {
-                AppAlertDialog(AlertConfig.COMMON_OK, onConfirm = {
-                    showDialog.value = false
-                }, onDismiss = {
+                ShareableLinkDialog(onClickCopy = {}, onClickLive = {}, onDismiss = {
                     showDialog.value = false
                 })
             }

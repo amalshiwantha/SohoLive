@@ -149,7 +149,7 @@ fun TextError(modifier: Modifier = Modifier, errorMsg: String) {
 }
 
 @Composable
-fun Text950_20sp(modifier: Modifier = Modifier, title: String) {
+fun Text950_20sp(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,
         text = title,
@@ -157,7 +157,7 @@ fun Text950_20sp(modifier: Modifier = Modifier, title: String) {
         lineHeight = 28.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(950),
-        color = AppWhite,
+        color = txtColor,
         letterSpacing = 0.24.sp
     )
 }
