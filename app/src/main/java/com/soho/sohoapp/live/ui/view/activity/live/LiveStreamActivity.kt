@@ -280,19 +280,9 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun init() {
         openGlView = binding.openGlView
         watermark = binding.imgWatermark
-        timerTextHelper = TimerTextHelper(binding.txtLiveTime)
+        timerTextHelper = TimerTextHelper(binding.txtLiveTime, binding.imgBtnShare)
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
-
-        /*binding.cardGoLive.setOnClickListener {
-            rtmpCamera2?.let {
-                if (it.isStreaming) {
-                    showCountDownOverlay(isStart = false)
-                } else {
-                    showCountDownOverlay()
-                }
-            }
-        }*/
 
         binding.imgBtnCam.setOnClickListener {
             switchCamera()
