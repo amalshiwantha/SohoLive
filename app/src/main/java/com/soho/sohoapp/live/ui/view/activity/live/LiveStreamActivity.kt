@@ -110,7 +110,7 @@ class LiveStreamActivity : AppCompatActivity() {
         smClickEvent()
         checkRequiredPermissions()
         mStateObserveable()
-        //checkEssentialData()
+        checkEssentialData()
     }
 
     private fun smClickEvent() {
