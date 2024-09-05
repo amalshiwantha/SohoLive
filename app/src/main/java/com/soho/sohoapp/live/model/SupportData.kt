@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.model
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -19,6 +20,11 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+/*
+* Social Media button change state when copy links
+* */
+data class SmBtn(val color: Color, val txt: String, val icon: Int?)
 
 /*
 * This state help for store value when globally access

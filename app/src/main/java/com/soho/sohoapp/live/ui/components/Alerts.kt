@@ -30,6 +30,7 @@ import androidx.compose.ui.window.Dialog
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.SmBtn
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppGreenDark
 import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
@@ -41,9 +42,6 @@ import com.soho.sohoapp.live.ui.theme.YoutubeRed
 import com.soho.sohoapp.live.ui.theme.YoutubeRedDark
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
-
-
-data class SmBtn(val color: Color, val txt: String, val icon: Int?)
 
 @Composable
 fun ShareableLinkDialog(
