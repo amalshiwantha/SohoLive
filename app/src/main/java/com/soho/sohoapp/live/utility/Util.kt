@@ -12,6 +12,9 @@ import android.net.Uri
 import android.os.Environment
 import android.util.Base64
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +35,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+
 fun getInitialBg(initials: String): Int {
     val patternAe = Regex("[a-e]")
     val patternFj = Regex("[f-j]")
@@ -126,6 +130,21 @@ fun shareIntent(shareLink: String) {
 
 fun showToast(msg: String) {
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+}
+
+fun showToastTrans(message: String) {
+    val inflater = LayoutInflater.from(context)
+    val layout: View = inflater.inflate(R.layout.custom_toast, null)
+
+    val text: TextView = layout.findViewById(R.id.tv_message)
+    text.text = message
+
+    val toast = Toast(context)
+    toast.duration = Toast.LENGTH_SHORT
+    toast.view = layout
+
+    toast.setGravity(Gravity.CENTER, 0, 0)
+    toast.show()
 }
 
 @OptIn(ExperimentalPermissionsApi::class)

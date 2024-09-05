@@ -49,6 +49,7 @@ import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamPara
 import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
+import com.soho.sohoapp.live.utility.showToastTrans
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -118,6 +119,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
             if (showDialog.value) {
                 ShareableLinkDialog(onClickCopy = {
+                    showToastTrans("Link to soho.com.au copied")
                     clipboardManager.setText(AnnotatedString(it))
                 }, onClickLive = {}, onDismiss = {
                     showDialog.value = false
