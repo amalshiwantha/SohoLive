@@ -78,41 +78,66 @@
     </RelativeLayout>
 
     <!--SM Link-->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/layout_bottom"
-        android:background="@color/browser_actions_bg_grey"
-        android:orientation="horizontal"
-        android:paddingVertical="8dp">
+        android:background="@color/white"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
 
-        <ImageView
-            android:id="@+id/img_sm_soho"
+        <TextView
+            style="@style/axiforma_700W12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/soho_logo" />
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:text="@string/your_shareable_links" />
 
-        <ImageView
-            android:id="@+id/img_sm_fb"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:src="@drawable/logo_fb" />
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/img_sm_yt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:src="@drawable/logo_yt" />
+            <ImageView
+                android:id="@+id/img_sm_soho"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/soho_logo" />
 
-        <ImageView
-            android:id="@+id/img_sm_li"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:src="@drawable/logo_li" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/img_sm_fb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="8dp"
+                android:src="@drawable/logo_fb" />
+
+            <ImageView
+                android:id="@+id/img_sm_yt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="8dp"
+                android:src="@drawable/logo_yt" />
+
+            <ImageView
+                android:id="@+id/img_sm_li"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="8dp"
+                android:src="@drawable/logo_li" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <!--Bottom video control and start button-->
     <LinearLayout
@@ -122,8 +147,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/app_dark"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
+        android:padding="16dp"
         android:weightSum="100">
 
         <!--mic, cam share btn-->
