@@ -106,10 +106,26 @@ class LiveStreamActivity : AppCompatActivity() {
 
         changeOrientation()
         init()
+        smClickEvent()
         checkRequiredPermissions()
         mStateObserveable()
         //checkEssentialData()
         composeView()
+    }
+
+    private fun smClickEvent() {
+        binding.imgSmSoho.setOnClickListener {
+            showToastTrans("Link to soho.com.au copied")
+        }
+        binding.imgSmFb.setOnClickListener {
+            showToastTrans("Link to Facebook copied")
+        }
+        binding.imgSmYt.setOnClickListener {
+            showToastTrans("Link to YouTube copied")
+        }
+        binding.imgSmLi.setOnClickListener {
+            showToastTrans("Link to LinkedIn copied")
+        }
     }
 
     private fun composeView() {
@@ -120,7 +136,7 @@ class LiveStreamActivity : AppCompatActivity() {
             val isGoLiveClick = remember { mutableStateOf(false) }
 
             binding.imgBtnShare.setOnClickListener {
-                isGoLiveClick.value = true
+                isGoLiveClick.value = false
                 showDialog.value = true
             }
 
@@ -128,7 +144,6 @@ class LiveStreamActivity : AppCompatActivity() {
                 ShareableLinkDialog(
                     isShowLiveBtn = isGoLiveClick.value,
                     onClickCopy = {
-                        showToastTrans("Link to soho.com.au copied")
                         clipboardManager.setText(AnnotatedString(it))
                     }, onClickLive = {}, onDismiss = {
                         showDialog.value = false
