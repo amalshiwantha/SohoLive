@@ -49,7 +49,7 @@ fun ShareableLinkDialog(
     onClickLive: () -> Unit,
     onDismiss: () -> Unit,
     isHasSMLinks: Boolean = true,
-    isShowLiveBtn: Boolean = false
+    isShowLiveBtn: Boolean = true
 ) {
     val txtCopy = "Copy Link"
     val txtCopied = "Copied"

@@ -117,18 +117,22 @@ class LiveStreamActivity : AppCompatActivity() {
 
             val clipboardManager: ClipboardManager = LocalClipboardManager.current
             val showDialog = remember { mutableStateOf(false) }
+            val isGoLiveClick = remember { mutableStateOf(false) }
 
             binding.imgBtnShare.setOnClickListener {
+                isGoLiveClick.value = true
                 showDialog.value = true
             }
 
             if (showDialog.value) {
-                ShareableLinkDialog(onClickCopy = {
-                    showToastTrans("Link to soho.com.au copied")
-                    clipboardManager.setText(AnnotatedString(it))
-                }, onClickLive = {}, onDismiss = {
-                    showDialog.value = false
-                })
+                ShareableLinkDialog(
+                    isShowLiveBtn = isGoLiveClick.value,
+                    onClickCopy = {
+                        showToastTrans("Link to soho.com.au copied")
+                        clipboardManager.setText(AnnotatedString(it))
+                    }, onClickLive = {}, onDismiss = {
+                        showDialog.value = false
+                    })
             }
 
         }
