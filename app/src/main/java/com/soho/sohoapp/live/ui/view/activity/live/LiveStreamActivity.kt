@@ -106,11 +106,11 @@ class LiveStreamActivity : AppCompatActivity() {
 
         changeOrientation()
         init()
+        composeView()
         smClickEvent()
         checkRequiredPermissions()
         mStateObserveable()
         //checkEssentialData()
-        composeView()
     }
 
     private fun smClickEvent() {
@@ -140,12 +140,26 @@ class LiveStreamActivity : AppCompatActivity() {
                 showDialog.value = true
             }
 
+            binding.cardGoLive.setOnClickListener {
+                rtmpCamera2?.let {
+                    if (it.isStreaming) {
+                        showCountDownOverlay(isStart = false)
+                    } else {
+                        isGoLiveClick.value = true
+                        showDialog.value = true
+                    }
+                }
+            }
+
             if (showDialog.value) {
                 ShareableLinkDialog(
                     isShowLiveBtn = isGoLiveClick.value,
                     onClickCopy = {
                         clipboardManager.setText(AnnotatedString(it))
-                    }, onClickLive = {}, onDismiss = {
+                    }, onClickLive = {
+                        showDialog.value = false
+                        showCountDownOverlay()
+                    }, onDismiss = {
                         showDialog.value = false
                     })
             }
@@ -270,7 +284,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
 
-        binding.cardGoLive.setOnClickListener {
+        /*binding.cardGoLive.setOnClickListener {
             rtmpCamera2?.let {
                 if (it.isStreaming) {
                     showCountDownOverlay(isStart = false)
@@ -278,7 +292,7 @@ class LiveStreamActivity : AppCompatActivity() {
                     showCountDownOverlay()
                 }
             }
-        }
+        }*/
 
         binding.imgBtnCam.setOnClickListener {
             switchCamera()
