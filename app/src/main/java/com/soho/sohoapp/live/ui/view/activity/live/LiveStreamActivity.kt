@@ -114,8 +114,13 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun composeView() {
         binding.composeView.setContent {
+
             val clipboardManager: ClipboardManager = LocalClipboardManager.current
-            val showDialog = remember { mutableStateOf(true) }
+            val showDialog = remember { mutableStateOf(false) }
+
+            binding.imgBtnShare.setOnClickListener {
+                showDialog.value = true
+            }
 
             if (showDialog.value) {
                 ShareableLinkDialog(onClickCopy = {
@@ -125,6 +130,7 @@ class LiveStreamActivity : AppCompatActivity() {
                     showDialog.value = false
                 })
             }
+
         }
 
         binding.composeView.visibility = View.VISIBLE
