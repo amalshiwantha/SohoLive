@@ -136,8 +136,7 @@ fun ShareableLinkDialog(
                     SpacerUp(size = 24.dp)
                     Image(
                         painter = painterResource(id = R.drawable.logo_soho),
-                        contentDescription = null,
-                        modifier = Modifier.clickable { onDismiss() }
+                        contentDescription = null
                     )
                     SpacerUp(size = 8.dp)
                     Text400_14sp(
