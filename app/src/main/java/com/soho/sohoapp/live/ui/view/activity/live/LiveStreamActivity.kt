@@ -104,13 +104,33 @@ class LiveStreamActivity : AppCompatActivity() {
             insets
         }
 
+        checkEssentialData()
         changeOrientation()
         init()
         composeView()
         smClickEvent()
+        smVisibility()
         checkRequiredPermissions()
         mStateObserveable()
-        checkEssentialData()
+    }
+
+    private fun smVisibility() {
+
+        val isHasFb = reqLive.simulcastTargets.filter {
+            it.platform == ("facebook")
+        }
+
+        val isHasYt = reqLive.simulcastTargets.filter {
+            it.platform == ("youtube")
+        }
+
+        val isHasLi = reqLive.simulcastTargets.filter {
+            it.platform == ("linkedin")
+        }
+
+        binding.imgSmFb.visibility = isHasFb.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
+        binding.imgSmYt.visibility = isHasYt.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
+        binding.imgSmLi.visibility = isHasLi.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
     }
 
     private fun smClickEvent() {

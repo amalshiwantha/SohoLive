@@ -116,7 +116,9 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="8dp"
-                android:src="@drawable/logo_fb" />
+                android:src="@drawable/logo_fb"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/img_sm_yt"
@@ -125,7 +127,9 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="8dp"
-                android:src="@drawable/logo_yt" />
+                android:src="@drawable/logo_yt"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/img_sm_li"
@@ -134,7 +138,9 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="8dp"
-                android:src="@drawable/logo_li" />
+                android:src="@drawable/logo_li"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
 
     </RelativeLayout>
