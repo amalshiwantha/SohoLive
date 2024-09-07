@@ -29,7 +29,6 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
-import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -39,11 +38,14 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-fun copyToClipboard(smName: String, link: String) {
+fun copyToClipboard(smName: String, link: String, isShowToast: Boolean = false) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText("label", link)
     clipboard.setPrimaryClip(clip)
-    showToastTrans("Link to $smName copied")
+
+    if (isShowToast) {
+        showToastTrans("Link to $smName copied")
+    }
 }
 
 fun getInitialBg(initials: String): Int {

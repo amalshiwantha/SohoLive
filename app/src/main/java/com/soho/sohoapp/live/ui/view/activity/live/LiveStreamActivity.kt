@@ -21,9 +21,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.ClipboardManager
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -144,26 +141,25 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun smClickEvent() {
         binding.imgSmSoho.setOnClickListener {
             val linkSoho = reqLive.shareableLink
-            copyToClipboard(SocialMediaInfo.SOHO.name, linkSoho)
+            copyToClipboard(SocialMediaInfo.SOHO.name, linkSoho, true)
         }
         binding.imgSmFb.setOnClickListener {
             val linkFb = getSmShareLink(SocialMedia.FACEBOOK)
-            copyToClipboard(SocialMediaInfo.FACEBOOK.name, linkFb)
+            copyToClipboard(SocialMediaInfo.FACEBOOK.name, linkFb, true)
         }
         binding.imgSmYt.setOnClickListener {
             val linkYt = getSmShareLink(SocialMedia.YOUTUBE)
-            copyToClipboard(SocialMediaInfo.YOUTUBE.name, linkYt)
+            copyToClipboard(SocialMediaInfo.YOUTUBE.name, linkYt, true)
         }
         binding.imgSmLi.setOnClickListener {
             val linkLi = getSmShareLink(SocialMedia.LINKEDIN)
-            copyToClipboard(SocialMediaInfo.LINKEDIN.name, linkLi)
+            copyToClipboard(SocialMediaInfo.LINKEDIN.name, linkLi, true)
         }
     }
 
     private fun composeView() {
         binding.composeView.setContent {
 
-            val clipboardManager: ClipboardManager = LocalClipboardManager.current
             val showDialog = remember { mutableStateOf(false) }
             val isGoLiveClick = remember { mutableStateOf(false) }
 
@@ -188,7 +184,27 @@ class LiveStreamActivity : AppCompatActivity() {
                     reqLive = reqLive,
                     isShowLiveBtn = isGoLiveClick.value,
                     onClickCopy = {
-                        clipboardManager.setText(AnnotatedString(it))
+                        when (it) {
+                            SocialMedia.FACEBOOK.name -> {
+                                val linkFb = getSmShareLink(SocialMedia.FACEBOOK)
+                                copyToClipboard(SocialMediaInfo.FACEBOOK.name, linkFb)
+                            }
+
+                            SocialMedia.YOUTUBE.name -> {
+                                val linkFb = getSmShareLink(SocialMedia.YOUTUBE)
+                                copyToClipboard(SocialMediaInfo.YOUTUBE.name, linkFb)
+                            }
+
+                            SocialMedia.LINKEDIN.name -> {
+                                val linkFb = getSmShareLink(SocialMedia.LINKEDIN)
+                                copyToClipboard(SocialMediaInfo.LINKEDIN.name, linkFb)
+                            }
+
+                            else -> {
+                                val linkSoho = reqLive.shareableLink
+                                copyToClipboard(SocialMediaInfo.SOHO.name, linkSoho)
+                            }
+                        }
                     }, onClickLive = {
                         showDialog.value = false
                         showCountDownOverlay()

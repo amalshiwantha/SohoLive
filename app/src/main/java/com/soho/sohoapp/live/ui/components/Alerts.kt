@@ -58,14 +58,6 @@ fun ShareableLinkDialog(
     isHasSMLinks: Boolean = true,
     isShowLiveBtn: Boolean = true
 ) {
-
-    //same in LiveStreamAct..
-    fun getSmShareLink(smName: SocialMedia): String {
-        return reqLive.simulcastTargets.first {
-            it.platform == (smName.name.lowercase())
-        }.shareableLink
-    }
-
     //same in LiveStreamAct..
     fun isHasShareLink(smName: SocialMedia): Boolean {
         return reqLive.simulcastTargets.filter {
