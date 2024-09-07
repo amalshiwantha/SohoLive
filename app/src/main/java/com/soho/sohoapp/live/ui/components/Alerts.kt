@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,11 +30,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.enums.SocialMedia
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.SmBtn
+import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppGreenDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -51,12 +51,28 @@ import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 
 @Composable
 fun ShareableLinkDialog(
+    reqLive: LiveRequest,
     onClickCopy: (String) -> Unit,
     onClickLive: () -> Unit,
     onDismiss: () -> Unit,
     isHasSMLinks: Boolean = true,
     isShowLiveBtn: Boolean = true
 ) {
+
+    //same in LiveStreamAct..
+    fun getSmShareLink(smName: SocialMedia): String {
+        return reqLive.simulcastTargets.first {
+            it.platform == (smName.name.lowercase())
+        }.shareableLink
+    }
+
+    //same in LiveStreamAct..
+    fun isHasShareLink(smName: SocialMedia): Boolean {
+        return reqLive.simulcastTargets.filter {
+            it.platform == (smName.name.lowercase())
+        }.isNotEmpty()
+    }
+
     val txtCopy = "Copy Link"
     val txtCopied = "Copied"
     var isCopiedSoho by remember { mutableStateOf(false) }
@@ -190,7 +206,7 @@ fun ShareableLinkDialog(
                         }
 
                         // Social Link
-                        if (isHasSMLinks) {
+                        if (reqLive.simulcastTargets.isNotEmpty()) {
                             Column(
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             ) {
@@ -207,32 +223,41 @@ fun ShareableLinkDialog(
                                 // Social Media Buttons
                                 SpacerUp(size = 24.dp)
                                 Column {
-                                    SocialLinkButton(
-                                        smItem = SocialMediaInfo.FACEBOOK,
-                                        onClick = {
-                                            onClickCopy(SocialMediaInfo.FACEBOOK.name)
-                                            isCopiedFacebook = true
-                                        },
-                                        smBtn = smBtnFb
-                                    )
-                                    SpacerUp(size = 16.dp)
-                                    SocialLinkButton(
-                                        smItem = SocialMediaInfo.YOUTUBE,
-                                        onClick = {
-                                            onClickCopy(SocialMediaInfo.YOUTUBE.name)
-                                            isCopiedYoutube = true
-                                        },
-                                        smBtn = smBtnYt
-                                    )
-                                    SpacerUp(size = 16.dp)
-                                    SocialLinkButton(
-                                        smItem = SocialMediaInfo.LINKEDIN,
-                                        onClick = {
-                                            onClickCopy(SocialMediaInfo.LINKEDIN.name)
-                                            isCopiedLinkedIn = true
-                                        },
-                                        smBtn = smBtnLi
-                                    )
+                                    if (isHasShareLink(SocialMedia.FACEBOOK)) {
+                                        SocialLinkButton(
+                                            smItem = SocialMediaInfo.FACEBOOK,
+                                            onClick = {
+                                                onClickCopy(SocialMediaInfo.FACEBOOK.name)
+                                                isCopiedFacebook = true
+                                            },
+                                            smBtn = smBtnFb
+                                        )
+                                        SpacerUp(size = 16.dp)
+                                    }
+
+                                    if (isHasShareLink(SocialMedia.YOUTUBE)) {
+                                        SocialLinkButton(
+                                            smItem = SocialMediaInfo.YOUTUBE,
+                                            onClick = {
+                                                onClickCopy(SocialMediaInfo.YOUTUBE.name)
+                                                isCopiedYoutube = true
+                                            },
+                                            smBtn = smBtnYt
+                                        )
+                                        SpacerUp(size = 16.dp)
+                                    }
+
+                                    if (isHasShareLink(SocialMedia.LINKEDIN)) {
+                                        SocialLinkButton(
+                                            smItem = SocialMediaInfo.LINKEDIN,
+                                            onClick = {
+                                                onClickCopy(SocialMediaInfo.LINKEDIN.name)
+                                                isCopiedLinkedIn = true
+                                            },
+                                            smBtn = smBtnLi
+                                        )
+                                    }
+
                                 }
                             }
 

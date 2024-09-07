@@ -127,12 +127,14 @@ class LiveStreamActivity : AppCompatActivity() {
         binding.imgSmLi.visibility = if (isHasLi) View.VISIBLE else View.GONE
     }
 
+    //same in Alert
     private fun getSmShareLink(smName: SocialMedia): String {
         return reqLive.simulcastTargets.first {
             it.platform == (smName.name.lowercase())
         }.shareableLink
     }
 
+    //same in Alert
     private fun isHasShareLink(smName: SocialMedia): Boolean {
         return reqLive.simulcastTargets.filter {
             it.platform == (smName.name.lowercase())
@@ -183,6 +185,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
             if (showDialog.value) {
                 ShareableLinkDialog(
+                    reqLive = reqLive,
                     isShowLiveBtn = isGoLiveClick.value,
                     onClickCopy = {
                         clipboardManager.setText(AnnotatedString(it))
