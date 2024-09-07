@@ -9,6 +9,12 @@ import com.soho.sohoapp.live.ui.theme.LinkedInBlue
 import com.soho.sohoapp.live.ui.theme.YoutubeRed
 import kotlinx.serialization.Serializable
 
+enum class SocialMedia(smName : String){
+    FACEBOOK("facebook"),
+    YOUTUBE("youtube"),
+    LINKEDIN("linkedin")
+}
+
 @Serializable
 enum class SocialMediaInfo(
     var title: String,

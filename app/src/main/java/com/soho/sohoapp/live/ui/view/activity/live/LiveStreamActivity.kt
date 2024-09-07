@@ -40,6 +40,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.Orientation
+import com.soho.sohoapp.live.enums.SocialMedia
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
@@ -51,7 +52,6 @@ import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
-import com.soho.sohoapp.live.utility.showToastTrans
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -119,20 +119,27 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun smVisibility() {
 
         val isHasFb = reqLive.simulcastTargets.filter {
-            it.platform == ("facebook")
+            it.platform == (SocialMedia.FACEBOOK.name)
         }
 
         val isHasYt = reqLive.simulcastTargets.filter {
-            it.platform == ("youtube")
+            it.platform == (SocialMedia.YOUTUBE.name)
         }
 
         val isHasLi = reqLive.simulcastTargets.filter {
-            it.platform == ("linkedin")
+            it.platform == (SocialMedia.LINKEDIN.name)
         }
 
         binding.imgSmFb.visibility = isHasFb.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
         binding.imgSmYt.visibility = isHasYt.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
         binding.imgSmLi.visibility = isHasLi.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
+    }
+
+    private fun getSmShareLink(smName: SocialMedia): String {
+        return reqLive.simulcastTargets.first {
+            it.platform == (smName.name)
+        }.shareableLink
+
     }
 
     private fun smClickEvent() {
@@ -141,24 +148,15 @@ class LiveStreamActivity : AppCompatActivity() {
             copyToClipboard(SocialMediaInfo.SOHO.name, linkSoho)
         }
         binding.imgSmFb.setOnClickListener {
-            val linkFb = reqLive.simulcastTargets.first {
-                it.platform == ("facebook")
-            }.shareableLink
-
+            val linkFb = getSmShareLink(SocialMedia.FACEBOOK)
             copyToClipboard(SocialMediaInfo.FACEBOOK.name, linkFb)
         }
         binding.imgSmYt.setOnClickListener {
-            val linkYt = reqLive.simulcastTargets.first {
-                it.platform == ("youtube")
-            }.shareableLink
-
+            val linkYt = getSmShareLink(SocialMedia.YOUTUBE)
             copyToClipboard(SocialMediaInfo.YOUTUBE.name, linkYt)
         }
         binding.imgSmLi.setOnClickListener {
-            val linkLi = reqLive.simulcastTargets.first {
-                it.platform == ("linkedin")
-            }.shareableLink
-
+            val linkLi = getSmShareLink(SocialMedia.LINKEDIN)
             copyToClipboard(SocialMediaInfo.LINKEDIN.name, linkLi)
         }
     }
