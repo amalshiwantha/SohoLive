@@ -118,28 +118,25 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun smVisibility() {
 
-        val isHasFb = reqLive.simulcastTargets.filter {
-            it.platform == (SocialMedia.FACEBOOK.name)
-        }
+        val isHasFb = isHasShareLink(SocialMedia.FACEBOOK)
+        val isHasYt = isHasShareLink(SocialMedia.YOUTUBE)
+        val isHasLi = isHasShareLink(SocialMedia.LINKEDIN)
 
-        val isHasYt = reqLive.simulcastTargets.filter {
-            it.platform == (SocialMedia.YOUTUBE.name)
-        }
-
-        val isHasLi = reqLive.simulcastTargets.filter {
-            it.platform == (SocialMedia.LINKEDIN.name)
-        }
-
-        binding.imgSmFb.visibility = isHasFb.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
-        binding.imgSmYt.visibility = isHasYt.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
-        binding.imgSmLi.visibility = isHasLi.firstOrNull()?.let { View.VISIBLE } ?: View.GONE
+        binding.imgSmFb.visibility = if (isHasFb) View.VISIBLE else View.GONE
+        binding.imgSmYt.visibility = if (isHasYt) View.VISIBLE else View.GONE
+        binding.imgSmLi.visibility = if (isHasLi) View.VISIBLE else View.GONE
     }
 
     private fun getSmShareLink(smName: SocialMedia): String {
         return reqLive.simulcastTargets.first {
-            it.platform == (smName.name)
+            it.platform == (smName.name.lowercase())
         }.shareableLink
+    }
 
+    private fun isHasShareLink(smName: SocialMedia): Boolean {
+        return reqLive.simulcastTargets.filter {
+            it.platform == (smName.name.lowercase())
+        }.isNotEmpty()
     }
 
     private fun smClickEvent() {
