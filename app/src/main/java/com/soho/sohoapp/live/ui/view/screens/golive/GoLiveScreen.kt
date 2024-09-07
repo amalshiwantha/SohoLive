@@ -257,7 +257,8 @@ fun GoLiveScreen(
             val requestLive = LiveRequest(
                 simulcastTargets = it.simulcastTargets,
                 streamKey = it.streamKey,
-                liveStreamId = it.id
+                liveStreamId = it.id,
+                shareableLink = it.shareableLink
             )
             val jsonStr = Json.encodeToString(requestLive)
 

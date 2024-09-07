@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -27,6 +29,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -35,6 +38,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+
+fun copyToClipboard(smName: String, link: String) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("label", link)
+    clipboard.setPrimaryClip(clip)
+    showToastTrans("Link to $smName copied")
+}
 
 fun getInitialBg(initials: String): Int {
     val patternAe = Regex("[a-e]")

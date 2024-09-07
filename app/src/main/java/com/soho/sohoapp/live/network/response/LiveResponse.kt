@@ -8,6 +8,7 @@ data class LiveRequest(
     @SerialName("simulcast_targets") val simulcastTargets: List<SimulcastTarget>,
     var streamKey: String,
     val liveStreamId: String,
+    var shareableLink: String,
 )
 
 @Serializable

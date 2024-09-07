@@ -40,6 +40,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.Orientation
+import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
@@ -47,6 +48,7 @@ import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamParameters.resolution
 import com.soho.sohoapp.live.utility.TimerTextHelper
+import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
 import com.soho.sohoapp.live.utility.showToastTrans
@@ -135,16 +137,29 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun smClickEvent() {
         binding.imgSmSoho.setOnClickListener {
-            showToastTrans("Link to soho.com.au copied")
+            val linkSoho = reqLive.shareableLink
+            copyToClipboard(SocialMediaInfo.SOHO.name, linkSoho)
         }
         binding.imgSmFb.setOnClickListener {
-            showToastTrans("Link to Facebook copied")
+            val linkFb = reqLive.simulcastTargets.first {
+                it.platform == ("facebook")
+            }.shareableLink
+
+            copyToClipboard(SocialMediaInfo.FACEBOOK.name, linkFb)
         }
         binding.imgSmYt.setOnClickListener {
-            showToastTrans("Link to YouTube copied")
+            val linkYt = reqLive.simulcastTargets.first {
+                it.platform == ("youtube")
+            }.shareableLink
+
+            copyToClipboard(SocialMediaInfo.YOUTUBE.name, linkYt)
         }
         binding.imgSmLi.setOnClickListener {
-            showToastTrans("Link to LinkedIn copied")
+            val linkLi = reqLive.simulcastTargets.first {
+                it.platform == ("linkedin")
+            }.shareableLink
+
+            copyToClipboard(SocialMediaInfo.LINKEDIN.name, linkLi)
         }
     }
 
