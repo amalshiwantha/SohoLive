@@ -22,6 +22,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /*
+* on board data display
+* */
+data class OnboardingData(val imageRes: Int, val info: String)
+
+/*
 * Social Media button change state when copy links
 * */
 data class SmBtn(val color: Color, val txt: String, val icon: Int?)

@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +38,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.model.OnboardingData
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -66,7 +65,7 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
             contentDescription = null,
             modifier = Modifier
                 .wrapContentSize()
-                .padding(top = 40.dp, bottom = 60.dp)
+                .padding(vertical = 60.dp)
                 .constrainAs(topLogo) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -75,14 +74,7 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
         )
 
         // Middle scrollable content
-        /*OnboardingView(modifier = Modifier.constrainAs(onBoard) {
-            top.linkTo(topLogo.bottom)
-            bottom.linkTo(button.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            height = Dimension.fillToConstraints
-        })*/
-        OnboardingScreen(modifier = Modifier.constrainAs(onBoard) {
+        OnboardingView(modifier = Modifier.constrainAs(onBoard) {
             top.linkTo(topLogo.bottom)
             bottom.linkTo(button.top)
             start.linkTo(parent.start)
@@ -104,10 +96,8 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
     }
 }
 
-data class OnboardingData(val imageRes: Int, val info: String)
-
 @Composable
-fun OnboardingScreen(modifier: Modifier) {
+fun OnboardingView(modifier: Modifier) {
     val pagerState = rememberPagerState()
 
     val onboardingItems = listOf(
@@ -194,69 +184,6 @@ fun OnboardingScreen(modifier: Modifier) {
                 if (index != onboardingItems.lastIndex) {
                     SpacerSide(size = 4.dp)
                 }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun OnboardingView(modifier: Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        // Image
-        Box {
-            Image(
-                painter = painterResource(id = R.drawable.on_board_1),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 45.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            )
-
-            //bottom overlay gradient view
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(horizontal = 45.dp)
-                    .background(
-                        brush = onBoardGradientBg
-                    )
-            )
-        }
-
-        // Description
-        Text(
-            text = "Livecast your property inspections for prospects to watch at their own convenience",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = 24.dp)
-        )
-
-        // Page indicators
-        Row(
-            modifier = Modifier.padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            repeat(4) { index ->
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(if (index == 2) Color.White else Color.Gray) // Highlight current page
-                        .padding(horizontal = 4.dp)
-                )
             }
         }
     }
