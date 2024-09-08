@@ -207,7 +207,7 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, bottom = 32.dp),
+            .padding(start = 16.dp, end = 16.dp, bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
