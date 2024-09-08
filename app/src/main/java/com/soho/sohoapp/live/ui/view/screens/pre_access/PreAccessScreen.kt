@@ -109,10 +109,16 @@ fun OnboardingScreen(modifier: Modifier) {
     val scope = rememberCoroutineScope()
 
     val onboardingItems = listOf(
-        OnboardingData(R.drawable.on_board_1, "Explore properties easily from your phone"),
-        OnboardingData(R.drawable.on_board_2, "Watch property inspections live"),
-        OnboardingData(R.drawable.on_board_3, "Schedule virtual property tours"),
-        OnboardingData(R.drawable.on_board_4, "Get property alerts and updates")
+        OnboardingData(
+            R.drawable.on_board_1,
+            "Livecast your property inspections for prospects to watch at their own convenience"
+        ),
+        OnboardingData(
+            R.drawable.on_board_2,
+            "Simultaneously cast to your listing and social platforms"
+        ),
+        OnboardingData(R.drawable.on_board_3, "Create unlisted videos for private viewing"),
+        OnboardingData(R.drawable.on_board_4, "Apply your agent and agency branding on every video")
     )
 
     Column(
