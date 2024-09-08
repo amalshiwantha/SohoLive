@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,6 +39,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text950_20spCenter
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.onBoardGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -145,26 +146,21 @@ fun OnboardingScreen(modifier: Modifier) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.BottomCenter)
-                            .height(100.dp) // Height of the gradient overlay
+                            .height(100.dp)
                             .background(onBoardGradientBg)
                     )
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-
+                SpacerUp(size = 10.dp)
 
                 // Description text
-                Text(
-                    text = onboardingItems[page].info,
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
+                Text950_20spCenter(
+                    title = onboardingItems[page].info,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        SpacerUp(size = 16.dp)
 
         // Page indicators
         Row(

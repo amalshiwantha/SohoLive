@@ -163,6 +163,21 @@ fun Text950_20sp(modifier: Modifier = Modifier, title: String, txtColor: Color =
 }
 
 @Composable
+fun Text950_20spCenter(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
+    Text(
+        modifier = modifier,
+        text = title,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(950),
+        color = txtColor,
+        textAlign = TextAlign.Center,
+        letterSpacing = 0.24.sp
+    )
+}
+
+@Composable
 fun Text950_16sp(modifier: Modifier = Modifier, title: String) {
     Text(
         modifier = modifier,
