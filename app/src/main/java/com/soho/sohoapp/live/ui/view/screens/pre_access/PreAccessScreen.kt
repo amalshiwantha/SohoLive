@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -108,7 +109,6 @@ data class OnboardingData(val imageRes: Int, val info: String)
 @Composable
 fun OnboardingScreen(modifier: Modifier) {
     val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
 
     val onboardingItems = listOf(
         OnboardingData(
@@ -136,7 +136,7 @@ fun OnboardingScreen(modifier: Modifier) {
             modifier = Modifier.fillMaxWidth()
         ) { page ->
 
-            Column {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 // Image
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Image(
@@ -145,6 +145,7 @@ fun OnboardingScreen(modifier: Modifier) {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .aspectRatio(1f)
                             .padding(horizontal = 45.dp)
                             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     )
@@ -154,7 +155,7 @@ fun OnboardingScreen(modifier: Modifier) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.BottomCenter)
-                            .height(100.dp)
+                            .height(120.dp)
                             .background(onBoardGradientBg)
                     )
                 }
