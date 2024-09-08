@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +40,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text950_20spCenter
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -177,13 +179,20 @@ fun OnboardingScreen(modifier: Modifier) {
         ) {
             onboardingItems.forEachIndexed { index, _ ->
                 val isSelected = pagerState.currentPage == index
+                val itemWidth = if (isSelected) 24.dp else 16.dp
+                val itemColor = if (isSelected) Color.White else Color.Gray
+
                 Box(
                     modifier = Modifier
-                        .size(12.dp)
+                        .width(itemWidth)
+                        .height(6.dp)
                         .clip(CircleShape)
-                        .background(if (isSelected) Color.White else Color.Gray)
-                        .padding(horizontal = 4.dp)
+                        .background(itemColor)
                 )
+
+                if (index != onboardingItems.lastIndex) {
+                    SpacerSide(size = 4.dp)
+                }
             }
         }
     }
