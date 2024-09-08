@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,9 +36,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.ButtonColoured
-import com.soho.sohoapp.live.ui.components.brushLiveGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.onBoardGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -68,7 +71,14 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
         )
 
         // Middle scrollable content
-        OnboardingView(modifier = Modifier.constrainAs(onBoard) {
+        /*OnboardingView(modifier = Modifier.constrainAs(onBoard) {
+            top.linkTo(topLogo.bottom)
+            bottom.linkTo(button.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            height = Dimension.fillToConstraints
+        })*/
+        OnboardingScreen(modifier = Modifier.constrainAs(onBoard) {
             top.linkTo(topLogo.bottom)
             bottom.linkTo(button.top)
             start.linkTo(parent.start)
@@ -87,6 +97,93 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
                 },
             navController = navController
         )
+    }
+}
+
+data class OnboardingData(val imageRes: Int, val info: String)
+
+@Composable
+fun OnboardingScreen(modifier: Modifier) {
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+
+    val onboardingItems = listOf(
+        OnboardingData(R.drawable.on_board_1, "Explore properties easily from your phone"),
+        OnboardingData(R.drawable.on_board_2, "Watch property inspections live"),
+        OnboardingData(R.drawable.on_board_3, "Schedule virtual property tours"),
+        OnboardingData(R.drawable.on_board_4, "Get property alerts and updates")
+    )
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Pager with images and descriptions
+        HorizontalPager(
+            count = onboardingItems.size,
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth()
+        ) { page ->
+
+            Column {
+                // Image
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Image(
+                        painter = painterResource(id = onboardingItems[page].imageRes),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 45.dp)
+                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    )
+
+                    // Gradient overlay at the bottom of the image
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .height(100.dp) // Height of the gradient overlay
+                            .background(onBoardGradientBg)
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+
+                // Description text
+                Text(
+                    text = onboardingItems[page].info,
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Page indicators
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+        ) {
+            onboardingItems.forEachIndexed { index, _ ->
+                val isSelected = pagerState.currentPage == index
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .background(if (isSelected) Color.White else Color.Gray)
+                        .padding(horizontal = 4.dp)
+                )
+            }
+        }
     }
 }
 
