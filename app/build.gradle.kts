@@ -118,6 +118,8 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
+    //pager
+    implementation("com.google.accompanist:accompanist-pager:0.30.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

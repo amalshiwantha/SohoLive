@@ -13,6 +13,13 @@ import com.soho.sohoapp.live.ui.theme.PlanBtnGradientStart
 import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientEnd
 import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientStart
 
+val onBoardGradientBg = Brush.verticalGradient(
+    colors = listOf(
+        Color.Transparent, // Transparent color at the top
+        BgGradientPurpleDark.copy(alpha = 0.1f), // Semi-transparent purple in the middle
+        BgGradientPurpleDark// Solid purple at the bottom
+    )
+)
 
 val brushLiveGradientBg = Brush.horizontalGradient(
     colors = listOf(

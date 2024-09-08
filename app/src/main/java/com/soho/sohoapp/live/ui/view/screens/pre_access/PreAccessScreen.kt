@@ -5,15 +5,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,9 +36,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.ButtonColoured
-import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
-import com.soho.sohoapp.live.ui.components.Text800_12sp
+import com.soho.sohoapp.live.ui.components.brushLiveGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.components.onBoardGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -52,7 +59,7 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
             contentDescription = null,
             modifier = Modifier
                 .wrapContentSize()
-                .padding(top = 40.dp)
+                .padding(top = 40.dp, bottom = 60.dp)
                 .constrainAs(topLogo) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -61,21 +68,13 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
         )
 
         // Middle scrollable content
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(onBoard) {
-                    top.linkTo(topLogo.bottom)
-                    bottom.linkTo(button.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    height = Dimension.fillToConstraints
-                }
-        ) {
-            items(10) {
-                Text800_12sp(label = "Nikan")
-            }
-        }
+        OnboardingView(modifier = Modifier.constrainAs(onBoard) {
+            top.linkTo(topLogo.bottom)
+            bottom.linkTo(button.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            height = Dimension.fillToConstraints
+        })
 
         // Bottom static buttons
         BottomButtons(
@@ -89,8 +88,71 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
             navController = navController
         )
     }
-
 }
+
+
+@Composable
+fun OnboardingView(modifier: Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        // Image
+        Box {
+            Image(
+                painter = painterResource(id = R.drawable.on_board_1),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 45.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            )
+
+            //bottom overlay gradient view
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .padding(horizontal = 45.dp)
+                    .background(
+                        brush = onBoardGradientBg
+                    )
+            )
+        }
+
+        // Description
+        Text(
+            text = "Livecast your property inspections for prospects to watch at their own convenience",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 24.dp)
+        )
+
+        // Page indicators
+        Row(
+            modifier = Modifier.padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(4) { index ->
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(if (index == 2) Color.White else Color.Gray) // Highlight current page
+                        .padding(horizontal = 4.dp)
+                )
+            }
+        }
+    }
+}
+
 
 /*private fun oldView(){
     Box(
