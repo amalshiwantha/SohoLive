@@ -1551,7 +1551,7 @@ private fun NextBackButtons(
                 if (currentStepId == beforeLastStepId) {
                     if (isNowSelected) {
                         //LivePreview Button
-                        ButtonGradientIcon(text = "Preview Live",
+                        ButtonGradientIcon(text = "Preview",
                             icon = R.drawable.livecast_color,
                             gradientBrush = brushGradientLive,
                             modifier = rightModify,
