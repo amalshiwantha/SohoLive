@@ -80,6 +80,7 @@ fun SelectOrientationBottomSheet(onGoLive: () -> Unit, onCancel: () -> Unit) {
                 ButtonGradientIcon(text = "Preview",
                     icon = R.drawable.livecast_color,
                     gradientBrush = brushGradientLive,
+                    modifier = Modifier.weight(1f),
                     onBtnClick = {
                         onGoLive()
                     })
