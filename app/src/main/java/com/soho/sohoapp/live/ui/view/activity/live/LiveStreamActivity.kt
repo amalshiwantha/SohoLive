@@ -74,6 +74,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private var isDidLiveCast = false
     private val PERMISSION_REQUEST_CODE = 101
     private var isLand = false
+    private var isPublic = false
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -246,17 +247,17 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun changeOrientation() {
         val orientation = intent.getStringExtra(KEY_ORIENTATION)
-        val isPublic = intent.getBooleanExtra(KEY_PUBLIC,false)
-        println("myPublic $isPublic")
         isLand = orientation == Orientation.LAND.name
+
         if (isLand) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
-
     }
 
     private fun checkEssentialData() {
+        isPublic = intent.getBooleanExtra(KEY_PUBLIC,false)
         val jsonModel = intent.getStringExtra(KEY_STREAM)
+
         jsonModel?.let {
             reqLive = Json.decodeFromString<LiveRequest>(it)
         } ?: run {
@@ -334,7 +335,7 @@ class LiveStreamActivity : AppCompatActivity() {
         watermark = binding.imgWatermark
         timerTextHelper = TimerTextHelper(binding.txtLiveTime, binding.imgBtnShare)
 
-        binding.txtGoLive.text = "GoLive"
+        binding.txtGoLive.text = if(isPublic) "Go Live" else "Record Now"
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
 
