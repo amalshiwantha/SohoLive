@@ -91,6 +91,7 @@ import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_LIVE_STATUS
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_ORIENTATION
+import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_PUBLIC
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.Companion.KEY_STREAM
 import com.soho.sohoapp.live.ui.view.screens.golive.DoConnectFacebook
 import com.soho.sohoapp.live.ui.view.screens.golive.doConnectGoogle
@@ -161,7 +162,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     LaunchedEffect(msOpenLiveCaster) {
                         if (msOpenLiveCaster.isNotEmpty()) {
                             val orientation = MainStateHolder.mState.liveOrientation.value
-                            openLiveScreen(msOpenLiveCaster, orientation)
+                            val isPublic = MainStateHolder.mState.isPublic.value
+                            openLiveScreen(msOpenLiveCaster, orientation,isPublic)
                         }
                     }
 
@@ -277,10 +279,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
-    private fun openLiveScreen(msOpenLiveCaster: String, orientation: String) {
+    private fun openLiveScreen(msOpenLiveCaster: String, orientation: String, isPublic: Boolean) {
         val intent = Intent(this, LiveStreamActivity::class.java)
         intent.putExtra(KEY_STREAM, msOpenLiveCaster)
         intent.putExtra(KEY_ORIENTATION, orientation)
+        intent.putExtra(KEY_PUBLIC, isPublic)
         liveCastLauncher.launch(intent)
     }
 

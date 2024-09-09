@@ -1054,6 +1054,7 @@ fun StepContents(
                 },
                 onSohoItemChecked = {
                     mGoLiveSubmit.isSohoPublic = it
+                    MainStateHolder.mState.isPublic.value = it
                 })
             SpacerUp(size = 70.dp)
         }

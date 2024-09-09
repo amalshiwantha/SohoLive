@@ -85,6 +85,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val KEY_PUBLIC = "is_public"
         const val KEY_ORIENTATION = "orientation"
         const val KEY_STREAM = "streamKey"
         const val KEY_LIVE_STATUS = "liveStatus"
@@ -245,6 +246,8 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun changeOrientation() {
         val orientation = intent.getStringExtra(KEY_ORIENTATION)
+        val isPublic = intent.getBooleanExtra(KEY_PUBLIC,false)
+        println("myPublic $isPublic")
         isLand = orientation == Orientation.LAND.name
         if (isLand) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -330,6 +333,8 @@ class LiveStreamActivity : AppCompatActivity() {
         openGlView = binding.openGlView
         watermark = binding.imgWatermark
         timerTextHelper = TimerTextHelper(binding.txtLiveTime, binding.imgBtnShare)
+
+        binding.txtGoLive.text = "GoLive"
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
 
