@@ -66,11 +66,17 @@ data class VideoItem(
             val hours = TimeUnit.SECONDS.toHours(it.toLong())
             val minutes = TimeUnit.SECONDS.toMinutes(it.toLong()) % 60
             val seconds = it % 60
-            String.format("%02d:%02d:%02d", hours, minutes, seconds)
-        } ?: run {
-            "00:00"
-        }
+
+            if (hours > 0) {
+                // If hours are greater than 0, display hh:mm:ss
+                String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            } else {
+                // If no hours, display mm:ss
+                String.format("%02d:%02d", minutes, seconds)
+            }
+        } ?: "00:00"
     }
+
 }
 
 @Serializable
