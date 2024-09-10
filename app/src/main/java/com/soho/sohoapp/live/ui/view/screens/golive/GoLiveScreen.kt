@@ -989,7 +989,7 @@ fun StepContents(
     onAgentItemClicked: (AgencyItem) -> Unit,
     onSMItemClicked: (SocialMediaInfo) -> Unit
 ) {
-    SpacerUp(40.dp)
+    SpacerUp(24.dp)
 
     when (currentStepId) {
         // step #1
