@@ -1676,6 +1676,8 @@ private fun SocialMediaListing(
                 onSMItemChecked(smInfo)
             })
     }
+
+    SpacerUp(size = 40.dp)
 }
 
 @Composable
