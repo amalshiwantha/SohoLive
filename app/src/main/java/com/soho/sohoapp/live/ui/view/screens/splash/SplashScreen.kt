@@ -76,12 +76,7 @@ private fun SplashViewContent(modifier: Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.soho_white),
-                contentDescription = null,
-                modifier = Modifier.wrapContentSize()
-            )
-            Image(
-                painter = painterResource(id = R.drawable.live_icon),
+                painter = painterResource(id = R.drawable.soho_livecast_logo),
                 contentDescription = null,
                 modifier = Modifier.wrapContentSize()
             )
