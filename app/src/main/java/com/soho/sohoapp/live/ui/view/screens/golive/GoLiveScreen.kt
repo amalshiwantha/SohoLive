@@ -2059,8 +2059,9 @@ private fun TypeAndCheckBox(
             doc.apListingState?.toUppercaseFirst()?.let {
                 Text700_12sp(label = it)
             }
+            val dotImage = if (isChecked) R.drawable.space_dot_dark else R.drawable.space_dot
             Image(
-                painter = painterResource(id = R.drawable.space_dot),
+                painter = painterResource(id = dotImage),
                 contentDescription = null,
                 modifier = Modifier.padding(horizontal = 8.dp),
                 contentScale = ContentScale.FillBounds
@@ -2192,7 +2193,7 @@ fun SwitchCompo(
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         val countSteps = 5
-        val currentStep = 2
+        val currentStep = 4
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
