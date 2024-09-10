@@ -26,6 +26,6 @@ enum class StepInfo(
     STEP_4(
         counter = "Step 4 of $maxSteps",
         title = "Give your audience more information on your livestream",
-        info = "By providing these details will allow us to better inform prospective buyers and renters what your livestream is about."
+        info = "Providing these details will allow us to better inform prospective buyers and renters what your livestream is about."
     )
 }
