@@ -38,6 +38,7 @@ import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.SocialMedia
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.enums.StreamBitrate
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
@@ -77,11 +78,18 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
-        const val FPS = 30
-        const val START_BITRATE = 400 * 1024
-        const val INTERVAL_SEC = 5
-        /*const val maxBitrate = 4000 * 1024
-        const val backgroundStreamingTimeOutInMillis: Long = 60000*/
+        val START_BITRATE = getBitRate(resolution)
+        const val FPS =
+            30 // this FPS set according to the StreamBitrate. if change this then have to change the StreamBitrate also
+        const val INTERVAL_SEC = 2
+
+        private fun getBitRate(resolution: StreamResolution): Int {
+            return when (resolution) {
+                StreamResolution.FULL_HD -> StreamBitrate.FULL_HD.bitrate
+                StreamResolution.HD -> StreamBitrate.HD.bitrate
+                StreamResolution.SD -> StreamBitrate.SD.bitrate
+            }
+        }
     }
 
     companion object {
