@@ -59,6 +59,7 @@ import com.soho.sohoapp.live.ui.components.TextProgress
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushLiveGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
@@ -68,9 +69,10 @@ import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
 import com.soho.sohoapp.live.utility.hexToColor
-import com.soho.sohoapp.live.utility.playVideo
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun VideoManageScreen(
@@ -84,6 +86,16 @@ fun VideoManageScreen(
     var isShowProgress by remember { mutableStateOf(false) }
     var isShowAlert by remember { mutableStateOf(false) }
     var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
+    var playVideoUrl by remember { mutableStateOf("") }
+
+    //open video player
+    LaunchedEffect(playVideoUrl) {
+        if (playVideoUrl.isNotEmpty()) {
+            val title = "Video Player"
+            val encodeUrl = URLEncoder.encode(playVideoUrl, StandardCharsets.UTF_8.toString())
+            navController.navigate("${NavigationPath.VIDEO_PLAYER.name}/$title/$encodeUrl")
+        }
+    }
 
     //save updated itemData to the mLiveData videoItemState
     LaunchedEffect(states.isSuccess) {
@@ -113,7 +125,10 @@ fun VideoManageScreen(
         isShowProgress = isShowProgress,
         onBackClick = { navController.popBackStack() },
         onSaveClick = { updateVideoItem(itemData, vmVidManage) },
-        onPlayClick = { playVideo(itemData?.downloadLink) })
+        onPlayClick = {
+            playVideoUrl = itemData?.downloadLink ?: ""
+        }
+    )
 }
 
 private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageViewModel) {
