@@ -107,6 +107,7 @@ import com.soho.sohoapp.live.ui.components.ButtonGradientIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
+import com.soho.sohoapp.live.ui.components.InitialProfileImage
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SelectOrientationBottomSheet
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -1894,21 +1895,27 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            //image
-            val urlPainter = rememberAsyncImagePainter(
-                model = agent.imageUrl,
-                placeholder = painterResource(id = R.drawable.profile_placeholder),
-                error = painterResource(id = R.drawable.profile_placeholder)
-            )
 
-            Image(
-                painter = urlPainter,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(width = 70.dp, height = 68.dp)
-                    .clip(CircleShape)
-            )
+            //image
+            agent.imageUrl?.let {
+                val urlPainter = rememberAsyncImagePainter(
+                    model = it,
+                    placeholder = painterResource(id = R.drawable.profile_placeholder),
+                    error = painterResource(id = R.drawable.profile_placeholder)
+                )
+
+                Image(
+                    painter = urlPainter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(width = 70.dp, height = 68.dp)
+                        .clip(CircleShape)
+                )
+            } ?: kotlin.run {
+                agent.name?.let { InitialProfileImage(it, 68.dp) }
+            }
+
             //info
             Column(
                 modifier = Modifier
