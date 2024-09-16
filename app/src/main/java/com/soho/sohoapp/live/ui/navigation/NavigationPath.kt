@@ -15,5 +15,6 @@ enum class NavigationPath {
     GO_LIVE_SUCCESS,
     VIDEO_MANAGE,
     LIVE_CAST_END,
-    WEB_VIEW
+    WEB_VIEW,
+    VIDEO_PLAYER,
 }

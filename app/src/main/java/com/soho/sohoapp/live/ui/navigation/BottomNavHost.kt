@@ -27,6 +27,7 @@ import com.soho.sohoapp.live.ui.view.screens.profile.ProfileScreen
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
+import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 
 
@@ -125,6 +126,21 @@ fun BottomNavHost(
 
             // Pass the arguments to the WebViewScreen
             WebViewScreen(navController = navController, title = title, url = url)
+        }
+
+        composable(
+            route = "${NavigationPath.VIDEO_PLAYER.name}/{title}/{url}",
+            arguments = listOf(
+                navArgument("title") { type = NavType.StringType },
+                navArgument("url") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            // Extract the arguments from the back stack entry
+            val title = backStackEntry.arguments?.getString("title") ?: ""
+            val url = backStackEntry.arguments?.getString("url") ?: ""
+
+            // Pass the arguments to the VideoScreen
+            VideoPlayerScreen(navController = navController, title = title, url = url)
         }
     }
 }

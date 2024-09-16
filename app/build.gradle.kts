@@ -121,6 +121,10 @@ dependencies {
     //pager
     implementation("com.google.accompanist:accompanist-pager:0.30.1")
 
+    //mux player
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

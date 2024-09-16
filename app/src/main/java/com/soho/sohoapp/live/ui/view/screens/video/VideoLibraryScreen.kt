@@ -82,10 +82,11 @@ import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
-import com.soho.sohoapp.live.utility.playVideo
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun VideoLibraryScreen(
@@ -102,6 +103,16 @@ fun VideoLibraryScreen(
     var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
     var isShowProgress by remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
+    var playVideoUrl by remember { mutableStateOf("") }
+
+    //open video player
+    LaunchedEffect(playVideoUrl) {
+        if (playVideoUrl.isNotEmpty()) {
+            val title = "Video Player"
+            val encodeUrl = URLEncoder.encode(playVideoUrl, StandardCharsets.UTF_8.toString())
+            navController.navigate("${NavigationPath.VIDEO_PLAYER.name}/$title/$encodeUrl")
+        }
+    }
 
     //cal api
     LaunchedEffect(sLiveData) {
@@ -155,7 +166,12 @@ fun VideoLibraryScreen(
             vmVidLib.reLoadData()
         }
     ) {
-        Content(isShowProgress, states, mGState, onManageClick = { selectedItem = it })
+        Content(isShowProgress, states, mGState,
+            onManageClick = { selectedItem = it },
+            onPlayVid = {
+                playVideoUrl = it
+            }
+        )
     }
 
 
@@ -236,7 +252,8 @@ private fun Content(
     isShowProgress: Boolean,
     state: VideoLibraryState,
     mGState: GlobalState,
-    onManageClick: (VideoItem) -> Unit
+    onManageClick: (VideoItem) -> Unit,
+    onPlayVid: (String) -> Unit
 ) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
 
@@ -271,6 +288,7 @@ private fun Content(
                         ListItemView(item,
                             onClickManage = { onManageClick(it) },
                             onShareVideo = { shareIntent(it) },
+                            onPlayVideo = { onPlayVid(it) },
                             onDownloadVideo = {
                                 downloadFile(it.first, it.second, onDownloadStatus = {
                                     downloadStatus = it
@@ -455,6 +473,7 @@ private fun ListItemView(
     item: VideoItem,
     onClickManage: (VideoItem) -> Unit,
     onShareVideo: (String) -> Unit,
+    onPlayVideo: (String) -> Unit,
     onDownloadVideo: (Pair<String, String>) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
@@ -481,7 +500,8 @@ private fun ListItemView(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
             val propImg = item.property?.thumbnailUrl()
             PropertyImageCenterPlay(propImg, onClick = {
-                playVideo(item.downloadLink)
+                //playVideo(item.downloadLink)
+                item.downloadLink?.let { onPlayVideo(it) }
             })
             SpacerSide(size = 16.dp)
             TitleDescription(item)
