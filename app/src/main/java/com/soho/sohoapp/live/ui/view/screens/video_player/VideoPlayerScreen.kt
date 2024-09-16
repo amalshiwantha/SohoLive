@@ -60,57 +60,30 @@ private fun ExoPlayerView(url: String, modifier: Modifier = Modifier) {
     }
 
     // Set up a listener for buffering state
-    /*DisposableEffect(Unit) {
-        val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                super.onIsPlayingChanged(isPlaying)
+    val listener = object : Player.Listener {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            super.onIsPlayingChanged(isPlaying)
 
-                if (isPlaying) {
-                    isStartPlay = true
-                }
-
+            if (isPlaying) {
+                isStartPlay = true
             }
         }
-        exoPlayer.addListener(listener)
+    }
 
-        onDispose {
-            exoPlayer.removeListener(listener)
-            exoPlayer.release()
-        }
-    }*/
+    exoPlayer.addListener(listener)
 
-    DisposableEffect(
-
-        if (isStartPlay) {
-            AndroidView (
-                modifier = modifier,
-                factory = {
-                    PlayerView(context).apply {
-                        player = exoPlayer
-                    }
-                }
-            )
-        } else {
-            CenterMessageProgress(message = "Video Loading...")
-        }
-    ) {
-
-        val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                super.onIsPlayingChanged(isPlaying)
-
-                if (isPlaying) {
-                    isStartPlay = true
+    //play video
+    if (isStartPlay) {
+        AndroidView (
+            modifier = modifier,
+            factory = {
+                PlayerView(context).apply {
+                    player = exoPlayer
                 }
             }
-        }
-
-        exoPlayer.addListener(listener)
-
-        onDispose {
-            //exoPlayer.removeListener(listener)
-            //exoPlayer.release()
-        }
+        )
+    } else {
+        CenterMessageProgress(message = "Video Loading...")
     }
 }
 
