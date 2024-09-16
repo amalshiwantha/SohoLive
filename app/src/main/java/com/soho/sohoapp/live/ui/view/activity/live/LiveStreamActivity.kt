@@ -317,7 +317,7 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun handleLoadingState(progState: Boolean) {
         when (progState) {
             true -> {
-                progDialog = showProgressDialog(this, "Completing livecast")
+                progDialog = showProgressDialog(this, "Please wait")
             }
 
             false -> {
