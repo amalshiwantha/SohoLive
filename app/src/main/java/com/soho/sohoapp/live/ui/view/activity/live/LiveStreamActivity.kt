@@ -694,14 +694,14 @@ class LiveStreamActivity : AppCompatActivity() {
             println("myrotation ZZ surfaceChanged")
 
             //change rtmpCamera2 orientation
-            val rotation = windowManager.defaultDisplay.rotation
+            /*val rotation = windowManager.defaultDisplay.rotation
             openGlView?.setStreamRotation(rotation)
             val layParam = openGlView?.layoutParams as ConstraintLayout.LayoutParams
             when (rotation) {
                 0 -> layParam.dimensionRatio = "w,16:9"
                 1 -> layParam.dimensionRatio = "h,9:16"
             }
-            openGlView?.layoutParams = layParam
+            openGlView?.layoutParams = layParam*/
 
 
             /*val rotation = windowManager.defaultDisplay.rotation

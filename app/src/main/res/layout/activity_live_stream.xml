@@ -15,7 +15,7 @@
         android:visibility="gone" />
 
     <!--Camera view-->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!--<androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -29,14 +29,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-    <!--<com.pedro.library.view.OpenGlView
+    <com.pedro.library.view.OpenGlView
         android:id="@+id/openGlView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true"
-        app:aspectRatioMode="fill" />-->
+        app:aspectRatioMode="fill" />
 
     <!--watermark and live time-->
     <RelativeLayout
