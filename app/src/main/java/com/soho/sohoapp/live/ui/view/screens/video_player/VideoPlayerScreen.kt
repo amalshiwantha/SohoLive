@@ -60,7 +60,7 @@ private fun ExoPlayerView(url: String, modifier: Modifier = Modifier) {
     }
 
     // Set up a listener for buffering state
-    DisposableEffect(Unit) {
+    /*DisposableEffect(Unit) {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
@@ -77,7 +77,7 @@ private fun ExoPlayerView(url: String, modifier: Modifier = Modifier) {
             exoPlayer.removeListener(listener)
             exoPlayer.release()
         }
-    }
+    }*/
 
     DisposableEffect(
 
@@ -94,8 +94,22 @@ private fun ExoPlayerView(url: String, modifier: Modifier = Modifier) {
             CenterMessageProgress(message = "Video Loading...")
         }
     ) {
+
+        val listener = object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+
+                if (isPlaying) {
+                    isStartPlay = true
+                }
+            }
+        }
+
+        exoPlayer.addListener(listener)
+
         onDispose {
-            exoPlayer.release()
+            //exoPlayer.removeListener(listener)
+            //exoPlayer.release()
         }
     }
 }
