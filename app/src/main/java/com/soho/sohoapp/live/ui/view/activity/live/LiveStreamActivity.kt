@@ -21,7 +21,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -255,7 +254,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun checkEssentialData() {
-        isPublic = intent.getBooleanExtra(KEY_PUBLIC,false)
+        isPublic = intent.getBooleanExtra(KEY_PUBLIC, false)
         val jsonModel = intent.getStringExtra(KEY_STREAM)
 
         jsonModel?.let {
@@ -335,7 +334,7 @@ class LiveStreamActivity : AppCompatActivity() {
         watermark = binding.imgWatermark
         timerTextHelper = TimerTextHelper(binding.txtLiveTime, binding.imgBtnShare)
 
-        binding.txtGoLive.text = if(isPublic) "Go Live" else "Record Now"
+        binding.txtGoLive.text = if (isPublic) "Go Live" else "Record Now"
 
         openGlView?.holder?.addCallback(surfaceHolderCallback)
 
@@ -492,26 +491,6 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun updateGoLiveBtn(isStart: Boolean) {
         binding.txtGoLive.text = if (isStart) "Stop" else "Go Live"
         binding.imgGoLive.setImageResource(if (isStart) R.drawable.liv_cast_stop else R.drawable.livecast)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        rtmpCamera2?.let {
-            if (it.isStreaming) {
-                stopBroadcast()
-            }
-        }
-    }
-
-    override fun onBackPressed() {
-        callRollbackApi()
-        //super.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopBroadcast()
     }
 
     private fun switchCamera() {
@@ -823,4 +802,49 @@ class LiveStreamActivity : AppCompatActivity() {
         }
     }
     //PERMISSION END
+
+    override fun onPause() {
+        super.onPause()
+
+        rtmpCamera2?.let {
+            if (it.isStreaming) {
+                stopBroadcast() // Stop the broadcast if it's still running
+            }
+            it.stopPreview() // Stop the camera preview
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        openGlView?.let {
+            if (it.holder == null) {
+                it.holder?.addCallback(surfaceHolderCallback)
+            }
+        }
+
+        if (rtmpCamera2 == null) {
+            createRtmpCamera2() // Recreate the RtmpCamera2 instance
+        }
+
+        if (rtmpCamera2?.isStreaming == true) {
+            rtmpCamera2?.startPreview() // Resume the camera preview if streaming
+        }
+    }
+
+    override fun onBackPressed() {
+        callRollbackApi()
+        //super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        stopBroadcast()
+
+        rtmpCamera2?.stopStream() // Stop the stream if still active
+        rtmpCamera2?.stopPreview() // Stop the preview
+        rtmpCamera2?.glInterface?.clearFilters() // Clear filters like the watermark
+    }
+
 }
