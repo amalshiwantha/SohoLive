@@ -470,7 +470,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             modifier = Modifier
                 .background(BottomBarBg)
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 16.dp)
+                .padding(horizontal = 16.dp)
         ) {
 
             Text800_20sp(label = smInfo.title)
@@ -722,7 +722,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             modifier = Modifier
                 .background(BottomBarBg)
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 16.dp)
+                .padding(horizontal = 16.dp)
         ) {
 
             Text800_20sp(label = smInfoConnect.title)
