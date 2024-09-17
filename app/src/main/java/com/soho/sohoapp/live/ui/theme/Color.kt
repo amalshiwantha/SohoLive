@@ -33,7 +33,6 @@ val SetDateBtnGradientEnd = Color(0xFF058B7B)
 val LiveBtnGradientStart = Color(0xFFFA4922)
 val LiveDateBtnGradientEnd = Color(0xFFEA1562)
 
-val BottomSheetDark = Color(0xFF32003E)
 val BottomSheetDrag = Color(0x7AFFFFFF)
 val LinkedInBlue = Color(0xFF2867B2)
 val LinkedInBlueDark = Color(0xFF0D3E79)

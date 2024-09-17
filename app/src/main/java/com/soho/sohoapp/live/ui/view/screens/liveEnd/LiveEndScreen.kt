@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.ButtonColoured
-import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.TextDark
 
 @Composable
 fun LiveEndScreen(
@@ -72,13 +72,9 @@ fun BottomButtons(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ButtonOutlineWhite(
-            text = "Video Library",
-            modifier = Modifier.fillMaxWidth(),
-            onBtnClick = { goVideoLibrary() })
-
         ButtonColoured(text = "Leave Live Studio",
-            color = AppGreen,
+            color = AppWhite,
+            txtColor = TextDark,
             onBtnClick = {
                 navController.popBackStack(navController.graph.startDestinationId, false)
             })

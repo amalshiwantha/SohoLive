@@ -46,7 +46,7 @@ fun TextTopBarTitle(title: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun TextWhite14(modifier: Modifier = Modifier, title: String) {
+fun TextWhite14(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,
         text = title,
@@ -54,7 +54,7 @@ fun TextWhite14(modifier: Modifier = Modifier, title: String) {
         lineHeight = 19.6.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(800),
-        color = AppWhite,
+        color = txtColor,
         textAlign = TextAlign.Left,
         letterSpacing = 0.17.sp
     )
@@ -217,7 +217,8 @@ fun Text700_14spLink(
 ) {
     Text(
         textAlign = TextAlign.Left,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .clickable { onClick() },
         text = name,
         fontSize = 14.sp,

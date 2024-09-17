@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BorderGray
@@ -97,6 +98,7 @@ fun ButtonColoured(
     modifier: Modifier = Modifier,
     text: String,
     color: Color,
+    txtColor: Color = AppWhite,
     isBackButton: Boolean = false,
     onBtnClick: () -> Unit
 ) {
@@ -113,7 +115,7 @@ fun ButtonColoured(
         if (isBackButton) {
             TextWhite14Left(title = text)
         } else {
-            TextWhite14(title = text)
+            TextWhite14(title = text, txtColor = txtColor)
         }
     }
 }
