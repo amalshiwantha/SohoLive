@@ -133,19 +133,26 @@ fun ShareableLinkDialog(
                     item {
                         //Title and Close
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 8.dp)
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_share),
-                                contentDescription = null,
-                            )
-                            SpacerSide(size = 8.dp)
-                            Text950_20sp(
-                                title = "Shareable Links",
-                                txtColor = infoText,
-                                modifier = Modifier.weight(1f)
-                            )
+                            //share icon and text
+                            Row(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(top = 24.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_share),
+                                    contentDescription = null,
+                                )
+                                SpacerSide(size = 8.dp)
+                                Text950_20sp(
+                                    title = "Shareable Links",
+                                    txtColor = infoText
+                                )
+                            }
+
+                            //close button
                             Image(
                                 painter = painterResource(id = R.drawable.ic_round_cross),
                                 contentDescription = null,
