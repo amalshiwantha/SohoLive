@@ -50,7 +50,7 @@ fun LiveEndScreen(
                     .calculateTopPadding()
             )
     ) {
-        CenterImgText(modifier)
+        CenterImgText(modifier.align(alignment = Alignment.Center))
         BottomButtons(
             modifier.align(alignment = Alignment.BottomCenter),
             navController,
@@ -115,7 +115,7 @@ fun CenterImgText(modifier: Modifier) {
         SpacerUp(size = 8.dp)
 
         Text(
-            text = "Your livecast has been uploaded to your selected social media and you can watch the live stream playback in your video library",
+            text = "Your livecast has been uploaded to your selected social media and in your video library.",
             fontSize = 14.sp,
             lineHeight = 19.6.sp,
             fontFamily = FontFamily(Font(R.font.axiforma_regular)),
