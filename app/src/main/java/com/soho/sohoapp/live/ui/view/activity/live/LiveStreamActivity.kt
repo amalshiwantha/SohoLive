@@ -19,6 +19,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.core.app.ActivityCompat
@@ -559,6 +560,7 @@ class LiveStreamActivity : AppCompatActivity() {
                             println("myStream startBroadcast")
                             it.startStream(rtmpEndpoint + reqLive.streamKey)
                             showLiveTime(true)
+                            hideShareableLinkView()
                         } else {
                             //showToast("Broadcast Error")
                             println("myStream Error startBroadcast")
@@ -571,6 +573,12 @@ class LiveStreamActivity : AppCompatActivity() {
         } else {
             requestPermissions()
         }
+    }
+
+    private fun hideShareableLinkView() {
+        binding.layoutShareable.visibility = View.GONE
+        binding.layoutBottom.background =
+            AppCompatResources.getDrawable(this, R.drawable.top_rounded_trans_bg)
     }
 
     private fun showLiveTime(isStarted: Boolean) {
