@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowInsets
@@ -46,7 +48,6 @@ import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamParameters.resolution
-import com.soho.sohoapp.live.utility.TimerTextHelper
 import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
@@ -59,12 +60,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LiveStreamActivity : AppCompatActivity() {
 
+    private var isLiveCastPaused: Boolean = false
     private val rtmpEndpoint = "rtmp://global-live.mux.com:5222/app/"
     private var streamKey: String = "9b5c8b83-950f-1b09-88ad-8a3dc76c4efd"
 
     private val viewModel: LiveStreamViewModel by viewModel()
     private lateinit var binding: ActivityLiveStreamBinding
-    private lateinit var timerTextHelper: TimerTextHelper
+
+    //private lateinit var timerTextHelper: TimerTextHelper
     private lateinit var reqLive: LiveRequest
 
     private var watermark: ImageView? = null
@@ -76,6 +79,11 @@ class LiveStreamActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST_CODE = 101
     private var isLand = false
     private var isPublic = false
+
+    private var elapsedTime = 0L
+    private var isRecording = false
+    private var handler = Handler(Looper.getMainLooper())
+    private var updateTimeRunnable: Runnable? = null
 
     private object StreamParameters {
         var resolution = StreamResolution.FULL_HD
@@ -121,6 +129,31 @@ class LiveStreamActivity : AppCompatActivity() {
         smVisibility()
         checkRequiredPermissions()
         mStateObserveable()
+    }
+
+    private fun timerStart() {
+        if (!isRecording) {
+            isRecording = true
+            updateTimeRunnable?.let { handler.post(it) }
+        }
+    }
+
+    private fun timerPause() {
+        isRecording = false
+        updateTimeRunnable?.let { handler.removeCallbacks(it) }
+    }
+
+    private fun timerStop() {
+        isRecording = false
+        elapsedTime = 0L
+        updateTimerText()
+        updateTimeRunnable?.let { handler.removeCallbacks(it) }
+    }
+
+    private fun updateTimerText() {
+        val minutes = (elapsedTime / 60).toString().padStart(2, '0')
+        val seconds = (elapsedTime % 60).toString().padStart(2, '0')
+        binding.txtLiveTime.text = "Live $minutes:$seconds"
     }
 
     private fun smVisibility() {
@@ -341,7 +374,17 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun init() {
         openGlView = binding.openGlView
         watermark = binding.imgWatermark
-        timerTextHelper = TimerTextHelper(binding.txtLiveTime, binding.imgBtnShare)
+        //timerTextHelper = TimerTextHelper(binding.txtLiveTime, binding.imgBtnShare)
+
+        updateTimeRunnable = object : Runnable {
+            override fun run() {
+                if (isRecording) {
+                    elapsedTime += 1
+                    updateTimerText()
+                    handler.postDelayed(this, 1000)
+                }
+            }
+        }
 
         binding.txtGoLive.text = if (isPublic) "Go Live" else "Record Now"
 
@@ -587,10 +630,13 @@ class LiveStreamActivity : AppCompatActivity() {
             binding.txtLiveTime.visibility = if (isStarted) View.VISIBLE else View.GONE
 
             if (isStarted) {
-                timerTextHelper.start()
+                //timerTextHelper.start()
+                timerStart()
+
             } else {
-                binding.txtLiveTime.text = "Live 00:00"
-                timerTextHelper.stop()
+                //binding.txtLiveTime.text = "Live 00:00"
+                //timerTextHelper.stop()
+                timerPause()
             }
         }
     }
@@ -824,6 +870,8 @@ class LiveStreamActivity : AppCompatActivity() {
 
         rtmpCamera2?.let {
             if (it.isStreaming) {
+                isLiveCastPaused = true
+                timerPause()
                 stopBroadcast() // Stop the broadcast if it's still running
             }
             it.stopPreview() // Stop the camera preview
