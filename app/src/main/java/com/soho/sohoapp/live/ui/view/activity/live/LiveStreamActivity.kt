@@ -154,6 +154,12 @@ class LiveStreamActivity : AppCompatActivity() {
         val minutes = (elapsedTime / 60).toString().padStart(2, '0')
         val seconds = (elapsedTime % 60).toString().padStart(2, '0')
         binding.txtLiveTime.text = "Live $minutes:$seconds"
+
+        //set enable share and live button after 10 sec start the liveCast
+        if (minutes == "00" && seconds.toInt() > 10) {
+            binding.imgBtnShare.isEnabled = true
+            binding.cardGoLive.isEnabled = true
+        }
     }
 
     private fun smVisibility() {
@@ -619,6 +625,8 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun hideShareableLinkView() {
+        binding.imgBtnShare.isEnabled = false
+        binding.cardGoLive.isEnabled = false
         binding.layoutShareable.visibility = View.GONE
         binding.layoutBottom.background =
             AppCompatResources.getDrawable(this, R.drawable.top_rounded_trans_bg)
@@ -626,13 +634,13 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun showLiveTime(isStarted: Boolean) {
         rtmpCamera2?.let {
+            binding.cardGoLive.isEnabled = true
             binding.imgBtnClose.visibility = if (isStarted) View.GONE else View.VISIBLE
             binding.txtLiveTime.visibility = if (isStarted) View.VISIBLE else View.GONE
 
             if (isStarted) {
                 //timerTextHelper.start()
                 timerStart()
-
             } else {
                 //binding.txtLiveTime.text = "Live 00:00"
                 //timerTextHelper.stop()
