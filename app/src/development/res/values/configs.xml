@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    // Api Endpoint
+    <string name="endpoint">https://staging.sohoapp.com/api/</string>
+
+    // Facebook
+    <string name="facebook_app_id">1720812957964934</string>
+    <string name="fb_login_protocol_scheme">fb1720812957964934</string>
+    <string name="fb_client_token">f7577e5a5a5e0f1ba4a4d03c98e61e15</string>
+
+    // Google
+    <!--it works only with the web client server id-->
+    <string name="google_server_client_id" tools:ignore="TypographyDashes">929774443290-4qqsh5nqe94nosgq3oiheb8nkan7es5r.apps.googleusercontent.com</string>
+    <string name="google_scope_read_contacts">https://www.googleapis.com/auth/contacts.readonly</string>
+
+    //Typesense
+    <string name="ts_endpoint">https://ts-cluster-staging.soho.com.au/</string>
+    <string name="ts_key">03kWHv7zTzjGIY16OlPumRUuLV4w0bOW</string>
+</resources>

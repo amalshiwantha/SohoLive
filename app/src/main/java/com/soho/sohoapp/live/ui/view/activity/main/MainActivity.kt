@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.soho.sohoapp.live.BuildConfig
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -277,6 +278,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
             }
         }
+
+        val baseUrl = BuildConfig.BASE_URL
+        println("myUrls $baseUrl")
     }
 
     private fun openLiveScreen(msOpenLiveCaster: String, orientation: String, isPublic: Boolean) {

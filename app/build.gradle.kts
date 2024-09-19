@@ -22,6 +22,25 @@ android {
         }
     }
 
+    flavorDimensions += "appType"
+
+    productFlavors {
+        create("development") {
+            dimension = "appType"
+            applicationIdSuffix = ".development"
+            versionNameSuffix = ".development"
+            resValue("string", "app_name", "SohoLive Dev")
+            buildConfigField("String", "BASE_URL", "\"https://dev.example.com/\"")
+        }
+        create("production") {
+            dimension = "appType"
+            applicationIdSuffix = ".production"
+            versionNameSuffix = ".production"
+            resValue("string", "app_name", "SohoLive")
+            buildConfigField("String", "BASE_URL", "\"https://live.example.com/\"")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -29,6 +48,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -41,6 +61,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
