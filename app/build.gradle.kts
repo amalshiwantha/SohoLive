@@ -59,9 +59,13 @@ android {
 
             resValue("string", "app_name", "SohoLive")
 
-            buildConfigField("String", "BASE_URL", "\"https://staging.sohoapp.com/api/soho_live/\"")
+            /*buildConfigField("String", "BASE_URL", "\"https://staging.sohoapp.com/api/soho_live/\"")
             buildConfigField("String", "BASE_URL_TS", "\"https://s05321l9dthzorjap.a1.typesense.net/\"")
-            buildConfigField("String", "TS_API_KEY", "\"V9k4duXQNm1LIHBwPxYKygmPTi1Pt2K3\"")
+            buildConfigField("String", "TS_API_KEY", "\"V9k4duXQNm1LIHBwPxYKygmPTi1Pt2K3\"")*/
+
+            buildConfigField("String", "BASE_URL", "\"https://staging.sohoapp.com/api/soho_live/\"")
+            buildConfigField("String", "BASE_URL_TS", "\"https://ts-cluster-staging.soho.com.au/\"")
+            buildConfigField("String", "TS_API_KEY", "\"03kWHv7zTzjGIY16OlPumRUuLV4w0bOW\"")
         }
     }
 
