@@ -1463,7 +1463,7 @@ private fun StepIndicator(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(4.dp)
+                    .height(2.dp)
                     .background(
                         color = if (i <= currentStep) activeColor else inactiveColor,
                         shape = CircleShape
