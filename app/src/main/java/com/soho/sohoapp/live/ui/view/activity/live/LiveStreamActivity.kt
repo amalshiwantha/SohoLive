@@ -219,11 +219,17 @@ class LiveStreamActivity : AppCompatActivity() {
 
             binding.cardGoLive.setOnClickListener {
                 rtmpCamera2?.let {
-                    if (it.isStreaming) {
-                        showCountDownOverlay(isStart = false)
+                    if (isLiveCastPaused) {
+                        isLiveCastPaused = false
+                        startBroadcast()
+                        updateGoLiveBtn(true)
                     } else {
-                        isGoLiveClick.value = true
-                        showDialog.value = true
+                        if (it.isStreaming) {
+                            showCountDownOverlay(isStart = false)
+                        } else {
+                            isGoLiveClick.value = true
+                            showDialog.value = true
+                        }
                     }
                 }
             }
@@ -649,14 +655,15 @@ class LiveStreamActivity : AppCompatActivity() {
         }
     }
 
-    private fun stopBroadcast() {
+    private fun stopBroadcast(isStopLive: Boolean = true) {
         /*
         * isDidLiveCast if sometimes completeApi will fail. so the screen will not close automatically
         * so when go back want to identify is it actually the liveCast done or not
         * */
-        isDidLiveCast = true
-
-        showLiveTime(false)
+        if (isStopLive) {
+            isDidLiveCast = true
+            showLiveTime(false)
+        }
 
         rtmpCamera2?.let {
             if (it.isStreaming) {
@@ -879,9 +886,10 @@ class LiveStreamActivity : AppCompatActivity() {
 
         rtmpCamera2?.let {
             if (it.isStreaming) {
+                binding.cardGoLive.isEnabled = true
                 isLiveCastPaused = true
                 timerPause()
-                stopBroadcast() // Stop the broadcast if it's still running
+                stopBroadcast(false) // Stop the broadcast if it's still running
             }
             it.stopPreview() // Stop the camera preview
         }
