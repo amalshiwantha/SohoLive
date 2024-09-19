@@ -37,7 +37,7 @@ fun TopAppBarProfile(
 
     Row(
         modifier = modifier
-            .padding(horizontal = 16.dp)
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
