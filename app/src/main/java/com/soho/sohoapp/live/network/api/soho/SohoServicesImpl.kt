@@ -1,12 +1,10 @@
 package com.soho.sohoapp.live.network.api.soho
 
+import com.soho.sohoapp.live.BuildConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.model.VidLibRequest
-import com.soho.sohoapp.live.network.core.BASE_URL
-import com.soho.sohoapp.live.network.core.BASE_URL_TS
-import com.soho.sohoapp.live.network.core.TS_API_KEY
 import com.soho.sohoapp.live.network.response.AuthResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
@@ -34,7 +32,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     override suspend fun login(signInRequest: SignInRequest): AuthResponse {
         return httpClient.post {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.LOGIN
             }
             contentType(ContentType.Application.Json)
@@ -45,7 +43,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     override suspend fun propertyListing(authToken: String): GoLiveResponse {
         return httpClient.get {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.PROPERTY_LISTING
             }
             contentType(ContentType.Application.Json)
@@ -56,7 +54,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     override suspend fun tsProperty(tsPropRequest: TsPropertyRequest): TsPropertyResponse {
         return httpClient.get {
             url {
-                takeFrom(BASE_URL_TS)
+                takeFrom(BuildConfig.BASE_URL_TS)
                 encodedPath += SohoApiServices.TS_PROPERTY
                 parameters.apply {
                     tsPropRequest.query?.let { append("q", it) }
@@ -67,14 +65,14 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
                 }
             }
             contentType(ContentType.Application.Json)
-            header("X-TYPESENSE-API-KEY", TS_API_KEY)
+            header("X-TYPESENSE-API-KEY", BuildConfig.TS_API_KEY)
         }.body()
     }
 
     override suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse {
         return httpClient.post {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.GO_LIVE
             }
             contentType(ContentType.Application.Json)
@@ -90,7 +88,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     ): GoLiveSubmitResponse {
         return httpClient.post {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.PROPERTY_SCHEDULE.replace("{propertyId}", propertyId)
             }
             contentType(ContentType.Application.Json)
@@ -102,7 +100,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     override suspend fun videoLibrary(authToken: String, request: VidLibRequest): VidLibResponse {
         return httpClient.get {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.VIDEO_LIBRARY
                 parameters.apply {
                     append("page", request.page.toString())
@@ -123,7 +121,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
 
         return httpClient.put {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.VIDEO_PRIVACY_UPDATE.replace(
                     "{propertyId}",
                     privacyReq.videoId.toString()
@@ -139,7 +137,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         val liveEndReq = LiveEndRequest(streamId)
         return httpClient.put {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.END_STREAM.replace(
                     "{live_stream_id}",
                     streamId
@@ -154,7 +152,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     override suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse {
         return httpClient.delete {
             url {
-                takeFrom(BASE_URL)
+                takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.ROLLBACK_STREAM.replace(
                     "{live_stream_id}",
                     liveReq.liveStreamId

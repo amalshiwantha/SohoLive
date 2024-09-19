@@ -278,9 +278,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
             }
         }
-
-        val baseUrl = BuildConfig.BASE_URL
-        println("myUrls $baseUrl")
     }
 
     private fun openLiveScreen(msOpenLiveCaster: String, orientation: String, isPublic: Boolean) {
