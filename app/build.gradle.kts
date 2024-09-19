@@ -43,8 +43,8 @@ android {
     productFlavors {
         create("development") {
             dimension = "appType"
-            applicationIdSuffix = ".development"
-            versionNameSuffix = ".development"
+            /*applicationIdSuffix = ".development"
+            versionNameSuffix = ".development"*/
 
             resValue("string", "app_name", "SohoLive Dev")
 
@@ -54,8 +54,8 @@ android {
         }
         create("production") {
             dimension = "appType"
-            applicationIdSuffix = ".production"
-            versionNameSuffix = ".production"
+            /*applicationIdSuffix = ".production"
+            versionNameSuffix = ".production"*/
 
             resValue("string", "app_name", "SohoLive")
 
