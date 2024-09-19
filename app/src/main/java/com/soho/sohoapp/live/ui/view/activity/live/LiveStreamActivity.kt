@@ -156,7 +156,10 @@ class LiveStreamActivity : AppCompatActivity() {
         binding.txtLiveTime.text = "Live $minutes:$seconds"
 
         //set enable share and live button after 10 sec start the liveCast
-        if (minutes == "00" && seconds.toInt() > 10) {
+        val totalSeconds = minutes.toInt() * 60 + seconds.toInt()
+        val isButtonEnabled = totalSeconds >= 10
+
+        if (isButtonEnabled) {
             binding.imgBtnShare.isEnabled = true
             binding.cardGoLive.isEnabled = true
         }
