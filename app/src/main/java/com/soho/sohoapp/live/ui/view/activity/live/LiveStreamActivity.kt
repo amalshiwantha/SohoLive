@@ -818,6 +818,7 @@ class LiveStreamActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                rtmpCamera2?.startPreview()
                 showStreamKeyDialog()
             } else {
                 showPermissionDeniedDialog()
