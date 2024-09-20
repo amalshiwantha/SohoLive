@@ -1,6 +1,9 @@
 package com.soho.sohoapp.live.ui.view.activity.live
 
 import android.Manifest
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -17,6 +20,7 @@ import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import android.view.animation.LinearInterpolator
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -582,7 +586,7 @@ class LiveStreamActivity : AppCompatActivity() {
             if (rtmpCamera2 == null) {
                 rtmpCamera2 = RtmpCamera2(it, connectCheckerRtmp).apply {
                     setFpsListener(fpsListenerCallback)
-                    enableAutoFocus()
+                    //enableAutoFocus()
                 }
             }
         }
