@@ -139,10 +139,10 @@ class LiveStreamActivity : AppCompatActivity() {
         }
     }
 
-    private fun timerPause() {
+    /*private fun timerPause() {
         isRecording = false
         updateTimeRunnable?.let { handler.removeCallbacks(it) }
-    }
+    }*/
 
     private fun timerStop() {
         isRecording = false
@@ -654,7 +654,7 @@ class LiveStreamActivity : AppCompatActivity() {
             } else {
                 //binding.txtLiveTime.text = "Live 00:00"
                 //timerTextHelper.stop()
-                timerPause()
+                //timerPause()
             }
         }
     }
@@ -730,6 +730,9 @@ class LiveStreamActivity : AppCompatActivity() {
 
         override fun onDisconnect() {
             println("myStream onDisconnect")
+            if(!isLiveCastPaused){
+                onResume()
+            }
         }
 
         override fun onNewBitrate(bitrate: Long) {
@@ -900,7 +903,7 @@ class LiveStreamActivity : AppCompatActivity() {
             if (it.isStreaming) {
                 binding.cardGoLive.isEnabled = true
                 isLiveCastPaused = true
-                timerPause()
+               // timerPause()
                 stopBroadcast(false) // Stop the broadcast if it's still running
             }
             it.stopPreview() // Stop the camera preview
