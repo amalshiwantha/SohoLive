@@ -1,9 +1,6 @@
 package com.soho.sohoapp.live.ui.view.activity.live
 
 import android.Manifest
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -20,7 +17,6 @@ import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import android.view.animation.LinearInterpolator
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -55,6 +51,7 @@ import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamPara
 import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
+import com.soho.sohoapp.live.utility.showToastTrans
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -715,11 +712,6 @@ class LiveStreamActivity : AppCompatActivity() {
             println("myStream onAuthSuccess")
         }
 
-        override fun onConnectionFailed(reason: String) {
-            println("myStream onConnectionFailed $reason")
-            stopBroadcast()
-        }
-
         override fun onConnectionStarted(url: String) {
             println("myStream onConnectionStarted $url")
         }
@@ -728,22 +720,35 @@ class LiveStreamActivity : AppCompatActivity() {
             println("myStream onConnectionSuccess")
         }
 
+        override fun onConnectionFailed(reason: String) {
+            println("myStream onConnectionFailed $reason")
+            if (!isLiveCastPaused) {
+                onPause()
+            }
+            onResume()
+        }
+
         override fun onDisconnect() {
             println("myStream onDisconnect")
-            //showToast("Broadcast Disconnected. Add new Key")
         }
 
         override fun onNewBitrate(bitrate: Long) {
             println("myStream onNewBitrate $bitrate")
+            println("myStream noData $countBitrateError")
 
             //if onNewBitrate  = 0 take longer then stop lve cast and reconnect
             if (bitrate == 0L) {
                 countBitrateError++
 
+                //stop liveCast and reconnect
                 if (countBitrateError == 5) {
+                    onPause()
+                    onResume()
                     countBitrateError = 0
-                    //stop liveCast and reconnect
+                    println("myStream tempStop")
                 }
+            } else {
+                countBitrateError = 0
             }
         }
     }
@@ -899,6 +904,7 @@ class LiveStreamActivity : AppCompatActivity() {
                 stopBroadcast(false) // Stop the broadcast if it's still running
             }
             it.stopPreview() // Stop the camera preview
+            it.glInterface?.clearFilters()
         }
     }
 
@@ -911,12 +917,28 @@ class LiveStreamActivity : AppCompatActivity() {
             }
         }
 
+        // Recreate the RtmpCamera2 instance
         if (rtmpCamera2 == null) {
-            createRtmpCamera2() // Recreate the RtmpCamera2 instance
+            createRtmpCamera2()
         }
 
+        // Resume the camera preview if streaming
         if (rtmpCamera2?.isStreaming == true) {
-            rtmpCamera2?.startPreview() // Resume the camera preview if streaming
+            rtmpCamera2?.startPreview()
+        }
+
+        if (isLiveCastPaused) {
+            showToastTrans("Connection Failed! Reconnecting...")
+
+            updateGoLiveBtn(true)
+
+            GlobalScope.launch {
+                delay(500)
+                runOnUiThread {
+                    isLiveCastPaused = false
+                    startBroadcast()
+                }
+            }
         }
     }
 
