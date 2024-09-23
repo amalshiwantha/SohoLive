@@ -312,7 +312,7 @@ fun GoLiveScreen(
             checkedSM.clear()
             checkedSM.addAll(mGoLiveSubmit.checkedPlatforms)
             mFieldsError = mGoLiveSubmit.errors
-            goLiveVm.updateAssetsState(savedTsResults, savedApiResults, savedState)
+            goLiveVm.updateAssetsState(savedTsResults, savedState)
         }
 
         goLiveVm.loadConnectedSMList()

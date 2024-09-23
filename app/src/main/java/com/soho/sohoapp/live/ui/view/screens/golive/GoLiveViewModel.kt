@@ -20,7 +20,6 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
-import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import io.ktor.utils.io.printStack
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -179,7 +178,6 @@ class GoLiveViewModel(
 
     fun updateAssetsState(
         savedTsResults: TsPropertyResponse?,
-        savedApiResults: DataGoLive,
         savedAssets: GoLiveAssets?
     ) {
         savedTsResults?.let {
@@ -263,19 +261,29 @@ class GoLiveViewModel(
         } ?: emptyList()
     }
 
-    fun updateAgentSelectionList(updatedAgent: AgencyItem) {
+    fun updateAgentSelectionList(selectedAgent: AgencyItem) {
         val agentList = assetsState.value.agencyListState?.value
 
-        agentList?.let {
-            it.map { prop ->
-                prop.copy(
-                    id = updatedAgent.id,
-                    agentProfile = updatedAgent.agentProfile,
-                    isChecked = updatedAgent.isChecked
-                )
+        agentList?.let { list ->
+            // Create a new list where all items are unchecked first
+            val updatedList = list.map { prop ->
+                prop.copy(isChecked = false)
+            }.map { prop ->
+                // Then mark only the selected item as checked
+                if (prop.id == selectedAgent.id) {
+                    prop.copy(
+                        id = selectedAgent.id,
+                        agentProfile = selectedAgent.agentProfile,
+                        isChecked = selectedAgent.isChecked
+                    )
+                } else {
+                    prop // Return the item unchanged
+                }
             }
 
-            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentList))
+            // Update the state with the new agent list
+            assetsState.value =
+                assetsState.value.copy(agencyListState = mutableStateOf(updatedList))
         }
     }
 
