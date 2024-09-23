@@ -2128,8 +2128,8 @@ private fun ProfileNameCheckBox(
             horizontalArrangement = Arrangement.Absolute.Right
         ) {
 
-            if (profile.rating != 0f) {
-                TextStarRating(rate = "* ${profile.rating}")
+            if (profile.currentStars != 0f) {
+                TextStarRating(rate = "* ${profile.currentStars}")
             }
 
             SpacerSide(size = 16.dp)

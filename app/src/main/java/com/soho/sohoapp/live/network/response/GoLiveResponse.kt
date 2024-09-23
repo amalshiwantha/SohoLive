@@ -63,8 +63,20 @@ data class AgentProfileGoLive(
     @SerialName("id") val id: Int = 0,
     @SerialName("name") val name: String?,
     @SerialName("email") val email: String?,
-    @SerialName("rating") val rating: Float = 0f,
+    @SerialName("review_count") val currentStars: Float? = 0f,
+    @SerialName("overall_stars") val maxStars: Float? = 0f,
     @SerialName("profile_image_url") val imageUrl: String?,
-    @SerialName("sale_listing_count") val saleListingCount: Int,
-    @SerialName("rent_listing_count") val rentListingCount: Int
+    @SerialName("banner_image") val bannerImage: String?,
+    @SerialName("agency_name") val agencyName: String?,
+    @SerialName("agency_bg_color") val agencyBgColor: String?,
+    @SerialName("agent_bg_color") val agentBgColor: String?,
+    @SerialName("sale_listing_count") val saleListingCount: Int = 0,
+    @SerialName("rent_listing_count") val rentListingCount: Int = 0,
+    @SerialName("avatar") val avatar: Avatar?
+)
+
+@Serializable
+data class Avatar(
+    @SerialName("url") val url: String?,
+    @SerialName("name") val name: String?
 )

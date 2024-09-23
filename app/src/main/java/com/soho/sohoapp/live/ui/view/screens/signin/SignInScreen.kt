@@ -154,7 +154,7 @@ private fun LoginForm(
         SpacerUp(8.dp)
         TextFieldWhite(fieldConfig = FieldConfig.NEXT.apply {
             placeholder = stringResource(R.string.email)
-            input = "samuel@drewlindsaysir.com"
+            input = "adam@raynerfn.com.a" //melanie.brown@villageproperty.com.a
         }, onTextChange = {
             requestData.apply { email = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
@@ -169,7 +169,7 @@ private fun LoginForm(
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerUp(8.dp)
-        PasswordTextFieldWhite(tempPw = "password", onTextChange = {
+        PasswordTextFieldWhite(tempPw = "passwor", onTextChange = {
             requestData.apply { password = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
         })
