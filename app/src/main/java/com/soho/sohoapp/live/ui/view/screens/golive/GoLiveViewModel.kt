@@ -188,9 +188,9 @@ class GoLiveViewModel(
 
             val foundPropList = savedTsResults.propertyList.map {
                 PropertyItem(
-                    id = it.document.propertyId,
+                    id = it.document.objectId?.toInt() ?: 0,
                     propInfo = it.document,
-                    isChecked = getCheckedStatus(selectedProperty, it.document.propertyId)
+                    isChecked = getCheckedStatus(selectedProperty, it.document.objectId?.toInt() ?: 0)
                 )
             }
 
@@ -255,7 +255,7 @@ class GoLiveViewModel(
                     }
                 }
 
-            updateAgentList(listItem, updatedItem)
+            loadAgentList(updatedItem)
         }
     }
 
@@ -283,17 +283,34 @@ class GoLiveViewModel(
         }
     }
 
-    private fun updateAgentList(propertyList: List<PropertyItem>, updatedItem: PropertyItem) {
+    /*
+    * load agent list from the selected property item
+    * */
+    private fun loadAgentList(updatedProp: PropertyItem) {
 
-        //val agentProfiles = liveState.value.apiResults?.agentProfiles
         val agentProfiles = mState.goLiveApiRes?.agentProfiles
+        val propAgents =
+            mState.goLiveApiRes?.listings?.find { it.id == updatedProp.id }?.agentProfileIds
 
-        agentProfiles?.let { agent ->
-            val selectedAgentId =
-                propertyList.filter { it.id == updatedItem.id }.map { it.propInfo.apAgentsIds }
-            val agentLst = getAgencyItemsById(agent, selectedAgentId, null)
+        propAgents?.let { ids ->
+            val filteredAgentProfiles = agentProfiles?.filter { agentProfile ->
+                ids.contains(agentProfile.id)
+            }
+            val agentLst = getAgentList(filteredAgentProfiles)
+
             assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+        } ?: kotlin.run {
+            assetsState.value =
+                assetsState.value.copy(agencyListState = mutableStateOf(emptyList()))
         }
+    }
+
+    private fun getAgentList(filteredAgentProfiles: List<AgentProfileGoLive>?): MutableList<AgencyItem> {
+        val agentItems = mutableListOf<AgencyItem>()
+        filteredAgentProfiles?.forEach {
+            agentItems.add(AgencyItem(id = it.id, agentProfile = it, isChecked = false))
+        }
+        return agentItems
     }
 
     private fun getAgencyItemsById(
@@ -344,7 +361,7 @@ class GoLiveViewModel(
                         if (isSuccess) {
                             val foundPropList = tsData.propertyList.map {
                                 PropertyItem(
-                                    id = it.document.propertyId, propInfo = it.document
+                                    id = it.document.objectId?.toInt() ?: 0, propInfo = it.document
                                 )
                             }
 
