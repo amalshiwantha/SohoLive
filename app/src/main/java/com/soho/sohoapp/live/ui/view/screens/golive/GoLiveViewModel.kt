@@ -190,7 +190,10 @@ class GoLiveViewModel(
                 PropertyItem(
                     id = it.document.objectId?.toInt() ?: 0,
                     propInfo = it.document,
-                    isChecked = getCheckedStatus(selectedProperty, it.document.objectId?.toInt() ?: 0)
+                    isChecked = getCheckedStatus(
+                        selectedProperty,
+                        it.document.objectId?.toInt() ?: 0
+                    )
                 )
             }
 
@@ -202,17 +205,10 @@ class GoLiveViewModel(
                 )
 
             //update agentList
-            val agentProfiles = savedApiResults.agentProfiles
             val selectedAgent = savedAssets?.agencyListState?.value?.find { it.isChecked }
+            loadAgentList(foundPropList.filter { it.isChecked }[0], selectedAgent)
 
-            agentProfiles.let { agent ->
-                val selectedAgentId =
-                    foundPropList.filter { it.isChecked }.map { it.propInfo.apAgentsIds }
-                val agentLst = getAgencyItemsById(agent, selectedAgentId, selectedAgent)
-                assetsState.value =
-                    assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
-            }
-
+            //save other live Data
             if (liveState.value.tsResults == null) {
                 liveState.value = liveState.value.copy(tsResults = savedTsResults)
             }
@@ -255,7 +251,7 @@ class GoLiveViewModel(
                     }
                 }
 
-            loadAgentList(updatedItem)
+            loadAgentList(updatedItem, null)
         }
     }
 
@@ -286,7 +282,7 @@ class GoLiveViewModel(
     /*
     * load agent list from the selected property item
     * */
-    private fun loadAgentList(updatedProp: PropertyItem) {
+    private fun loadAgentList(updatedProp: PropertyItem, selectedAgent: AgencyItem?) {
 
         val agentProfiles = mState.goLiveApiRes?.agentProfiles
         val propAgents =
@@ -296,7 +292,7 @@ class GoLiveViewModel(
             val filteredAgentProfiles = agentProfiles?.filter { agentProfile ->
                 ids.contains(agentProfile.id)
             }
-            val agentLst = getAgentList(filteredAgentProfiles)
+            val agentLst = getAgentList(filteredAgentProfiles, selectedAgent)
 
             assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
         } ?: kotlin.run {
@@ -305,10 +301,24 @@ class GoLiveViewModel(
         }
     }
 
-    private fun getAgentList(filteredAgentProfiles: List<AgentProfileGoLive>?): MutableList<AgencyItem> {
+    private fun getAgentList(
+        filteredAgentProfiles: List<AgentProfileGoLive>?,
+        selectedAgent: AgencyItem?
+    ): MutableList<AgencyItem> {
         val agentItems = mutableListOf<AgencyItem>()
+
         filteredAgentProfiles?.forEach {
-            agentItems.add(AgencyItem(id = it.id, agentProfile = it, isChecked = false))
+            val isChecked = selectedAgent?.let { seleAgent ->
+                if (it.id == seleAgent.id) {
+                    seleAgent.isChecked
+                } else {
+                    false
+                }
+            } ?: kotlin.run {
+                false
+            }
+
+            agentItems.add(AgencyItem(id = it.id, agentProfile = it, isChecked = isChecked))
         }
         return agentItems
     }
