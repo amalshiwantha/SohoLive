@@ -2128,8 +2128,10 @@ private fun ProfileNameCheckBox(
             horizontalArrangement = Arrangement.Absolute.Right
         ) {
 
-            if (profile.currentStars != 0f) {
-                TextStarRating(rate = "* ${profile.currentStars}")
+            if (profile.currentStars != 0f && profile.currentStars != null) {
+                Image(painter = painterResource(id = R.drawable.ic_star), contentDescription = "")
+                SpacerSide(size = 4.dp)
+                TextStarRating(rate = profile.currentStars.toString())
             }
 
             SpacerSide(size = 16.dp)
