@@ -191,6 +191,7 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
                         url = "",
                         imageUrl = it.imageUrl.orEmpty(),
                         accessToken = it.token.orEmpty(),
+                        isSelect = true
                     )
                 )
             }
