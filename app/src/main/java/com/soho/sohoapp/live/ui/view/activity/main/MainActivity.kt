@@ -613,12 +613,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         val screenWidth = LocalConfiguration.current.screenWidthDp.dp
         val horizontalPadding = 16.dp
         val availableWidth = screenWidth - (horizontalPadding * 2)
-        val indicatorWidth = availableWidth / 3
+        val indicatorWidth = availableWidth / 2
         val indicatorOffset by animateDpAsState(
             targetValue = when (selectedOption) {
                 0 -> 0.dp
-                1 -> indicatorWidth
-                else -> indicatorWidth * 2
+                else -> indicatorWidth
             }, label = "animateToMove"
         )
 
@@ -661,13 +660,13 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     textColor = if (selectedOption == 1) TextDark else AppWhite
                 )
 
-                TextSwipeSelection(
+                /*TextSwipeSelection(
                     modifier = Modifier
                         .weight(1f)
                         .clickable { onSwipeChange(2) },
                     title = "Group",
                     textColor = if (selectedOption == 2) TextDark else AppWhite
-                )
+                )*/
             }
         }
     }
