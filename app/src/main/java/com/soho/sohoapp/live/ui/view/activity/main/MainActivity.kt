@@ -61,7 +61,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.soho.sohoapp.live.BuildConfig
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -164,7 +163,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         if (msOpenLiveCaster.isNotEmpty()) {
                             val orientation = MainStateHolder.mState.liveOrientation.value
                             val isPublic = MainStateHolder.mState.isPublic.value
-                            openLiveScreen(msOpenLiveCaster, orientation,isPublic)
+                            openLiveScreen(msOpenLiveCaster, orientation, isPublic)
                         }
                     }
 
@@ -515,12 +514,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                     if (fbSubList.first.isNotEmpty()) {
                         SingleSelectionList(fbSubList.first, onItemClick = {
-                            when (it.type) {
-                                CategoryType.TIMELINE -> updateState(mListTimelines, it)
-                                CategoryType.PAGES -> updateState(mListPages, it)
-                                CategoryType.GROUPS -> updateState(mListGroup, it)
-                            }
-
+                            updateSMCheckState(
+                                mListPages,
+                                mListTimelines,
+                                it
+                            )
                             smProfile.smInfo.apply {
                                 selectionType = it
                             }
@@ -570,6 +568,42 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             }
         }
     }
+
+    private fun updateSMCheckState(
+        pagesList: SnapshotStateList<CategoryInfo>,
+        timeLineList: SnapshotStateList<CategoryInfo>,
+        updatedItem: CategoryInfo
+    ) {
+        // Update all items, isSelect as false
+        pagesList.forEachIndexed { index, fbTypeView ->
+            pagesList[index] = fbTypeView.copy(isSelect = false)
+        }
+
+        timeLineList.forEachIndexed { index, fbTypeView ->
+            timeLineList[index] = fbTypeView.copy(isSelect = false)
+        }
+
+        //update selected item
+        when(updatedItem.type){
+            CategoryType.TIMELINE -> {
+                val selectedIndex =
+                    timeLineList.indexOfFirst { it.title == updatedItem.title }
+                if (selectedIndex != -1) {
+                    timeLineList[selectedIndex] = updatedItem.copy(isSelect = true)
+                }
+            }
+            CategoryType.PAGES -> {
+                val selectedIndex =
+                    pagesList.indexOfFirst { it.title == updatedItem.title }
+                if (selectedIndex != -1) {
+                    pagesList[selectedIndex] = updatedItem.copy(isSelect = true)
+                }
+            }
+            CategoryType.GROUPS -> {}
+        }
+
+    }
+
 
     private fun updateState(
         mListItems: SnapshotStateList<CategoryInfo>,
