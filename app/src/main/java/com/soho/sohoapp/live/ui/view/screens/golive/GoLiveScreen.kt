@@ -1611,30 +1611,32 @@ private fun SocialMediaListing(
     else savedLI?.isItemChecked ?: false
 
     val visibleSMList = SocialMediaInfo.entries.filter {
-        it.name != SocialMediaInfo.NONE.name
+        it.name != SocialMediaInfo.NONE.name &&
+                it.name != SocialMediaInfo.LINKEDIN.name &&
+                it.name != SocialMediaInfo.YOUTUBE.name
     }
 
     /*load all of SM list*/
     val smList by rememberSaveable { mutableStateOf(visibleSMList) }
 
     /*and add nessary info token and connected state, according to that need to show connect button*/
-    smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
-        isConnect = savedYT?.isConnect ?: false
-        isItemChecked = savedYT?.isItemChecked ?: false
-        accessToken = savedYT?.accessToken
-    }
-
     smList.first { it.name == SocialMediaInfo.FACEBOOK.name }.apply {
         isConnect = savedFB?.isConnect ?: false
         isItemChecked = savedFB?.isItemChecked ?: false
         accessToken = savedFB?.accessToken
     }
 
-    smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
+    /*smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
+        isConnect = savedYT?.isConnect ?: false
+        isItemChecked = savedYT?.isItemChecked ?: false
+        accessToken = savedYT?.accessToken
+    }*/
+
+    /*smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
         isConnect = savedLI?.isConnect ?: false
         isItemChecked = savedLI?.isItemChecked ?: false
         accessToken = savedLI?.accessToken
-    }
+    }*/
 
     /*finally display SM list with checkBox or connect button*/
     smList.forEach { item ->

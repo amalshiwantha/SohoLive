@@ -165,18 +165,14 @@ fun DoConnectFacebook(viewMMain: MainViewModel) {
 
                                 getFbPages(accessToken, callback = { pagesList ->
 
-                                    getFBGroups(accessToken, callback = { groupsList ->
+                                    val smProfile = SocialMediaProfile(
+                                        smInfo = SocialMediaInfo.FACEBOOK,
+                                        profile = it,
+                                        timelines = getFBTimeLine(it),
+                                        pages = pagesList
+                                    )
 
-                                        val smProfile = SocialMediaProfile(
-                                            smInfo = SocialMediaInfo.FACEBOOK,
-                                            profile = it,
-                                            timelines = getFBTimeLine(it),
-                                            pages = pagesList,
-                                            groups = groupsList
-                                        )
-
-                                        viewMMain.saveSMProfile(smProfile)
-                                    })
+                                    viewMMain.saveSMProfile(smProfile)
                                 })
                             }
                         }
