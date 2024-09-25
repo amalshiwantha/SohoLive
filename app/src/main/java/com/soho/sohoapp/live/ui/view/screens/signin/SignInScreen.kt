@@ -179,13 +179,13 @@ private fun LoginForm(
 
         SpacerUp(24.dp)
 
-        TextButtonBlue(text = stringResource(R.string.forgot_password),
+        /*TextButtonBlue(text = stringResource(R.string.forgot_password),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterHorizontally),
             onBtnClick = {
                 onForgetPwClick()
-            })
+            })*/
     }
 }
 
