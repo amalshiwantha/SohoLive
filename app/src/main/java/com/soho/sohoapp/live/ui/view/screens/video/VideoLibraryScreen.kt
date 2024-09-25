@@ -101,7 +101,7 @@ fun VideoLibraryScreen(
     var selectedItem by remember { mutableStateOf<VideoItem?>(null) }
     var isShowAlert by remember { mutableStateOf(false) }
     var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
-    var  isShowProgress by remember { mutableStateOf(false) }
+    var isShowProgress by remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     var playVideoUrl by remember { mutableStateOf("") }
 
@@ -170,6 +170,9 @@ fun VideoLibraryScreen(
             onManageClick = { selectedItem = it },
             onPlayVid = {
                 playVideoUrl = it
+            },
+            onClickReloadVideoList = {
+                vmVidLib.reLoadData()
             }
         )
     }
@@ -253,7 +256,8 @@ private fun Content(
     state: VideoLibraryState,
     mGState: GlobalState,
     onManageClick: (VideoItem) -> Unit,
-    onPlayVid: (String) -> Unit
+    onPlayVid: (String) -> Unit,
+    onClickReloadVideoList: () -> Unit
 ) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
 
@@ -277,7 +281,9 @@ private fun Content(
             }
 
             if (dataList.isNullOrEmpty()) {
-                NoDataScreen(onClick = {})
+                NoDataScreen(onClick = {
+                    onClickReloadVideoList()
+                })
             } else {
                 LazyColumn(
                     Modifier
