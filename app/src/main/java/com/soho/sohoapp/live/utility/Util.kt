@@ -189,14 +189,13 @@ fun formValidation(
         val errorMessage = when (fieldType) {
 
             FieldType.LOGIN_EMAIL -> {
-                val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+                val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+(\\.[a-z]+)?"
 
                 if (inputValue.isNullOrEmpty()) {
                     context.getString(R.string.email_empty)
                 } else {
-                    /*if (!inputValue.matches(emailPattern.toRegex()))
-                        context.getString(R.string.email_notvalid) else null*/
-                    null
+                    if (!inputValue.matches(emailPattern.toRegex()))
+                        context.getString(R.string.email_notvalid) else null
                 }
             }
 
