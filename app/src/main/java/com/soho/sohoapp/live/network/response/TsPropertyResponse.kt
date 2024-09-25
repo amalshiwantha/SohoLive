@@ -192,8 +192,8 @@ data class Agent(
     val avatar_url: String?,
     val agent_bg_colour: String,
     val banner_image: String?,
-    val rating_count: Int?,
-    val reviews_count: Int?
+    val rating_count: Float?,
+    val reviews_count: Float?
 )
 
 @Serializable

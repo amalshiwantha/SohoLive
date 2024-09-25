@@ -204,7 +204,11 @@ class GoLiveViewModel(
 
             //update agentList
             val selectedAgent = savedAssets?.agencyListState?.value?.find { it.isChecked }
-            loadAgentList(foundPropList.filter { it.isChecked }[0], selectedAgent)
+
+            val checkedAgents = foundPropList.filter { it.isChecked }
+            if (!checkedAgents.isNullOrEmpty()) {
+                loadAgentList(checkedAgents[0], selectedAgent)
+            }
 
             //save other live Data
             if (liveState.value.tsResults == null) {
