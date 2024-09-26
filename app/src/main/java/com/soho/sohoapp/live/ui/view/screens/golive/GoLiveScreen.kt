@@ -129,13 +129,20 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppGreenDark
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
+import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.BorderGray
+import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.theme.whiteBg
 import com.soho.sohoapp.live.ui.view.activity.main.MainActivity.Companion.maxSteps
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
@@ -1454,7 +1461,7 @@ private fun StepIndicator(
     totalSteps: Int,
     currentStep: Int,
     activeColor: Color = Color.White,
-    inactiveColor: Color = Color.DarkGray
+    inactiveColor: Color = whiteBg.copy(alpha = 0.2f),
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
@@ -1463,7 +1470,7 @@ private fun StepIndicator(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(2.dp)
+                    .height(4.dp)
                     .background(
                         color = if (i <= currentStep) activeColor else inactiveColor,
                         shape = CircleShape
