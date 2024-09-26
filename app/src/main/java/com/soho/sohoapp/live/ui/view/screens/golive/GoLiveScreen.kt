@@ -129,20 +129,15 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.theme.AppGreenDark
-import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
-import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
-import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
-import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.BorderGray
-import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.RentTxtColor
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.ui.theme.whiteBg
+import com.soho.sohoapp.live.ui.theme.lowGreen
 import com.soho.sohoapp.live.ui.view.activity.main.MainActivity.Companion.maxSteps
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
@@ -955,10 +950,13 @@ fun PropertyItemRow(
                     onCheckedChange = {
                         onSelect(item)
                     })
+
                 SpacerUp(size = 8.dp)
                 Text700_14sp(step = property.fullAddress(), color = textColor)
-                SpacerUp(size = 8.dp)
-                if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
+
+                /*SpacerUp(size = 8.dp)
+                Text400_14sp(info = "3 scheduled livestream", color = textColor)*/
+
                 SpacerUp(size = 8.dp)
                 AmenitiesView(property, textColor)
             }
@@ -1461,7 +1459,7 @@ private fun StepIndicator(
     totalSteps: Int,
     currentStep: Int,
     activeColor: Color = Color.White,
-    inactiveColor: Color = whiteBg.copy(alpha = 0.2f),
+    inactiveColor: Color = AppWhite.copy(alpha = 0.2f),
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
@@ -2069,7 +2067,7 @@ private fun TypeAndCheckBox(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             doc.getPropertyState()?.toUppercaseFirst()?.let {
-                Text700_12sp(label = it)
+                Text700_12sp(label = it, txtColor = getTxtColorState(it))
             }
             val dotImage = if (isChecked) R.drawable.space_dot_dark else R.drawable.space_dot
             Image(
@@ -2110,6 +2108,14 @@ private fun TypeAndCheckBox(
             }
         }
 
+    }
+}
+
+fun getTxtColorState(value: String): Color {
+   return when (value) {
+        "For Sale" -> lowGreen
+        "For Rent" -> RentTxtColor
+        else -> lowGreen
     }
 }
 
