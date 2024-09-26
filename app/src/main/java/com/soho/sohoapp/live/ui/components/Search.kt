@@ -52,6 +52,7 @@ fun SearchBar() {
             value = text,
             onValueChange = { text = it },
             placeholder = { TextPlaceHolder(label = stringResource(R.string.search_address)) },
+            textStyle = inputStyleSearch(),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = HintGray,
