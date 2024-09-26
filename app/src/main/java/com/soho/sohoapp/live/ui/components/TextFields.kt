@@ -186,16 +186,14 @@ fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: 
     var password by rememberSaveable { mutableStateOf(tempPw) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    TextField(
+    OutlinedTextField(
         value = password,
         onValueChange = {
             password = it
             onTextChange(password)
         },
-        isError = true,
         singleLine = true,
-        placeholder = { Text("Password") },
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        placeholder = {  Text("Password") },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password
@@ -214,10 +212,14 @@ fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: 
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
+        isError = isError,
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = AppWhite, focusedContainerColor = AppWhite,
-            unfocusedPlaceholderColor = HintGray, focusedIndicatorColor = Color.Transparent
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedPlaceholderColor = AppWhite,
+            unfocusedContainerColor = AppWhite,
+            focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = HintGray,
+            errorContainerColor = ErrorContent,
         )
     )
 }
