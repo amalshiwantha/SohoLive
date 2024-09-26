@@ -182,7 +182,7 @@ fun TextFieldOutlined(tfConfig: TextFiledConfig, onTextChange: (String) -> Unit)
 }
 
 @Composable
-fun PasswordTextFieldWhite(tempPw: String = "", onTextChange: (String) -> Unit) {
+fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: (String) -> Unit) {
     var password by rememberSaveable { mutableStateOf(tempPw) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -192,6 +192,7 @@ fun PasswordTextFieldWhite(tempPw: String = "", onTextChange: (String) -> Unit) 
             password = it
             onTextChange(password)
         },
+        isError = true,
         singleLine = true,
         placeholder = { Text("Password") },
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),

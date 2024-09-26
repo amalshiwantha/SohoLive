@@ -36,7 +36,6 @@ import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.ui.components.SpacerUp
-import com.soho.sohoapp.live.ui.components.TextButtonBlue
 import com.soho.sohoapp.live.ui.components.TextError
 import com.soho.sohoapp.live.ui.components.TextFieldWhite
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
@@ -153,6 +152,7 @@ private fun LoginForm(
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerUp(8.dp)
         TextFieldWhite(fieldConfig = FieldConfig.NEXT.apply {
+            isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL)
             placeholder = stringResource(R.string.email)
         }, onTextChange = {
             requestData.apply { email = it }
@@ -168,7 +168,9 @@ private fun LoginForm(
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerUp(8.dp)
-        PasswordTextFieldWhite(onTextChange = {
+        PasswordTextFieldWhite(
+            isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
+            onTextChange = {
             requestData.apply { password = it }
             viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
         })
@@ -186,6 +188,14 @@ private fun LoginForm(
             onBtnClick = {
                 onForgetPwClick()
             })*/
+    }
+}
+
+fun isErrorOnFiled(errorState: Map<FieldType, String>, field: FieldType): Boolean {
+    return errorState[field]?.let {
+        true
+    } ?: run {
+        false
     }
 }
 

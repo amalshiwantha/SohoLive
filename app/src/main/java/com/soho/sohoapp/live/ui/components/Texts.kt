@@ -27,6 +27,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.StarYellow
 import com.soho.sohoapp.live.ui.theme.lowGreen
@@ -138,7 +139,7 @@ fun TextBlue14(modifier: Modifier = Modifier, label: String) {
 fun TextError(modifier: Modifier = Modifier, errorMsg: String) {
     Text(
         text = errorMsg,
-        color = Color(0xFFEE21C1),
+        color = ErrorRed,
         lineHeight = 19.6.sp,
         letterSpacing = 0.17.sp,
         fontSize = 12.sp,

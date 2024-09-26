@@ -124,7 +124,7 @@ private fun SignupFormContent() {
 
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerUp(8.dp)
-        PasswordTextFieldWhite(onTextChange = {})
+        //PasswordTextFieldWhite(onTextChange = {})
 
         SpacerUp(24.dp)
     }
