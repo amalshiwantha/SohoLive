@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -55,7 +56,8 @@ fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (Pair<String, Stri
         placeholder = { Text(fieldConfig.placeholder) },
         keyboardOptions = KeyboardOptions(
             imeAction = fieldConfig.imeAction,
-            keyboardType = fieldConfig.keyboardType
+            keyboardType = fieldConfig.keyboardType,
+            capitalization = KeyboardCapitalization.Words
         ),
         maxLines = 10,
         modifier = Modifier
@@ -97,7 +99,8 @@ fun TextFieldWhiteIcon(
         placeholder = { Text(fieldConfig.placeholder) },
         keyboardOptions = KeyboardOptions(
             imeAction = fieldConfig.imeAction,
-            keyboardType = fieldConfig.keyboardType
+            keyboardType = fieldConfig.keyboardType,
+            capitalization = KeyboardCapitalization.Words
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -133,7 +136,8 @@ fun TextFieldWhite(fieldConfig: FieldConfig, modifier: Modifier, onTextChange: (
         placeholder = { Text(fieldConfig.placeholder) },
         keyboardOptions = KeyboardOptions(
             imeAction = fieldConfig.imeAction,
-            keyboardType = fieldConfig.keyboardType
+            keyboardType = fieldConfig.keyboardType,
+            capitalization = KeyboardCapitalization.Words
         ),
         modifier = modifier
             .fillMaxWidth()
@@ -164,7 +168,8 @@ fun TextFieldOutlined(tfConfig: TextFiledConfig, onTextChange: (String) -> Unit)
         placeholder = { Text(tfConfig.placeholder) },
         keyboardOptions = KeyboardOptions(
             imeAction = tfConfig.imeAction,
-            keyboardType = tfConfig.keyboardType
+            keyboardType = tfConfig.keyboardType,
+            capitalization = KeyboardCapitalization.Words
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -201,7 +206,8 @@ fun PasswordTextFieldWhite(
         placeholder = { Text("Password") },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
-            keyboardType = KeyboardType.Password
+            keyboardType = KeyboardType.Password,
+            capitalization = KeyboardCapitalization.Words
         ),
         trailingIcon = {
             val image = if (passwordVisible)

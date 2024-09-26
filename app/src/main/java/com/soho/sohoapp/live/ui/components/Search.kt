@@ -41,7 +41,7 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp)
-            .background(Color.White, shape = RoundedCornerShape(16.dp))
+            .background(Color.White, shape = RoundedCornerShape(20.dp))
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_search),
