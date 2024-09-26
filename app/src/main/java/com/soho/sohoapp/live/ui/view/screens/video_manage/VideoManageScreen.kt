@@ -323,7 +323,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                 ) {
                     val agent = vidItem.getAgent()
                     val agentLogoUrl = agent?.banner_image ?: ""
-                    val agentColor = agent?.agent_bg_colour?.hexToColor() ?: Color.White
+                    val agentColor = getAgentColor(agent?.agent_bg_colour)
 
                     val logoAgent = rememberAsyncImagePainter(
                         model = agentLogoUrl,
@@ -352,6 +352,18 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+private fun getAgentColor(agentBgColour: String?): Color {
+    return agentBgColour?.let {
+        if (it.isNotEmpty()) {
+            it.hexToColor()
+        } else {
+            Color.White
+        }
+    } ?: run {
+        Color.White
     }
 }
 

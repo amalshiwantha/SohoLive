@@ -4,11 +4,15 @@ import androidx.compose.ui.graphics.Color
 import java.util.Locale
 
 fun String.hexToColor(): Color {
-    val hexColor = this.removePrefix("#")
-    val colorLong = hexColor.toLong(16)
-    val alpha = 0xFF000000
-    val colorWithAlpha = colorLong or alpha
-    return Color(colorWithAlpha)
+    try {
+        val hexColor = this.removePrefix("#")
+        val colorLong = hexColor.toLong(16)
+        val alpha = 0xFF000000
+        val colorWithAlpha = colorLong or alpha
+        return Color(colorWithAlpha)
+    } catch (e: Exception) {
+        return Color.White
+    }
 }
 
 fun String.toFileName(): String {
