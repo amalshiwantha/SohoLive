@@ -36,6 +36,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.OnboardingData
@@ -49,8 +50,23 @@ import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 
+val onboardingItems = listOf(
+    OnboardingData(
+        R.drawable.on_board_1,
+        "Livecast your property inspections for prospects to watch at their own convenience"
+    ),
+    OnboardingData(
+        R.drawable.on_board_2,
+        "Simultaneously cast to your listing and social platforms"
+    ),
+    OnboardingData(R.drawable.on_board_3, "Create unlisted videos for private viewing"),
+    OnboardingData(R.drawable.on_board_4, "Apply your agent and agency branding on every video")
+)
+
 @Composable
 fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+
+    val pagerState = rememberPagerState()
 
     ConstraintLayout(
         modifier = Modifier
@@ -74,13 +90,16 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
         )
 
         // Middle scrollable content
-        OnboardingView(modifier = Modifier.constrainAs(onBoard) {
-            top.linkTo(topLogo.bottom)
-            bottom.linkTo(button.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            height = Dimension.fillToConstraints
-        })
+        OnboardingView(
+            modifier = Modifier.constrainAs(onBoard) {
+                top.linkTo(topLogo.bottom)
+                bottom.linkTo(button.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                height = Dimension.fillToConstraints
+            },
+            pagerState = pagerState
+        )
 
         // Bottom static buttons
         BottomButtons(
@@ -91,27 +110,14 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            navController = navController
+            navController = navController,
+            pagerState = pagerState
         )
     }
 }
 
 @Composable
-fun OnboardingView(modifier: Modifier) {
-    val pagerState = rememberPagerState()
-
-    val onboardingItems = listOf(
-        OnboardingData(
-            R.drawable.on_board_1,
-            "Livecast your property inspections for prospects to watch at their own convenience"
-        ),
-        OnboardingData(
-            R.drawable.on_board_2,
-            "Simultaneously cast to your listing and social platforms"
-        ),
-        OnboardingData(R.drawable.on_board_3, "Create unlisted videos for private viewing"),
-        OnboardingData(R.drawable.on_board_4, "Apply your agent and agency branding on every video")
-    )
+fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
 
     Column(
         modifier = modifier
@@ -132,12 +138,10 @@ fun OnboardingView(modifier: Modifier) {
                     Image(
                         painter = painterResource(id = onboardingItems[page].imageRes),
                         contentDescription = null,
-                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(1f)
                             .padding(horizontal = 45.dp)
-                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     )
 
                     // Gradient overlay at the bottom of the image
@@ -161,6 +165,32 @@ fun OnboardingView(modifier: Modifier) {
 
         SpacerUp(size = 16.dp)
 
+
+    }
+}
+
+
+/*private fun oldView(){
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(brushMainGradientBg),
+        contentAlignment = Alignment.Center,
+    ) {
+        CenterImgText(modifier)
+        BottomButtons(modifier.align(alignment = Alignment.BottomCenter), navController)
+    }
+}*/
+
+@Composable
+fun BottomButtons(modifier: Modifier, navController: NavHostController, pagerState: PagerState) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         // Page indicators
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -186,31 +216,8 @@ fun OnboardingView(modifier: Modifier) {
                 }
             }
         }
-    }
-}
 
-
-/*private fun oldView(){
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(brushMainGradientBg),
-        contentAlignment = Alignment.Center,
-    ) {
-        CenterImgText(modifier)
-        BottomButtons(modifier.align(alignment = Alignment.BottomCenter), navController)
-    }
-}*/
-
-@Composable
-fun BottomButtons(modifier: Modifier, navController: NavHostController) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, bottom = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+        // Login and Sign Up buttons
         ButtonColoured(text = stringResource(R.string.log_in),
             color = AppGreen,
             onBtnClick = { navController.navigate(NavigationPath.SIGNIN.name) })
