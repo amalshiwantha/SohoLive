@@ -14,14 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,7 +62,7 @@ val onboardingItems = listOf(
 )
 
 @Composable
-fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+fun PreAccessScreen(navController: NavHostController) {
 
     val pagerState = rememberPagerState()
 
@@ -101,8 +99,8 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
             pagerState = pagerState
         )
 
-        // Bottom static buttons
-        BottomButtons(
+        // Bottom button and pager indicator
+        BottomBtnIndicator(
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(button) {
@@ -120,10 +118,7 @@ fun PreAccessScreen(modifier: Modifier = Modifier, navController: NavHostControl
 fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.fillMaxSize(),
     ) {
         // Pager with images and descriptions
         HorizontalPager(
@@ -131,35 +126,40 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
             state = pagerState,
             modifier = Modifier.fillMaxWidth()
         ) { page ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Column {
+                    //center image with bottom Gradient
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Image(
+                            painter = painterResource(id = onboardingItems[page].imageRes),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
+                                .padding(horizontal = 45.dp)
+                        )
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                // Image
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Image(
-                        painter = painterResource(id = onboardingItems[page].imageRes),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .padding(horizontal = 45.dp)
-                    )
+                        // Gradient overlay at the bottom of the image
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter)
+                                .height(120.dp)
+                                .background(onBoardGradientBg)
+                        )
+                    }
 
-                    // Gradient overlay at the bottom of the image
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter)
-                            .height(120.dp)
-                            .background(onBoardGradientBg)
+                    SpacerUp(size = 10.dp)
+
+                    // Description text
+                    Text950_20spCenter(
+                        title = onboardingItems[page].info,
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
-                SpacerUp(size = 10.dp)
-
-                // Description text
-                Text950_20spCenter(
-                    title = onboardingItems[page].info,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
             }
         }
 
@@ -169,21 +169,12 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
     }
 }
 
-
-/*private fun oldView(){
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(brushMainGradientBg),
-        contentAlignment = Alignment.Center,
-    ) {
-        CenterImgText(modifier)
-        BottomButtons(modifier.align(alignment = Alignment.BottomCenter), navController)
-    }
-}*/
-
 @Composable
-fun BottomButtons(modifier: Modifier, navController: NavHostController, pagerState: PagerState) {
+fun BottomBtnIndicator(
+    modifier: Modifier,
+    navController: NavHostController,
+    pagerState: PagerState
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
