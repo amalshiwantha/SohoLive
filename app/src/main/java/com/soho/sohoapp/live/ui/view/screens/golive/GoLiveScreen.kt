@@ -118,6 +118,7 @@ import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
+import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
@@ -917,10 +918,9 @@ fun PropertyItemRow(
             .padding(bottom = 16.dp)
             .clickable { onSelect(item) },
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = cardBgColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        colors = CardDefaults.cardColors(containerColor = cardBgColor)
     ) {
-        Row(modifier = Modifier.padding(14.dp)) {
+        Row(modifier = Modifier.padding(16.dp)) {
             //image
             val urlPainter = rememberAsyncImagePainter(
                 model = property.thumbnailUrl(),
@@ -952,12 +952,12 @@ fun PropertyItemRow(
                     })
 
                 SpacerUp(size = 8.dp)
-                Text700_14sp(step = property.fullAddress(), color = textColor)
+                Text700_14spProperty(step = property.fullAddress(), color = textColor)
 
                 /*SpacerUp(size = 8.dp)
                 Text400_14sp(info = "3 scheduled livestream", color = textColor)*/
 
-                SpacerUp(size = 8.dp)
+                SpacerUp(size = 10.dp)
                 AmenitiesView(property, textColor)
             }
         }
@@ -2084,7 +2084,6 @@ private fun TypeAndCheckBox(
         if (isClickable) {
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
                     .clickable { onCheckedChange(!isChecked) }, contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG

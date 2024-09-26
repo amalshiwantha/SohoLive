@@ -233,6 +233,27 @@ fun Text700_14spLink(
 }
 
 @Composable
+fun Text700_14spProperty(
+    modifier: Modifier = Modifier,
+    step: String,
+    color: Color = AppWhite,
+) {
+    val fontId = R.font.axiforma_regular
+
+    Text(
+        textAlign = TextAlign.Left,
+        modifier = modifier,
+        text = step,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(fontId)),
+        fontWeight = FontWeight(700),
+        color = color,
+        letterSpacing = 0.17.sp
+    )
+}
+
+@Composable
 fun Text700_14sp(
     modifier: Modifier = Modifier,
     step: String,
