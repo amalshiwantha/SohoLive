@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
@@ -19,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -117,6 +122,10 @@ fun PreAccessScreen(navController: NavHostController) {
 @Composable
 fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
 
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -136,10 +145,7 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                         Image(
                             painter = painterResource(id = onboardingItems[page].imageRes),
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                                .padding(horizontal = 45.dp)
+                            modifier = Modifier.aspectRatio(1f)
                         )
 
                         // Gradient overlay at the bottom of the image
@@ -151,6 +157,8 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                                 .background(onBoardGradientBg)
                         )
                     }
+
+
 
                     SpacerUp(size = 10.dp)
 
