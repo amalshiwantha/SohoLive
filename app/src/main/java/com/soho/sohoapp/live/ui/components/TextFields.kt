@@ -209,6 +209,7 @@ fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: 
                 Icon(imageVector = image, description)
             }
         },
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
