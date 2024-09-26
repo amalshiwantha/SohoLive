@@ -120,7 +120,7 @@ fun TextFieldWhiteIcon(
 }
 
 @Composable
-fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
+fun TextFieldWhite(fieldConfig: FieldConfig, modifier: Modifier, onTextChange: (String) -> Unit) {
     var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
 
     OutlinedTextField(
@@ -135,7 +135,7 @@ fun TextFieldWhite(fieldConfig: FieldConfig, onTextChange: (String) -> Unit) {
             imeAction = fieldConfig.imeAction,
             keyboardType = fieldConfig.keyboardType
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         isError = fieldConfig.isError,
@@ -182,7 +182,12 @@ fun TextFieldOutlined(tfConfig: TextFiledConfig, onTextChange: (String) -> Unit)
 }
 
 @Composable
-fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: (String) -> Unit) {
+fun PasswordTextFieldWhite(
+    modifier: Modifier,
+    tempPw: String = "",
+    isError: Boolean,
+    onTextChange: (String) -> Unit
+) {
     var password by rememberSaveable { mutableStateOf(tempPw) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -193,7 +198,7 @@ fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: 
             onTextChange(password)
         },
         singleLine = true,
-        placeholder = {  Text("Password") },
+        placeholder = { Text("Password") },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password
@@ -210,7 +215,7 @@ fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: 
             }
         },
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         isError = isError,
@@ -228,5 +233,5 @@ fun PasswordTextFieldWhite(tempPw: String = "", isError: Boolean, onTextChange: 
 @Preview
 @Composable
 private fun PreviewInputWhite() {
-    TextFieldWhite(FieldConfig.NEXT.apply { placeholder = "Test" }) {}
+    TextFieldWhite(FieldConfig.NEXT.apply { placeholder = "Test" }, modifier = Modifier) {}
 }

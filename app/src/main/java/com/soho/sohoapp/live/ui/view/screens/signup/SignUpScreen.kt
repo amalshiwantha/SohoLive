@@ -89,23 +89,23 @@ private fun SignupFormContent() {
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.fName))
                 SpacerUp(8.dp)
-                TextFieldWhite(
+                /*TextFieldWhite(
                     fieldConfig = FieldConfig.NEXT.apply {
                         placeholder = stringResource(R.string.fName)
                         keyboardType = KeyboardType.Text
                     },
-                    onTextChange = {})
+                    onTextChange = {})*/
             }
 
             Column(modifier = Modifier.weight(1f)) {
                 TextLabelWhite14(label = stringResource(R.string.lName))
                 SpacerUp(8.dp)
-                TextFieldWhite(
+                /*TextFieldWhite(
                     fieldConfig = FieldConfig.NEXT.apply {
                         placeholder = stringResource(R.string.lName)
                         keyboardType = KeyboardType.Text
                     },
-                    onTextChange = {})
+                    onTextChange = {})*/
             }
         }
 
@@ -113,12 +113,12 @@ private fun SignupFormContent() {
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerUp(8.dp)
-        TextFieldWhite(
+        /*TextFieldWhite(
             fieldConfig = FieldConfig.NEXT.apply {
                 placeholder = stringResource(R.string.email)
                 keyboardType = KeyboardType.Email
             },
-            onTextChange = {})
+            onTextChange = {})*/
 
         SpacerUp(24.dp)
 

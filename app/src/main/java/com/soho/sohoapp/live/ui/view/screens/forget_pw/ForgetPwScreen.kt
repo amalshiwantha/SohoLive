@@ -87,13 +87,13 @@ private fun LoginForm() {
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerUp(8.dp)
-        TextFieldWhite(
+        /*TextFieldWhite(
             fieldConfig = FieldConfig.NEXT.apply {
                 placeholder = stringResource(R.string.email)
                 keyboardType = KeyboardType.Email
                 imeAction = ImeAction.Done
             },
-            onTextChange = {})
+            onTextChange = {})*/
 
         SpacerUp(24.dp)
     }

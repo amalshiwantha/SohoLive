@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -98,9 +99,7 @@ fun SignInScreen(
                 ) {
 
                     //Display login form
-                    LoginForm(vmSignIn, stateVm) {
-                        navController.navigate(NavigationPath.FORGET_PW.name)
-                    }
+                    LoginForm(vmSignIn, stateVm)
 
                     //Display progress bar
                     LaunchedEffect(stateVm.loadingState) {
@@ -122,7 +121,7 @@ fun SignInScreen(
                 SpacerUp(24.dp)
 
                 //Display bottom login button
-                BottomLoginBtn(modifier, isShowProgress) {
+                BottomLoginBtn(modifier.testTag("loginButton"), isShowProgress) {
                     if (netUtil.isNetworkAvailable()) {
                         vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
                     } else {
@@ -141,9 +140,7 @@ fun SignInScreen(
 }
 
 @Composable
-private fun LoginForm(
-    viewModel: SignInViewModel, loginState: SignInState, onForgetPwClick: () -> Unit
-) {
+private fun LoginForm(viewModel: SignInViewModel, loginState: SignInState) {
 
     Column {
         val requestData = loginState.request
@@ -151,13 +148,14 @@ private fun LoginForm(
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerUp(8.dp)
-        TextFieldWhite(fieldConfig = FieldConfig.NEXT.apply {
-            isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL)
-            placeholder = stringResource(R.string.email)
-        }, onTextChange = {
-            requestData.apply { email = it }
-            viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
-        })
+        TextFieldWhite(modifier = Modifier.testTag("emailField"),
+            fieldConfig = FieldConfig.NEXT.apply {
+                isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL)
+                placeholder = stringResource(R.string.email)
+            }, onTextChange = {
+                requestData.apply { email = it }
+                viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+            })
 
         //error email visibility
         errorState[FieldType.LOGIN_EMAIL]?.let {
@@ -169,11 +167,12 @@ private fun LoginForm(
         TextLabelWhite14(label = stringResource(R.string.password))
         SpacerUp(8.dp)
         PasswordTextFieldWhite(
+            modifier = Modifier.testTag("passwordField"),
             isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
             onTextChange = {
-            requestData.apply { password = it }
-            viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
-        })
+                requestData.apply { password = it }
+                viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+            })
         //error pw visibility
         errorState[FieldType.LOGIN_PW]?.let {
             TextError(errorMsg = it)
