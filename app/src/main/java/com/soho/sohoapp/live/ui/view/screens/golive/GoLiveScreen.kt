@@ -1730,12 +1730,6 @@ private fun PropertyListing(
                 onItemClicked(selectedItem)
             })
     }
-
-    /*listings?.forEach { item ->
-        PropertyItemContent(item, onItemClicked = { selected ->
-            onItemClicked.invoke(selected)
-        })
-    }*/
 }
 
 @Composable
@@ -2074,7 +2068,7 @@ private fun TypeAndCheckBox(
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            doc.apListingState?.toUppercaseFirst()?.let {
+            doc.getPropertyState()?.toUppercaseFirst()?.let {
                 Text700_12sp(label = it)
             }
             val dotImage = if (isChecked) R.drawable.space_dot_dark else R.drawable.space_dot
@@ -2213,7 +2207,7 @@ fun SwitchCompo(
 private fun PreviewGoLiveScreen() {
     Box(modifier = Modifier.background(brushMainGradientBg)) {
         val countSteps = 5
-        val currentStep = 4
+        val currentStep = 2
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)

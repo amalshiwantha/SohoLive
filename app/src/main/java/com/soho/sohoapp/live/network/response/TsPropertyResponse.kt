@@ -144,6 +144,26 @@ data class Document(
             emptyList()
         }
     }
+
+    fun getPropertyState(): String? {
+        return apListingState?.let {
+            when (it) {
+                "rent" -> {
+                    "For Rent"
+                }
+
+                "sale" -> {
+                    "For Sale"
+                }
+
+                else -> {
+                    it
+                }
+            }
+        } ?: run {
+            null
+        }
+    }
 }
 
 @Serializable
