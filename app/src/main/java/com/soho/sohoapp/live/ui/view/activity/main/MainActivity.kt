@@ -62,6 +62,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.CategoryInfo
@@ -69,6 +70,7 @@ import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -152,9 +154,29 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
                     val stateSMConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
+                    var isShowSmLogoutConfirm by remember { mutableStateOf(false) }
+                    var smLogoutSelection by remember { mutableStateOf(SocialMediaProfile()) }
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
+
+                    /*
+                    * show alert message to confirm logout
+                    * */
+                    if (isShowSmLogoutConfirm) {
+                        val alConfig = AlertConfig.SIGN_OUT_ALERT.apply {
+                            isConfirm = true
+                            message = "Are you sure you want to logout?"
+                        }
+                        AppAlertDialog(alert = alConfig, onConfirm = {
+                            isShowSmLogoutConfirm = false
+                            doSMLogout(smLogoutSelection, onDismiss = {
+                                isShowSMConnectedModel = false
+                            })
+                        }, onDismiss = {
+                            isShowSmLogoutConfirm = false
+                        })
+                    }
 
                     /*
                     * open liveCast screen
@@ -223,20 +245,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             isShowSMConnectedModel = false
                         },
                         onDisconnectClick = { delSmProfile ->
-                            delSmProfile.apply {
-                                profile.isConnected = false
-                                smInfo.isConnect = false
-                                smInfo.isItemChecked = false
-                            }
-
-                            doLogout(delSmProfile)
-                            viewMMain.removeSMProfile(delSmProfile)
-                            viewMMain.resetSMConnectState()
-                            isShowSMConnectedModel = false
-
-                            GlobalScope.launch {
-                                AppEventBus.sendEvent(AppEvent.SMProfile(delSmProfile))
-                            }
+                            isShowSmLogoutConfirm = true
+                            smLogoutSelection = delSmProfile
                         })
 
 
@@ -276,6 +286,24 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
             }
         }
+    }
+
+    private fun doSMLogout(smLogoutSelection: SocialMediaProfile, onDismiss: () -> Unit) {
+        smLogoutSelection.apply {
+            profile.isConnected = false
+            smInfo.isConnect = false
+            smInfo.isItemChecked = false
+        }
+
+        doLogout(smLogoutSelection)
+        viewMMain.removeSMProfile(smLogoutSelection)
+        viewMMain.resetSMConnectState()
+
+        GlobalScope.launch {
+            AppEventBus.sendEvent(AppEvent.SMProfile(smLogoutSelection))
+        }
+
+        onDismiss()
     }
 
     private fun openLiveScreen(msOpenLiveCaster: String, orientation: String, isPublic: Boolean) {
