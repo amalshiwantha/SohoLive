@@ -239,7 +239,9 @@ class LiveStreamActivity : AppCompatActivity() {
             }
 
             if (showDialog.value) {
+                val btnTxt = binding.txtGoLive.text.toString()
                 ShareableLinkDialog(
+                    btnTxt = btnTxt,
                     reqLive = reqLive,
                     isShowLiveBtn = isGoLiveClick.value,
                     onClickCopy = {
@@ -730,7 +732,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
         override fun onDisconnect() {
             println("myStream onDisconnect")
-            if(!isLiveCastPaused){
+            if (!isLiveCastPaused) {
                 onResume()
             }
         }
@@ -903,7 +905,7 @@ class LiveStreamActivity : AppCompatActivity() {
             if (it.isStreaming) {
                 binding.cardGoLive.isEnabled = true
                 isLiveCastPaused = true
-               // timerPause()
+                // timerPause()
                 stopBroadcast(false) // Stop the broadcast if it's still running
             }
             it.stopPreview() // Stop the camera preview

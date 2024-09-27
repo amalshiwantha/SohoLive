@@ -51,6 +51,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 
 @Composable
 fun ShareableLinkDialog(
+    btnTxt: String,
     reqLive: LiveRequest,
     onClickCopy: (String) -> Unit,
     onClickLive: () -> Unit,
@@ -290,7 +291,7 @@ fun ShareableLinkDialog(
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 16.dp)
                     ) {
                         ButtonGradientIcon(
-                            text = "Go Live Now",
+                            text = btnTxt,
                             modifier = Modifier.fillMaxWidth(),
                             gradientBrush = brushGradientLive,
                             icon = R.drawable.livecast_color,
