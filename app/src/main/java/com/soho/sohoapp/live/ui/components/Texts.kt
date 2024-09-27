@@ -31,6 +31,7 @@ import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.StarYellow
+import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.theme.lowGreen
 
 @Composable
@@ -474,6 +475,26 @@ fun Text800_14sp(
         fontSize = 14.sp,
         lineHeight = 19.6.sp,
         letterSpacing = 0.17.sp,
+        color = txtColor,
+        fontWeight = FontWeight(800),
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        textAlign = txtAlign
+    )
+}
+
+@Composable
+fun Text800_12sp_right(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtColor: Color = logoutRed,
+    txtAlign: TextAlign = TextAlign.Right
+) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        letterSpacing = 0.14.sp,
         color = txtColor,
         fontWeight = FontWeight(800),
         fontFamily = FontFamily(Font(R.font.axiforma)),

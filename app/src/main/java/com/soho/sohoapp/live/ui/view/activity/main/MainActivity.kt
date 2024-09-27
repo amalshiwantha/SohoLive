@@ -71,11 +71,11 @@ import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
-import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_16sp
+import com.soho.sohoapp.live.ui.components.Text800_12sp_right
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextSwipeSelection
 import com.soho.sohoapp.live.ui.navigation.AppNavHost
@@ -205,8 +205,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         }
                     }
 
-                    SocialMediaProfileBottomSheet(
-                        stateSMConnected,
+                    SocialMediaProfileBottomSheet(stateSMConnected,
                         isShowSMConnectedModel,
                         onDoneClick = {
 
@@ -321,9 +320,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun SocialMediaConnectBottomSheet(
-        smInfoConnect: SocialMediaInfo,
-        onConnect: (SocialMediaInfo) -> Unit,
-        onReset: () -> Unit
+        smInfoConnect: SocialMediaInfo, onConnect: (SocialMediaInfo) -> Unit, onReset: () -> Unit
     ) {
         val bottomSheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(true) }
@@ -373,8 +370,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @Composable
     private fun SingleSelectionList(
-        myList: SnapshotStateList<CategoryInfo>,
-        onItemClick: (CategoryInfo) -> Unit
+        myList: SnapshotStateList<CategoryInfo>, onItemClick: (CategoryInfo) -> Unit
     ) {
         val selVal = myList.find { it.isSelect }
         var selectedIndex = selVal?.index ?: 0
@@ -395,23 +391,18 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @Composable
     fun ListItemView(
-        fbView: CategoryInfo,
-        selectedIndex: Int,
-        onItemUpdated: (CategoryInfo) -> Unit
+        fbView: CategoryInfo, selectedIndex: Int, onItemUpdated: (CategoryInfo) -> Unit
     ) {
         val index = fbView.index
 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .selectable(
-                    selected = selectedIndex == index,
-                    onClick = {
-                        if (!fbView.isSelect) {
-                            onItemUpdated(fbView.copy(isSelect = true))
-                        }
+                .selectable(selected = selectedIndex == index, onClick = {
+                    if (!fbView.isSelect) {
+                        onItemUpdated(fbView.copy(isSelect = true))
                     }
-                )
+                })
                 .padding(bottom = 8.dp),
             shape = MaterialTheme.shapes.large,
             colors = CardDefaults.cardColors(containerColor = ItemCardBg)
@@ -455,9 +446,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @Composable
     private fun ProfileContentBottomSheet(
-        smProfile: SocialMediaProfile,
-        onDisconnect: () -> Unit,
-        onDone: () -> Unit
+        smProfile: SocialMediaProfile, onDisconnect: () -> Unit, onDone: () -> Unit
     ) {
         val smInfo = smProfile.smInfo
         var fbViewType by remember { mutableStateOf(CategoryType.TIMELINE) }
@@ -473,13 +462,21 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 .padding(horizontal = 16.dp)
         ) {
 
-            Text800_20sp(label = smInfo.title)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text800_20sp(label = smInfo.title, modifier = Modifier.weight(1f))
+                Text800_12sp_right(label = "Disconnect", modifier = Modifier.clickable {
+                    onDisconnect()
+                })
+            }
+
             SpacerUp(size = 8.dp)
 
             //Connect Button
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text400_14sp(info = smInfo.info)
@@ -515,9 +512,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     if (fbSubList.first.isNotEmpty()) {
                         SingleSelectionList(fbSubList.first, onItemClick = {
                             updateSMCheckState(
-                                mListPages,
-                                mListTimelines,
-                                it
+                                mListPages, mListTimelines, it
                             )
                             smProfile.smInfo.apply {
                                 selectionType = it
@@ -549,22 +544,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                 //Button buttons
                 SpacerUp(size = 40.dp)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    ButtonOutlineWhite(text = "Disconnect",
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        onBtnClick = { onDisconnect() })
-                    SpacerSide(size = 8.dp)
-                    ButtonColoured(
-                        text = "Done",
-                        color = AppGreen,
-                        modifier = Modifier.weight(1f),
-                        onBtnClick = { onDone() })
-                }
+                ButtonColoured(text = "Done",
+                    color = AppGreen,
+                    modifier = Modifier.fillMaxWidth(),
+                    onBtnClick = { onDone() })
             }
         }
     }
@@ -584,21 +567,21 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
 
         //update selected item
-        when(updatedItem.type){
+        when (updatedItem.type) {
             CategoryType.TIMELINE -> {
-                val selectedIndex =
-                    timeLineList.indexOfFirst { it.title == updatedItem.title }
+                val selectedIndex = timeLineList.indexOfFirst { it.title == updatedItem.title }
                 if (selectedIndex != -1) {
                     timeLineList[selectedIndex] = updatedItem.copy(isSelect = true)
                 }
             }
+
             CategoryType.PAGES -> {
-                val selectedIndex =
-                    pagesList.indexOfFirst { it.title == updatedItem.title }
+                val selectedIndex = pagesList.indexOfFirst { it.title == updatedItem.title }
                 if (selectedIndex != -1) {
                     pagesList[selectedIndex] = updatedItem.copy(isSelect = true)
                 }
             }
+
             CategoryType.GROUPS -> {}
         }
 
@@ -606,8 +589,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
 
     private fun updateState(
-        mListItems: SnapshotStateList<CategoryInfo>,
-        updatedItem: CategoryInfo
+        mListItems: SnapshotStateList<CategoryInfo>, updatedItem: CategoryInfo
     ) {
         // Update all items, isSelect as false
         mListItems.forEachIndexed { index, fbTypeView ->
@@ -615,8 +597,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
 
         //update selected item
-        val selectedIndex =
-            mListItems.indexOfFirst { it.title == updatedItem.title }
+        val selectedIndex = mListItems.indexOfFirst { it.title == updatedItem.title }
         if (selectedIndex != -1) {
             mListItems[selectedIndex] = updatedItem.copy(isSelect = true)
         }
@@ -715,8 +696,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             colors = CardDefaults.cardColors(containerColor = ItemCardBg)
         ) {
             Row(
-                modifier = Modifier.padding(14.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 //image
                 val urlPainter = rememberAsyncImagePainter(
@@ -749,8 +729,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @Composable
     private fun ContentBottomSheet(
-        smInfoConnect: SocialMediaInfo,
-        onConnect: (SocialMediaInfo) -> Unit
+        smInfoConnect: SocialMediaInfo, onConnect: (SocialMediaInfo) -> Unit
     ) {
         Column(
             modifier = Modifier
@@ -764,8 +743,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
             //Connect Button
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text400_14sp(info = smInfoConnect.info)
@@ -879,9 +857,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @Preview
     @Composable
     private fun PreviewBottomSheetSMConnect() {
-        ContentBottomSheet(
-            smInfoConnect = SocialMediaInfo.FACEBOOK,
-            onConnect = {})
+        ContentBottomSheet(smInfoConnect = SocialMediaInfo.FACEBOOK, onConnect = {})
     }
 
 
@@ -906,8 +882,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @Preview
     @Composable
     private fun PreviewBottomSheetSMProfile() {
-        ProfileContentBottomSheet(
-            smProfile = getSampleFbProfile(),
-            onDisconnect = {}, onDone = {})
+        ProfileContentBottomSheet(smProfile = getSampleFbProfile(), onDisconnect = {}, onDone = {})
     }
 }
