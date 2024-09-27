@@ -203,13 +203,17 @@ fun ShareableLinkDialog(
                             SpacerUp(size = 16.dp)
                         }
 
-                        if (isShowLiveBtn) {
+                        /*if (isShowLiveBtn) {
                             Divider(color = BottomBarUnselect)
                             SpacerUp(size = 16.dp)
-                        }
+                        }*/
 
                         // Social Link
                         if (reqLive.simulcastTargets.isNotEmpty()) {
+
+                            Divider(color = BottomBarUnselect)
+                            SpacerUp(size = 16.dp)
+
                             Column(
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             ) {
@@ -264,15 +268,18 @@ fun ShareableLinkDialog(
                                 }
                             }
 
-                            SpacerUp(size = 24.dp)
-                            Divider(color = BottomBarUnselect)
+                            if (isShowLiveBtn) {
+                                SpacerUp(size = 8.dp)
+                                Divider(color = BottomBarUnselect)
+                            } else {
+                                SpacerUp(size = 8.dp)
+                            }
                         }
                     }
                 }
 
                 // Go Live Now Button
                 if (isShowLiveBtn) {
-                    SpacerUp(size = 8.dp)
                     Column(
                         modifier = Modifier
                             .constrainAs(goLiveBtn) {
@@ -280,7 +287,7 @@ fun ShareableLinkDialog(
                                 start.linkTo(parent.start)
                                 end.linkTo(parent.end)
                             }
-                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 16.dp)
                     ) {
                         ButtonGradientIcon(
                             text = "Go Live Now",
