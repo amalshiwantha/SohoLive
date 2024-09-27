@@ -76,6 +76,7 @@ import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
+import com.soho.sohoapp.live.enums.PropertyState
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
 import com.soho.sohoapp.live.enums.VideoPrivacy
@@ -429,9 +430,12 @@ fun GoLiveScreen(
                                         if (selectedProperty.isChecked) {
                                             propertyId = selectedProperty.propInfo.id?.toInt() ?: 0
                                             title = selectedProperty.propInfo.fullAddress()
+                                            propertyType =
+                                                selectedProperty.propInfo.getPropertyState()
                                         } else {
                                             propertyId = 0
                                             title = null
+                                            propertyType = null
                                         }
                                     }
 
@@ -1135,7 +1139,8 @@ private fun Content4(
     //what for livestream
 
     //save default value
-    val defaultSelection = optionList[0]
+    val propType = mGoLiveSubmit.propertyType
+    val defaultSelection = getStateSelection(optionList, propType)
     mGoLiveSubmit.apply { purpose = defaultSelection }
     configPurpose.input = defaultSelection
 
@@ -1199,6 +1204,19 @@ private fun Content4(
     }
 
     SpacerUp(size = 140.dp)
+}
+
+fun getStateSelection(optionList: MutableList<String>, propType: String?): String {
+    return propType?.let {
+        return when (it) {
+            PropertyState.RENT.value -> optionList[0]
+            PropertyState.SALE.value -> optionList[0]
+            PropertyState.AUCTION.value -> optionList[1]
+            else -> optionList.last()
+        }
+    } ?: run {
+        optionList.last()
+    }
 }
 
 @Composable
@@ -2111,7 +2129,7 @@ private fun TypeAndCheckBox(
 }
 
 fun getTxtColorState(value: String): Color {
-   return when (value) {
+    return when (value) {
         "For Sale" -> lowGreen
         "For Rent" -> RentTxtColor
         else -> lowGreen

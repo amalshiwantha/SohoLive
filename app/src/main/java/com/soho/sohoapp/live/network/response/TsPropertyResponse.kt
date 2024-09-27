@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.network.response
 
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.PropertyState
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -149,11 +150,15 @@ data class Document(
         return apListingState?.let {
             when (it) {
                 "rent" -> {
-                    "For Rent"
+                    PropertyState.RENT.value
                 }
 
                 "sale" -> {
-                    "For Sale"
+                    PropertyState.SALE.value
+                }
+
+                "auction" -> {
+                    PropertyState.AUCTION.value
                 }
 
                 else -> {

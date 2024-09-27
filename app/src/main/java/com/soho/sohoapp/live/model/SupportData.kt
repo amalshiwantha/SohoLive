@@ -123,7 +123,8 @@ data class GoLiveSubmit(
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf(),
-    var isHideAgent: Boolean = false
+    var isHideAgent: Boolean = false,
+    var propertyType: String? = null
 ) {
     constructor() : this(
         purpose = null,
