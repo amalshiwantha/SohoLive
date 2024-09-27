@@ -47,7 +47,8 @@ fun DropDownWhatForLiveStream(
             readOnly = true,
             value = inputVal,
             onValueChange = {},
-            placeholder = { Text(text = placeHolder) },
+            placeholder = { TextPlaceHolder(label = placeHolder) },
+            textStyle = inputStyleSearch(),
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },

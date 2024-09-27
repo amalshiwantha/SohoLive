@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
@@ -53,7 +55,8 @@ fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (Pair<String, Stri
                 onTextChange(Pair(txtInput, "${it.length}/$maxLength"))
             }
         },
-        placeholder = { Text(fieldConfig.placeholder) },
+        placeholder = { TextPlaceHolder(label = fieldConfig.placeholder) },
+        textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
             imeAction = fieldConfig.imeAction,
             keyboardType = fieldConfig.keyboardType,
@@ -96,7 +99,8 @@ fun TextFieldWhiteIcon(
             }
         },
         singleLine = fieldConfig.isSingleLine,
-        placeholder = { Text(fieldConfig.placeholder) },
+        placeholder = { TextPlaceHolder(label = fieldConfig.placeholder) },
+        textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
             imeAction = fieldConfig.imeAction,
             keyboardType = fieldConfig.keyboardType,
@@ -133,7 +137,8 @@ fun TextFieldWhite(fieldConfig: FieldConfig, modifier: Modifier, onTextChange: (
             onTextChange(txtInput)
         },
         singleLine = fieldConfig.isSingleLine,
-        placeholder = { Text(fieldConfig.placeholder) },
+        placeholder = { TextPlaceHolder(label = fieldConfig.placeholder) },
+        textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
             imeAction = fieldConfig.imeAction,
             keyboardType = fieldConfig.keyboardType,
@@ -165,7 +170,8 @@ fun TextFieldOutlined(tfConfig: TextFiledConfig, onTextChange: (String) -> Unit)
             onTextChange(txtInput)
         },
         singleLine = tfConfig.isSingleLine,
-        placeholder = { Text(tfConfig.placeholder) },
+        placeholder = { TextPlaceHolder(label = tfConfig.placeholder) },
+        textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
             imeAction = tfConfig.imeAction,
             keyboardType = tfConfig.keyboardType,
@@ -203,7 +209,8 @@ fun PasswordTextFieldWhite(
             onTextChange(password)
         },
         singleLine = true,
-        placeholder = { Text("Password") },
+        placeholder = { TextPlaceHolder(label = "Password") },
+        textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password,
