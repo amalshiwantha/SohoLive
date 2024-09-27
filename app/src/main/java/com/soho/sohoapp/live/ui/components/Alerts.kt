@@ -137,11 +137,15 @@ fun ShareableLinkDialog(
                         ) {
                             //share icon and text
                             Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start,
                                 modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp)
                                     .weight(1f)
-                                    .padding(top = 24.dp)
                             ) {
                                 Image(
+                                    modifier = Modifier.padding(bottom = 2.dp),
                                     painter = painterResource(id = R.drawable.ic_share),
                                     contentDescription = null,
                                 )
