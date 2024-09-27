@@ -1821,7 +1821,7 @@ private fun SocialMediaItemContent(
                 )
 
                 if (info == SocialMediaInfo.SOHO) {
-                    SpacerUp(size = 12.dp)
+                    SpacerUp(size = 16.dp)
                     PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
                         val isPublic = it == VideoPrivacy.PUBLIC.label
                         onSohoItemChecked.invoke(isPublic)
