@@ -204,11 +204,6 @@ fun ShareableLinkDialog(
                             SpacerUp(size = 16.dp)
                         }
 
-                        /*if (isShowLiveBtn) {
-                            Divider(color = BottomBarUnselect)
-                            SpacerUp(size = 16.dp)
-                        }*/
-
                         // Social Link
                         if (reqLive.simulcastTargets.isNotEmpty()) {
 
@@ -268,13 +263,14 @@ fun ShareableLinkDialog(
 
                                 }
                             }
+                        }
 
-                            if (isShowLiveBtn) {
-                                SpacerUp(size = 8.dp)
-                                Divider(color = BottomBarUnselect)
-                            } else {
-                                SpacerUp(size = 8.dp)
-                            }
+
+                        if (isShowLiveBtn) {
+                            SpacerUp(size = 16.dp)
+                            Divider(color = BottomBarUnselect)
+                        } else {
+                            SpacerUp(size = 8.dp)
                         }
                     }
                 }
@@ -301,138 +297,6 @@ fun ShareableLinkDialog(
                     }
                 }
             }
-
-            /*Column {
-
-                // Title and close btn
-                Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_share),
-                            contentDescription = null,
-                        )
-                        SpacerSide(size = 8.dp)
-                        Text950_20sp(
-                            title = "Shareable Links",
-                            txtColor = infoText,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_round_cross),
-                            contentDescription = null,
-                            modifier = Modifier.clickable { onDismiss() }
-                        )
-                    }
-
-                    // Description
-                    SpacerUp(size = 8.dp)
-                    Text400_14sp(
-                        info = "Copy and share your links before you go live. This will reduce disruptions once you are live.",
-                        color = infoText
-                    )
-
-                    //SohoLogo
-                    SpacerUp(size = 24.dp)
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_soho),
-                        contentDescription = null
-                    )
-                    SpacerUp(size = 8.dp)
-                    Text400_14sp(
-                        info = "Videos will be shown on the property listing.",
-                        color = infoText
-                    )
-
-                    //Copy Btn
-                    SpacerUp(size = 16.dp)
-                    ButtonColoredIcon(
-                        title = smBtnSoho.txt,
-                        btnColor = smBtnSoho.color,
-                        icon = smBtnSoho.icon,
-                        onBtnClick = {
-                            onClickCopy(SocialMediaInfo.SOHO.name)
-                            isCopiedSoho = true
-                        })
-                    SpacerUp(size = 16.dp)
-                }
-
-                if (isShowLiveBtn) {
-                    Divider(color = BottomBarUnselect)
-                    SpacerUp(size = 16.dp)
-                }
-
-                // Social Link
-                if (isHasSMLinks) {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Text700_14sp(
-                            step = "Social Links",
-                            color = infoText
-                        )
-                        SpacerUp(size = 8.dp)
-                        Text400_14sp(
-                            info = "You can also share watching links for your connected socials",
-                            color = infoText
-                        )
-
-                        // Social Media Buttons
-                        SpacerUp(size = 24.dp)
-                        Column {
-                            SocialLinkButton(
-                                smItem = SocialMediaInfo.FACEBOOK,
-                                onClick = {
-                                    onClickCopy(SocialMediaInfo.FACEBOOK.name)
-                                    isCopiedFacebook = true
-                                },
-                                smBtn = smBtnFb
-                            )
-                            SpacerUp(size = 16.dp)
-                            SocialLinkButton(
-                                smItem = SocialMediaInfo.YOUTUBE,
-                                onClick = {
-                                    onClickCopy(SocialMediaInfo.YOUTUBE.name)
-                                    isCopiedYoutube = true
-                                },
-                                smBtn = smBtnYt
-                            )
-                            SpacerUp(size = 16.dp)
-                            SocialLinkButton(
-                                smItem = SocialMediaInfo.LINKEDIN,
-                                onClick = {
-                                    onClickCopy(SocialMediaInfo.LINKEDIN.name)
-                                    isCopiedLinkedIn = true
-                                },
-                                smBtn = smBtnLi
-                            )
-                        }
-                    }
-
-                    SpacerUp(size = 24.dp)
-                    Divider(color = BottomBarUnselect)
-                }
-
-                // Go Live Now Button
-                if (isShowLiveBtn) {
-                    SpacerUp(size = 8.dp)
-                    Column(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    ) {
-                        ButtonGradientIcon(
-                            text = "Go Live Now",
-                            modifier = Modifier.fillMaxWidth(),
-                            gradientBrush = brushGradientLive,
-                            icon = R.drawable.livecast_color,
-                            onBtnClick = {
-                                onClickLive()
-                            })
-                    }
-                }
-            }*/
         }
     }
 }
