@@ -68,7 +68,7 @@ fun ShareableLinkDialog(
         }.isNotEmpty()
     }
 
-    val timeOutReset = 20L
+    val timeOutReset = 3000L
     val txtCopy = "Copy Link"
     val txtCopied = "Copied"
     var isCopiedSoho by remember { mutableStateOf(false) }
@@ -126,19 +126,29 @@ fun ShareableLinkDialog(
         )
     }
 
-    if (isCopiedSoho) {
-        smBtnSoho = SmBtn(AppGreenDark, txtCopied, R.drawable.copy_tick)
-    }
-    if (isCopiedFacebook) {
-        smBtnFb = SmBtn(FacebookBlueDark, txtCopied, R.drawable.copy_tick)
-    }
-    if (isCopiedYoutube) {
-        smBtnYt = SmBtn(YoutubeRedDark, txtCopied, R.drawable.copy_tick)
-    }
-    if (isCopiedLinkedIn) {
-        smBtnLi = SmBtn(LinkedInBlueDark, txtCopied, R.drawable.copy_tick)
-    }
+    smBtnSoho = SmBtn(
+        if (isCopiedSoho) AppGreenDark else AppGreen,
+        if (isCopiedSoho) txtCopied else txtCopy,
+        if (isCopiedSoho) R.drawable.copy_tick else null
+    )
 
+    smBtnFb = SmBtn(
+        if (isCopiedFacebook) FacebookBlueDark else AppGreen,
+        if (isCopiedFacebook) txtCopied else txtCopy,
+        if (isCopiedFacebook) R.drawable.copy_tick else null
+    )
+
+    smBtnYt = SmBtn(
+        if (isCopiedYoutube) YoutubeRedDark else AppGreen,
+        if (isCopiedYoutube) txtCopied else txtCopy,
+        if (isCopiedYoutube) R.drawable.copy_tick else null
+    )
+
+    smBtnLi = SmBtn(
+        if (isCopiedLinkedIn) LinkedInBlueDark else AppGreen,
+        if (isCopiedLinkedIn) txtCopied else txtCopy,
+        if (isCopiedLinkedIn) R.drawable.copy_tick else null
+    )
 
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
