@@ -18,6 +18,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import com.soho.sohoapp.live.ui.theme.YoutubeRed
 import com.soho.sohoapp.live.ui.theme.YoutubeRedDark
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
+import kotlinx.coroutines.delay
 
 @Composable
 fun ShareableLinkDialog(
@@ -66,12 +68,42 @@ fun ShareableLinkDialog(
         }.isNotEmpty()
     }
 
+    val timeOutReset = 20L
     val txtCopy = "Copy Link"
     val txtCopied = "Copied"
     var isCopiedSoho by remember { mutableStateOf(false) }
     var isCopiedFacebook by remember { mutableStateOf(false) }
     var isCopiedYoutube by remember { mutableStateOf(false) }
     var isCopiedLinkedIn by remember { mutableStateOf(false) }
+
+    //reset state copy
+    LaunchedEffect(isCopiedSoho) {
+        if (isCopiedSoho) {
+            delay(timeOutReset)
+            isCopiedSoho = false
+        }
+    }
+
+    LaunchedEffect(isCopiedFacebook) {
+        if (isCopiedFacebook) {
+            delay(timeOutReset)
+            isCopiedFacebook = false
+        }
+    }
+
+    LaunchedEffect(isCopiedYoutube) {
+        if (isCopiedYoutube) {
+            delay(timeOutReset)
+            isCopiedYoutube = false
+        }
+    }
+
+    LaunchedEffect(isCopiedLinkedIn) {
+        if (isCopiedLinkedIn) {
+            delay(timeOutReset)
+            isCopiedLinkedIn = false
+        }
+    }
 
     var smBtnSoho by remember {
         mutableStateOf(
