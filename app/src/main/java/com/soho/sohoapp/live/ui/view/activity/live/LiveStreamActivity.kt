@@ -538,7 +538,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
                 //reset
                 binding.layoutCountdown.visibility = View.GONE
-                binding.txtCountdownMsg.text = getString(R.string.livecast_start)
+                binding.txtCountdownMsg.text = getString(R.string.livecast_end)
                 binding.txtCountdown.visibility = View.VISIBLE
                 binding.imgBtnAbort.visibility = View.VISIBLE
                 binding.imgDoneTick.visibility = View.GONE
