@@ -396,31 +396,42 @@ fun PrivacySettings(
         modifier = Modifier
             .background(bgColor, shape = RoundedCornerShape(12.dp))
     ) {
-        PrivacyOption(text = pvt,
-            description = "Livecast will not be visible publicly on your listing. Anyone with the direct share link can view the video.",
-            eyeImgId = R.drawable.ic_hide_eye,
-            isSelected = selectedOption == pvt,
-            txtColor = txtColor,
-            onOptionSelected = {
-                selectedOption = pvt
-                onChangePrivacy(selectedOption)
-            })
+        Column(
+            modifier = Modifier
+                .padding(if (isWhiteTheme) 0.dp else 16.dp)
+                .fillMaxWidth()
+        ) {
+            PrivacyOption(text = pvt,
+                isWhiteTheme = isWhiteTheme,
+                description = "Video will be hidden from public view or you can share it as a private video",
+                eyeImgId = R.drawable.ic_hide_eye,
+                isSelected = selectedOption == pvt,
+                txtColor = txtColor,
+                onOptionSelected = {
+                    selectedOption = pvt
+                    onChangePrivacy(selectedOption)
+                })
 
-        SpacerUp(size = 16.dp)
+            SpacerUp(size = 16.dp)
 
-        PrivacyOption(text = pub,
-            description = "Livecast will be visible immediately on your property listing.",
-            eyeImgId = R.drawable.ic_view_eye,
-            isSelected = selectedOption == pub,
-            txtColor = txtColor,
-            onOptionSelected = {
-                selectedOption = pub
-                onChangePrivacy(selectedOption)
-            })
+            PrivacyOption(
+                isWhiteTheme = isWhiteTheme,
+                text = pub,
+                description = "Video will be visible on your property listing",
+                eyeImgId = R.drawable.ic_view_eye,
+                isSelected = selectedOption == pub,
+                txtColor = txtColor,
+                onOptionSelected = {
+                    selectedOption = pub
+                    onChangePrivacy(selectedOption)
+                })
 
-        SpacerUp(size = 16.dp)
 
-        VisibleInfoView()
+            if (isWhiteTheme) {
+                SpacerUp(size = 16.dp)
+                VisibleInfoView()
+            }
+        }
     }
 }
 
@@ -451,7 +462,8 @@ private fun PrivacyOption(
     text: String, description: String, isSelected: Boolean,
     eyeImgId: Int,
     onOptionSelected: () -> Unit,
-    txtColor: Color
+    txtColor: Color,
+    isWhiteTheme: Boolean,
 ) {
     val privacyConfig = VideoPrivacy.fromLabel(text)
 
@@ -498,7 +510,7 @@ private fun PrivacyOption(
                 }
 
                 //label live
-                if (text == VideoPrivacy.PUBLIC.label) {
+                if (text == VideoPrivacy.PUBLIC.label && isWhiteTheme) {
                     SpacerSide(size = 8.dp)
                     Box(
                         modifier = Modifier
