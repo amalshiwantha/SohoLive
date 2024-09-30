@@ -44,7 +44,7 @@ fun copyToClipboard(smName: String, link: String, isShowToast: Boolean = false) 
     clipboard.setPrimaryClip(clip)
 
     if (isShowToast) {
-        showToastTrans("Link to $smName copied")
+        showToastTrans("Link to ${smName.lowercase()} copied")
     }
 }
 

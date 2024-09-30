@@ -194,19 +194,19 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun smClickEvent() {
         binding.imgSmSoho.setOnClickListener {
             val linkSoho = reqLive.shareableLink
-            copyToClipboard(SocialMediaInfo.SOHO.name, linkSoho, true)
+            copyToClipboard("soho.com.au", linkSoho, true)
         }
         binding.imgSmFb.setOnClickListener {
             val linkFb = getSmShareLink(SocialMedia.FACEBOOK)
-            copyToClipboard(SocialMediaInfo.FACEBOOK.name, linkFb, true)
+            copyToClipboard(SocialMediaInfo.FACEBOOK.title, linkFb, true)
         }
         binding.imgSmYt.setOnClickListener {
             val linkYt = getSmShareLink(SocialMedia.YOUTUBE)
-            copyToClipboard(SocialMediaInfo.YOUTUBE.name, linkYt, true)
+            copyToClipboard(SocialMediaInfo.YOUTUBE.title, linkYt, true)
         }
         binding.imgSmLi.setOnClickListener {
             val linkLi = getSmShareLink(SocialMedia.LINKEDIN)
-            copyToClipboard(SocialMediaInfo.LINKEDIN.name, linkLi, true)
+            copyToClipboard(SocialMediaInfo.LINKEDIN.title, linkLi, true)
         }
     }
 
@@ -248,22 +248,22 @@ class LiveStreamActivity : AppCompatActivity() {
                         when (it) {
                             SocialMedia.FACEBOOK.name -> {
                                 val linkFb = getSmShareLink(SocialMedia.FACEBOOK)
-                                copyToClipboard(SocialMediaInfo.FACEBOOK.name, linkFb)
+                                copyToClipboard(SocialMediaInfo.FACEBOOK.title, linkFb)
                             }
 
                             SocialMedia.YOUTUBE.name -> {
                                 val linkFb = getSmShareLink(SocialMedia.YOUTUBE)
-                                copyToClipboard(SocialMediaInfo.YOUTUBE.name, linkFb)
+                                copyToClipboard(SocialMediaInfo.YOUTUBE.title, linkFb)
                             }
 
                             SocialMedia.LINKEDIN.name -> {
                                 val linkFb = getSmShareLink(SocialMedia.LINKEDIN)
-                                copyToClipboard(SocialMediaInfo.LINKEDIN.name, linkFb)
+                                copyToClipboard(SocialMediaInfo.LINKEDIN.title, linkFb)
                             }
 
                             else -> {
                                 val linkSoho = reqLive.shareableLink
-                                copyToClipboard(SocialMediaInfo.SOHO.name, linkSoho)
+                                copyToClipboard("soho.com.au", linkSoho)
                             }
                         }
                     }, onClickLive = {
