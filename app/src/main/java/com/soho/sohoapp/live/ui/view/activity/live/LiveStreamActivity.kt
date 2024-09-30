@@ -923,6 +923,10 @@ class LiveStreamActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        if (isFinishing || isDestroyed) {
+            return
+        }
+
         openGlView?.let {
             if (it.holder == null) {
                 it.holder?.addCallback(surfaceHolderCallback)
