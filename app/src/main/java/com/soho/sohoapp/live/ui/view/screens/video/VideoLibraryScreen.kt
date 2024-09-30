@@ -69,6 +69,7 @@ import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextBadge
@@ -584,7 +585,7 @@ fun ActionIconButton(btnIcon: Int, onClickAction: () -> Unit) {
 fun TitleDescription(item: VideoItem) {
     Column {
         item.title?.let {
-            Text700_14sp(step = it)
+            Text700_14spBold(step = it)
             SpacerUp(size = 8.dp)
         }
         item.description?.let {
