@@ -406,6 +406,20 @@ fun inputStyleSearch(): TextStyle {
 }
 
 @Composable
+fun Text700_12spNormal(modifier: Modifier = Modifier, label: String, txtColor: Color = lowGreen) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        letterSpacing = 0.14.sp,
+        color = txtColor,
+        fontWeight = FontWeight(700),
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+    )
+}
+
+@Composable
 fun Text700_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color = lowGreen) {
     Text(
         modifier = modifier,
