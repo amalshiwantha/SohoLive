@@ -569,8 +569,8 @@ fun TextIconSwipeSelection(modifier: Modifier, title: String, textColor: Color, 
 @Composable
 fun TextBadge(text: String, bgColor: Color) {
     Text(
-        fontSize = 12.sp,
-        lineHeight = 16.8.sp,
+        fontSize = 10.sp,
+        lineHeight = 14.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(800),
         textAlign = TextAlign.Center,
@@ -578,12 +578,12 @@ fun TextBadge(text: String, bgColor: Color) {
         text = text,
         color = AppWhite,
         modifier = Modifier
-            .background(bgColor, shape = RoundedCornerShape(12.dp))
+            .background(bgColor, shape = RoundedCornerShape(8.dp))
             .padding(8.dp)
     )
 }
 
-@Composable
+/*@Composable
 fun TextBadgeDuration(text: String) {
     Text(
         fontSize = 12.sp,
@@ -598,13 +598,13 @@ fun TextBadgeDuration(text: String) {
             .background(DurationDark, shape = RoundedCornerShape(12.dp))
             .padding(8.dp)
     )
-}
+}*/
 
 @Preview
 @Composable
 private fun PreViewTextError() {
     Column {
-        TextBadgeDuration(text = "44:21")
+        //TextBadgeDuration(text = "44:21")
         TextBadge(text = "PUBLIC", AppGreen)
         Text950_20sp(title = "This is Title")
         TextWhite14(title = "This is error message")

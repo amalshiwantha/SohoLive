@@ -73,7 +73,6 @@ import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextBadge
-import com.soho.sohoapp.live.ui.components.TextBadgeDuration
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -81,6 +80,7 @@ import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
+import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.shareIntent
@@ -496,7 +496,7 @@ private fun ListItemView(
             TextBadge(text = visiItem.label, bgColor = visiItem.bgColor)
             Spacer(modifier = Modifier.width(8.dp))
 
-            TextBadgeDuration(text = item.getDisplayDuration())
+            TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
             Text700_12spRight(label = item.getDisplayDate(), txtColor = AppWhite)
