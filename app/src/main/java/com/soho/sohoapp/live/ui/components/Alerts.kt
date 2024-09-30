@@ -133,19 +133,19 @@ fun ShareableLinkDialog(
     )
 
     smBtnFb = SmBtn(
-        if (isCopiedFacebook) FacebookBlueDark else AppGreen,
+        if (isCopiedFacebook) FacebookBlueDark else FacebookBlue,
         if (isCopiedFacebook) txtCopied else txtCopy,
         if (isCopiedFacebook) R.drawable.copy_tick else null
     )
 
     smBtnYt = SmBtn(
-        if (isCopiedYoutube) YoutubeRedDark else AppGreen,
+        if (isCopiedYoutube) YoutubeRedDark else YoutubeRed,
         if (isCopiedYoutube) txtCopied else txtCopy,
         if (isCopiedYoutube) R.drawable.copy_tick else null
     )
 
     smBtnLi = SmBtn(
-        if (isCopiedLinkedIn) LinkedInBlueDark else AppGreen,
+        if (isCopiedLinkedIn) LinkedInBlueDark else LinkedInBlue,
         if (isCopiedLinkedIn) txtCopied else txtCopy,
         if (isCopiedLinkedIn) R.drawable.copy_tick else null
     )
