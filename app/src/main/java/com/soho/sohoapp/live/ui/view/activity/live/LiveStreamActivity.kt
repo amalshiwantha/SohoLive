@@ -561,6 +561,13 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun updateGoLiveBtn(isStart: Boolean) {
         binding.txtGoLive.text = if (isStart) "Stop" else "Go Live"
         binding.imgGoLive.setImageResource(if (isStart) R.drawable.liv_cast_stop else R.drawable.livecast)
+
+        val whiteColor = ContextCompat.getColor(this, R.color.white)
+        val redColor = ContextCompat.getColor(this, R.color.red_stop)
+
+        binding.cardGoLive.setCardBackgroundColor(if (isStart) whiteColor else redColor)
+        binding.txtGoLive.setTextColor(if (isStart) redColor else whiteColor)
+        binding.imgGoLive.setColorFilter(if (isStart) redColor else whiteColor)
     }
 
     private fun switchCamera() {
