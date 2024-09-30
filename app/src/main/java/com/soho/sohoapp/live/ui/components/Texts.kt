@@ -49,6 +49,21 @@ fun TextTopBarTitle(title: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun TextWhite14Normal(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
+    Text(
+        modifier = modifier,
+        text = title,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(800),
+        color = txtColor,
+        textAlign = TextAlign.Left,
+        letterSpacing = 0.17.sp
+    )
+}
+
+@Composable
 fun TextWhite14(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
     Text(
         modifier = modifier,

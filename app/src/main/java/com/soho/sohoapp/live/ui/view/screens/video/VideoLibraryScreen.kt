@@ -61,7 +61,7 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
-import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
+import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -521,7 +521,7 @@ private fun ListItemView(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            ButtonOutlineWhite(text = "Manage",
+            ButtonOutlineWhiteNormal(text = "Manage",
                 modifier = Modifier
                     .weight(1f)
                     .height(40.dp),

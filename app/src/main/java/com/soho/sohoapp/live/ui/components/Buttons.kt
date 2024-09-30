@@ -330,6 +330,22 @@ fun ButtonConnectIcon(
 }
 
 @Composable
+fun ButtonOutlineWhiteNormal(
+    text: String,
+    modifier: Modifier = Modifier.height(48.dp),
+    onBtnClick: () -> Unit
+) {
+    OutlinedButton(
+        onClick = { onBtnClick() },
+        modifier = modifier,
+        border = BorderStroke(2.dp, Color.White),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        TextWhite14Normal(title = text)
+    }
+}
+
+@Composable
 fun ButtonOutlineWhite(
     text: String,
     modifier: Modifier = Modifier.height(48.dp),
