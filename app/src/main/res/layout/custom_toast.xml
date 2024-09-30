@@ -20,7 +20,7 @@
     <!-- Message Text -->
     <TextView
         android:id="@+id/tv_message"
-        style="@style/axiforma_800W"
+        style="@style/axiforma_800W_12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -37,6 +37,14 @@
         <item name="fontFamily">@font/axiforma_950</item>
     </style>
 
+    <style name="axiforma_800W_12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/axiforma_800</item>
+    </style>
+
     <!--buttons-->
     <style name="CustomButton" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@android:color/white</item>
