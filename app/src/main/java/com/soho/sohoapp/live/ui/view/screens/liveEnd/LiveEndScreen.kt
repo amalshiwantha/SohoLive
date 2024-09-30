@@ -75,9 +75,7 @@ fun BottomButtons(
         ButtonColoured(text = "Leave Live Studio",
             color = AppWhite,
             txtColor = TextDark,
-            onBtnClick = {
-                navController.popBackStack(navController.graph.startDestinationId, false)
-            })
+            onBtnClick = { goVideoLibrary() })
     }
 }
 
