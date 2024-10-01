@@ -13,17 +13,20 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -55,7 +58,6 @@ import com.soho.sohoapp.live.utility.showToastTrans
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -590,6 +592,9 @@ class LiveStreamActivity : AppCompatActivity() {
     //LIVE STREAMING
     private fun createRtmpCamera2() {
         openGlView?.let {
+
+            //it.setAspectRatioMode(AspectRatioMode.Fill)
+
             if (rtmpCamera2 == null) {
                 rtmpCamera2 = RtmpCamera2(it, connectCheckerRtmp).apply {
                     setFpsListener(fpsListenerCallback)
@@ -772,7 +777,7 @@ class LiveStreamActivity : AppCompatActivity() {
         }
 
         override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-            println("myrotation ZZ surfaceChanged")
+            println("onSurfaceChanged $width : $height")
 
             //change rtmpCamera2 orientation
             /*val rotation = windowManager.defaultDisplay.rotation

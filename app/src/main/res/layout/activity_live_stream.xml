@@ -31,12 +31,27 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-    <com.pedro.library.view.OpenGlView
-        android:id="@+id/openGlView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true"
-        app:aspectRatioMode="fill" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.pedro.library.view.OpenGlView
+            android:id="@+id/openGlView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--<com.pedro.library.view.OpenGlView
+        android:id="@+id/openGlView"
+        app:aspectRatioMode="adjust"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true" />-->
 
     <!--watermark and live time-->
     <RelativeLayout
