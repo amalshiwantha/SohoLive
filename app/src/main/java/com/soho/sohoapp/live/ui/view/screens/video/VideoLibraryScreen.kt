@@ -20,6 +20,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,6 +55,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.VideoPrivacy
+import com.soho.sohoapp.live.enums.VideoStatus
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.model.VideoAnalytics
@@ -73,6 +76,7 @@ import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextBadge
+import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -81,6 +85,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
@@ -279,7 +284,8 @@ private fun Content(
             CenterMessageProgress(message = state.loadingMessage)
         } else {
             val dataList = mGState.videoLibResState.value?.assets?.filter {
-                it.status == "ready"
+                ((it.status == VideoStatus.READY.status && it.downloadLink != null)
+                        || it.status == VideoStatus.IN_PROG.status)
             }
 
             if (dataList.isNullOrEmpty()) {
@@ -293,18 +299,48 @@ private fun Content(
                         .padding(16.dp)
                 ) {
                     items(dataList) { item ->
-                        ListItemView(item,
-                            onClickManage = { onManageClick(it) },
-                            onShareVideo = { shareIntent(it) },
-                            onPlayVideo = { onPlayVid(it) },
-                            onDownloadVideo = {
-                                downloadFile(it.first, it.second, onDownloadStatus = {
-                                    downloadStatus = it
-                                })
-                            })
+                        when (item.status) {
+                            VideoStatus.IN_PROG.status -> {
+                                InProgItemView()
+                            }
+
+                            VideoStatus.READY.status -> {
+                                ListItemView(item,
+                                    onClickManage = { onManageClick(it) },
+                                    onShareVideo = { shareIntent(it) },
+                                    onPlayVideo = { onPlayVid(it) },
+                                    onDownloadVideo = {
+                                        downloadFile(it.first, it.second, onDownloadStatus = {
+                                            downloadStatus = it
+                                        })
+                                    })
+                            }
+                        }
+
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun InProgItemView() {
+    Card(
+        modifier = Modifier.padding(bottom = 24.dp),
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            TextWhite14Normal(
+                title = "Your latest VOD asset is still being prepared." +
+                        " Please refresh shortly by using the pull-to-refresh"
+            )
         }
     }
 }
