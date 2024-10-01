@@ -116,6 +116,7 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_10sp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text400_14spSingleLine
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
@@ -1944,7 +1945,7 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
                 ProfileNameCheckBox(agent, item.isChecked, textColor)
                 SpacerUp(size = 8.dp)
                 MainStateHolder.mState.agentEmail?.let {
-                    Text400_14sp(info = it, color = textColor)
+                    Text400_14spSingleLine(info = it, color = textColor)
                 }
             }
         }
