@@ -376,6 +376,7 @@ fun Text400_14sp(
         lineHeight = 19.6.sp,
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         fontWeight = FontWeight(400),
+        maxLines = 1,
         color = color,
         letterSpacing = 0.17.sp,
         textAlign = txtAlign

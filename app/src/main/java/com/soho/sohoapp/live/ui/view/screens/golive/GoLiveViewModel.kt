@@ -21,6 +21,7 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.utility.getAppVersion
 import io.ktor.utils.io.printStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -170,6 +171,7 @@ class GoLiveViewModel(
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let {
+                    MainStateHolder.mState.agentEmail = it.email
                     loadPropertyListing(it.authenticationToken)
                 }
             }

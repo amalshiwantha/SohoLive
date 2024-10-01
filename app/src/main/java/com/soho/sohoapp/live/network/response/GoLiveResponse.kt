@@ -62,7 +62,6 @@ data class Listing(
 data class AgentProfileGoLive(
     @SerialName("id") val id: Int = 0,
     @SerialName("name") val name: String?,
-    @SerialName("email") val email: String?,
     @SerialName("review_count") val currentStars: Float? = 0f,
     @SerialName("overall_stars") val maxStars: Float? = 0f,
     @SerialName("profile_image_url") val imageUrl: String?,

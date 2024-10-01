@@ -1943,7 +1943,7 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
             ) {
                 ProfileNameCheckBox(agent, item.isChecked, textColor)
                 SpacerUp(size = 8.dp)
-                agent.email?.let {
+                MainStateHolder.mState.agentEmail?.let {
                     Text400_14sp(info = it, color = textColor)
                 }
             }

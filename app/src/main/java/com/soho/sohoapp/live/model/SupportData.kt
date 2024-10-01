@@ -45,6 +45,7 @@ data class MainState(
     var propertyTsRes: TsPropertyResponse? = null,
     var sPropList: MutableState<List<PropertyItem>>? = null,
     var sAgencyList: MutableState<List<AgencyItem>>? = null,
+    var agentEmail: String? = null,
 )
 
 data class AlertData(
