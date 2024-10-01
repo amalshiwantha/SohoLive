@@ -1952,64 +1952,6 @@ private fun AgencyItemContent(item: AgencyItem, onItemClicked: (AgencyItem) -> U
 }
 
 @Composable
-fun PropertyItemContent(
-    item: PropertyItem, isClickable: Boolean = true, onItemClicked: (PropertyItem) -> Unit = {}
-) {
-    val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
-    val textColor = if (item.isChecked) ItemCardBg else AppWhite
-    val property = item.propInfo
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp)
-            .clickable { onItemClicked(item.apply { isChecked = !isChecked }) },
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = cardBgColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Row(modifier = Modifier.padding(14.dp)) {
-            //image
-            val urlPainter = rememberAsyncImagePainter(
-                model = property.thumbnailUrl(),
-                placeholder = painterResource(id = R.drawable.property_placeholder),
-                error = painterResource(id = R.drawable.property_placeholder)
-            )
-
-            Image(
-                painter = urlPainter,
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .size(width = 70.dp, height = 68.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            //info
-            Column(
-                modifier = Modifier
-                    .padding(start = 14.dp)
-                    .fillMaxWidth()
-            ) {
-
-                TypeAndCheckBox(item.isChecked,
-                    isClickable,
-                    property,
-                    txtColor = textColor,
-                    onCheckedChange = {
-                        onItemClicked(item.apply { isChecked = !isChecked })
-                    })
-                SpacerUp(size = 8.dp)
-                Text700_14sp(step = property.fullAddress(), color = textColor)
-                SpacerUp(size = 8.dp)
-                if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
-                SpacerUp(size = 8.dp)
-                AmenitiesView(property, textColor)
-            }
-        }
-    }
-}
-
-@Composable
 fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -2069,7 +2011,7 @@ private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite, isCompact: Boo
 }
 
 @Composable
-private fun TypeAndCheckBox(
+fun TypeAndCheckBox(
     isChecked: Boolean,
     isClickable: Boolean,
     doc: Document,

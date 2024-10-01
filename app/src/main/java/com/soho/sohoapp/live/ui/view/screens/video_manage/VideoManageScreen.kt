@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -49,6 +50,8 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
+import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextProgress
@@ -58,10 +61,12 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
-import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
+import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
+import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
 import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
@@ -123,8 +128,7 @@ fun VideoManageScreen(
         onSaveClick = { updateVideoItem(itemData, vmVidManage) },
         onPlayClick = {
             playVideoUrl = itemData?.downloadLink ?: ""
-        }
-    )
+        })
 }
 
 private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageViewModel) {
@@ -391,8 +395,7 @@ fun PrivacySettings(
     val txtColor = if (isWhiteTheme) OptionDarkBg else AppWhite
 
     Column(
-        modifier = Modifier
-            .background(bgColor, shape = RoundedCornerShape(12.dp))
+        modifier = Modifier.background(bgColor, shape = RoundedCornerShape(12.dp))
     ) {
         Column(
             modifier = Modifier
@@ -412,8 +415,7 @@ fun PrivacySettings(
 
             SpacerUp(size = 16.dp)
 
-            PrivacyOption(
-                isWhiteTheme = isWhiteTheme,
+            PrivacyOption(isWhiteTheme = isWhiteTheme,
                 text = pub,
                 description = "Video will be visible on your property listing",
                 eyeImgId = R.drawable.ic_view_eye,
@@ -436,14 +438,12 @@ fun PrivacySettings(
 @Composable
 fun VisibleInfoView() {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = infoGray)
     ) {
         Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
+            horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(16.dp)
         ) {
             Image(painter = painterResource(id = R.drawable.ic_info), contentDescription = "")
             SpacerSide(size = 8.dp)
@@ -499,8 +499,7 @@ private fun PrivacyOption(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Image(
-                            painter = painterResource(id = eyeImgId),
-                            contentDescription = ""
+                            painter = painterResource(id = eyeImgId), contentDescription = ""
                         )
                         SpacerSide(size = 4.dp)
                         Text800_12sp(label = text)
@@ -513,8 +512,7 @@ private fun PrivacyOption(
                     Box(
                         modifier = Modifier
                             .background(
-                                brush = brushLiveGradientBg,
-                                shape = RoundedCornerShape(8.dp)
+                                brush = brushLiveGradientBg, shape = RoundedCornerShape(8.dp)
                             )
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
@@ -538,9 +536,7 @@ private fun PrivacyOption(
         //info
         SpacerUp(size = 8.dp)
         Text400_14sp(
-            info = description,
-            modifier = Modifier.padding(start = 24.dp),
-            color = txtColor
+            info = description, modifier = Modifier.padding(start = 24.dp), color = txtColor
         )
     }
 }
@@ -553,6 +549,65 @@ fun NoDataView(modifier: Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         TextProgress(title = "No Valid Information", color = AppWhite)
+    }
+}
+
+@Composable
+fun PropertyItemContent(
+    item: PropertyItem, isClickable: Boolean = true, onItemClicked: (PropertyItem) -> Unit = {}
+) {
+    val cardBgColor = if (item.isChecked) AppWhite else ItemCardBg
+    val textColor = if (item.isChecked) ItemCardBg else AppWhite
+    val property = item.propInfo
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+            .clickable { onItemClicked(item.apply { isChecked = !isChecked }) },
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = cardBgColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(modifier = Modifier.padding(14.dp)) {
+            //image
+            val urlPainter = rememberAsyncImagePainter(
+                model = property.thumbnailUrl(),
+                placeholder = painterResource(id = R.drawable.property_placeholder),
+                error = painterResource(id = R.drawable.property_placeholder)
+            )
+
+            Image(
+                painter = urlPainter,
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .size(width = 70.dp, height = 68.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            //info
+            Column(
+                modifier = Modifier
+                    .padding(start = 14.dp)
+                    .fillMaxWidth()
+            ) {
+
+                TypeAndCheckBox(
+                    item.isChecked,
+                    isClickable,
+                    property,
+                    txtColor = textColor,
+                    onCheckedChange = {
+                        onItemClicked(item.apply { isChecked = !isChecked })
+                    })
+                SpacerUp(size = 8.dp)
+                Text700_14spProperty(step = property.fullAddress(), color = textColor)
+                SpacerUp(size = 8.dp)
+                if (false) Text400_14sp(info = "3 scheduled livestream", color = textColor)
+                SpacerUp(size = 8.dp)
+                AmenitiesView(property, textColor)
+            }
+        }
     }
 }
 
