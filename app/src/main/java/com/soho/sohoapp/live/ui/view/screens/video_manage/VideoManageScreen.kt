@@ -63,6 +63,7 @@ import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.PropertyItemContent
 import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
+import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
@@ -243,8 +244,10 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
     ) {
         Box {
             // Background Image
+            val playBackId = vidItem.playbackIds[0]
+            val imgUrl = getThumbUrl(playBackId)
             val urlPainter = rememberAsyncImagePainter(
-                model = propInfo?.thumbnailUrl(),
+                model = imgUrl,
                 placeholder = painterResource(id = R.drawable.property_placeholder),
                 error = painterResource(id = R.drawable.property_placeholder)
             )

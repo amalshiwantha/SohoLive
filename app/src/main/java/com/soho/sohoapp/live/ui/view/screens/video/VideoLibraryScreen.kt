@@ -83,6 +83,7 @@ import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
+import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
@@ -505,8 +506,8 @@ private fun ListItemView(
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
-            val propImg = item.property?.thumbnailUrl()
-            PropertyImageCenterPlay(propImg, onClick = {
+            val playBackId = item.playbackIds[0]
+            PropertyImageCenterPlay(playBackId, onClick = {
                 //playVideo(item.downloadLink)
                 item.downloadLink?.let { onPlayVideo(it) }
             })
@@ -595,14 +596,17 @@ fun TitleDescription(item: VideoItem) {
 }
 
 @Composable
-fun PropertyImageCenterPlay(imageUrl: String?, onClick: () -> Unit) {
+fun PropertyImageCenterPlay(playBackId: String?, onClick: () -> Unit) {
     Box(modifier = Modifier
         .size(88.dp)
         .fillMaxHeight()
         .clickable { onClick() }
         .clip(RoundedCornerShape(12.dp))) {
+
+
+        val imgUrl = getThumbUrl(playBackId.orEmpty())
         val urlPainter = rememberAsyncImagePainter(
-            model = imageUrl,
+            model = imgUrl,
             placeholder = painterResource(id = R.drawable.property_placeholder),
             error = painterResource(id = R.drawable.property_placeholder)
         )

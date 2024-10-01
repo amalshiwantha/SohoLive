@@ -38,6 +38,10 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
+fun getThumbUrl(playbackId: String): String {
+    return "https://image.mux.com/${playbackId}/thumbnail.png?fit_mode=preserve&time=5"
+}
+
 fun copyToClipboard(smName: String, link: String, isShowToast: Boolean = false) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText("label", link)

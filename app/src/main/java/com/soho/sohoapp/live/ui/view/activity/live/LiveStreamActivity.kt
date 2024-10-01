@@ -55,6 +55,7 @@ import com.soho.sohoapp.live.utility.showToastTrans
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -921,12 +922,11 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        super.onResume()
-
         if (isFinishing || isDestroyed) {
             return
         }
 
+        super.onResume()
         openGlView?.let {
             if (it.holder == null) {
                 it.holder?.addCallback(surfaceHolderCallback)
