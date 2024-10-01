@@ -403,6 +403,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         val selVal = myList.find { it.isSelect }
         var selectedIndex = selVal?.index ?: 0
 
+        //default selection update onPost model
+        selVal?.let { onItemClick(it) }
+
         LazyColumn(
             Modifier
                 .fillMaxWidth()
