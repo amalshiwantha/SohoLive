@@ -1634,10 +1634,12 @@ private fun SocialMediaListing(
     isCheckedLI = if (recentLoggedSM.contains(SocialMediaInfo.LINKEDIN.name)) true
     else savedLI?.isItemChecked ?: false
 
+    /*
+    * if want to hide SM add in to here
+    * */
     val visibleSMList = SocialMediaInfo.entries.filter {
         it.name != SocialMediaInfo.NONE.name &&
-                it.name != SocialMediaInfo.LINKEDIN.name &&
-                it.name != SocialMediaInfo.YOUTUBE.name
+                it.name != SocialMediaInfo.LINKEDIN.name
     }
 
     /*load all of SM list*/
@@ -1650,11 +1652,11 @@ private fun SocialMediaListing(
         accessToken = savedFB?.accessToken
     }
 
-    /*smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
+    smList.first { it.name == SocialMediaInfo.YOUTUBE.name }.apply {
         isConnect = savedYT?.isConnect ?: false
         isItemChecked = savedYT?.isItemChecked ?: false
         accessToken = savedYT?.accessToken
-    }*/
+    }
 
     /*smList.first { it.name == SocialMediaInfo.LINKEDIN.name }.apply {
         isConnect = savedLI?.isConnect ?: false
