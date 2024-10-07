@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -127,6 +128,39 @@ fun TextFieldWhiteIcon(
 }
 
 @Composable
+fun TextFieldWhiteEmail(fieldConfig: FieldConfig, modifier: Modifier, onTextChange: (String) -> Unit) {
+    var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
+
+    OutlinedTextField(
+        value = txtInput,
+        onValueChange = {
+            txtInput = it
+            onTextChange(txtInput)
+        },
+        singleLine = fieldConfig.isSingleLine,
+        placeholder = { TextPlaceHolder(label = fieldConfig.placeholder) },
+        textStyle = inputStyleSearch(),
+        keyboardOptions = KeyboardOptions(
+            imeAction = fieldConfig.imeAction,
+            keyboardType = fieldConfig.keyboardType
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        isError = fieldConfig.isError,
+        shape = RoundedCornerShape(16.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedPlaceholderColor = AppWhite,
+            unfocusedContainerColor = AppWhite,
+            focusedContainerColor = AppWhite,
+            unfocusedPlaceholderColor = HintGray,
+            errorContainerColor = ErrorContent,
+        )
+    )
+}
+
+
+@Composable
 fun TextFieldWhite(fieldConfig: FieldConfig, modifier: Modifier, onTextChange: (String) -> Unit) {
     var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
 
@@ -213,8 +247,7 @@ fun PasswordTextFieldWhite(
         textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
-            keyboardType = KeyboardType.Password,
-            capitalization = KeyboardCapitalization.Words
+            keyboardType = KeyboardType.Password
         ),
         trailingIcon = {
             val image = if (passwordVisible)
