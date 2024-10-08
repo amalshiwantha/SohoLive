@@ -108,10 +108,12 @@ class SohoApiRepository(private val service: SohoApiServices) {
                     //assign propertyInfo to the main video item
                     if (apiResponseTs.propertyList.isNotEmpty()) {
                         apiResponse.data.assets.forEach { videoItem ->
-                            val prop = apiResponseTs.propertyList.first {
+                            val prop = apiResponseTs.propertyList.firstOrNull {
                                 it.document.id == videoItem.propertyListingId.toString()
                             }
-                            videoItem.property = prop.document
+                            prop?.let {
+                                videoItem.property = it.document
+                            }
                         }
                     }
 
