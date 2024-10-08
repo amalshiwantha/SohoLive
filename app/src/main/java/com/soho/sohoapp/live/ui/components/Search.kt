@@ -33,7 +33,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.theme.HintGray
 
 @Composable
-fun SearchBar() {
+fun SearchBar(onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
 
     Row(
@@ -50,7 +50,10 @@ fun SearchBar() {
         )
         TextField(
             value = text,
-            onValueChange = { text = it },
+            onValueChange = {
+                text = it
+                onValueChange(it)
+                            },
             placeholder = { TextPlaceHolder(label = stringResource(R.string.search_address)) },
             textStyle = inputStyleSearch(),
             colors = TextFieldDefaults.colors(
@@ -78,5 +81,5 @@ fun SearchBar() {
 @Composable
 @Preview(showBackground = true)
 fun PreviewSearchComponent() {
-    SearchBar()
+    SearchBar(onValueChange = {})
 }

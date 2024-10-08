@@ -1003,15 +1003,25 @@ fun StepContents(
     SpacerUp(24.dp)
 
     when (currentStepId) {
+
         // step #1
         0 -> {
+            var searchQuery by remember { mutableStateOf("") }
+
             propertyList?.let { propList ->
+
+                val filteredList = remember(searchQuery) {
+                    propertyList.filter {
+                        it.propInfo.fullAddress().contains(searchQuery, ignoreCase = true)
+                    } ?: emptyList()
+                }
+
                 if (propList.isEmpty()) {
                     DisplayNoData(message = "Not Found Properties")
                 } else {
-                    SearchBar()
+                    SearchBar(onValueChange = { searchQuery = it })
                     SpacerUp(16.dp)
-                    PropertyListing(mGState, propList, onItemClicked = {
+                    PropertyListing(mGState, filteredList, onItemClicked = {
                         onPropertyItemClicked.invoke(it)
                     })
                     SpacerUp(size = 70.dp)
