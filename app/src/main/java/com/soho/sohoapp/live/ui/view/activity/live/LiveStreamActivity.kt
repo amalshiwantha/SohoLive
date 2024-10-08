@@ -35,6 +35,7 @@ import androidx.lifecycle.lifecycleScope
 import com.pedro.common.ConnectChecker
 import com.pedro.encoder.input.gl.render.filters.`object`.ImageObjectFilterRender
 import com.pedro.encoder.input.video.CameraHelper
+import com.pedro.encoder.utils.gl.AspectRatioMode
 import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
@@ -611,6 +612,9 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun startBroadcast() {
         if (arePermissionsGranted()) {
             if (streamKey.isNotEmpty()) {
+
+                openGlView?.setAspectRatioMode(AspectRatioMode.NONE)
+
                 rtmpCamera2?.let {
                     if (!it.isStreaming) {
 
