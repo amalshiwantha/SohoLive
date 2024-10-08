@@ -114,6 +114,14 @@ fun BottomNavigationBar(
                         inclusive = true
                     }
                     launchSingleTop = true
+
+                    // Apply no animation
+                    anim {
+                        enter = 0
+                        exit = 0
+                        popEnter = 0
+                        popExit = 0
+                    }
                 }
             })
         }

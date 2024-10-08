@@ -137,7 +137,7 @@ dependencies {
     implementation(libs.ktor.negotiation)
 
     //bottom nav
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.navigation.compose.v282)
 
     //constraintlayout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
