@@ -6,7 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.getAppVersion
@@ -25,12 +29,27 @@ class ProfileViewModel(
             }
 
             ProfileEvent.LogoutDismissAlert -> {
-                mState.value = mState.value.copy(alertState = AlertState.Idle)
-
                 viewModelScope.launch {
+                    val smFb = SocialMediaProfile().apply {
+                        smInfo = SocialMediaInfo.FACEBOOK
+                        profile.isConnected = false
+                        smInfo.isConnect = false
+                        smInfo.isItemChecked = false
+                    }
+
+                    val smYT = SocialMediaProfile().apply {
+                        smInfo = SocialMediaInfo.YOUTUBE
+                        profile.isConnected = false
+                        smInfo.isConnect = false
+                        smInfo.isItemChecked = false
+                    }
+                    doLogout(smFb)
+                    doLogout(smYT)
+                    MainStateHolder.mState.reset()
                     dataStore.clearAllData()
                     AppEventBus.sendEvent(AppEvent.NavigateToLogin(true))
                 }
+                mState.value = mState.value.copy(alertState = AlertState.Idle)
             }
         }
     }

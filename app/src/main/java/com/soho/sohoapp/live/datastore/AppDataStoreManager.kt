@@ -65,9 +65,12 @@ class AppDataStoreManager(private val context: Context) {
 
     // Clear all data on logout
     suspend fun clearAllData() {
-        //sharedPref.edit().clear().apply()
         context.dataStore.edit { preferences ->
             preferences.clear()
         }
+
+        val editor = sharedPref.edit()
+        editor.clear()
+        editor.apply()
     }
 }

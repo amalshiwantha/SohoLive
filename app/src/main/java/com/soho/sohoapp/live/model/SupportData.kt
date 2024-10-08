@@ -46,7 +46,19 @@ data class MainState(
     var sPropList: MutableState<List<PropertyItem>>? = null,
     var sAgencyList: MutableState<List<AgencyItem>>? = null,
     var agentEmail: String? = null,
-)
+){
+    fun reset() {
+        liveOrientation.value = Orientation.PORT.name
+        stepId.value = 0
+        isPublic.value = false
+
+        goLiveApiRes = null
+        propertyTsRes = null
+        sPropList?.value = emptyList()
+        sAgencyList?.value = emptyList()
+        agentEmail = null
+    }
+}
 
 data class AlertData(
     val isShow: Boolean = false,
@@ -180,7 +192,7 @@ data class ConnectedSocialProfile(val smProfileList: MutableList<SocialMediaProf
 
 @Serializable
 data class SocialMediaProfile(
-    val smInfo: SocialMediaInfo,
+    var smInfo: SocialMediaInfo,
     val profile: Profile,
     val timelines: MutableList<CategoryInfo> = mutableListOf(),
     val pages: MutableList<CategoryInfo> = mutableListOf(),
