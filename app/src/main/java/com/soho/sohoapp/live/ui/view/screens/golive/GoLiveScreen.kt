@@ -109,6 +109,7 @@ import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
+import com.soho.sohoapp.live.ui.components.NotEnableStreamAlert
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SelectOrientationBottomSheet
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -204,6 +205,20 @@ fun GoLiveScreen(
     var isShowOrientationModel by remember { mutableStateOf(false) }
 
     /*
+    * show stream not enabled view
+    * */
+    if (stateVm.isStreamNotEnabled.value) {
+        NotEnableStreamAlert(onDismiss = {
+            stateVm.isStreamNotEnabled.value = false
+        }, onEnableClick = {
+
+        }, onVerifyClick = {
+
+        })
+    }
+
+
+    /*
     * show select orientation view
     * */
     if (isShowOrientationModel) {
@@ -231,8 +246,7 @@ fun GoLiveScreen(
                 val encodeUrl = URLEncoder.encode(it, StandardCharsets.UTF_8.toString())
                 navController.navigate("${NavigationPath.WEB_VIEW.name}/$title/$encodeUrl")
             }
-        }
-        catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

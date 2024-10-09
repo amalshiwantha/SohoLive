@@ -21,6 +21,7 @@ data class GoLiveState(
     val apiResults: DataGoLive? = null,
     val tsResults: TsPropertyResponse? = null,
     val goLiveResults: DataGoLiveSubmit? = null,
+    var isStreamNotEnabled: MutableState<Boolean> = mutableStateOf(false)
 )
 
 data class GoLiveAssets(

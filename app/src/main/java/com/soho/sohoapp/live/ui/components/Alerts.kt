@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -50,6 +54,110 @@ import com.soho.sohoapp.live.ui.theme.YoutubeRedDark
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 import kotlinx.coroutines.delay
+
+@Composable
+fun NotEnableStreamAlert(
+    onDismiss: () -> Unit,
+    onVerifyClick: () -> Unit,
+    onEnableClick: () -> Unit
+) {
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Title
+                Text(
+                    text = "Error connecting to YouTube",
+                    color = Color(0xFF4C197D), // Your purple title color
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // Subtitle / Message
+                Text(
+                    text = "The YouTube account you selected does not have live streaming enabled.",
+                    color = Color.Black, // Body color
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // Instruction
+                Text(
+                    text = "Before trying to connect again, please ensure you have:",
+                    color = Color.Black,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // Verify Link
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                        .clickable { onVerifyClick() },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "• ",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = "Verify your YouTube account",
+                        color = Color(0xFF4C197D), // Link color
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Enable Link
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onEnableClick() },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "• ",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Text(
+                        text = "Enable live streaming on your YouTube channel",
+                        color = Color(0xFF4C197D),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Action Button
+                Button(
+                    onClick = { onDismiss() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color(0xFF53D3B8) // Your button background color
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Back",
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun ShareableLinkDialog(

@@ -21,7 +21,6 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
-import com.soho.sohoapp.live.utility.getAppVersion
 import io.ktor.utils.io.printStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -146,10 +145,14 @@ class GoLiveViewModel(
                             //resetSMState()
                             liveState.value = liveState.value.copy(goLiveResults = res)
                         } else {
-                            liveState.value =
-                                liveState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
-                                    message = errorMsg.orEmpty()
-                                }))
+                            if (errorMsg?.contains("not enabled") == true) {
+                                liveState.value = liveState.value.copy(isStreamNotEnabled = mutableStateOf(true))
+                            } else {
+                                liveState.value =
+                                    liveState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
+                                        message = errorMsg.orEmpty()
+                                    }))
+                            }
                         }
                     }
                 }
