@@ -798,7 +798,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 }
 
                 smInfoConnect.infoItems.isNotEmpty().let {
-                    SpacerUp(size = 8.dp)
+                    SpacerUp(size = 16.dp)
                     InfoItemsCard(
                         smInfoConnect.name,
                         smInfoConnect.infoItems,
@@ -865,6 +865,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                             SmSubInfoItemFB(item)
                         } else if (smName == SocialMediaInfo.YOUTUBE.name) {
                             SmSubInfoItemYT(item, infoBtns[index], onYTVerify = {}, onYTEnable = {})
+
+                            //no need space for last item
+                            if (infoItems.size - 1 > index) {
+                                SpacerUp(size = 8.dp)
+                            }
                         }
                     }
                 }
@@ -909,10 +914,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 } else {
                     ButtonOutlineWhiteNormal(text = "How To Enable?", onBtnClick = { onYTEnable() })
                 }
-
             }
         }
-        SpacerUp(size = 8.dp)
     }
 
     @Composable
