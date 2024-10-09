@@ -9,7 +9,7 @@ import com.soho.sohoapp.live.ui.theme.LinkedInBlue
 import com.soho.sohoapp.live.ui.theme.YoutubeRed
 import kotlinx.serialization.Serializable
 
-enum class SocialMedia(smName : String){
+enum class SocialMedia(smName: String) {
     FACEBOOK("facebook"),
     YOUTUBE("youtube"),
     LINKEDIN("linkedin")
@@ -19,6 +19,8 @@ enum class SocialMedia(smName : String){
 enum class SocialMediaInfo(
     var title: String,
     var info: String,
+    var infoSub: String? = null,
+    var infoItems: MutableList<String> = mutableListOf(),
     var btnTitle: String,
     var btnColor: Color,
     var btnIcon: Int,
@@ -39,7 +41,13 @@ enum class SocialMediaInfo(
     ),
     FACEBOOK(
         title = "Facebook",
-        info = "By connecting, you will be able to broadcast your livestream to your Facebook friends and followers",
+        info = "By connecting, you will be able to broadcast your livecast to your Facebook friends and followers",
+        infoSub = "Ensure your Facebook account meet these requirements before you go live:",
+        infoItems = mutableListOf(
+            "Your account must be at least 60 days old.",
+            "Your Page or professional profile must have at least 100 followers.",
+            "To go live from a Page, you need to have Facebook access or task access to create content"
+        ),
         btnTitle = "Connect to Facebook",
         btnColor = FacebookBlue,
         btnIcon = R.drawable.ic_fb_round,
@@ -48,7 +56,12 @@ enum class SocialMediaInfo(
     ),
     YOUTUBE(
         title = "Youtube",
-        info = "By connecting, you will be able to broadcast your livestream to your Youtube subscribers",
+        info = "By connecting, you will be able to broadcast your livecast to your Youtube subscribers.",
+        infoSub = "Make sure your YouTube account is ready for live streaming by following these two steps:",
+        infoItems = mutableListOf(
+            "Make sure your YouTube account is verified",
+            "Enable live streaming at least 24 hours in advance"
+        ),
         btnTitle = "Connect to Youtube",
         btnColor = YoutubeRed,
         btnIcon = R.drawable.ic_youtube_round,

@@ -76,6 +76,7 @@ import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_16sp
 import com.soho.sohoapp.live.ui.components.Text800_12sp_right
 import com.soho.sohoapp.live.ui.components.Text800_20sp
@@ -507,7 +508,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
             //Connect Button
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text400_14sp(info = smInfo.info)
@@ -774,10 +777,16 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
             //Connect Button
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text400_14sp(info = smInfoConnect.info)
+                smInfoConnect.infoSub?.let {
+                    SpacerUp(size = 16.dp)
+                    Text700_14sp(step = it)
+                }
                 SpacerUp(size = 40.dp)
                 ButtonColoredIcon(title = smInfoConnect.btnTitle,
                     icon = smInfoConnect.btnIcon,
