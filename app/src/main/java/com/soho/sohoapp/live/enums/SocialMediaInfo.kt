@@ -21,6 +21,7 @@ enum class SocialMediaInfo(
     var info: String,
     var infoSub: String? = null,
     var infoItems: MutableList<String> = mutableListOf(),
+    var infoItemBtn: MutableList<String> = mutableListOf(),
     var btnTitle: String,
     var btnColor: Color,
     var btnIcon: Int,
@@ -62,6 +63,7 @@ enum class SocialMediaInfo(
             "Make sure your YouTube account is verified",
             "Enable live streaming at least 24 hours in advance"
         ),
+        infoItemBtn = mutableListOf("verify", "enable"),
         btnTitle = "Connect to Youtube",
         btnColor = YoutubeRed,
         btnIcon = R.drawable.ic_youtube_round,

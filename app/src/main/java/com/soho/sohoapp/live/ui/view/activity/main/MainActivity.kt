@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
@@ -798,7 +799,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                 smInfoConnect.infoItems.isNotEmpty().let {
                     SpacerUp(size = 8.dp)
-                    InfoItemsCard(smInfoConnect.infoItems, smInfoConnect.name, onFBLearnMore = {onFBLearnMore()})
+                    InfoItemsCard(
+                        smInfoConnect.name,
+                        smInfoConnect.infoItems,
+                        smInfoConnect.infoItemBtn,
+                        onFBLearnMore = { onFBLearnMore() })
                 }
 
                 SpacerUp(size = 24.dp)
@@ -812,37 +817,106 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @Composable
     private fun InfoItemsCard(
-        listItem: MutableList<String>,
         smName: String,
+        infoItems: MutableList<String>,
+        infoBtns: MutableList<String>,
         onFBLearnMore: () -> Unit
     ) {
+        val itemBg = when (smName) {
+            SocialMediaInfo.FACEBOOK.name -> {
+                ItemCardBg
+            }
+
+            SocialMediaInfo.YOUTUBE.name -> {
+                BottomBarBg
+            }
+
+            else -> {
+                BottomBarBg
+            }
+        }
+
+        val itemModifier = when (smName) {
+            SocialMediaInfo.FACEBOOK.name -> {
+                Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            }
+
+            SocialMediaInfo.YOUTUBE.name -> {
+                Modifier.padding(0.dp)
+            }
+
+            else -> {
+                Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            }
+        }
+
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small,
-            colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+            colors = CardDefaults.cardColors(containerColor = itemBg)
         ) {
-            Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
+
+            Column(modifier = itemModifier) {
 
                 //item list
                 LazyColumn {
-                    items(listItem) { item ->
-                        SmSubInfoItem(item)
+                    itemsIndexed(infoItems) { index, item ->
+                        if (smName == SocialMediaInfo.FACEBOOK.name) {
+                            SmSubInfoItemFB(item)
+                        } else if (smName == SocialMediaInfo.YOUTUBE.name) {
+                            SmSubInfoItemYT(item, infoBtns[index], onYTVerify = {}, onYTEnable = {})
+                        }
                     }
                 }
 
                 //Learn more button for FB
-                ButtonOutlineWhiteNormal(
-                    text = "Learn more",
-                    onBtnClick = { onFBLearnMore() },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                if (smName == SocialMediaInfo.FACEBOOK.name) {
+                    ButtonOutlineWhiteNormal(
+                        text = "Learn more",
+                        onBtnClick = { onFBLearnMore() },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
                 SpacerUp(size = 16.dp)
             }
         }
     }
 
     @Composable
-    private fun SmSubInfoItem(item: String) {
+    private fun SmSubInfoItemYT(
+        item: String,
+        btnName: String,
+        onYTVerify: () -> Unit,
+        onYTEnable: () -> Unit
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.small,
+            colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text400_14sp(info = item, modifier = Modifier.weight(0.6f))
+                SpacerSide(size = 8.dp)
+                if (btnName == "verify") {
+                    ButtonOutlineWhiteNormal(text = "How To Verify?", onBtnClick = { onYTVerify() })
+                } else {
+                    ButtonOutlineWhiteNormal(text = "How To Enable?", onBtnClick = { onYTEnable() })
+                }
+
+            }
+        }
+        SpacerUp(size = 8.dp)
+    }
+
+    @Composable
+    private fun SmSubInfoItemFB(item: String) {
         Row(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.Start,
@@ -964,7 +1038,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @Preview
     @Composable
     private fun PreviewBottomSheetSMConnect() {
-        ContentBottomSheet(smInfoConnect = SocialMediaInfo.FACEBOOK, onConnect = {}, onFBLearnMore = {})
+        ContentBottomSheet(
+            smInfoConnect = SocialMediaInfo.FACEBOOK,
+            onConnect = {},
+            onFBLearnMore = {})
     }
 
 
