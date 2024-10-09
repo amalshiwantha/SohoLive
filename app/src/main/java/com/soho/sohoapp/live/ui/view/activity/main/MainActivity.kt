@@ -29,10 +29,13 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
@@ -73,6 +76,7 @@ import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -364,6 +368,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 ContentBottomSheet(smInfoConnect, onConnect = {
                     onConnect.invoke(smInfoConnect)
                     showBottomSheet = false
+                }, onFBLearnMore = {
+
                 })
             }
         } else {
@@ -763,7 +769,8 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
     @Composable
     private fun ContentBottomSheet(
-        smInfoConnect: SocialMediaInfo, onConnect: (SocialMediaInfo) -> Unit
+        smInfoConnect: SocialMediaInfo, onConnect: (SocialMediaInfo) -> Unit,
+        onFBLearnMore: () -> Unit
     ) {
         Column(
             modifier = Modifier
@@ -783,17 +790,77 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text400_14sp(info = smInfoConnect.info)
+
                 smInfoConnect.infoSub?.let {
                     SpacerUp(size = 16.dp)
                     Text700_14sp(step = it)
                 }
-                SpacerUp(size = 40.dp)
+
+                smInfoConnect.infoItems.isNotEmpty().let {
+                    SpacerUp(size = 8.dp)
+                    InfoItemsCard(smInfoConnect.infoItems, smInfoConnect.name, onFBLearnMore = {onFBLearnMore()})
+                }
+
+                SpacerUp(size = 24.dp)
                 ButtonColoredIcon(title = smInfoConnect.btnTitle,
                     icon = smInfoConnect.btnIcon,
                     btnColor = smInfoConnect.btnColor,
                     onBtnClick = { onConnect(smInfoConnect) })
             }
         }
+    }
+
+    @Composable
+    private fun InfoItemsCard(
+        listItem: MutableList<String>,
+        smName: String,
+        onFBLearnMore: () -> Unit
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.small,
+            colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+        ) {
+            Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
+
+                //item list
+                LazyColumn {
+                    items(listItem) { item ->
+                        SmSubInfoItem(item)
+                    }
+                }
+
+                //Learn more button for FB
+                ButtonOutlineWhiteNormal(
+                    text = "Learn more",
+                    onBtnClick = { onFBLearnMore() },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                SpacerUp(size = 16.dp)
+            }
+        }
+    }
+
+    @Composable
+    private fun SmSubInfoItem(item: String) {
+        Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Circle,
+                contentDescription = "Dot",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(10.dp)
+                    .padding(top = 4.dp)
+            )
+            SpacerSide(size = 4.dp)
+            Text400_14sp(info = item)
+        }
+        SpacerUp(size = 16.dp)
     }
 
     @Composable
@@ -897,7 +964,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @Preview
     @Composable
     private fun PreviewBottomSheetSMConnect() {
-        ContentBottomSheet(smInfoConnect = SocialMediaInfo.FACEBOOK, onConnect = {})
+        ContentBottomSheet(smInfoConnect = SocialMediaInfo.FACEBOOK, onConnect = {}, onFBLearnMore = {})
     }
 
 
