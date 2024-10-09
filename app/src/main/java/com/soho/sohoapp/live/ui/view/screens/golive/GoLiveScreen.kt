@@ -155,6 +155,8 @@ import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -194,6 +196,8 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
     val eventStateLiveEnd =
         AppEventBus.events.collectAsState(initial = AppEvent.LiveEndStatus(CastEnd.NONE))
+    val eventStateWebView =
+        AppEventBus.events.collectAsState(initial = AppEvent.OpenWebView(null))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
     var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), false)) }
@@ -216,6 +220,16 @@ fun GoLiveScreen(
         }, onCancel = {
             isShowOrientationModel = false
         })
+    }
+
+    LaunchedEffect(eventStateWebView.value) {
+        val webUrl = (eventStateWebView.value as AppEvent.OpenWebView).url
+
+        webUrl?.let {
+            val title = if (it.contains("google")) "YouTube Support" else "Facebook Support"
+            val encodeUrl = URLEncoder.encode(it, StandardCharsets.UTF_8.toString())
+            navController.navigate("${NavigationPath.WEB_VIEW.name}/$title/$encodeUrl")
+        }
     }
 
     /*

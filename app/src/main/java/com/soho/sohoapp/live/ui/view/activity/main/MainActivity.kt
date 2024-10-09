@@ -106,6 +106,9 @@ import com.soho.sohoapp.live.ui.view.screens.golive.doConnectGoogle
 import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.Const.Companion.FB_MORE
+import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
+import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
@@ -199,23 +202,23 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     * open SM connect button bottomSheet and
                     * click action -> open connectApi
                     * */
-                    OpenSMConnectModel(viewMMain, smInfoConnect, doConnectNow = { goConnect ->
-                        when (goConnect) {
-                            SocialMediaInfo.FACEBOOK -> {
-                                openSmConnector = SocialMediaInfo.FACEBOOK
-                            }
+                    OpenSMConnectModel(viewMMain,smInfoConnect, doConnectNow = { goConnect ->
+                            when (goConnect) {
+                                SocialMediaInfo.FACEBOOK -> {
+                                    openSmConnector = SocialMediaInfo.FACEBOOK
+                                }
 
-                            SocialMediaInfo.YOUTUBE -> {
-                                openSmConnector = SocialMediaInfo.YOUTUBE
-                            }
+                                SocialMediaInfo.YOUTUBE -> {
+                                    openSmConnector = SocialMediaInfo.YOUTUBE
+                                }
 
-                            SocialMediaInfo.LINKEDIN -> {
-                                openSmConnector = SocialMediaInfo.LINKEDIN
-                            }
+                                SocialMediaInfo.LINKEDIN -> {
+                                    openSmConnector = SocialMediaInfo.LINKEDIN
+                                }
 
-                            else -> {}
-                        }
-                    })
+                                else -> {}
+                            }
+                        })
 
                     //Connect SM api
                     //state change for clickEvents
@@ -327,26 +330,27 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         doConnectNow: (SocialMediaInfo) -> Unit
     ) {
         if (smInfoConnect.name != SocialMediaInfo.NONE.name) {
-            SocialMediaConnectBottomSheet(smInfoConnect, onConnect = { askConnectInfo ->
-                when (askConnectInfo) {
-                    SocialMediaInfo.SOHO -> {}
-                    SocialMediaInfo.FACEBOOK -> {
-                        doConnectNow(SocialMediaInfo.FACEBOOK)
-                    }
+            SocialMediaConnectBottomSheet(
+                smInfoConnect, onConnect = { askConnectInfo ->
+                    when (askConnectInfo) {
+                        SocialMediaInfo.SOHO -> {}
+                        SocialMediaInfo.FACEBOOK -> {
+                            doConnectNow(SocialMediaInfo.FACEBOOK)
+                        }
 
-                    SocialMediaInfo.YOUTUBE -> {
-                        doConnectNow(SocialMediaInfo.YOUTUBE)
-                    }
+                        SocialMediaInfo.YOUTUBE -> {
+                            doConnectNow(SocialMediaInfo.YOUTUBE)
+                        }
 
-                    SocialMediaInfo.LINKEDIN -> {
-                        doConnectNow(SocialMediaInfo.LINKEDIN)
-                    }
+                        SocialMediaInfo.LINKEDIN -> {
+                            doConnectNow(SocialMediaInfo.LINKEDIN)
+                        }
 
-                    else -> {}
-                }
-            }, onReset = {
-                viewMMain.updateSocialMediaState(SocialMediaInfo.NONE)
-            })
+                        else -> {}
+                    }
+                }, onReset = {
+                    viewMMain.updateSocialMediaState(SocialMediaInfo.NONE)
+                })
         }
     }
 
@@ -370,11 +374,24 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     onConnect.invoke(smInfoConnect)
                     showBottomSheet = false
                 }, onFBLearnMore = {
-
+                    showBottomSheet = false
+                    openWebView(FB_MORE)
+                }, onYTVerify = {
+                    showBottomSheet = false
+                    openWebView(YT_VERIFY)
+                }, onYTEnable = {
+                    showBottomSheet = false
+                    openWebView(YT_ENABLE)
                 })
             }
         } else {
             onReset()
+        }
+    }
+
+    private fun openWebView(url: String) {
+        GlobalScope.launch {
+            AppEventBus.sendEvent(AppEvent.OpenWebView(url))
         }
     }
 
@@ -771,7 +788,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     @Composable
     private fun ContentBottomSheet(
         smInfoConnect: SocialMediaInfo, onConnect: (SocialMediaInfo) -> Unit,
-        onFBLearnMore: () -> Unit
+        onFBLearnMore: () -> Unit,
+        onYTVerify: () -> Unit,
+        onYTEnable: () -> Unit
     ) {
         Column(
             modifier = Modifier
@@ -803,7 +822,10 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         smInfoConnect.name,
                         smInfoConnect.infoItems,
                         smInfoConnect.infoItemBtn,
-                        onFBLearnMore = { onFBLearnMore() })
+                        onFBLearnMore = { onFBLearnMore() },
+                        onYTVerify = { onYTVerify() },
+                        onYTEnable = { onYTEnable() },
+                    )
                 }
 
                 SpacerUp(size = 24.dp)
@@ -820,7 +842,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         smName: String,
         infoItems: MutableList<String>,
         infoBtns: MutableList<String>,
-        onFBLearnMore: () -> Unit
+        onFBLearnMore: () -> Unit,
+        onYTVerify: () -> Unit,
+        onYTEnable: () -> Unit
     ) {
         val itemBg = when (smName) {
             SocialMediaInfo.FACEBOOK.name -> {
@@ -864,7 +888,11 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                         if (smName == SocialMediaInfo.FACEBOOK.name) {
                             SmSubInfoItemFB(item)
                         } else if (smName == SocialMediaInfo.YOUTUBE.name) {
-                            SmSubInfoItemYT(item, infoBtns[index], onYTVerify = {}, onYTEnable = {})
+                            SmSubInfoItemYT(
+                                item,
+                                infoBtns[index],
+                                onYTVerify = { onYTVerify() },
+                                onYTEnable = { onYTEnable() })
 
                             //no need space for last item
                             if (infoItems.size - 1 > index) {
@@ -1044,7 +1072,9 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         ContentBottomSheet(
             smInfoConnect = SocialMediaInfo.FACEBOOK,
             onConnect = {},
-            onFBLearnMore = {})
+            onFBLearnMore = {},
+            onYTVerify = {},
+            onYTEnable = {})
     }
 
 
