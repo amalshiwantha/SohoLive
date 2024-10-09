@@ -26,12 +26,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
@@ -41,7 +39,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -368,6 +365,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
         if (showBottomSheet) {
             ModalBottomSheet(
+                modifier = Modifier.fillMaxHeight(),
                 containerColor = BottomBarBg,
                 dragHandle = { DragHandle(color = BottomSheetDrag) },
                 onDismissRequest = { showBottomSheet = false },
@@ -411,7 +409,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
         if (isShow) {
             ModalBottomSheet(
-                modifier = Modifier.fillMaxHeight(),
                 containerColor = BottomBarBg,
                 dragHandle = { DragHandle(color = BottomSheetDrag) },
                 onDismissRequest = { onDoneClick() },
@@ -519,7 +516,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         Column(
             modifier = Modifier
                 .background(BottomBarBg)
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
 

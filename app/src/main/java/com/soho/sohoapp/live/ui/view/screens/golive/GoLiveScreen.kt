@@ -223,12 +223,17 @@ fun GoLiveScreen(
     }
 
     LaunchedEffect(eventStateWebView.value) {
-        val webUrl = (eventStateWebView.value as AppEvent.OpenWebView).url
+        try {
+            val webUrl = (eventStateWebView.value as AppEvent.OpenWebView).url
 
-        webUrl?.let {
-            val title = if (it.contains("google")) "YouTube Support" else "Facebook Support"
-            val encodeUrl = URLEncoder.encode(it, StandardCharsets.UTF_8.toString())
-            navController.navigate("${NavigationPath.WEB_VIEW.name}/$title/$encodeUrl")
+            webUrl?.let {
+                val title = if (it.contains("google")) "YouTube Support" else "Facebook Support"
+                val encodeUrl = URLEncoder.encode(it, StandardCharsets.UTF_8.toString())
+                navController.navigate("${NavigationPath.WEB_VIEW.name}/$title/$encodeUrl")
+            }
+        }
+        catch (e : Exception){
+            e.printStackTrace()
         }
     }
 
