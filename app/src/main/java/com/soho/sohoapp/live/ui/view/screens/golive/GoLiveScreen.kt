@@ -211,9 +211,9 @@ fun GoLiveScreen(
         NotEnableStreamAlert(onDismiss = {
             stateVm.isStreamNotEnabled.value = false
         }, onEnableClick = {
-
+            stateVm.isStreamNotEnabled.value = false
         }, onVerifyClick = {
-
+            stateVm.isStreamNotEnabled.value = false
         })
     }
 

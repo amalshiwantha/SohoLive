@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.sp
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
-import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.StarYellow
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.theme.lowGreen
@@ -225,6 +225,24 @@ fun Text700_12sp(
         modifier = modifier
     )
 }*/
+
+@Composable
+fun Text700_14spBlueLink(
+    linkName: String,
+    onClick: () -> Unit
+) {
+    Text(
+        textAlign = TextAlign.Left,
+        modifier = Modifier.clickable { onClick() },
+        text = linkName,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontWeight = FontWeight(700),
+        color = LinkTxtColor,
+        letterSpacing = 0.17.sp
+    )
+}
 
 @Composable
 fun Text700_14spLink(

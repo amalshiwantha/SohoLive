@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,11 +28,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.soho.sohoapp.live.R
@@ -47,8 +56,10 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
 import com.soho.sohoapp.live.ui.theme.FacebookBlue
 import com.soho.sohoapp.live.ui.theme.FacebookBlueDark
+import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.LinkedInBlue
 import com.soho.sohoapp.live.ui.theme.LinkedInBlueDark
+import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.theme.YoutubeRed
 import com.soho.sohoapp.live.ui.theme.YoutubeRedDark
 import com.soho.sohoapp.live.ui.theme.infoText
@@ -57,9 +68,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun NotEnableStreamAlert(
-    onDismiss: () -> Unit,
-    onVerifyClick: () -> Unit,
-    onEnableClick: () -> Unit
+    onDismiss: () -> Unit, onVerifyClick: () -> Unit, onEnableClick: () -> Unit
 ) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Box(
@@ -71,90 +80,119 @@ fun NotEnableStreamAlert(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Title
-                Text(
-                    text = "Error connecting to YouTube",
-                    color = Color(0xFF4C197D), // Your purple title color
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                Text950_20sp(title = "Error connecting to YouTube", txtColor = TextDark)
+                SpacerUp(size = 8.dp)
+                Text400_14sp(
+                    info = "The YouTube account you selected does not have live streaming enabled.",
+                    color = TextDark
                 )
-
-                // Subtitle / Message
-                Text(
-                    text = "The YouTube account you selected does not have live streaming enabled.",
-                    color = Color.Black, // Body color
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                SpacerUp(size = 16.dp)
+                Text700_14sp(
+                    step = "Before trying to connect again, please ensure you have:",
+                    color = TextDark
                 )
+                SpacerUp(size = 8.dp)
 
-                // Instruction
-                Text(
-                    text = "Before trying to connect again, please ensure you have:",
-                    color = Color.Black,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                // Verify Link
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                        .clickable { onVerifyClick() },
-                    verticalAlignment = Alignment.CenterVertically
+                //Links
+                Column(
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 ) {
-                    Text(
-                        text = "• ",
-                        color = Color.Black,
-                        style = MaterialTheme.typography.titleMedium
+                    DotLinkView(
+                        onVerifyClick = {},
+                        linkName = "Verify",
+                        linkLabel = " your YouTube account"
                     )
-                    Text(
-                        text = "Verify your YouTube account",
-                        color = Color(0xFF4C197D), // Link color
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                // Enable Link
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onEnableClick() },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "• ",
-                        color = Color.Black,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    Text(
-                        text = "Enable live streaming on your YouTube channel",
-                        color = Color(0xFF4C197D),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
+                    SpacerUp(size = 8.dp)
+                    DotLinkView(
+                        onVerifyClick = {},
+                        linkName = "Enable",
+                        linkLabel = " live streaming on your YouTube channel at least 24 hours in advance"
                     )
                 }
 
                 // Action Button
-                Button(
-                    onClick = { onDismiss() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = Color(0xFF53D3B8) // Your button background color
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = "Back",
-                        color = Color.White,
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
+                SpacerUp(size = 24.dp)
+                ButtonColoured(text = "Back", color = AppGreen, onBtnClick = {
+                    onDismiss()
+                })
             }
         }
+    }
+}
+
+@Composable
+fun DotLinkView(onVerifyClick: () -> Unit, linkName: String, linkLabel: String) {
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text700_14sp(step = "• ", color = TextDark)
+        VerifyTextView(
+            linkName,
+            linkLabel,
+            onLinkClicked = { onVerifyClick() })
+    }
+}
+
+@Composable
+fun VerifyTextView(linkName: String, label: String, onLinkClicked: () -> Unit) {
+    val text = buildAnnotatedString {
+        //Link
+        withStyle(
+            style = SpanStyle(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.axiforma)),
+                fontWeight = FontWeight(700),
+                color = LinkTxtColor,
+                letterSpacing = 0.17.sp,
+                textDecoration = TextDecoration.Underline
+            )
+        ) {
+            append(linkName)
+        }
+
+        // Label
+        withStyle(
+            style = SpanStyle(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+                fontWeight = FontWeight(700),
+                color = TextDark,
+                letterSpacing = 0.17.sp,
+            )
+        ) {
+            append(label)
+        }
+    }
+
+    ClickableText(
+        modifier = Modifier.fillMaxWidth(),
+        text = text,
+        onClick = { offset ->
+            if (offset in 0..5) { // "Verify" is the clickable link
+                onLinkClicked()
+            }
+        }
+    )
+}
+
+@Composable
+fun DotLinkTextItem(
+    txt: String, linkVerify: String? = null, linkEnable: String? = null, onLinkClick: () -> Unit
+) {
+
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text700_14spProperty(step = "• ", color = TextDark)
+        linkVerify?.let {
+            Text700_14spBlueLink(linkName = "Verify  ", onClick = { onLinkClick() })
+        }
+        linkEnable?.let {
+            Text700_14spBlueLink(linkName = "Enable ", onClick = { onLinkClick() })
+        }
+        Text700_14spProperty(step = txt, color = TextDark)
     }
 }
 
@@ -260,9 +298,7 @@ fun ShareableLinkDialog(
 
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = Color.White,
-            modifier = Modifier
+            shape = RoundedCornerShape(16.dp), color = Color.White, modifier = Modifier
         ) {
 
             ConstraintLayout(
@@ -272,15 +308,12 @@ fun ShareableLinkDialog(
             ) {
                 val (content, goLiveBtn) = createRefs()
 
-                LazyColumn(
-                    modifier = Modifier
-                        .constrainAs(content) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(goLiveBtn.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                ) {
+                LazyColumn(modifier = Modifier.constrainAs(content) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(goLiveBtn.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }) {
                     item {
                         //Title and Close
                         Row(
@@ -302,17 +335,14 @@ fun ShareableLinkDialog(
                                 )
                                 SpacerSide(size = 8.dp)
                                 Text950_20sp(
-                                    title = "Shareable Links",
-                                    txtColor = infoText
+                                    title = "Shareable Links", txtColor = infoText
                                 )
                             }
 
                             //close button
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_round_cross),
+                            Image(painter = painterResource(id = R.drawable.ic_round_cross),
                                 contentDescription = null,
-                                modifier = Modifier.clickable { onDismiss() }
-                            )
+                                modifier = Modifier.clickable { onDismiss() })
                         }
 
                         //content
@@ -343,8 +373,7 @@ fun ShareableLinkDialog(
 
                             //Copy Btn
                             SpacerUp(size = 16.dp)
-                            ButtonColoredIcon(
-                                title = smBtnSoho.txt,
+                            ButtonColoredIcon(title = smBtnSoho.txt,
                                 btnColor = smBtnSoho.color,
                                 icon = smBtnSoho.icon,
                                 onBtnClick = {
@@ -364,8 +393,7 @@ fun ShareableLinkDialog(
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             ) {
                                 Text700_14sp(
-                                    step = "Social Links",
-                                    color = infoText
+                                    step = "Social Links", color = infoText
                                 )
                                 SpacerUp(size = 8.dp)
                                 Text400_14sp(
@@ -378,36 +406,30 @@ fun ShareableLinkDialog(
                                 Column {
                                     if (isHasShareLink(SocialMedia.FACEBOOK)) {
                                         SocialLinkButton(
-                                            smItem = SocialMediaInfo.FACEBOOK,
-                                            onClick = {
+                                            smItem = SocialMediaInfo.FACEBOOK, onClick = {
                                                 onClickCopy(SocialMediaInfo.FACEBOOK.name)
                                                 isCopiedFacebook = true
-                                            },
-                                            smBtn = smBtnFb
+                                            }, smBtn = smBtnFb
                                         )
                                         SpacerUp(size = 16.dp)
                                     }
 
                                     if (isHasShareLink(SocialMedia.YOUTUBE)) {
                                         SocialLinkButton(
-                                            smItem = SocialMediaInfo.YOUTUBE,
-                                            onClick = {
+                                            smItem = SocialMediaInfo.YOUTUBE, onClick = {
                                                 onClickCopy(SocialMediaInfo.YOUTUBE.name)
                                                 isCopiedYoutube = true
-                                            },
-                                            smBtn = smBtnYt
+                                            }, smBtn = smBtnYt
                                         )
                                         SpacerUp(size = 16.dp)
                                     }
 
                                     if (isHasShareLink(SocialMedia.LINKEDIN)) {
                                         SocialLinkButton(
-                                            smItem = SocialMediaInfo.LINKEDIN,
-                                            onClick = {
+                                            smItem = SocialMediaInfo.LINKEDIN, onClick = {
                                                 onClickCopy(SocialMediaInfo.LINKEDIN.name)
                                                 isCopiedLinkedIn = true
-                                            },
-                                            smBtn = smBtnLi
+                                            }, smBtn = smBtnLi
                                         )
                                     }
 
@@ -427,17 +449,14 @@ fun ShareableLinkDialog(
 
                 // Go Live Now Button
                 if (isShowLiveBtn) {
-                    Column(
-                        modifier = Modifier
-                            .constrainAs(goLiveBtn) {
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 16.dp)
-                    ) {
-                        ButtonGradientIcon(
-                            text = btnTxt,
+                    Column(modifier = Modifier
+                        .constrainAs(goLiveBtn) {
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 16.dp)) {
+                        ButtonGradientIcon(text = btnTxt,
                             modifier = Modifier.fillMaxWidth(),
                             gradientBrush = brushGradientLive,
                             icon = R.drawable.livecast_color,
@@ -474,18 +493,16 @@ private fun SocialLinkButton(smItem: SocialMediaInfo, onClick: () -> Unit, smBtn
             color = smBtn.color,
             text = smBtn.txt,
             icon = smBtn.icon,
-            onBtnClick = { onClick() }
-        )
+            onBtnClick = { onClick() })
     }
 }
 
 @Composable
 fun AppAlertDialog(
-    alert: AlertConfig,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    alert: AlertConfig, onConfirm: () -> Unit, onDismiss: () -> Unit
 ) {
-    AlertDialog(onDismissRequest = { onDismiss() },
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
         title = { Text(text = alert.title) },
         text = { Text(text = alert.message) },
         confirmButton = {
@@ -496,12 +513,20 @@ fun AppAlertDialog(
                     Text(text = alert.confirmBtnText)
                 }
             }
-        }, dismissButton = {
+        },
+        dismissButton = {
             Button(onClick = {
                 onDismiss()
             }) {
                 Text(text = alert.dismissBtnText)
             }
-        }, modifier = Modifier
+        },
+        modifier = Modifier
     )
+}
+
+@Preview
+@Composable
+private fun NotEnableStreamAlertPreview() {
+    NotEnableStreamAlert(onDismiss = {}, onVerifyClick = {}, onEnableClick = {})
 }
