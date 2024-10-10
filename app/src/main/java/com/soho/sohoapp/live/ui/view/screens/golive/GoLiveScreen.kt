@@ -150,9 +150,13 @@ import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacySettings
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
+import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
@@ -212,11 +216,12 @@ fun GoLiveScreen(
             stateVm.isStreamNotEnabled.value = false
         }, onEnableClick = {
             stateVm.isStreamNotEnabled.value = false
+            openWebView(YT_ENABLE)
         }, onVerifyClick = {
             stateVm.isStreamNotEnabled.value = false
+            openWebView(YT_VERIFY)
         })
     }
-
 
     /*
     * show select orientation view
@@ -588,6 +593,12 @@ fun GoLiveScreen(
                 })
             })
         }
+    }
+}
+
+fun openWebView(url: String) {
+    GlobalScope.launch {
+        AppEventBus.sendEvent(AppEvent.OpenWebView(url))
     }
 }
 

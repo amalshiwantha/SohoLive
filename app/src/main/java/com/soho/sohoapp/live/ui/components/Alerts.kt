@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
@@ -28,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -98,13 +96,13 @@ fun NotEnableStreamAlert(
                     modifier = Modifier.padding(horizontal = 8.dp)
                 ) {
                     DotLinkView(
-                        onVerifyClick = {},
+                        onVerifyClick = { onVerifyClick() },
                         linkName = "Verify",
                         linkLabel = " your YouTube account"
                     )
                     SpacerUp(size = 8.dp)
                     DotLinkView(
-                        onVerifyClick = {},
+                        onVerifyClick = { onEnableClick() },
                         linkName = "Enable",
                         linkLabel = " live streaming on your YouTube channel at least 24 hours in advance"
                     )

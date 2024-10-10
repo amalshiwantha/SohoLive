@@ -390,7 +390,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
         }
     }
 
-    private fun openWebView(url: String) {
+    fun openWebView(url: String) {
         GlobalScope.launch {
             AppEventBus.sendEvent(AppEvent.OpenWebView(url))
         }
