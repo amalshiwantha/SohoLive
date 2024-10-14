@@ -279,7 +279,7 @@ fun isEnoughSpaceToRecord(): Boolean {
     * */
     val requiredSpaceFor5Min = 187.5
 
-    return availableMB >= 4000
+    return availableMB >= requiredSpaceFor5Min
 }
 
 // Calculate max video time based on available storage
