@@ -128,10 +128,10 @@ fun VideoRecorder(
                 timerValue = updateTimer(timerValue)
             }
 
-            if (elapsedTime >= maxVideoTime) {
+            /*if (elapsedTime >= maxVideoTime) {
                 isRecording = false
                 println("myVidRec : Max recording time reached")
-            }
+            }*/
         }
 
         //Timer Top Right
