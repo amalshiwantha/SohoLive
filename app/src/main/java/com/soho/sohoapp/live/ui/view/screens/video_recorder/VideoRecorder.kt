@@ -12,6 +12,7 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,17 +21,21 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -104,6 +109,30 @@ fun VideoRecorder(
         // Video control buttons
         var recording: Recording? by remember { mutableStateOf(null) }
         var isRecording by remember { mutableStateOf(false) }
+        var timerValue by remember { mutableStateOf("00:00") }
+
+        // Timer logic
+        LaunchedEffect(isRecording) {
+            while (isRecording) {
+                delay(1000) // Update every second
+                timerValue = updateTimer(timerValue)
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd) // Align to top right corner
+                .padding(horizontal = 16.dp, vertical = 32.dp)
+                .background(Color.Red) // Red background
+                .padding(8.dp) // Padding inside the box
+        ) {
+            Text(
+                text = timerValue,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
 
         // Start & Stop recording button
         Button(
@@ -113,6 +142,7 @@ fun VideoRecorder(
                     recording?.stop()
                     recording = null
                     isRecording = false
+                    timerValue = "00:00"
                 } else {
                     // Start recording
                     val videoFile = createVideoFile()
@@ -150,6 +180,20 @@ fun VideoRecorder(
             Text(if (isRecording) "Stop" else "Start")
         }
     }
+}
+
+// Function to update timer string
+fun updateTimer(currentTimer: String): String {
+    val parts = currentTimer.split(":").map { it.toInt() }
+    var minutes = parts[0]
+    var seconds = parts[1] + 1
+
+    if (seconds >= 60) {
+        seconds = 0
+        minutes += 1
+    }
+
+    return String.format("%02d:%02d", minutes, seconds)
 }
 
 // Function to create a video file in a custom directory "SohoPreRecording"
