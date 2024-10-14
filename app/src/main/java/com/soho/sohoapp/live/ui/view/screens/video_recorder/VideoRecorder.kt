@@ -71,7 +71,6 @@ fun VideoRecorder(
 
     DisposableEffect(Unit) {
         // Bind the preview and video capture use cases to the lifecycle
-        val cameraProvider = cameraProviderFuture.get()
         try {
             cameraProvider.unbindAll()
 
