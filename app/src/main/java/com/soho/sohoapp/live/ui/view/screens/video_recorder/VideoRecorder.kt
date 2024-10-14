@@ -12,12 +12,14 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -28,13 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.ui.components.TextWhite14Normal
+import com.soho.sohoapp.live.ui.theme.AppRed
 import kotlinx.coroutines.delay
 import java.io.File
 import java.text.SimpleDateFormat
@@ -119,20 +121,11 @@ fun VideoRecorder(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd) // Align to top right corner
-                .padding(horizontal = 16.dp, vertical = 32.dp)
-                .background(Color.Red) // Red background
-                .padding(8.dp) // Padding inside the box
-        ) {
-            Text(
-                text = timerValue,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
+        //Timer Top Right
+        TimerCard(
+            timerValue = timerValue,
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
 
         // Start & Stop recording button
         Button(
@@ -178,6 +171,20 @@ fun VideoRecorder(
         ) {
             // Toggle button text between Start and Stop based on recording state
             Text(if (isRecording) "Stop" else "Start")
+        }
+    }
+}
+
+@Composable
+fun TimerCard(timerValue: String, modifier: Modifier) {
+    Card(
+        modifier = modifier
+            .padding(horizontal = 16.dp, vertical = 32.dp),
+        colors = CardDefaults.cardColors(containerColor = AppRed),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Box(modifier = Modifier.padding(8.dp)) {
+            TextWhite14Normal(title = timerValue)
         }
     }
 }
