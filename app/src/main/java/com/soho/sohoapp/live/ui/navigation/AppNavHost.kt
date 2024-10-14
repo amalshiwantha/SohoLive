@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.ui.view.screens.pre_access.PreAccessScreen
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInScreen
 import com.soho.sohoapp.live.ui.view.screens.signup.SignUpScreen
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashScreen
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorder
 
 @Composable
 fun AppNavHost(viewMMain: MainViewModel) {
@@ -34,6 +35,11 @@ fun AppNavHost(viewMMain: MainViewModel) {
         }
         composable(route = NavigationPath.HOME.name) {
             HomeScreen(navControllerHome = navController, viewMMain = viewMMain)
+        }
+        composable(route = NavigationPath.VIDEO_RECORDER.name) {
+            VideoRecorder(navController = navController, onVideoSaved = {
+
+            })
         }
     }
 }
