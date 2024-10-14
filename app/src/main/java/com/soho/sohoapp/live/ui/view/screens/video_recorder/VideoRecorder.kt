@@ -149,7 +149,7 @@ fun VideoRecorder(
                 },
                 text = {
                     val maxRecTime = convertMinutesToHHMM(maxVideoTime)
-                    Text(text = "You have less than 100MB of storage available. Recording will stop automatically after $maxRecTime")
+                    Text(text = "You have less than 100MB of storage available. You can record max $maxRecTime under the HD resolution.")
                 },
                 confirmButton = {
                     Button(onClick = { showAlert = false }) {
