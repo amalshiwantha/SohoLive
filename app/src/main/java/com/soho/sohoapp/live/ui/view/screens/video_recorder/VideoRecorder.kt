@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
-import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import androidx.camera.core.CameraSelector
@@ -13,8 +12,7 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -89,13 +88,12 @@ fun VideoRecorder(
     }
 
     // Layout for Camera Preview and Buttons
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
         // Camera preview area using PreviewView wrapped in AndroidView
         AndroidView(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.fillMaxSize(),
             factory = { ctx ->
                 androidx.camera.view.PreviewView(ctx).apply {
                     previewView = this
@@ -119,7 +117,6 @@ fun VideoRecorder(
                 } else {
                     // Start recording
                     val videoFile = createVideoFile()
-
                     val outputOptions = FileOutputOptions.Builder(videoFile).build()
 
                     recording = videoCapture?.output
@@ -132,6 +129,7 @@ fun VideoRecorder(
                                 is VideoRecordEvent.Start -> {
                                     println("myVidRec : Recording Started")
                                 }
+
                                 is VideoRecordEvent.Finalize -> {
                                     if (recordEvent.hasError()) {
                                         println("myVidRec : Recording Error")
@@ -144,7 +142,10 @@ fun VideoRecorder(
                     isRecording = true
                 }
             },
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(32.dp)
+                .fillMaxWidth()
         ) {
             // Toggle button text between Start and Stop based on recording state
             Text(if (isRecording) "Stop" else "Start")
