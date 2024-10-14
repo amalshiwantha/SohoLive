@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
 import android.net.Uri
 import android.os.Environment
+import android.os.StatFs
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -17,13 +18,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -111,12 +115,22 @@ fun VideoRecorder(
         var recording: Recording? by remember { mutableStateOf(null) }
         var isRecording by remember { mutableStateOf(false) }
         var timerValue by remember { mutableStateOf("00:00") }
+        var showAlert by remember { mutableStateOf(false) }
+        var maxVideoTime by remember { mutableIntStateOf(0) }
 
         // Timer logic
         LaunchedEffect(isRecording) {
-            while (isRecording) {
-                delay(1000) // Update every second
+            var elapsedTime = 0
+
+            while (isRecording && elapsedTime < maxVideoTime) {
+                delay(1000)
+                elapsedTime++
                 timerValue = updateTimer(timerValue)
+            }
+
+            if (elapsedTime >= maxVideoTime) {
+                isRecording = false
+                println("myVidRec : Max recording time reached")
             }
         }
 
@@ -125,6 +139,25 @@ fun VideoRecorder(
             timerValue = timerValue,
             modifier = Modifier.align(Alignment.TopEnd)
         )
+
+        // Show alert if storage is below 100MB
+        if (showAlert) {
+            AlertDialog(
+                onDismissRequest = { showAlert = false },
+                title = {
+                    Text(text = "Insufficient Storage")
+                },
+                text = {
+                    val maxRecTime = convertMinutesToHHMM(maxVideoTime)
+                    Text(text = "You have less than 100MB of storage available. Recording will stop automatically after $maxRecTime")
+                },
+                confirmButton = {
+                    Button(onClick = { showAlert = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
 
         // Start & Stop recording button
         Button(
@@ -136,6 +169,15 @@ fun VideoRecorder(
                     isRecording = false
                     timerValue = "00:00"
                 } else {
+
+                    // Check storage before starting
+                    maxVideoTime = calculateMaxVideoTime()
+
+                    if (!isEnoughSpaceToRecord()) {
+                        showAlert = true
+                        return@Button
+                    }
+
                     // Start recording
                     val videoFile = createVideoFile()
                     val outputOptions = FileOutputOptions.Builder(videoFile).build()
@@ -223,3 +265,37 @@ fun createVideoFile(): File {
     // Return the file path
     return File(customDir, fileName)
 }
+
+// Check available storage before starting recording
+fun isEnoughSpaceToRecord(): Boolean {
+    val stat = StatFs(Environment.getExternalStorageDirectory().path)
+    val availableBytes = stat.availableBytes
+    val availableMB = availableBytes / (1024 * 1024) // Convert to MB
+
+    /*
+    * Estimate space required for 5 minutes of 720p video recording
+    * 5 Mbps = 5 / 8 MBps = 0.625 MBps (bitrate to mbps -> per sec)
+    * for 5min 0.625 MBps * 300 seconds = 187.5 MB
+    * */
+    val requiredSpaceFor5Min = 187.5
+
+    return availableMB >= 4000
+}
+
+// Calculate max video time based on available storage
+fun calculateMaxVideoTime(): Int {
+    val stat = StatFs(Environment.getExternalStorageDirectory().path)
+    val availableBytes = stat.availableBytes
+    val availableMB = availableBytes / (1024 * 1024)
+
+    // Assume 720p video consumes approximately 5 MB per second
+    return (availableMB / 5).toInt()
+}
+
+// Function to convert seconds to hh:mm format
+fun convertMinutesToHHMM(minutes: Int): String {
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
+    return "$hours hours and $remainingMinutes min"
+}
+
