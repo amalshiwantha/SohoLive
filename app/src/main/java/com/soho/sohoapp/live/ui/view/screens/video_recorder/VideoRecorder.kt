@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -169,8 +168,7 @@ fun VideoRecorder(
                 .padding(32.dp)
                 .fillMaxWidth()
         ) {
-            // Toggle button text between Start and Stop based on recording state
-            Text(if (isRecording) "Stop" else "Start")
+            TextWhite14Normal(title = if (isRecording) "Stop" else "Start")
         }
     }
 }
