@@ -110,6 +110,8 @@ fun VideoRecorder(
         // Start recording button
         Button(
             onClick = {
+                if(recording!=null) return@Button
+
                 val videoFile = createVideoFile()
                 val outputOptions = FileOutputOptions.Builder(videoFile).build()
 
@@ -159,10 +161,14 @@ fun VideoRecorder(
 // Function to create a video file in a custom directory "SohoPreRecording"
 fun createVideoFile(): File {
     // Get the videos directory
-    val videosDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    //val extStorageDir = Environment.getExternalStorageDirectory()
+
+    // Create a custom folder named "SohoPreRecord" directly in the root of external storage
+    val customDir = File(movieDir, "SohoPreRecord")
 
     // Create a folder named "SohoPreRecord" in the Videos directory
-    val customDir = File(videosDir, "SohoPreRecord")
+    //val customDir = File(videosDir, "SohoPreRecord")
     if (!customDir.exists()) {
         customDir.mkdirs() // Create the directory if it doesn't exist
     }
