@@ -106,54 +106,48 @@ fun VideoRecorder(
 
         // Video control buttons
         var recording: Recording? by remember { mutableStateOf(null) }
+        var isRecording by remember { mutableStateOf(false) }
 
-        // Start recording button
+        // Start & Stop recording button
         Button(
             onClick = {
-                if(recording!=null) return@Button
+                if (isRecording) {
+                    // Stop recording
+                    recording?.stop()
+                    recording = null
+                    isRecording = false
+                } else {
+                    // Start recording
+                    val videoFile = createVideoFile()
 
-                val videoFile = createVideoFile()
-                val outputOptions = FileOutputOptions.Builder(videoFile).build()
+                    val outputOptions = FileOutputOptions.Builder(videoFile).build()
 
-                recording = videoCapture?.output
-                    ?.prepareRecording(context, outputOptions)
-                    ?.apply {
-                        withAudioEnabled() // Enable audio
-                    }
-                    ?.start(executor) { recordEvent ->
-                        when (recordEvent) {
-                            is VideoRecordEvent.Start -> {
-                                println("myVidRec : Recording Started")
-                            }
-
-                            is VideoRecordEvent.Finalize -> {
-                                if (recordEvent.hasError()) {
-                                    println("myVidRec : Recording Error")
-                                } else {
-                                    println("myVidRec : Recording Saved: ${videoFile.absolutePath}")
+                    recording = videoCapture?.output
+                        ?.prepareRecording(context, outputOptions)
+                        ?.apply {
+                            withAudioEnabled() // Enable audio
+                        }
+                        ?.start(executor) { recordEvent ->
+                            when (recordEvent) {
+                                is VideoRecordEvent.Start -> {
+                                    println("myVidRec : Recording Started")
+                                }
+                                is VideoRecordEvent.Finalize -> {
+                                    if (recordEvent.hasError()) {
+                                        println("myVidRec : Recording Error")
+                                    } else {
+                                        println("myVidRec : Recording Saved: ${videoFile.absolutePath}")
+                                    }
                                 }
                             }
                         }
-                    }
+                    isRecording = true
+                }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
         ) {
-            Text("Start Recording")
-        }
-
-        // Stop recording button
-        Button(
-            onClick = {
-                recording?.stop()
-                recording = null
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text("Stop Recording")
+            // Toggle button text between Start and Stop based on recording state
+            Text(if (isRecording) "Stop" else "Start")
         }
     }
 }
