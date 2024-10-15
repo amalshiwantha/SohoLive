@@ -17,5 +17,6 @@ enum class NavigationPath {
     LIVE_CAST_END,
     WEB_VIEW,
     VIDEO_PLAYER,
-    VIDEO_RECORDER
+    VIDEO_RECORDER,
+    PRE_RECODED_LIST
 }

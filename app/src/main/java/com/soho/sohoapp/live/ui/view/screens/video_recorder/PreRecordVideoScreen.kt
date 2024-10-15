@@ -1,0 +1,142 @@
+package com.soho.sohoapp.live.ui.view.screens.video_recorder
+
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.ui.components.AppTopBar
+import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14spBold
+import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import java.io.File
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PreRecordScreen(navController: NavHostController) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            AppTopBar(
+                title = stringResource(R.string.forget_pw_title),
+                onBackClick = { navController.popBackStack() }, onRightClick = {})
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(brushMainGradientBg)
+        ) {
+            MainContent()
+        }
+    }
+}
+
+@Composable
+fun MainContent() {
+    val videoFiles = remember { getAllRecordedVideos() }
+    Column {
+        if (videoFiles.isEmpty()) {
+            Text(
+                text = "No videos recorded",
+                modifier = Modifier.fillMaxSize(),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                items(videoFiles) { file ->
+                    VideoFileItem(file)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun VideoFileItem(file: File) {
+    val thumbnail = remember { getVideoThumbnail(file) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable {
+                // Handle video file click (play or open the video)
+            }
+    ) {
+        if (thumbnail != null) {
+            Image(
+                bitmap = thumbnail.asImageBitmap(),
+                contentDescription = "Video thumbnail",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(Color.Gray, RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No Thumbnail Available", color = Color.White)
+            }
+        }
+
+        SpacerUp(size = 8.dp)
+
+        Text700_14sp(step = file.name)
+        Text700_14spBold(step = "Size: ${file.length() / (1024 * 1024)} MB")
+    }
+}
+
+fun getAllRecordedVideos(): List<File> {
+    val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    val customDir = File(movieDir, "SohoPreRecord")
+    return if (customDir.exists()) {
+        customDir.listFiles()?.filter { it.extension == "mp4" } ?: emptyList()
+    } else {
+        emptyList()
+    }
+}
+
+fun getVideoThumbnail(file: File): Bitmap? {
+    return ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Images.Thumbnails.MINI_KIND)
+}
+

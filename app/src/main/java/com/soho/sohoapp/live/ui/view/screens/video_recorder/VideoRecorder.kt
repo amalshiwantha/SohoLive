@@ -39,6 +39,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppRed
 import kotlinx.coroutines.delay
 import java.io.File
@@ -131,7 +132,7 @@ fun VideoRecorder(
 
                 // Check if the elapsed time exceeds the maximum allowed video time
                 //stop before 5sec
-                if (elapsedTime == maxVideoTime-5) {
+                if (elapsedTime == maxVideoTime - 5) {
                     recording?.stop()
                     recording = null
                     isRecording = false
@@ -141,6 +142,15 @@ fun VideoRecorder(
                 }
             }
 
+        }
+
+        //top right button to all List
+        Button(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(vertical = 32.dp, horizontal = 16.dp),
+            onClick = { navController.navigate(NavigationPath.PRE_RECODED_LIST.name) }) {
+            TextWhite14Normal(title = "List")
         }
 
         //Timer Top Right
@@ -180,7 +190,7 @@ fun VideoRecorder(
                 } else {
 
                     // Check storage before starting
-                    //maxVideoTime = calculateMaxVideoTime()
+                    // maxVideoTime = calculateMaxVideoTime()
                     maxVideoTime = 30
 
                     if (!isEnoughSpaceToRecord()) {
