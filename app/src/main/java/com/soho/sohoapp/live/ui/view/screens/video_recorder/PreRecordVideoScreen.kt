@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
 import android.graphics.Bitmap
 import android.media.ThumbnailUtils
+import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.compose.foundation.Image
@@ -38,6 +39,7 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,13 +59,16 @@ fun PreRecordScreen(navController: NavHostController) {
                 .padding(innerPadding)
                 .background(brushMainGradientBg)
         ) {
-            MainContent()
+            MainContent(onPlay = {
+                println("myPlayer $it")
+                navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}")
+            })
         }
     }
 }
 
 @Composable
-fun MainContent() {
+fun MainContent(onPlay: (Uri) -> Unit) {
     val videoFiles = remember { getAllRecordedVideos() }
     Column {
         if (videoFiles.isEmpty()) {
@@ -78,7 +83,9 @@ fun MainContent() {
                 contentPadding = PaddingValues(16.dp)
             ) {
                 items(videoFiles) { file ->
-                    VideoFileItem(file)
+                    VideoFileItem(file, onPlay = {
+                        onPlay(it)
+                    })
                 }
             }
         }
@@ -86,7 +93,7 @@ fun MainContent() {
 }
 
 @Composable
-fun VideoFileItem(file: File) {
+fun VideoFileItem(file: File, onPlay: (Uri) -> Unit) {
     val thumbnail = remember { getVideoThumbnail(file) }
 
     Column(
@@ -94,7 +101,7 @@ fun VideoFileItem(file: File) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                // Handle video file click (play or open the video)
+                onPlay(Uri.fromFile(file))
             }
     ) {
         if (thumbnail != null) {
