@@ -128,8 +128,6 @@ fun VideoRecorder(
                 elapsedTime++
                 timerValue = updateTimer(timerValue)
 
-                println("myVidRec : Max time $elapsedTime $maxVideoTime")
-
                 // Check if the elapsed time exceeds the maximum allowed video time
                 //stop before 5sec
                 if (elapsedTime == maxVideoTime - 5) {
@@ -190,8 +188,7 @@ fun VideoRecorder(
                 } else {
 
                     // Check storage before starting
-                    // maxVideoTime = calculateMaxVideoTime()
-                    maxVideoTime = 30
+                    maxVideoTime = calculateMaxVideoTime()
 
                     if (!isEnoughSpaceToRecord()) {
                         showAlert = true

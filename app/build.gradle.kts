@@ -178,6 +178,9 @@ dependencies {
     implementation("androidx.camera:camera-video:1.3.4")
     implementation("androidx.camera:camera-extensions:1.3.4")
 
+    //Watermark
+    implementation("com.arthenica:ffmpeg-kit-full:4.5.LTS")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
