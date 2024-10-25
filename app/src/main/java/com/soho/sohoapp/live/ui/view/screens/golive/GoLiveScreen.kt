@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -76,7 +78,7 @@ import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
-import com.soho.sohoapp.live.enums.Orientation
+import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.PropertyState
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
@@ -117,7 +119,6 @@ import com.soho.sohoapp.live.ui.components.SelectOrientationBottomSheet
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.SwipeSwitchLivePre
-import com.soho.sohoapp.live.ui.components.SwipeSwitchOrientation
 import com.soho.sohoapp.live.ui.components.Text400_10sp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -131,7 +132,6 @@ import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
 import com.soho.sohoapp.live.ui.components.TextIconSwipeSelection
 import com.soho.sohoapp.live.ui.components.TextStarRating
-import com.soho.sohoapp.live.ui.components.TextWhite12
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushGradientLive
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -141,9 +141,11 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.BorderGray
+import com.soho.sohoapp.live.ui.theme.CardGray
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.RentTxtColor
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.theme.lowGreen
@@ -1730,50 +1732,90 @@ private fun SocialMediaListing(
     })
     SpacerUp(size = 24.dp)
 
-    /*finally display SM list with checkBox or connect button*/
-    smList.forEach { item ->
-        SocialMediaItemContent(item,
-            isSohoPublic,
-            isCheckedYT,
-            isCheckedFB,
-            isCheckedLI,
-            onSMItemClicked = {
-                /*this is for open connect model*/
-                onSMItemClicked.invoke(it)
-            },
-            onSohoItemChecked = {
-                /*check and unCheck state update on toggle*/
-                onSohoItemChecked(it)
-            },
-            onSMItemChecked = { smInfo ->
-                /*check and unCheck state update on toggle*/
+    if (selectedFormat.value == LiveFormat.PRE.name) {
+        PreRecordedVideoCard()
+    } else {
+        /*finally display SM list with checkBox or connect button*/
+        smList.forEach { item ->
+            SocialMediaItemContent(item,
+                isSohoPublic,
+                isCheckedYT,
+                isCheckedFB,
+                isCheckedLI,
+                onSMItemClicked = {
+                    /*this is for open connect model*/
+                    onSMItemClicked.invoke(it)
+                },
+                onSohoItemChecked = {
+                    /*check and unCheck state update on toggle*/
+                    onSohoItemChecked(it)
+                },
+                onSMItemChecked = { smInfo ->
+                    /*check and unCheck state update on toggle*/
 
-                /*first view need to show checkedState, so after that no need to check recentLogged state. so remove it*/
-                recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.YOUTUBE.name } }
-                recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.FACEBOOK.name } }
-                recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.LINKEDIN.name } }
+                    /*first view need to show checkedState, so after that no need to check recentLogged state. so remove it*/
+                    recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.YOUTUBE.name } }
+                    recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.FACEBOOK.name } }
+                    recentLoggedSM.apply { recentLoggedSM.removeIf { it == SocialMediaInfo.LINKEDIN.name } }
 
-                /*smInfo.isItemChecked state update*/
-                when (smInfo.name) {
-                    SocialMediaInfo.YOUTUBE.name -> {
-                        isCheckedYT = smInfo.isItemChecked
+                    /*smInfo.isItemChecked state update*/
+                    when (smInfo.name) {
+                        SocialMediaInfo.YOUTUBE.name -> {
+                            isCheckedYT = smInfo.isItemChecked
+                        }
+
+                        SocialMediaInfo.FACEBOOK.name -> {
+                            isCheckedFB = smInfo.isItemChecked
+                        }
+
+                        SocialMediaInfo.LINKEDIN.name -> {
+                            isCheckedLI = smInfo.isItemChecked
+                        }
                     }
 
-                    SocialMediaInfo.FACEBOOK.name -> {
-                        isCheckedFB = smInfo.isItemChecked
-                    }
-
-                    SocialMediaInfo.LINKEDIN.name -> {
-                        isCheckedLI = smInfo.isItemChecked
-                    }
-                }
-
-                onSMItemChecked(smInfo)
-            })
+                    onSMItemChecked(smInfo)
+                })
+        }
     }
 
     SpacerUp(size = 40.dp)
 }
+
+@Composable
+private fun PreRecordedVideoCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = CardGray),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Info,
+                contentDescription = "Info",
+                tint = LinkTxtColor,
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.TopStart)
+            )
+
+            Column(modifier = Modifier.padding(start = 35.dp)) {
+                Text700_14sp(step = "Pre-Recorded Videos", color = TextDark)
+                SpacerUp(size = 8.dp)
+                Text700_14sp(
+                    step = "You can manage video visibility on your property listings after the video has been recorded.",
+                    color = TextDark,
+                    isBold = false
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
 private fun AgentListing(
