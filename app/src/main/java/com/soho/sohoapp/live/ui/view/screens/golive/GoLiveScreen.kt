@@ -1103,6 +1103,13 @@ fun StepContents(
 
         // step #3
         2 -> {
+            Content4(
+                optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
+            )
+        }
+
+        // step #4
+        3 -> {
             SocialMediaListing(recentLoggedSM = recentLoggedSM,
                 stateSMConnected = stateSMConnected,
                 isSohoPublic = mGoLiveSubmit.isSohoPublic,
@@ -1129,13 +1136,6 @@ fun StepContents(
                     MainStateHolder.mState.isPublic.value = it
                 })
             SpacerUp(size = 70.dp)
-        }
-
-        // step #4
-        3 -> {
-            Content4(
-                optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
-            )
         }
 
         // step #5
