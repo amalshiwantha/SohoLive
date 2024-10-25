@@ -1,0 +1,163 @@
+package com.soho.sohoapp.live.ui.view.screens.review
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.VideoPrivacy
+import com.soho.sohoapp.live.ui.components.AppTopBar
+import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text800_12sp
+import com.soho.sohoapp.live.ui.components.Text950_20sp
+import com.soho.sohoapp.live.ui.components.brushLiveGradientBg
+import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.OptionDarkBg
+import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
+import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
+
+@Preview
+@Composable
+private fun PreviewReviewScreen() {
+    ReviewScreen(navController = rememberNavController())
+}
+
+@Composable
+fun ReviewScreen(navController: NavHostController) {
+
+    var selectedOption by remember { mutableStateOf(VideoPrivacy.PRIVATE.label) }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            AppTopBar(
+                title = "",
+                onBackClick = { navController.popBackStack() }, onRightClick = { })
+        },
+        bottomBar = {
+            ButtonColoured(
+                text = "Done",
+                onBtnClick = {},
+                color = AppGreen,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+        }
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(brushMainGradientBg)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally // Centers content horizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_done_circle),
+                    contentDescription = ""
+                )
+                SpacerUp(size = 24.dp)
+                Text950_20sp(title = "Review or publish it now")
+                SpacerUp(size = 8.dp)
+                Text400_14sp(
+                    info = "Video will be available in your video gallery. You can publish it as unlisted or public.",
+                    txtAlign = TextAlign.Center
+                )
+                SpacerUp(size = 24.dp)
+
+                //Option Card
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    shape = MaterialTheme.shapes.small,
+                    colors = CardDefaults.cardColors(containerColor = OptionDarkBg)
+                )
+                {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        PrivacyOption(text = VideoPrivacy.PRIVATE.label,
+                            isWhiteTheme = false,
+                            description = "Video will only be visible to you. You can choose to publish it as unlisted or public when ready.",
+                            eyeImgId = R.drawable.ic_time,
+                            isSelected = selectedOption == VideoPrivacy.PRIVATE.label,
+                            txtColor = AppWhite,
+                            onOptionSelected = {
+                                selectedOption = VideoPrivacy.PRIVATE.label
+                            })
+
+                        SpacerUp(size = 16.dp)
+
+                        PrivacyOption(text = VideoPrivacy.UNLISTED.label,
+                            isWhiteTheme = false,
+                            description = "Video won’t be publicly visible on your listing. Anyone with the direct share link can still view it.",
+                            eyeImgId = R.drawable.ic_hide_eye,
+                            isSelected = selectedOption == VideoPrivacy.UNLISTED.label,
+                            txtColor = AppWhite,
+                            onOptionSelected = {
+                                selectedOption = VideoPrivacy.UNLISTED.label
+                            })
+
+                        SpacerUp(size = 16.dp)
+
+                        PrivacyOption(text = VideoPrivacy.PUBLIC.label,
+                            isWhiteTheme = false,
+                            description = "Video will be publicly visible on your property listing.",
+                            eyeImgId = R.drawable.ic_view_eye,
+                            isSelected = selectedOption == VideoPrivacy.PUBLIC.label,
+                            txtColor = AppWhite,
+                            onOptionSelected = {
+                                selectedOption = VideoPrivacy.PUBLIC.label
+                            })
+
+                        SpacerUp(size = 16.dp)
+
+                        //Bottom Info Card
+                        InfoCard(message = "Once video is published, it can no longer be made private.")
+                    }
+                }
+            }
+        }
+    }
+}

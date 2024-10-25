@@ -456,7 +456,7 @@ fun VisibleInfoView() {
 }
 
 @Composable
-private fun PrivacyOption(
+fun PrivacyOption(
     text: String, description: String, isSelected: Boolean,
     eyeImgId: Int,
     onOptionSelected: () -> Unit,
@@ -499,7 +499,7 @@ private fun PrivacyOption(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Image(
-                            painter = painterResource(id = eyeImgId), contentDescription = ""
+                            painter = painterResource(id = eyeImgId), contentDescription = "", modifier = Modifier.size(12.dp)
                         )
                         SpacerSide(size = 4.dp)
                         Text800_12sp(label = text)

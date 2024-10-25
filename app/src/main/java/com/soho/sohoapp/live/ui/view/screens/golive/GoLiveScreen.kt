@@ -1745,7 +1745,10 @@ private fun SocialMediaListing(
     SpacerUp(size = 24.dp)
 
     if (selectedFormat.value == LiveFormat.PRE.name) {
-        PreRecordedVideoCard()
+        InfoCard(
+            "Pre-Recorded Videos",
+            "You can manage video visibility on your property listings after the video has been recorded."
+        )
     } else {
         /*finally display SM list with checkBox or connect button*/
         smList.forEach { item ->
@@ -1794,7 +1797,7 @@ private fun SocialMediaListing(
 }
 
 @Composable
-private fun PreRecordedVideoCard() {
+fun InfoCard(title: String? = null, message: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -1816,10 +1819,13 @@ private fun PreRecordedVideoCard() {
             )
 
             Column(modifier = Modifier.padding(start = 35.dp)) {
-                Text700_14sp(step = "Pre-Recorded Videos", color = TextDark)
-                SpacerUp(size = 8.dp)
+                title?.let {
+                    Text700_14sp(step = it, color = TextDark)
+                    SpacerUp(size = 8.dp)
+                }
+
                 Text700_14sp(
-                    step = "You can manage video visibility on your property listings after the video has been recorded.",
+                    step = message,
                     color = TextDark,
                     isBold = false
                 )
