@@ -13,6 +13,7 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,12 +35,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
-import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppRed
 import kotlinx.coroutines.delay
 import java.io.File
@@ -143,13 +145,17 @@ fun VideoRecorder(
         }
 
         //top right button to all List
-        Button(
+        Image(
+            painter = painterResource(id = R.drawable.watermark_soho),
+            contentDescription = "",
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(vertical = 32.dp, horizontal = 16.dp),
+                .padding(vertical = 32.dp, horizontal = 16.dp)
+        )
+        /*Button(
             onClick = { navController.navigate(NavigationPath.PRE_RECODED_LIST.name) }) {
             TextWhite14Normal(title = "List")
-        }
+        }*/
 
         //Timer Top Right
         TimerCard(
