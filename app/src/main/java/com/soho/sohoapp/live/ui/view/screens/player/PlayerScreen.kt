@@ -4,8 +4,10 @@ import android.net.Uri
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,14 +17,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
+import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
+import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import java.io.File
 
 @Composable
@@ -56,8 +64,29 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
                 onBackClick = { navController.popBackStack() }, onRightClick = {
                     //show confirmation to remove
                     isShowAlert = true
-
                 })
+        },
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ButtonOutlineWhiteNormal(
+                    text = "Edit Details",
+                    onBtnClick = {},
+                    modifier = Modifier.weight(1f)
+                )
+                SpacerSide(size = 16.dp)
+                ButtonColoured(
+                    text = "Next",
+                    onBtnClick = {},
+                    color = AppGreen,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     ) { innerPadding ->
 

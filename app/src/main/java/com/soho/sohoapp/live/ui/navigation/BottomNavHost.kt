@@ -148,7 +148,7 @@ fun BottomNavHost(
 
         composable(route = NavigationPath.VIDEO_RECORDER.name) {
             VideoRecorder(onVideoSaved = {
-                val tempVidFile ="file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_010015.mp4"
+                val tempVidFile ="file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_004116.mp4"
                 navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(tempVidFile)}") {
                     popUpTo(NavigationPath.VIDEO_RECORDER.name) {
                         inclusive = true
