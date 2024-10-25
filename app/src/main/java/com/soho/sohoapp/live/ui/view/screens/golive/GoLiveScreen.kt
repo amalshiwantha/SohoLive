@@ -742,10 +742,16 @@ fun isAllowGoNext(
             }
         }
 
-        2 -> {/*
+        2 -> {
+            mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+            val errorList = mGoLiveSubmit.errors
+            onValidateRes.invoke(mGoLiveSubmit)
+            errorList.isEmpty()
+
+            /*
             * recently added soho pub and priv. so its default public, so no need to check other SM checked or not
             * */
-            true
+
 
             /*if (mGoLiveSubmit.platformToken.isNotEmpty()) {
                 true
@@ -761,10 +767,11 @@ fun isAllowGoNext(
         }
 
         3 -> {
-            mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+            /*mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
             val errorList = mGoLiveSubmit.errors
             onValidateRes.invoke(mGoLiveSubmit)
-            errorList.isEmpty()
+            errorList.isEmpty()*/
+            return true
         }
 
         else -> {
