@@ -29,8 +29,8 @@ enum class AlertConfig(
         dismissBtnText = "No"
     ),
     DELETE_ALERT(
-        title = "Delete Alert",
-        message = "Do you want to delete this item?",
+        title = "Confirm Delete",
+        message = "Do you want to delete this Video item?",
         confirmBtnText = "Delete",
         dismissBtnText = "Cancel"
     ),
