@@ -1,6 +1,9 @@
 package com.soho.sohoapp.live.ui.view.screens.player
 
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
 import android.net.Uri
+import android.provider.MediaStore
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.compose.foundation.Image
@@ -13,18 +16,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -45,7 +47,12 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
 
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
-    var videoView: VideoView? = null
+    var thumbnailBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    // Extract the thumbnail from the video
+    LaunchedEffect(fileUri) {
+        thumbnailBitmap = getVideoThumbnail(fileUri)
+    }
 
     //show confirmation to delete video
     if (isShowAlert) {
@@ -111,48 +118,53 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
             ) {
 
                 Box(modifier = Modifier.fillMaxSize()) {
+
+                    if(!isPlaying){
+                        thumbnailBitmap?.let { bitmap ->
+                            Image(
+                                bitmap = bitmap.asImageBitmap(),
+                                contentDescription = "Video Thumbnail",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
+                    }
+
                     //Player
-                    AndroidView(
-                        factory = { context ->
-                            // Create a VideoView
-                            val videoViewInstance = VideoView(context)
+                    if(isPlaying){
+                        AndroidView(
+                            factory = { context ->
+                                // Create a VideoView
+                                val videoViewInstance = VideoView(context)
 
-                            // Set up the MediaController for play/pause and seek controls
-                            val mediaController = MediaController(context)
-                            mediaController.setAnchorView(videoView)
-                            videoViewInstance.setMediaController(mediaController)
+                                // Set up the MediaController for play/pause and seek controls
+                                val mediaController = MediaController(context)
+                                mediaController.setAnchorView(videoViewInstance)
+                                videoViewInstance.setMediaController(mediaController)
 
-                            // Set the video URI to the VideoView
-                            videoViewInstance.setVideoURI(fileUri)
+                                // Set the video URI to the VideoView
+                                videoViewInstance.setVideoURI(fileUri)
 
-                            // Start the video automatically
-                            videoViewInstance.setOnPreparedListener {
-                                /*it.start()
-                                it.pause()*/
-                            }
+                                // Start the video automatically
+                                videoViewInstance.setOnPreparedListener {
+                                    it.start()
+                                    it.pause()
+                                }
 
-                            videoView = videoViewInstance
-                            videoViewInstance
-                        },
-                        update = {
-                            /*it.setVideoURI(fileUri)
-                            it.start()*/
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
+                                videoViewInstance
+                            },
+                            update = {
+                                it.setVideoURI(fileUri)
+                                it.start()
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
 
                     // Play IconButton in the center
                     IconButton(
                         onClick = {
-                            videoView?.let { vv ->
-                                if (isPlaying) {
-                                    vv.pause() // Pause the video
-                                } else {
-                                    vv.start() // Start the video
-                                }
-                                // Toggle play state
-                                isPlaying = !isPlaying
-                            }
+                            isPlaying = true
                         },
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -163,6 +175,7 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
                             contentDescription = "Play"
                         )
                     }
+
                 }
 
             }
@@ -182,4 +195,11 @@ fun deleteFileFromUri(fileUri: Uri): Boolean {
         e.printStackTrace()
         false
     }
+}
+
+fun getVideoThumbnail(videoUri: Uri): Bitmap? {
+    return ThumbnailUtils.createVideoThumbnail(
+        File(videoUri.path).toString(),
+        MediaStore.Images.Thumbnails.MINI_KIND
+    )
 }
