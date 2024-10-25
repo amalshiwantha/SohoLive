@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -41,6 +44,8 @@ import java.io.File
 fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
 
     var isShowAlert by remember { mutableStateOf(false) }
+    var isPlaying by remember { mutableStateOf(false) }
+    var videoView: VideoView? = null
 
     //show confirmation to delete video
     if (isShowAlert) {
@@ -110,24 +115,28 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
                     AndroidView(
                         factory = { context ->
                             // Create a VideoView
-                            val videoView = VideoView(context)
+                            val videoViewInstance = VideoView(context)
 
                             // Set up the MediaController for play/pause and seek controls
                             val mediaController = MediaController(context)
                             mediaController.setAnchorView(videoView)
-                            videoView.setMediaController(mediaController)
+                            videoViewInstance.setMediaController(mediaController)
 
                             // Set the video URI to the VideoView
-                            videoView.setVideoURI(fileUri)
+                            videoViewInstance.setVideoURI(fileUri)
 
                             // Start the video automatically
-                            videoView.setOnPreparedListener { it.start() }
+                            videoViewInstance.setOnPreparedListener {
+                                /*it.start()
+                                it.pause()*/
+                            }
 
-                            videoView
+                            videoView = videoViewInstance
+                            videoViewInstance
                         },
                         update = {
-                            it.setVideoURI(fileUri)
-                            it.start()
+                            /*it.setVideoURI(fileUri)
+                            it.start()*/
                         },
                         modifier = Modifier.fillMaxSize()
                     )
@@ -135,7 +144,15 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
                     // Play IconButton in the center
                     IconButton(
                         onClick = {
-                            // Logic to start/pause the video
+                            videoView?.let { vv ->
+                                if (isPlaying) {
+                                    vv.pause() // Pause the video
+                                } else {
+                                    vv.start() // Start the video
+                                }
+                                // Toggle play state
+                                isPlaying = !isPlaying
+                            }
                         },
                         modifier = Modifier
                             .align(Alignment.Center)
