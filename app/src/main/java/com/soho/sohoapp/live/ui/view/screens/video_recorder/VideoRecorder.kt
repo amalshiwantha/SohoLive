@@ -2,6 +2,8 @@ package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
 import android.net.Uri
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.os.StatFs
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
@@ -53,7 +55,6 @@ import java.util.concurrent.Executors
 
 @Composable
 fun VideoRecorder(
-    navController: NavHostController,
     onVideoSaved: (Uri) -> Unit
 ) {
     val context = LocalContext.current
@@ -219,8 +220,13 @@ fun VideoRecorder(
                                 is VideoRecordEvent.Finalize -> {
                                     if (recordEvent.hasError()) {
                                         println("myVidRec : Recording Error")
+                                        Handler(Looper.getMainLooper()).post {
+                                            onVideoSaved(Uri.fromFile(videoFile))
+                                        }
                                     } else {
-                                        println("myVidRec : Recording Saved: ${videoFile.absolutePath}")
+                                        //Open Video Player screen with last recorded video
+                                        val lastVidUri = Uri.fromFile(videoFile)
+                                        println("myVidRec : Recording Saved: ${lastVidUri}")
                                     }
                                 }
                             }

@@ -44,15 +44,5 @@ fun AppNavHost(viewMMain: MainViewModel) {
         composable(route = NavigationPath.PRE_RECODED_LIST.name) {
             PreRecordScreen(navController = navController)
         }
-        composable(
-            route = "${NavigationPath.PLAYER.name}/{uri}",
-            arguments = listOf(navArgument("uri") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val uriString = backStackEntry.arguments?.getString("uri")
-            val uri = uriString?.let { Uri.parse(it) }
-            uri?.let {
-                PlayerScreen(navController = navController, fileUri = it)
-            }
-        }
     }
 }
