@@ -43,7 +43,7 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import java.io.File
 
 @Composable
-fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
+fun PlayerScreen(navController: NavHostController, fileUri: Uri, onNextClick: () -> Unit = {}) {
 
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
@@ -98,7 +98,7 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
                 SpacerSide(size = 16.dp)
                 ButtonColoured(
                     text = "Next",
-                    onBtnClick = {},
+                    onBtnClick = { onNextClick() },
                     color = AppGreen,
                     modifier = Modifier.weight(1f)
                 )
@@ -119,7 +119,7 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
 
                 Box(modifier = Modifier.fillMaxSize()) {
 
-                    if(!isPlaying){
+                    if (!isPlaying) {
                         thumbnailBitmap?.let { bitmap ->
                             Image(
                                 bitmap = bitmap.asImageBitmap(),
@@ -131,7 +131,7 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri) {
                     }
 
                     //Player
-                    if(isPlaying){
+                    if (isPlaying) {
                         AndroidView(
                             factory = { context ->
                                 // Create a VideoView

@@ -1,22 +1,17 @@
 package com.soho.sohoapp.live.ui.navigation
 
-import android.net.Uri
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.forget_pw.ForgetPwScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeScreen
-import com.soho.sohoapp.live.ui.view.screens.player.PlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.pre_access.PreAccessScreen
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInScreen
 import com.soho.sohoapp.live.ui.view.screens.signup.SignUpScreen
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashScreen
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.PreRecordScreen
-import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorder
 
 @Composable
 fun AppNavHost(viewMMain: MainViewModel) {

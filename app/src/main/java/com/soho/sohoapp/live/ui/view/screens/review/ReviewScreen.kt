@@ -2,16 +2,12 @@ package com.soho.sohoapp.live.ui.view.screens.review
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,12 +30,9 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
-import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
-import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
-import com.soho.sohoapp.live.ui.components.brushLiveGradientBg
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -54,7 +47,7 @@ private fun PreviewReviewScreen() {
 }
 
 @Composable
-fun ReviewScreen(navController: NavHostController) {
+fun ReviewScreen(navController: NavHostController, onDoneClick: () -> Unit = {}) {
 
     var selectedOption by remember { mutableStateOf(VideoPrivacy.PRIVATE.label) }
 
@@ -68,7 +61,7 @@ fun ReviewScreen(navController: NavHostController) {
         bottomBar = {
             ButtonColoured(
                 text = "Done",
-                onBtnClick = {},
+                onBtnClick = { onDoneClick() },
                 color = AppGreen,
                 modifier = Modifier
                     .fillMaxWidth()

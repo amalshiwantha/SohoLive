@@ -26,6 +26,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive_success.GoLiveOkScreen
 import com.soho.sohoapp.live.ui.view.screens.liveEnd.LiveEndScreen
 import com.soho.sohoapp.live.ui.view.screens.player.PlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.profile.ProfileScreen
+import com.soho.sohoapp.live.ui.view.screens.review.ReviewScreen
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
@@ -148,7 +149,8 @@ fun BottomNavHost(
 
         composable(route = NavigationPath.VIDEO_RECORDER.name) {
             VideoRecorder(onVideoSaved = {
-                val tempVidFile ="file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_004116.mp4"
+                val tempVidFile =
+                    "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_004116.mp4"
                 navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(tempVidFile)}") {
                     popUpTo(NavigationPath.VIDEO_RECORDER.name) {
                         inclusive = true
@@ -164,8 +166,30 @@ fun BottomNavHost(
             val uriString = backStackEntry.arguments?.getString("uri")
             val uri = uriString?.let { Uri.parse(it) }
             uri?.let {
-                PlayerScreen(navController = navController, fileUri = it)
+                PlayerScreen(navController = navController, fileUri = it, onNextClick = {
+                    navController.navigate(NavigationPath.REVIEW.name) {
+                        popUpTo(NavigationPath.REVIEW.name) {
+                            inclusive = true
+                        }
+                    }
+                })
             }
+        }
+
+        composable(route = NavigationPath.REVIEW.name) {
+            ReviewScreen(navController = navController, onDoneClick = {
+                navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
+                    //tab move
+                    onTabMoveClick(1)
+
+                    // Pop up to the start destination (or a specific destination) and clear the stack
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        inclusive = true
+                    }
+                    // Ensure the new screen is the top-most screen
+                    launchSingleTop = true
+                }
+            })
         }
     }
 }

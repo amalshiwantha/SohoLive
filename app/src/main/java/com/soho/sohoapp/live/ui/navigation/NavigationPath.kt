@@ -19,5 +19,6 @@ enum class NavigationPath {
     VIDEO_PLAYER,
     VIDEO_RECORDER,
     PRE_RECODED_LIST,
-    PLAYER
+    PLAYER,
+    REVIEW
 }
