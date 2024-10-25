@@ -76,6 +76,7 @@ import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
+import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.PropertyState
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.enums.StepInfo
@@ -85,6 +86,7 @@ import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLivePlatform
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.model.MainStateHolder.mState
 import com.soho.sohoapp.live.model.PlatformToken
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.ScheduleDateTime
@@ -114,6 +116,8 @@ import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SelectOrientationBottomSheet
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.SwipeSwitchLivePre
+import com.soho.sohoapp.live.ui.components.SwipeSwitchOrientation
 import com.soho.sohoapp.live.ui.components.Text400_10sp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -127,6 +131,7 @@ import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
 import com.soho.sohoapp.live.ui.components.TextIconSwipeSelection
 import com.soho.sohoapp.live.ui.components.TextStarRating
+import com.soho.sohoapp.live.ui.components.TextWhite12
 import com.soho.sohoapp.live.ui.components.brushBottomGradientBg
 import com.soho.sohoapp.live.ui.components.brushGradientLive
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -1669,6 +1674,7 @@ private fun SocialMediaListing(
     onSMItemChecked: (SocialMediaInfo) -> Unit,
     onSohoItemChecked: (Boolean) -> Unit
 ) {
+    val selectedFormat by remember { mutableStateOf(mState.liveFormat) }
 
     /*this is for each SM checkBox*/
     var isCheckedYT by rememberSaveable { mutableStateOf(false) }
@@ -1717,6 +1723,12 @@ private fun SocialMediaListing(
         isItemChecked = savedLI?.isItemChecked ?: false
         accessToken = savedLI?.accessToken
     }*/
+
+    //pre-rec and goLive selector
+    SwipeSwitchLivePre(selectedFormat, onSwipeChange = {
+        selectedFormat.value = it
+    })
+    SpacerUp(size = 24.dp)
 
     /*finally display SM list with checkBox or connect button*/
     smList.forEach { item ->

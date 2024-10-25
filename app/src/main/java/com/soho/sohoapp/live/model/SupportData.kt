@@ -10,6 +10,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
+import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
@@ -36,8 +37,9 @@ data class SmBtn(val color: Color, val txt: String, val icon: Int?)
 * */
 @Serializable
 data class MainState(
+    var liveFormat: MutableState<String> = mutableStateOf(LiveFormat.PRE.name),
     var liveOrientation: MutableState<String> = mutableStateOf(Orientation.PORT.name),
-    var stepId: MutableState<Int> = mutableIntStateOf(0),
+    var stepId: MutableState<Int> = mutableIntStateOf(2),
     var isPublic: MutableState<Boolean> = mutableStateOf(false),
 
     //Step #1

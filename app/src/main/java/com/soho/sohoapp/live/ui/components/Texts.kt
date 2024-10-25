@@ -603,6 +603,34 @@ fun TextSwipeSelection(modifier: Modifier, title: String, textColor: Color) {
         )
     }
 }
+@Composable
+fun TextIconSwipeSelectionNoFilter(modifier: Modifier, title: String, textColor: Color, icon: Int) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = null
+            )
+            SpacerUp(size = 8.dp)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = title,
+                fontSize = 12.sp,
+                lineHeight = 16.8.sp,
+                fontFamily = FontFamily(Font(R.font.axiforma)),
+                fontWeight = FontWeight(800),
+                color = textColor,
+                textAlign = TextAlign.Center,
+                letterSpacing = 0.14.sp
+            )
+        }
+    }
+}
 
 @Composable
 fun TextIconSwipeSelection(modifier: Modifier, title: String, textColor: Color, icon: Int) {
