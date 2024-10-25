@@ -114,6 +114,7 @@ fun HomeScreen(
 fun isBottomBarVisible(backStack: NavBackStackEntry?): Boolean {
     backStack?.let {
         when (backStack.destination.route) {
+            NavigationPath.VIDEO_RECORDER.name -> return false
             NavigationPath.GO_LIVE_SUCCESS.name -> return false
             NavigationPath.SET_SCHEDULE.name -> return false
             NavigationPath.VIDEO_MANAGE.name -> return false

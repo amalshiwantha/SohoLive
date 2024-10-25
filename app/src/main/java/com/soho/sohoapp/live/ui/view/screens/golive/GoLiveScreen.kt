@@ -237,13 +237,18 @@ fun GoLiveScreen(
         SelectOrientationBottomSheet(onGoLive = {
             isShowOrientationModel = false
 
-            callApi(mGoLiveSubmit,
-                mFieldsError,
-                netUtil,
-                goLiveVm,
-                onErrorsUpdate = {
-                    mFieldsError = it
-                })
+            if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
+                callApi(mGoLiveSubmit,
+                    mFieldsError,
+                    netUtil,
+                    goLiveVm,
+                    onErrorsUpdate = {
+                        mFieldsError = it
+                    })
+            } else {
+                //Open Pre-Recorder Screen
+                navController.navigate(NavigationPath.VIDEO_RECORDER.name)
+            }
         }, onCancel = {
             isShowOrientationModel = false
         })

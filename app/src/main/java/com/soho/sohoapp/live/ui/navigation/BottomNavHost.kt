@@ -28,6 +28,7 @@ import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorder
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 
 
@@ -141,6 +142,12 @@ fun BottomNavHost(
 
             // Pass the arguments to the VideoScreen
             VideoPlayerScreen(navController = navController, title = title, url = url)
+        }
+
+        composable(route = NavigationPath.VIDEO_RECORDER.name) {
+            VideoRecorder(navController = navController, onVideoSaved = {
+
+            })
         }
     }
 }
