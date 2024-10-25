@@ -20,8 +20,8 @@ enum class StepInfo(
     ),
     STEP_3(
         counter = "Step 3 of $maxSteps",
-        title = "Select multicast destinations",
-        info = "Your livestream will be shown simultaneously on your selected destinations. "
+        title = "Select your video format",
+        info = "You can either stream live, allowing viewers to watch in real-time on your property listing, or record your video and share it at a later time."
     ),
     STEP_4(
         counter = "Step 4 of $maxSteps",
