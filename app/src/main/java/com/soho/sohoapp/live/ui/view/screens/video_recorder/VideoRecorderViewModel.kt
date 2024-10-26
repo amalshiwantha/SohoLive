@@ -41,4 +41,8 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
             mState.value = mState.value.copy(isSuccess = true)
         }
     }
+
+    fun reset() {
+        mState.value = mState.value.copy(isSuccess = false)
+    }
 }

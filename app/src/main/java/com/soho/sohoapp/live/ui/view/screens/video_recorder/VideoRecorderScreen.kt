@@ -64,8 +64,19 @@ fun VideoRecorderScreen(
     vmVidRec: VideoRecorderViewModel = koinInject(),
     onVideoSaved: (Uri) -> Unit
 ) {
+    val mState = vmVidRec.mState.value
     val context = LocalContext.current
     val lifecycleOwner = LocalContext.current as LifecycleOwner
+
+    //If save success then open player
+    LaunchedEffect(mState.isSuccess) {
+        if (mState.isSuccess) {
+            val tempVidFile =
+                "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_161648.mp4"
+            onVideoSaved(Uri.parse(tempVidFile))
+            vmVidRec.reset()
+        }
+    }
 
     // Camera provider instance
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -224,16 +235,20 @@ fun VideoRecorderScreen(
                                     if (recordEvent.hasError()) {
                                         println("myVidRec : Recording Error")
                                         Handler(Looper.getMainLooper()).post {
-                                            vmVidRec.saveVideoItem(goLiveData,Uri.fromFile(videoFile))
-                                            //onVideoSaved(Uri.fromFile(videoFile))
+                                            vmVidRec.saveVideoItem(
+                                                goLiveData,
+                                                Uri.fromFile(videoFile)
+                                            )
                                         }
                                     } else {
                                         //Open Video Player screen with last recorded video
                                         val lastVidUri = Uri.fromFile(videoFile)
                                         println("myVidRec : Recording Saved: ${lastVidUri}")
                                         Handler(Looper.getMainLooper()).post {
-                                            vmVidRec.saveVideoItem(goLiveData,Uri.fromFile(videoFile))
-                                            //onVideoSaved(Uri.fromFile(videoFile))
+                                            vmVidRec.saveVideoItem(
+                                                goLiveData,
+                                                Uri.fromFile(videoFile)
+                                            )
                                         }
                                     }
                                 }
