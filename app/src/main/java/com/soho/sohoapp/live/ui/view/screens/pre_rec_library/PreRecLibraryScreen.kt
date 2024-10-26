@@ -131,7 +131,7 @@ fun MainContent(onPlay: (Uri) -> Unit, videoList: MutableList<PrivateVideo>) {
                     PvtVidItemView(
                         pvtVid,
                         onPlayVideo = {
-                            //onPlay(it)
+                            onPlay(Uri.parse(it))
                         },
                         onDeleteVideo = {},
                         onDownloadVideo = {},

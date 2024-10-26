@@ -21,7 +21,6 @@ class PreRecLibraryViewModel() : ViewModel() {
     fun loadPvtVideo() {
         viewModelScope.launch {
             mState.value = mState.value.copy(isLoading = mutableStateOf(true))
-            delay(1000)
             mState.value = mState.value.copy(videoList = mutableStateOf(sortedPvtVidList()))
             mState.value = mState.value.copy(isLoading = mutableStateOf(false))
         }
