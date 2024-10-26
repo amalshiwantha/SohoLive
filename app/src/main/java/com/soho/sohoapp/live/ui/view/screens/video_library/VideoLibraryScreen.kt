@@ -64,6 +64,7 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
+import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -280,6 +281,12 @@ private fun Content(
             .background(brushMainGradientBg)
             .fillMaxSize()
     ) {
+        //Private Video Button
+        ButtonOutLinedIcon(text = "Private Videos", icon = R.drawable.ic_pvt_video, onBtnClick = {
+
+        }, modifier = Modifier.padding(16.dp))
+
+        //Live Video List
         if (isShowProgress) {
             CenterMessageProgress(message = state.loadingMessage)
         } else {
