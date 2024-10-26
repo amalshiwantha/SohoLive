@@ -11,9 +11,12 @@ import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PreRecLibraryViewModel() : ViewModel() {
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     fun loadPvtVideo() {
         viewModelScope.launch {
@@ -25,7 +28,7 @@ class PreRecLibraryViewModel() : ViewModel() {
     }
 
     private fun sortedPvtVidList(): MutableList<PrivateVideo> {
-        val displayList : MutableList<PrivateVideo> = mutableListOf()
+        val displayList: MutableList<PrivateVideo> = mutableListOf()
         //get all db saved data
         val dbSaveData = getAllStoreData()
 
@@ -38,7 +41,7 @@ class PreRecLibraryViewModel() : ViewModel() {
         * */
         rawFiles.forEach { it ->
             val rawFileName = it.name
-            val savedFile = dbSaveData.find {  savedData->
+            val savedFile = dbSaveData.find { savedData ->
                 savedData.filePath.endsWith(rawFileName)
             }
 
@@ -48,6 +51,9 @@ class PreRecLibraryViewModel() : ViewModel() {
                 displayList.add(avaliableFile)
             }
         }
+
+        //sort last rec first
+        sortVideosByDate(displayList)
 
         return displayList
     }
@@ -85,5 +91,12 @@ class PreRecLibraryViewModel() : ViewModel() {
         )
 
         return mutableListOf(pv1, pv2)
+    }
+
+    // Sort function
+    private fun sortVideosByDate(videos: MutableList<PrivateVideo>) {
+        videos.sortByDescending { video ->
+            dateFormat.parse(video.createdDate)
+        }
     }
 }
