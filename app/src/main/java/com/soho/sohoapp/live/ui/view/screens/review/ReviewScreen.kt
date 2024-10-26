@@ -50,12 +50,9 @@ fun ReviewScreen(
     val pvtVidId = mGState.privateVideoId.value
     var selectedOption by remember { mutableStateOf(VideoPrivacy.PRIVATE.label) }
 
-    /*val selectedItem = states.privateVideo.value
-    val dfltSelection = selectedItem?.privacy ?: VideoPrivacy.PRIVATE
-    var selectedOption by remember { mutableStateOf(dfltSelection) }*/
-
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
+            mGState.privateVideoId.value  = -1
             onDoneClick()
             //call when edit -> navController.popBackStack()
         }
