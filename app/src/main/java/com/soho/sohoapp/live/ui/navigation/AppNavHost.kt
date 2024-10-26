@@ -39,20 +39,5 @@ fun AppNavHost(viewMMain: MainViewModel) {
         composable(route = NavigationPath.HOME.name) {
             HomeScreen(navControllerHome = navController, viewMMain = viewMMain)
         }
-
-        composable(route = NavigationPath.VIDEO_RECORDER.name) {
-            VideoRecorderScreen(
-                goLiveData = GoLiveSubmit(),
-                mGState = GlobalState(),
-                onVideoSaved = {
-                    val tempVidFile =
-                        "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_161648.mp4"
-                    navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(tempVidFile)}") {
-                        popUpTo(NavigationPath.VIDEO_RECORDER.name) {
-                            inclusive = true
-                        }
-                    }
-                })
-        }
     }
 }

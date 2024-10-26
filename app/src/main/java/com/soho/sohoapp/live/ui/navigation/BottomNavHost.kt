@@ -154,9 +154,7 @@ fun BottomNavHost(
                 goLiveData = mGoLiveSubmit,
                 mGState = mGlobalState,
                 onVideoSaved = {
-                val tempVidFile =
-                    "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_161648.mp4"
-                navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(tempVidFile)}") {
+                navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}") {
                     popUpTo(NavigationPath.VIDEO_RECORDER.name) {
                         inclusive = true
                     }
