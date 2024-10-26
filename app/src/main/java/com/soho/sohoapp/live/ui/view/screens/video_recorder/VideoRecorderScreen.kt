@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cameraswitch
-import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material.icons.filled.VideoCameraBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -46,7 +44,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,10 +58,10 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.io.File
 import java.text.SimpleDateFormat
@@ -83,7 +80,7 @@ fun VideoRecorderScreen(
     vmVidRec: VideoRecorderViewModel = koinInject(),
     onVideoSaved: (Uri) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
+
     val controller = remember {
         LifecycleCameraController(context).apply {
             setEnabledUseCases(
@@ -145,32 +142,13 @@ fun VideoRecorderScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(16.dp),
+                .padding(32.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            IconButton(
-                onClick = {
-                    scope.launch {
-
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Photo,
-                    contentDescription = "Open gallery"
-                )
-            }
-            IconButton(
-                onClick = {
-                    recordVideo(controller, onRecord = {
-                        isRecording = it
-                    })
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.VideoCameraBack,
-                    contentDescription = "Record Video"
-                )
+            ButtonOutlineWhite(text = if (isRecording) "Stop" else "Start") {
+                recordVideo(controller, onRecord = {
+                    isRecording = it
+                })
             }
         }
     }
