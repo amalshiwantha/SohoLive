@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -26,8 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,7 +32,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
@@ -47,6 +43,10 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (Pair<String, String>) -> Unit) {
     val maxLength = 3000
     var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
+
+    if (txtInput.isNotEmpty()) {
+        onTextChange(Pair(txtInput, "${txtInput.length}/$maxLength"))
+    }
 
     OutlinedTextField(
         value = txtInput,
@@ -128,7 +128,11 @@ fun TextFieldWhiteIcon(
 }
 
 @Composable
-fun TextFieldWhiteEmail(fieldConfig: FieldConfig, modifier: Modifier, onTextChange: (String) -> Unit) {
+fun TextFieldWhiteEmail(
+    fieldConfig: FieldConfig,
+    modifier: Modifier,
+    onTextChange: (String) -> Unit
+) {
     var txtInput by rememberSaveable { mutableStateOf(fieldConfig.input) }
 
     OutlinedTextField(

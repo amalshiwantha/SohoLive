@@ -2,17 +2,34 @@ package com.soho.sohoapp.live.ui.view.screens.video_edit_details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.PrivateVideo
+import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.ui.components.AppTopBar
+import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
+import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.TextAreaWhite
+import com.soho.sohoapp.live.ui.components.TextFieldOutlined
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.view.screens.golive.ShowError
 import org.koin.compose.koinInject
 
 @Composable
@@ -41,13 +58,82 @@ fun VidEditDetailsScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                //form content
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    mGState.privateVidItemState.value?.let {
+                        EditForm(it)
+                    }
+                }
             }
         }
     }
+}
+
+@Composable
+fun EditForm(itemData: PrivateVideo) {
+    var mFieldsError by remember { mutableStateOf(mutableMapOf<FormFields, String>()) }
+    val optionList = mutableListOf("Inspection", "Auction", "Other")
+    var txtCounter by rememberSaveable { mutableStateOf("0/3000") }
+    val errPurpose = mFieldsError[FormFields.PURPOSE]
+    val errTitle = mFieldsError[FormFields.TITLE]
+
+    val configPurpose = TextFiledConfig(
+        input = itemData.castFor,
+        placeholder = "Enter Purpose",
+        isError = !errPurpose.isNullOrEmpty()
+    )
+
+    val configTitle = TextFiledConfig(
+        input = itemData.title,
+        placeholder = "Address or title for your livecast",
+        isError = !errTitle.isNullOrEmpty(),
+    )
+
+    val configDesc = TextFiledConfig(
+        input = itemData.description.orEmpty(),
+        placeholder = "Let viewers know more about what you are streaming. E.g. Property description, address, etc.",
+        imeAction = ImeAction.Done
+    )
+
+    //save default value
+    configPurpose.input = itemData.castFor
+
+    Text700_14sp(step = "What is this livestream for?", isBold = false)
+    DropDownWhatForLiveStream(
+        options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
+
+        }, fieldConfig = configPurpose
+    )
+    errPurpose?.let {
+        ShowError(message = it)
+    }
+
+    //title
+    SpacerUp(size = 8.dp)
+    Text700_14sp(step = "Stream title", isBold = false)
+    TextFieldOutlined(tfConfig = configTitle, onTextChange = {
+        //mGoLiveSubmit.apply { title = it }
+    })
+    errTitle?.let {
+        ShowError(message = it)
+    }
+
+    //description
+    SpacerUp(size = 8.dp)
+    Row {
+        Text700_14sp(step = "Description", modifier = Modifier.weight(1f), isBold = false)
+        Text700_14sp(step = txtCounter, isBold = false)
+    }
+    TextAreaWhite(fieldConfig = configDesc, onTextChange = {
+        //mGoLiveSubmit.apply { description = it.first }
+        txtCounter = it.second
+    })
 }
 
 

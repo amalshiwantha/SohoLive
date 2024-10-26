@@ -1382,7 +1382,7 @@ private fun Content5(
 }
 
 @Composable
-private fun ShowError(message: String) {
+fun ShowError(message: String) {
     Text400_14sp(info = message, color = ErrorRed)
 }
 

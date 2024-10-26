@@ -77,16 +77,16 @@ class PreRecLibraryViewModel() : ViewModel() {
             createdDate = "2024-10-26 12:23:56",
             castFor = "Inspection",
             privacy = VideoPrivacy.PUBLIC,
-            title = "Just Title",
-            description = "Just more description to display"
+            title = "Just Title"
         )
 
         val pv2 = PrivateVideo(
             filePath = tmpFile2,
             createdDate = "2024-10-22 10:13:56",
-            castFor = "Inspection",
+            castFor = "Auction",
             privacy = VideoPrivacy.PRIVATE,
-            title = "Just Title Second"
+            title = "Just Title Second",
+            description = "Just more description to display"
         )
 
         return mutableListOf(pv1, pv2)
