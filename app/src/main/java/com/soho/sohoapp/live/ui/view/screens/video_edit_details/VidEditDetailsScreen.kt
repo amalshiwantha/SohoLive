@@ -41,6 +41,18 @@ fun VidEditDetailsScreen(
     val states = vmVidEdit.mState.value
     val selectedItem = mGState.privateVidItemState.value
 
+    LaunchedEffect(states.isFoundLatest) {
+        if (states.isFoundLatest) {
+            mGState.privateVidItemState.value = states.privateVideo.value
+        }
+    }
+
+    LaunchedEffect("get_latest") {
+        if (selectedItem == null) {
+            vmVidEdit.getLatestItem()
+        }
+    }
+
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
             navController.popBackStack()

@@ -6,6 +6,8 @@ import com.soho.sohoapp.live.db.PrivateVideo
 
 data class PreRecLibState(
     val isSuccess: Boolean = false,
+    val isFoundLatest: Boolean = false,
+    var privateVideo: MutableState<PrivateVideo?> = mutableStateOf(null),
     var isLoading: MutableState<Boolean> = mutableStateOf(false),
     var videoList: MutableState<MutableList<PrivateVideo>> = mutableStateOf(mutableListOf())
 )

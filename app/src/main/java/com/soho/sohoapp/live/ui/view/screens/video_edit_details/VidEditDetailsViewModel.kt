@@ -5,16 +5,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.db.PrivateVideo
+import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.ui.view.screens.pre_rec_library.PreRecLibState
 import kotlinx.coroutines.launch
 
-class VidEditDetailsViewModel() : ViewModel() {
+class VidEditDetailsViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
+
+    fun getLatestItem() {
+        viewModelScope.launch {
+            val latestItem = vidDb.getLatestVideo()
+            if (latestItem != null) {
+                mState.value = mState.value.copy(
+                    privateVideo = mutableStateOf(latestItem),
+                    isFoundLatest = true
+                )
+            }
+        }
+    }
 
     fun updateDetails(selectedItem: PrivateVideo?) {
         viewModelScope.launch {
-            val dbSaveData = getAllStoreData()
+            selectedItem?.let { vidDb.updateVideo(it) }
             println("mySaved ${selectedItem}")
             mState.value = mState.value.copy(isSuccess = true)
         }

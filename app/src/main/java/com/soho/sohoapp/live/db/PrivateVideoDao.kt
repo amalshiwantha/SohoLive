@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface PrivateVideoDao {
@@ -15,4 +16,10 @@ interface PrivateVideoDao {
 
     @Query("SELECT * FROM private_videos")
     suspend fun getAllVideos(): List<PrivateVideo>
+
+    @Query("SELECT * FROM private_videos ORDER BY createdDate DESC LIMIT 1")
+    suspend fun getLatestVideo(): PrivateVideo?
+
+    @Update
+    suspend fun updateVideo(video: PrivateVideo)
 }
