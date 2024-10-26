@@ -1,11 +1,15 @@
 package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.StatFs
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -22,9 +26,12 @@ import androidx.camera.view.video.AudioConfig
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -82,6 +89,31 @@ fun VideoRecorderScreen(
     onVideoSaved: (Uri) -> Unit
 ) {
 
+    var hasCameraPermission by remember { mutableStateOf(false) }
+    var hasMicPermission by remember { mutableStateOf(false) }
+
+    // Launchers for permissions
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted -> hasCameraPermission = granted }
+    )
+
+    val micPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted -> hasMicPermission = granted }
+    )
+
+    // Check initial permissions
+    LaunchedEffect(Unit) {
+        hasCameraPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        hasMicPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
     val controller = remember {
         LifecycleCameraController(context).apply {
             setEnabledUseCases(
@@ -120,54 +152,77 @@ fun VideoRecorderScreen(
     }
 
     //Main Content
-    Box(modifier = Modifier.fillMaxSize()) {
-        //Main Camera
-        CameraPreview(
-            controller = controller,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        //Switch Camera View
-        IconButton(
-            onClick = {
-                controller.cameraSelector =
-                    if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                        CameraSelector.DEFAULT_FRONT_CAMERA
-                    } else CameraSelector.DEFAULT_BACK_CAMERA
-            },
+    if (!hasCameraPermission || !hasMicPermission) {
+        Column(
             modifier = Modifier
-                .offset(16.dp, 16.dp)
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally // Centers content horizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.Cameraswitch,
-                contentDescription = "Switch camera"
-            )
+            Text("Camera and Microphone permissions are required to record video.")
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(onClick = {
+                if (!hasCameraPermission) cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                if (!hasMicPermission) micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }) {
+                Text("Request Permissions")
+            }
         }
+    }
 
-        //Timer Top Right
-        TimerCard(
-            timerValue = timerValue,
-            modifier = Modifier.align(Alignment.TopEnd)
-        )
+    if (hasCameraPermission && hasMicPermission) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            //Main Camera
+            CameraPreview(
+                controller = controller,
+                modifier = Modifier.fillMaxSize()
+            )
 
-        //Bottom Action Btn
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(32.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            ButtonOutlineWhite(text = if (isRecording) "Stop" else "Start") {
-                recordVideo(controller, onRecord = {
-                    isRecording = it
-                }, onDone = {
-                    recFile = it
-                    vmVidRec.saveVideoItem(
-                        goLiveData,
-                        it
-                    )
-                })
+            //Switch Camera View
+            IconButton(
+                onClick = {
+                    controller.cameraSelector =
+                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                            CameraSelector.DEFAULT_FRONT_CAMERA
+                        } else CameraSelector.DEFAULT_BACK_CAMERA
+                },
+                modifier = Modifier
+                    .offset(16.dp, 16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Cameraswitch,
+                    contentDescription = "Switch camera"
+                )
+            }
+
+            //Timer Top Right
+            TimerCard(
+                timerValue = timerValue,
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
+
+            //Bottom Action Btn
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(32.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                ButtonOutlineWhite(text = if (isRecording) "Stop" else "Start") {
+                    recordVideo(controller, onRecord = {
+                        isRecording = it
+                    }, onDone = {
+                        recFile = it
+                        vmVidRec.saveVideoItem(
+                            goLiveData,
+                            it
+                        )
+                    })
+                }
             }
         }
     }
