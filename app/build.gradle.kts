@@ -3,9 +3,9 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    //alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinSerialization)
+    id("kotlin-kapt")
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -180,6 +180,11 @@ dependencies {
 
     //Watermark
     implementation("com.arthenica:ffmpeg-kit-full:4.5.LTS")
+
+    //Room Db
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
