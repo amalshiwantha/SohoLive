@@ -36,8 +36,5 @@ fun AppNavHost(viewMMain: MainViewModel) {
         composable(route = NavigationPath.HOME.name) {
             HomeScreen(navControllerHome = navController, viewMMain = viewMMain)
         }
-        composable(route = NavigationPath.PRE_RECODED_LIST.name) {
-            PreRecordScreen(navController = navController)
-        }
     }
 }

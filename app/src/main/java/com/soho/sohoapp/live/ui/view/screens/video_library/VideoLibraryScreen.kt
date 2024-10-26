@@ -181,6 +181,9 @@ fun VideoLibraryScreen(
             },
             onClickReloadVideoList = {
                 vmVidLib.reLoadData()
+            },
+            onShowPvtVideo = {
+                navController.navigate(NavigationPath.PRE_RECODED_LIST.name)
             }
         )
     }
@@ -265,7 +268,8 @@ private fun Content(
     mGState: GlobalState,
     onManageClick: (VideoItem) -> Unit,
     onPlayVid: (String) -> Unit,
-    onClickReloadVideoList: () -> Unit
+    onClickReloadVideoList: () -> Unit,
+    onShowPvtVideo: () -> Unit
 ) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
 
@@ -283,7 +287,7 @@ private fun Content(
     ) {
         //Private Video Button
         ButtonOutLinedIcon(text = "Private Videos", icon = R.drawable.ic_pvt_video, onBtnClick = {
-
+            onShowPvtVideo()
         }, modifier = Modifier.padding(16.dp))
 
         //Live Video List
