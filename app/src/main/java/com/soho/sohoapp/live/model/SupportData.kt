@@ -33,9 +33,9 @@ import kotlin.math.abs
 data class PrivateVideo(
     val filePath: String,
     val createdDate: String,
-    val castFor: String,
-    val title: String,
-    val description: String? = null,
+    var castFor: String,
+    var title: String,
+    var description: String? = null,
     val privacy: VideoPrivacy,
     val property: Document? = null
 ) {

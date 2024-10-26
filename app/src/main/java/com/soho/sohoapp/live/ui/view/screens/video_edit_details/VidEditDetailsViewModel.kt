@@ -12,9 +12,10 @@ import kotlinx.coroutines.launch
 class VidEditDetailsViewModel() : ViewModel() {
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
 
-    fun updateDetails() {
+    fun updateDetails(selectedItem: PrivateVideo?) {
         viewModelScope.launch {
             val dbSaveData = getAllStoreData()
+            println("mySaved ${selectedItem}")
         }
     }
 
