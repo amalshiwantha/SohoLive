@@ -40,6 +40,7 @@ import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import java.io.File
 
@@ -102,7 +103,9 @@ fun PlayerScreen(
             ) {
                 ButtonOutlineWhiteNormal(
                     text = "Edit Details",
-                    onBtnClick = {},
+                    onBtnClick = {
+                        navController.navigate(NavigationPath.VIDEO_EDIT_DETAILS.name)
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 SpacerSide(size = 16.dp)
