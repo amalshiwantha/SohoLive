@@ -157,7 +157,7 @@ private fun PvtVidItemView(
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
-            ThumbCenterPlay(item.filePath, onClick = {
+            ThumbCenterPlay(item, onClick = {
                 onPlayVideo(item.filePath)
             })
             SpacerSide(size = 16.dp)
@@ -203,14 +203,14 @@ private fun PvtVidItemView(
 }
 
 @Composable
-fun ThumbCenterPlay(filePath: String, onClick: () -> Unit) {
+fun ThumbCenterPlay(item: PrivateVideo, onClick: () -> Unit) {
     Box(modifier = Modifier
         .size(88.dp)
         .fillMaxHeight()
         .clickable { onClick() }
         .clip(RoundedCornerShape(12.dp))) {
 
-        val fileUri = Uri.parse(filePath)
+        val fileUri = Uri.parse(item.filePath)
         val thumbnail = remember { getVideoThumbnail(fileUri) }
 
         //thumb image
@@ -242,17 +242,19 @@ fun ThumbCenterPlay(filePath: String, onClick: () -> Unit) {
         )
 
         // day Label
-        Card(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(2.dp),
-            shape = MaterialTheme.shapes.small,
-            colors = CardDefaults.cardColors(containerColor = DurationDark)
-        ) {
-            Text800_10sp(
-                label = "7D",
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-            )
+        if(item.dayLabel != "0D"){
+            Card(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(2.dp),
+                shape = MaterialTheme.shapes.small,
+                colors = CardDefaults.cardColors(containerColor = DurationDark)
+            ) {
+                Text800_10sp(
+                    label = item.dayLabel,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                )
+            }
         }
 
     }

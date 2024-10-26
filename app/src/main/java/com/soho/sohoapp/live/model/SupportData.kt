@@ -22,6 +22,10 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.math.abs
 
 /*
 * List item for private video*/
@@ -33,7 +37,22 @@ data class PrivateVideo(
     val description: String? = null,
     val privacy: VideoPrivacy,
     val property: Document? = null
-)
+) {
+    val dayLabel: String
+        get() = getDayLabel(createdDate)
+}
+
+fun getDayLabel(createdDate: String): String {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    val created = dateFormat.parse(createdDate)
+    val current = Date()
+
+    // Calculate the difference in days
+    val diffInMillis = abs(current.time - created.time)
+    val diffInDays = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
+
+    return "${diffInDays}D"
+}
 
 /*
 * on board data display
