@@ -13,6 +13,7 @@ import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.DataVidRes
@@ -21,6 +22,18 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+/*
+* List item for private video*/
+data class PrivateVideo(
+    val filePath: String,
+    val createdDate: String,
+    val castFor: String,
+    val title: String,
+    val description: String? = null,
+    val privacy: VideoPrivacy,
+    val property: Document? = null
+)
 
 /*
 * on board data display
@@ -48,7 +61,7 @@ data class MainState(
     var sPropList: MutableState<List<PropertyItem>>? = null,
     var sAgencyList: MutableState<List<AgencyItem>>? = null,
     var agentEmail: String? = null,
-){
+) {
     fun reset() {
         liveOrientation.value = Orientation.PORT.name
         stepId.value = 0
