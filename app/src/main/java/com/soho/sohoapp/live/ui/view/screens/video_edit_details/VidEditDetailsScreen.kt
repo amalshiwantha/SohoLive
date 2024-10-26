@@ -28,6 +28,7 @@ import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
 import org.koin.compose.koinInject
 
 @Composable
@@ -132,6 +133,9 @@ fun EditForm(itemData: PrivateVideo) {
         itemData.description = it.first
         txtCounter = it.second
     })
+
+    SpacerUp(size = 8.dp)
+    InfoCard(message = "You can still change your video details later if needed.")
 }
 
 
