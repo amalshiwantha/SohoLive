@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,6 +40,12 @@ fun VidEditDetailsScreen(
 ) {
     val states = vmVidEdit.mState.value
     val selectedItem = mGState.privateVidItemState.value
+
+    LaunchedEffect(states.isSuccess) {
+        if (states.isSuccess) {
+            navController.popBackStack()
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

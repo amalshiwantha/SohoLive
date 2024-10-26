@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.PrivateVideo
+import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.ui.view.screens.pre_rec_library.PreRecLibState
 import kotlinx.coroutines.launch
 
@@ -16,6 +17,7 @@ class VidEditDetailsViewModel() : ViewModel() {
         viewModelScope.launch {
             val dbSaveData = getAllStoreData()
             println("mySaved ${selectedItem}")
+            mState.value = mState.value.copy(isSuccess = true)
         }
     }
 
