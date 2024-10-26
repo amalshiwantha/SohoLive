@@ -72,6 +72,7 @@ import java.util.concurrent.Executors
 
 const val PvtRecFolder = "SohoPreRecord"
 private var recording: Recording? = null
+private var recFile: Uri? = null
 
 @Composable
 fun VideoRecorderScreen(
@@ -89,8 +90,20 @@ fun VideoRecorderScreen(
         }
     }
 
+    val mState = vmVidRec.mState.value
     var timerValue by remember { mutableStateOf("00:00") }
     var isRecording by remember { mutableStateOf(false) }
+
+    //If save success then open player
+    LaunchedEffect(mState.isSuccess) {
+        if (mState.isSuccess) {
+            mGState.apply {
+                privateVideoId.value = mState.lastSavedId
+            }
+            recFile?.let { onVideoSaved(it) }
+            vmVidRec.reset()
+        }
+    }
 
     // Timer logic
     LaunchedEffect(isRecording) {
@@ -148,6 +161,12 @@ fun VideoRecorderScreen(
             ButtonOutlineWhite(text = if (isRecording) "Stop" else "Start") {
                 recordVideo(controller, onRecord = {
                     isRecording = it
+                }, onDone = {
+                    recFile = it
+                    vmVidRec.saveVideoItem(
+                        goLiveData,
+                        it
+                    )
                 })
             }
         }
@@ -155,7 +174,11 @@ fun VideoRecorderScreen(
 }
 
 @SuppressLint("MissingPermission")
-private fun recordVideo(controller: LifecycleCameraController, onRecord: (Boolean) -> Unit) {
+private fun recordVideo(
+    controller: LifecycleCameraController,
+    onRecord: (Boolean) -> Unit,
+    onDone: (Uri) -> Unit
+) {
     if (recording != null) {
         onRecord(false)
         recording?.stop()
@@ -176,6 +199,7 @@ private fun recordVideo(controller: LifecycleCameraController, onRecord: (Boolea
                 if (!event.hasError()) {
                     println("myVidRec : Recording Saved: ${videoFile.toUri()}")
                     onRecord(false)
+                    onDone(videoFile.toUri())
                 } else {
                     println("myVidRec : Recording Error")
                     onRecord(false)
