@@ -150,7 +150,10 @@ fun BottomNavHost(
         }
 
         composable(route = NavigationPath.VIDEO_RECORDER.name) {
-            VideoRecorderScreen(onVideoSaved = {
+            VideoRecorderScreen(
+                goLiveData = mGoLiveSubmit,
+                mGState = mGlobalState,
+                onVideoSaved = {
                 val tempVidFile =
                     "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_004116.mp4"
                 navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(tempVidFile)}") {

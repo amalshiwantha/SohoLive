@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
 import kotlinx.coroutines.delay
@@ -57,6 +59,8 @@ const val PvtRecFolder = "SohoPreRecord"
 
 @Composable
 fun VideoRecorderScreen(
+    goLiveData: GoLiveSubmit,
+    mGState: GlobalState,
     vmVidRec: VideoRecorderViewModel = koinInject(),
     onVideoSaved: (Uri) -> Unit
 ) {
@@ -219,12 +223,16 @@ fun VideoRecorderScreen(
                                 is VideoRecordEvent.Finalize -> {
                                     if (recordEvent.hasError()) {
                                         println("myVidRec : Recording Error")
+                                        Handler(Looper.getMainLooper()).post {
+                                            vmVidRec.saveVideoItem(goLiveData,Uri.fromFile(videoFile))
+                                            //onVideoSaved(Uri.fromFile(videoFile))
+                                        }
                                     } else {
                                         //Open Video Player screen with last recorded video
                                         val lastVidUri = Uri.fromFile(videoFile)
                                         println("myVidRec : Recording Saved: ${lastVidUri}")
                                         Handler(Looper.getMainLooper()).post {
-                                            vmVidRec.saveVideoItem(Uri.fromFile(videoFile))
+                                            vmVidRec.saveVideoItem(goLiveData,Uri.fromFile(videoFile))
                                             //onVideoSaved(Uri.fromFile(videoFile))
                                         }
                                     }
