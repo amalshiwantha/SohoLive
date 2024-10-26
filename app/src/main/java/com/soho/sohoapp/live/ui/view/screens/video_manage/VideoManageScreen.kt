@@ -541,13 +541,13 @@ fun PrivacyOption(
 }
 
 @Composable
-fun NoDataView(modifier: Modifier) {
+fun NoDataView(modifier: Modifier, title: String = "No Valid Information") {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TextProgress(title = "No Valid Information", color = AppWhite)
+        TextProgress(title = title, color = AppWhite)
     }
 }
 

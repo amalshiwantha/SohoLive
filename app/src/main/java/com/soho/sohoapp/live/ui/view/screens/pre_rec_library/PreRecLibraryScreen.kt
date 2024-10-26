@@ -23,7 +23,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,7 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
@@ -60,6 +58,7 @@ import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
+import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 
@@ -131,7 +130,13 @@ fun PreRecordLibraryScreen(
                             mGState.apply {
                                 privateVidItemState = mutableStateOf(pvtItem)
                             }
-                            navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(pvtItem.filePath)}")
+                            navController.navigate(
+                                "${NavigationPath.PLAYER.name}/${
+                                    Uri.encode(
+                                        pvtItem.filePath
+                                    )
+                                }"
+                            )
                         },
                         onDelete = {
                             actionFile = it
@@ -169,11 +174,7 @@ fun MainContent(
             .fillMaxSize()
     ) {
         if (videoList.isEmpty()) {
-            Text(
-                text = "No Private Video",
-                modifier = Modifier.fillMaxSize(),
-                textAlign = TextAlign.Center
-            )
+            NoDataView(modifier = Modifier.fillMaxSize(), "No Private Videos")
         } else {
             //delete info
             Text400_14sp(info = "Drafts will be permanently deleted after 7 days. After that, you won’t be able to access them.")

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.db.PrivateVideo
+import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
 import kotlinx.coroutines.launch
@@ -13,47 +14,51 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PreRecLibraryViewModel() : ViewModel() {
+class PreRecLibraryViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
+
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     fun loadPvtVideo() {
-        viewModelScope.launch {
-            mState.value = mState.value.copy(isLoading = mutableStateOf(true))
-            mState.value = mState.value.copy(videoList = mutableStateOf(sortedPvtVidList()))
-            mState.value = mState.value.copy(isLoading = mutableStateOf(false))
-        }
+        mState.value = mState.value.copy(isLoading = mutableStateOf(true))
+        sortedPvtVidList()
     }
 
-    private fun sortedPvtVidList(): MutableList<PrivateVideo> {
-        val displayList: MutableList<PrivateVideo> = mutableListOf()
-        //get all db saved data
-        val dbSaveData = getAllStoreData()
+    private fun sortedPvtVidList() {
+        viewModelScope.launch {
+            val displayList: MutableList<PrivateVideo> = mutableListOf()
 
-        //get all raw video files
-        val rawFiles = getAllRecordedVideos()
+            //get all db saved data
+            val dbSaveData = vidDb.getAllVideos()
+            println("dbSaveData $dbSaveData")
 
-        /*
-        * find dbSaved file locally avaliable or not.
-        * if have then add to the displayList
-        * */
-        rawFiles.forEach { it ->
-            val rawFileName = it.name
-            val savedFile = dbSaveData.find { savedData ->
-                savedData.filePath.endsWith(rawFileName)
+            //get all raw video files
+            val rawFiles = getAllRecordedVideos()
+            println("dbSaveData rawFiles: $rawFiles")
+
+            /*
+            * find dbSaved file locally avaliable or not.
+            * if have then add to the displayList
+            * */
+            rawFiles.forEach { it ->
+                val rawFileName = it.name
+                val savedFile = dbSaveData.find { savedData ->
+                    savedData.filePath.endsWith(rawFileName)
+                }
+
+                println("fileName ${savedFile?.filePath}")
+
+                savedFile?.let { avaliableFile ->
+                    displayList.add(avaliableFile)
+                }
             }
 
-            println("fileName ${savedFile?.filePath}")
+            //sort last rec first
+            sortVideosByDate(displayList)
 
-            savedFile?.let { avaliableFile ->
-                displayList.add(avaliableFile)
-            }
+            mState.value = mState.value.copy(videoList = mutableStateOf(displayList))
+            mState.value = mState.value.copy(isLoading = mutableStateOf(false))
         }
-
-        //sort last rec first
-        sortVideosByDate(displayList)
-
-        return displayList
     }
 
     private fun getAllRecordedVideos(): List<File> {
