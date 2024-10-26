@@ -31,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.Text700_14sp
@@ -45,8 +46,10 @@ fun PreRecordScreen(navController: NavHostController) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
-                title = "Pre-Recorded",
-                onBackClick = { navController.popBackStack() }, onRightClick = {})
+                title = "Private Videos",
+                isAllowBack = false,
+                rightIcon = R.drawable.ic_close_circle,
+                onBackClick = { }, onRightClick = { navController.popBackStack() })
         }
     ) { innerPadding ->
 
@@ -61,7 +64,6 @@ fun PreRecordScreen(navController: NavHostController) {
                     .padding(innerPadding)
             ) {
                 MainContent(onPlay = {
-                    println("myPlayer $it")
                     navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}")
                 })
             }
