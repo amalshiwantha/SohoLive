@@ -16,12 +16,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveAssets
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveScreen
+import com.soho.sohoapp.live.ui.view.screens.golive.resetSteps
 import com.soho.sohoapp.live.ui.view.screens.golive_success.GoLiveOkScreen
 import com.soho.sohoapp.live.ui.view.screens.liveEnd.LiveEndScreen
 import com.soho.sohoapp.live.ui.view.screens.player.PlayerScreen
@@ -35,6 +37,8 @@ import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorderScreen
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -187,7 +191,6 @@ fun BottomNavHost(
             ReviewScreen(
                 mGState = mGlobalState, navController = navController, onDoneClick = {
                     navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
-
                         //tab move
                         onTabMoveClick(1)
 
@@ -198,6 +201,9 @@ fun BottomNavHost(
                         // Ensure the new screen is the top-most screen
                         launchSingleTop = true
 
+                        //Reset All GoLive data
+                        resetSteps(mGoLiveSubmit, mState)
+                        MainStateHolder.resetLive()
                     }
                 })
         }
