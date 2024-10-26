@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.PrivateVideo
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
@@ -64,6 +65,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun PreRecordLibraryScreen(
+    mGState: GlobalState,
     navController: NavHostController,
     vmPreRecLib: PreRecLibraryViewModel = koinInject(),
 ) {
@@ -125,12 +127,27 @@ fun PreRecordLibraryScreen(
                     CenterMessageProgress(message = "Loading Private Video...")
                 } else {
                     MainContent(videoList = states.videoList.value,
-                        onPlay = {
-                            navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}")
+                        onPlay = { pvtItem ->
+                            mGState.apply {
+                                privateVidItemState = mutableStateOf(pvtItem)
+                            }
+                            navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(pvtItem.filePath)}")
                         },
                         onDelete = {
                             actionFile = it
                             isShowAlert = true
+                        },
+                        onEditPublish = { pvtItem ->
+                            mGState.apply {
+                                privateVidItemState = mutableStateOf(pvtItem)
+                            }
+                            navController.navigate(
+                                "${NavigationPath.PLAYER.name}/${
+                                    Uri.encode(
+                                        pvtItem.filePath
+                                    )
+                                }"
+                            )
                         })
                 }
             }
@@ -140,8 +157,9 @@ fun PreRecordLibraryScreen(
 
 @Composable
 fun MainContent(
-    onPlay: (Uri) -> Unit,
+    onPlay: (PrivateVideo) -> Unit,
     onDelete: (Uri) -> Unit,
+    onEditPublish: (PrivateVideo) -> Unit,
     videoList: MutableList<PrivateVideo>
 ) {
 
@@ -169,7 +187,7 @@ fun MainContent(
                     PvtVidItemView(
                         pvtVid,
                         onPlayVideo = {
-                            onPlay(Uri.parse(it))
+                            onPlay(it)
                         },
                         onDeleteVideo = {
                             onDelete(Uri.parse(it))
@@ -177,7 +195,9 @@ fun MainContent(
                         onDownloadVideo = {
                             showToast("Not Implemented")
                         },
-                        onClickManage = {})
+                        onClickManage = {
+                            onEditPublish(it)
+                        })
                 }
             }
         }
@@ -189,7 +209,7 @@ private fun PvtVidItemView(
     item: PrivateVideo,
     onClickManage: (PrivateVideo) -> Unit,
     onDeleteVideo: (String) -> Unit,
-    onPlayVideo: (String) -> Unit,
+    onPlayVideo: (PrivateVideo) -> Unit,
     onDownloadVideo: (Pair<String, String>) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
@@ -197,7 +217,7 @@ private fun PvtVidItemView(
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
             ThumbCenterPlay(item, onClick = {
-                onPlayVideo(item.filePath)
+                onPlayVideo(item)
             })
             SpacerSide(size = 16.dp)
 

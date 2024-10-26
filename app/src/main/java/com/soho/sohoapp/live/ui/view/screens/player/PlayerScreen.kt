@@ -33,6 +33,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -43,7 +44,12 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import java.io.File
 
 @Composable
-fun PlayerScreen(navController: NavHostController, fileUri: Uri, onNextClick: () -> Unit = {}) {
+fun PlayerScreen(
+    mGState: GlobalState,
+    navController: NavHostController,
+    fileUri: Uri,
+    onNextClick: () -> Unit = {}
+) {
 
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
@@ -70,13 +76,17 @@ fun PlayerScreen(navController: NavHostController, fileUri: Uri, onNextClick: ()
             })
     }
 
+    //check edit or not
+    val pvtItem = mGState.privateVidItemState
+    val isAllowBack = pvtItem.value != null
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = "",
                 rightIcon = R.drawable.ic_trash,
-                isAllowBack = false,
+                isAllowBack = isAllowBack,
                 onBackClick = { navController.popBackStack() }, onRightClick = {
                     //show confirmation to remove
                     isShowAlert = true

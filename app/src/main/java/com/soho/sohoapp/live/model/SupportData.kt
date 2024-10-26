@@ -29,6 +29,7 @@ import kotlin.math.abs
 
 /*
 * List item for private video*/
+@Serializable
 data class PrivateVideo(
     val filePath: String,
     val createdDate: String,
@@ -184,7 +185,8 @@ data class GoLiveSubmit(
 data class GlobalState(
     var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
     var videoItemState: MutableState<VideoItem?> = mutableStateOf(null),
-    var propertyItemState: MutableState<PropertyItem?> = mutableStateOf(null)
+    var propertyItemState: MutableState<PropertyItem?> = mutableStateOf(null),
+    var privateVidItemState: MutableState<PrivateVideo?> = mutableStateOf(null)
 )
 
 @Serializable
