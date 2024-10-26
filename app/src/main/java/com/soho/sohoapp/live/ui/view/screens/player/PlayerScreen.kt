@@ -78,17 +78,13 @@ fun PlayerScreen(
             })
     }
 
-    //check edit or not
-    val pvtItem = mGState.privateVidItemState
-    val isAllowBack = pvtItem.value != null
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = "",
                 rightIcon = R.drawable.ic_trash,
-                isAllowBack = isAllowBack,
+                isAllowBack = true,
                 onBackClick = { navController.popBackStack() }, onRightClick = {
                     //show confirmation to remove
                     isShowAlert = true

@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -128,7 +129,7 @@ fun PreRecordLibraryScreen(
                     MainContent(videoList = states.videoList.value,
                         onPlay = { pvtItem ->
                             mGState.apply {
-                                privateVidItemState = mutableStateOf(pvtItem)
+                                privateVideoId = mutableLongStateOf(pvtItem.id.toLong())
                             }
                             navController.navigate(
                                 "${NavigationPath.PLAYER.name}/${
@@ -144,7 +145,7 @@ fun PreRecordLibraryScreen(
                         },
                         onEditPublish = { pvtItem ->
                             mGState.apply {
-                                privateVidItemState = mutableStateOf(pvtItem)
+                                privateVideoId = mutableLongStateOf(pvtItem.id.toLong())
                             }
                             navController.navigate(
                                 "${NavigationPath.PLAYER.name}/${
