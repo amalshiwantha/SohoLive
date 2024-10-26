@@ -22,10 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -52,17 +48,12 @@ fun PreRecordLibraryScreen(
     vmPreRecLib: PreRecLibraryViewModel = koinInject(),
 ) {
     val states = vmPreRecLib.mState.value
-    val videoFiles = remember { vmPreRecLib.getAllRecordedVideos() }
-    var isShowProgress by remember { mutableStateOf(false) }
 
     //load pvt video list
-    LaunchedEffect("initial_load") {
-        vmPreRecLib.loadPvtVideo()
-    }
-
-    //Show Loading view
-    LaunchedEffect(states.loadingState) {
-        isShowProgress = states.loadingState == ProgressBarState.Loading
+    LaunchedEffect(states.videoList.value) {
+        if (states.videoList.value.isEmpty()) {
+            vmPreRecLib.loadPvtVideo()
+        }
     }
 
     Scaffold(
@@ -86,10 +77,10 @@ fun PreRecordLibraryScreen(
                     .fillMaxWidth()
                     .padding(innerPadding)
             ) {
-                if (isShowProgress) {
+                if (states.isLoading.value) {
                     CenterMessageProgress(message = "Loading Private Video...")
-                }else{
-                    MainContent(videoList = videoFiles,
+                } else {
+                    MainContent(videoList = states.videoList.value,
                         onPlay = {
                             navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}")
                         })

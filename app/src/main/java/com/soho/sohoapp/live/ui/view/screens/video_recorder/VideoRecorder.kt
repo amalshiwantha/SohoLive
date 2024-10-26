@@ -41,7 +41,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
@@ -52,6 +51,8 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
+const val PvtRecFolder = "SohoPreRecord"
 
 @Composable
 fun VideoRecorder(
@@ -279,7 +280,7 @@ fun createVideoFile(): File {
     //val extStorageDir = Environment.getExternalStorageDirectory()
 
     // Create a custom folder named "SohoPreRecord" directly in the root of external storage
-    val customDir = File(movieDir, "SohoPreRecord")
+    val customDir = File(movieDir, PvtRecFolder)
 
     // Create a folder named "SohoPreRecord" in the Videos directory
     //val customDir = File(videosDir, "SohoPreRecord")
