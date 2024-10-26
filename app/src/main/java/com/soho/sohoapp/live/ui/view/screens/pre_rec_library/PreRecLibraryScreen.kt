@@ -59,6 +59,7 @@ import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
+import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 
 @Composable
@@ -85,7 +86,11 @@ fun PreRecordLibraryScreen(
             },
             onConfirm = {
                 actionFile?.let {
-                    deleteFileFromUri(it)
+                    deleteFileFromUri(it).also { isDeleted ->
+                        if (isDeleted) {
+                            showToast("Private Video Deleted")
+                        }
+                    }
                 }
                 vmPreRecLib.loadPvtVideo()
                 isShowAlert = false
@@ -169,7 +174,9 @@ fun MainContent(
                         onDeleteVideo = {
                             onDelete(Uri.parse(it))
                         },
-                        onDownloadVideo = {},
+                        onDownloadVideo = {
+                            showToast("Not Implemented")
+                        },
                         onClickManage = {})
                 }
             }
