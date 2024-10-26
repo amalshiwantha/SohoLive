@@ -26,7 +26,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +41,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.PrivateVideo
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
@@ -46,12 +51,12 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
-import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import org.koin.compose.koinInject
@@ -62,12 +67,32 @@ fun PreRecordLibraryScreen(
     vmPreRecLib: PreRecLibraryViewModel = koinInject(),
 ) {
     val states = vmPreRecLib.mState.value
+    var isShowAlert by remember { mutableStateOf(false) }
+    var actionFile by remember { mutableStateOf(Uri.parse("")) }
 
     //load pvt video list
     LaunchedEffect(states.videoList.value) {
         if (states.videoList.value.isEmpty()) {
             vmPreRecLib.loadPvtVideo()
         }
+    }
+
+    //show confirmation to delete video
+    if (isShowAlert) {
+        AppAlertDialog(
+            alert = AlertConfig.DELETE_ALERT.apply {
+                isConfirm = true
+            },
+            onConfirm = {
+                actionFile?.let {
+                    deleteFileFromUri(it)
+                }
+                vmPreRecLib.loadPvtVideo()
+                isShowAlert = false
+            },
+            onDismiss = {
+                isShowAlert = false
+            })
     }
 
     Scaffold(
@@ -97,6 +122,10 @@ fun PreRecordLibraryScreen(
                     MainContent(videoList = states.videoList.value,
                         onPlay = {
                             navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}")
+                        },
+                        onDelete = {
+                            actionFile = it
+                            isShowAlert = true
                         })
                 }
             }
@@ -105,7 +134,11 @@ fun PreRecordLibraryScreen(
 }
 
 @Composable
-fun MainContent(onPlay: (Uri) -> Unit, videoList: MutableList<PrivateVideo>) {
+fun MainContent(
+    onPlay: (Uri) -> Unit,
+    onDelete: (Uri) -> Unit,
+    videoList: MutableList<PrivateVideo>
+) {
 
     Column(
         modifier = Modifier
@@ -133,12 +166,11 @@ fun MainContent(onPlay: (Uri) -> Unit, videoList: MutableList<PrivateVideo>) {
                         onPlayVideo = {
                             onPlay(Uri.parse(it))
                         },
-                        onDeleteVideo = {},
+                        onDeleteVideo = {
+                            onDelete(Uri.parse(it))
+                        },
                         onDownloadVideo = {},
                         onClickManage = {})
-                    /*VideoFileItem(file, onPlay = {
-                        onPlay(it)
-                    })*/
                 }
             }
         }
@@ -242,7 +274,7 @@ fun ThumbCenterPlay(item: PrivateVideo, onClick: () -> Unit) {
         )
 
         // day Label
-        if(item.dayLabel != "0D"){
+        if (item.dayLabel != "0D") {
             Card(
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -257,47 +289,6 @@ fun ThumbCenterPlay(item: PrivateVideo, onClick: () -> Unit) {
             }
         }
 
-    }
-}
-
-@Composable
-fun VideoFileItem(pvtVid: PrivateVideo, onPlay: (Uri) -> Unit) {
-    val fileUri = Uri.parse(pvtVid.filePath)
-    val thumbnail = remember { getVideoThumbnail(fileUri) }
-
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
-        .clickable {
-            onPlay(fileUri)
-        }) {
-
-        //thumbnail
-        val commonMod = Modifier
-            .size(100.dp)
-            .background(Color.Gray, RoundedCornerShape(8.dp))
-
-        if (thumbnail != null) {
-            Image(
-                bitmap = thumbnail.asImageBitmap(),
-                contentDescription = "Video thumbnail",
-                modifier = commonMod,
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Box(
-                modifier = commonMod,
-                contentAlignment = Alignment.Center
-            ) {
-                Text("No Thumbnail Available", color = Color.White)
-            }
-        }
-
-        SpacerSide(size = 8.dp)
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text700_14sp(step = fileUri.toString())
-        }
     }
 }
 
