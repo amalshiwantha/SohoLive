@@ -81,8 +81,7 @@ class PreRecLibraryViewModel() : ViewModel() {
             createdDate = "2024-10-22 10:13:56",
             castFor = "Inspection",
             privacy = VideoPrivacy.PRIVATE,
-            title = "Just Title Second",
-            description = "Just second more description to display"
+            title = "Just Title Second"
         )
 
         return mutableListOf(pv1, pv2)

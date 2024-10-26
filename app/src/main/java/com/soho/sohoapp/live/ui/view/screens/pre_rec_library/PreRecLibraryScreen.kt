@@ -34,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.PrivateVideo
 import com.soho.sohoapp.live.ui.components.AppTopBar
@@ -50,7 +49,6 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
-import com.soho.sohoapp.live.utility.getThumbUrl
 import org.koin.compose.koinInject
 
 @Composable
@@ -124,10 +122,18 @@ fun MainContent(onPlay: (Uri) -> Unit, videoList: MutableList<PrivateVideo>) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(videoList) { file ->
-                    VideoFileItem(file, onPlay = {
+                items(videoList) { pvtVid ->
+                    PvtVidItemView(
+                        pvtVid,
+                        onPlayVideo = {
+                            //onPlay(it)
+                        },
+                        onDeleteVideo = {},
+                        onDownloadVideo = {},
+                        onClickManage = {})
+                    /*VideoFileItem(file, onPlay = {
                         onPlay(it)
-                    })
+                    })*/
                 }
             }
         }
@@ -199,19 +205,26 @@ fun ThumbCenterPlay(filePath: String, onClick: () -> Unit) {
         .clickable { onClick() }
         .clip(RoundedCornerShape(12.dp))) {
 
-        val imgUrl = getThumbUrl(filePath)
-        val urlPainter = rememberAsyncImagePainter(
-            model = imgUrl,
-            placeholder = painterResource(id = R.drawable.property_placeholder),
-            error = painterResource(id = R.drawable.property_placeholder)
-        )
+        val fileUri = Uri.parse(filePath)
+        val thumbnail = remember { getVideoThumbnail(fileUri) }
 
-        Image(
-            painter = urlPainter,
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.matchParentSize()
-        )
+        thumbnail?.let {
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.matchParentSize()
+            )
+        } ?: run {
+            val placeholder = painterResource(id = R.drawable.property_placeholder)
+            Image(
+                painter = placeholder,
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.matchParentSize()
+            )
+        }
+
         Icon(
             painter = painterResource(id = R.drawable.center_play),
             contentDescription = "Play",
