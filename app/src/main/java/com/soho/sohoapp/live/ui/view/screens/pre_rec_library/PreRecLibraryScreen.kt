@@ -18,7 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,8 +48,10 @@ import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
+import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import org.koin.compose.koinInject
@@ -161,7 +166,6 @@ private fun PvtVidItemView(
             Column {
                 Text700_14spBold(step = item.title)
                 SpacerUp(size = 8.dp)
-
                 item.description?.let {
                     Text400_12sp(label = it)
                 }
@@ -189,6 +193,7 @@ private fun PvtVidItemView(
                 ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
                     onDownloadVideo(Pair(item.filePath, item.title))
                 })
+                SpacerSide(size = 8.dp)
                 ActionIconButton(R.drawable.ic_trash, onClickAction = {
                     onDeleteVideo(item.filePath)
                 })
@@ -208,6 +213,7 @@ fun ThumbCenterPlay(filePath: String, onClick: () -> Unit) {
         val fileUri = Uri.parse(filePath)
         val thumbnail = remember { getVideoThumbnail(fileUri) }
 
+        //thumb image
         thumbnail?.let {
             Image(
                 bitmap = it.asImageBitmap(),
@@ -225,6 +231,7 @@ fun ThumbCenterPlay(filePath: String, onClick: () -> Unit) {
             )
         }
 
+        //center play icon
         Icon(
             painter = painterResource(id = R.drawable.center_play),
             contentDescription = "Play",
@@ -233,6 +240,21 @@ fun ThumbCenterPlay(filePath: String, onClick: () -> Unit) {
                 .align(Alignment.Center)
                 .background(Color.Black.copy(alpha = 0.6f), shape = CircleShape)
         )
+
+        // day Label
+        Card(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(2.dp),
+            shape = MaterialTheme.shapes.small,
+            colors = CardDefaults.cardColors(containerColor = DurationDark)
+        ) {
+            Text800_10sp(
+                label = "7D",
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            )
+        }
+
     }
 }
 

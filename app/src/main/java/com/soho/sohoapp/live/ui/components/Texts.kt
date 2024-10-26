@@ -517,6 +517,20 @@ fun Text400_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color =
 }
 
 @Composable
+fun Text800_10sp(modifier: Modifier = Modifier, label: String) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 10.sp,
+        lineHeight = 14.sp,
+        letterSpacing = 0.9.sp,
+        color = Color(0xFFE13831),
+        fontWeight = FontWeight(800),
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+    )
+}
+
+@Composable
 fun Text800_12sp(modifier: Modifier = Modifier, label: String) {
     Text(
         modifier = modifier,
