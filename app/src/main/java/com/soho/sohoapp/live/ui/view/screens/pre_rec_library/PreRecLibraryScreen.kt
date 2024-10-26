@@ -1,9 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.pre_rec_library
 
-import android.graphics.Bitmap
-import android.media.ThumbnailUtils
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,10 +48,10 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import com.soho.sohoapp.live.utility.getThumbUrl
 import org.koin.compose.koinInject
-import java.io.File
 
 @Composable
 fun PreRecordLibraryScreen(
@@ -105,7 +102,7 @@ fun PreRecordLibraryScreen(
 }
 
 @Composable
-fun MainContent(onPlay: (Uri) -> Unit, videoList: List<File>) {
+fun MainContent(onPlay: (Uri) -> Unit, videoList: MutableList<PrivateVideo>) {
 
     Column(
         modifier = Modifier
@@ -227,14 +224,15 @@ fun ThumbCenterPlay(filePath: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun VideoFileItem(file: File, onPlay: (Uri) -> Unit) {
-    val thumbnail = remember { getVideoThumbnail(file) }
+fun VideoFileItem(pvtVid: PrivateVideo, onPlay: (Uri) -> Unit) {
+    val fileUri = Uri.parse(pvtVid.filePath)
+    val thumbnail = remember { getVideoThumbnail(fileUri) }
 
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)
         .clickable {
-            onPlay(Uri.fromFile(file))
+            onPlay(fileUri)
         }) {
 
         //thumbnail
@@ -261,13 +259,10 @@ fun VideoFileItem(file: File, onPlay: (Uri) -> Unit) {
         SpacerSide(size = 8.dp)
 
         Column(modifier = Modifier.weight(1f)) {
-            Text700_14sp(step = file.name)
-            Text700_14spBold(step = "Size: ${file.length() / (1024 * 1024)} MB")
+            Text700_14sp(step = fileUri.toString())
         }
     }
 }
 
-fun getVideoThumbnail(file: File): Bitmap? {
-    return ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Images.Thumbnails.MINI_KIND)
-}
+
 
