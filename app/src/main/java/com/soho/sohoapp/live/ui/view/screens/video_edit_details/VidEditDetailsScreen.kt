@@ -17,8 +17,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.model.GlobalState
-import com.soho.sohoapp.live.model.PrivateVideo
 import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured

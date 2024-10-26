@@ -5,10 +5,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.enums.VideoPrivacy
-import com.soho.sohoapp.live.model.PrivateVideo
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
