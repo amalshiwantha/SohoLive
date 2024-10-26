@@ -219,7 +219,10 @@ fun BottomBtnIndicator(
         // Login and Sign Up buttons
         ButtonColoured(text = stringResource(R.string.log_in),
             color = AppGreen,
-            onBtnClick = { navController.navigate(NavigationPath.SIGNIN.name) })
+            onBtnClick = {
+                //navController.navigate(NavigationPath.SIGNIN.name)
+                navController.navigate(NavigationPath.VIDEO_RECORDER.name)
+            })
 
         /*ButtonOutlineWhite(
             text = stringResource(R.string.sign_up),

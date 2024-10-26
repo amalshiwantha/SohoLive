@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
@@ -15,16 +16,28 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
+import androidx.camera.view.video.AudioConfig
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cameraswitch
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.VideoCameraBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -33,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,13 +54,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleOwner
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.io.File
 import java.text.SimpleDateFormat
@@ -56,9 +74,119 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 const val PvtRecFolder = "SohoPreRecord"
+private var recording: Recording? = null
 
 @Composable
 fun VideoRecorderScreen(
+    goLiveData: GoLiveSubmit,
+    mGState: GlobalState,
+    vmVidRec: VideoRecorderViewModel = koinInject(),
+    onVideoSaved: (Uri) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val controller = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(
+                CameraController.VIDEO_CAPTURE
+            )
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        //Main Camera
+        CameraPreview(
+            controller = controller,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        //Switch Camera View
+        IconButton(
+            onClick = {
+                controller.cameraSelector =
+                    if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                        CameraSelector.DEFAULT_FRONT_CAMERA
+                    } else CameraSelector.DEFAULT_BACK_CAMERA
+            },
+            modifier = Modifier
+                .offset(16.dp, 16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Cameraswitch,
+                contentDescription = "Switch camera"
+            )
+        }
+
+        //Bottom Action Btn
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            IconButton(
+                onClick = {
+                    scope.launch {
+
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Photo,
+                    contentDescription = "Open gallery"
+                )
+            }
+            IconButton(
+                onClick = {
+                    recordVideo(controller)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.VideoCameraBack,
+                    contentDescription = "Record Video"
+                )
+            }
+        }
+    }
+}
+
+@SuppressLint("MissingPermission")
+private fun recordVideo(controller: LifecycleCameraController) {
+    if (recording != null) {
+        recording?.stop()
+        recording = null
+        return
+    }
+
+    val videoFile = createVideoFile()
+    recording = controller.startRecording(
+        FileOutputOptions.Builder(videoFile).build(),
+        AudioConfig.create(true),
+        ContextCompat.getMainExecutor(
+            context
+        )
+    ) { event ->
+        when (event) {
+            is VideoRecordEvent.Finalize -> {
+                if (!event.hasError()) {
+                    println("myVidRec : Recording Saved: ${videoFile.toUri()}")
+                } else {
+                    println("myVidRec : Recording Error")
+                    recording?.close()
+                    recording = null
+                }
+            }
+
+            is VideoRecordEvent.Start -> {
+                println("myVidRec : Recording Start")
+            }
+        }
+    }
+
+}
+
+@Composable
+fun VideoRecorderScreenORI(
     goLiveData: GoLiveSubmit,
     mGState: GlobalState,
     vmVidRec: VideoRecorderViewModel = koinInject(),
