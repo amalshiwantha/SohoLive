@@ -1,9 +1,8 @@
-package com.soho.sohoapp.live.ui.view.screens.video_recorder
+package com.soho.sohoapp.live.ui.view.screens.pre_rec_library
 
 import android.graphics.Bitmap
 import android.media.ThumbnailUtils
 import android.net.Uri
-import android.os.Environment
 import android.provider.MediaStore
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,10 +38,21 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import org.koin.compose.koinInject
 import java.io.File
 
 @Composable
-fun PreRecordScreen(navController: NavHostController) {
+fun PreRecordLibraryScreen(
+    navController: NavHostController,
+    vmPreRecLib: PreRecLibraryViewModel = koinInject(),
+) {
+    val videoFiles = remember { vmPreRecLib.getAllRecordedVideos() }
+
+    //load pvt video list
+    LaunchedEffect("initial_load") {
+
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -63,19 +74,20 @@ fun PreRecordScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(innerPadding)
             ) {
-                MainContent(onPlay = {
-                    navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}")
-                })
+                MainContent(videoList = videoFiles,
+                    onPlay = {
+                        navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}")
+                    })
             }
         }
     }
 }
 
 @Composable
-fun MainContent(onPlay: (Uri) -> Unit) {
-    val videoFiles = remember { getAllRecordedVideos() }
+fun MainContent(onPlay: (Uri) -> Unit, videoList: List<File>) {
+
     Column {
-        if (videoFiles.isEmpty()) {
+        if (videoList.isEmpty()) {
             Text(
                 text = "No videos recorded",
                 modifier = Modifier.fillMaxSize(),
@@ -86,7 +98,7 @@ fun MainContent(onPlay: (Uri) -> Unit) {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(videoFiles) { file ->
+                items(videoList) { file ->
                     VideoFileItem(file, onPlay = {
                         onPlay(it)
                     })
@@ -134,16 +146,6 @@ fun VideoFileItem(file: File, onPlay: (Uri) -> Unit) {
             Text700_14sp(step = file.name)
             Text700_14spBold(step = "Size: ${file.length() / (1024 * 1024)} MB")
         }
-    }
-}
-
-fun getAllRecordedVideos(): List<File> {
-    val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-    val customDir = File(movieDir, "SohoPreRecord")
-    return if (customDir.exists()) {
-        customDir.listFiles()?.filter { it.extension == "mp4" } ?: emptyList()
-    } else {
-        emptyList()
     }
 }
 

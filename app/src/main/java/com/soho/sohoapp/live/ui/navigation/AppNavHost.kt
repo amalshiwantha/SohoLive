@@ -11,7 +11,6 @@ import com.soho.sohoapp.live.ui.view.screens.pre_access.PreAccessScreen
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInScreen
 import com.soho.sohoapp.live.ui.view.screens.signup.SignUpScreen
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashScreen
-import com.soho.sohoapp.live.ui.view.screens.video_recorder.PreRecordScreen
 
 @Composable
 fun AppNavHost(viewMMain: MainViewModel) {

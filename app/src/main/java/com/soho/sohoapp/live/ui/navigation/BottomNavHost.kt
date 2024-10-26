@@ -31,7 +31,7 @@ import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
 import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
-import com.soho.sohoapp.live.ui.view.screens.video_recorder.PreRecordScreen
+import com.soho.sohoapp.live.ui.view.screens.pre_rec_library.PreRecordLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorder
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 
@@ -194,7 +194,7 @@ fun BottomNavHost(
         }
 
         composable(route = NavigationPath.PRE_RECODED_LIST.name) {
-            PreRecordScreen(navController = navController)
+            PreRecordLibraryScreen(navController = navController)
         }
     }
 }
