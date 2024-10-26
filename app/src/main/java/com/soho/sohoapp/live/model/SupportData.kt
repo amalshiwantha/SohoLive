@@ -155,7 +155,8 @@ data class GlobalState(
     var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
     var videoItemState: MutableState<VideoItem?> = mutableStateOf(null),
     var propertyItemState: MutableState<PropertyItem?> = mutableStateOf(null),
-    var privateVideoId: MutableState<Long> = mutableLongStateOf(0)
+    var privateVideoId: MutableState<Long> = mutableLongStateOf(0),
+    var isEditVideoData: MutableState<Boolean> = mutableStateOf(false)
 )
 
 @Serializable

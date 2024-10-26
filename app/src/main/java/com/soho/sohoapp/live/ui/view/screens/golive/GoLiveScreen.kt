@@ -551,6 +551,8 @@ fun GoLiveScreen(
                     stepCount = stepCount,
                     isNowSelected = isNowSelected,
                     onClickedNext = {
+                        mGState.isEditVideoData.value = false
+
                         val isAllowGo = isAllowGoNext(currentStepId = currentStepId,
                             mGoLiveSubmit = mGoLiveSubmit,
                             goLiveVm = goLiveVm,
@@ -564,6 +566,7 @@ fun GoLiveScreen(
                         }
                     },
                     onClickedBack = {
+                        mGState.isEditVideoData.value = false
                         currentStepId = (currentStepId - 1) % stepCount
                         mState.stepId.value = currentStepId
                     },
@@ -585,6 +588,8 @@ fun GoLiveScreen(
                         }
                     },
                     onClickedLive = {
+                        mGState.isEditVideoData.value = false
+
                         val isAllowGo = isAllowGoNext(currentStepId = currentStepId,
                             mGoLiveSubmit = mGoLiveSubmit,
                             goLiveVm = goLiveVm,

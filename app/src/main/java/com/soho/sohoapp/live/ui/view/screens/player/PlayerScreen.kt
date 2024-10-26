@@ -84,7 +84,7 @@ fun PlayerScreen(
             AppTopBar(
                 title = "",
                 rightIcon = R.drawable.ic_trash,
-                isAllowBack = true,
+                isAllowBack = mGState.isEditVideoData.value,
                 onBackClick = { navController.popBackStack() }, onRightClick = {
                     //show confirmation to remove
                     isShowAlert = true

@@ -76,6 +76,7 @@ fun PreRecordLibraryScreen(
     //load pvt video list
     LaunchedEffect(states.videoList.value) {
         if (states.videoList.value.isEmpty()) {
+            mGState.isEditVideoData.value = true
             vmPreRecLib.loadPvtVideo()
         }
     }

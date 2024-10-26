@@ -52,9 +52,12 @@ fun ReviewScreen(
 
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
-            mGState.privateVideoId.value  = -1
-            onDoneClick()
-            //call when edit -> navController.popBackStack()
+            if (mGState.isEditVideoData.value) {
+                navController.popBackStack()
+            } else {
+                mGState.privateVideoId.value = -1
+                onDoneClick()
+            }
         }
     }
 
