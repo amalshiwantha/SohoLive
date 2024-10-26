@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -43,13 +44,19 @@ import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
 @Preview
 @Composable
 private fun PreviewReviewScreen() {
-    ReviewScreen(navController = rememberNavController())
+    ReviewScreen(
+        mGState = GlobalState(), navController = rememberNavController()
+    )
 }
 
 @Composable
-fun ReviewScreen(navController: NavHostController, onDoneClick: () -> Unit = {}) {
+fun ReviewScreen(
+    mGState: GlobalState, navController: NavHostController, onDoneClick: () -> Unit = {}
+) {
 
-    var selectedOption by remember { mutableStateOf(VideoPrivacy.PRIVATE.label) }
+    val selectedItem = mGState.privateVidItemState.value
+    val dfltSelection = selectedItem?.privacy ?: VideoPrivacy.PRIVATE
+    var selectedOption by remember { mutableStateOf(dfltSelection) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -114,10 +121,10 @@ fun ReviewScreen(navController: NavHostController, onDoneClick: () -> Unit = {})
                             isWhiteTheme = false,
                             description = "Video will only be visible to you. You can choose to publish it as unlisted or public when ready.",
                             eyeImgId = R.drawable.ic_time,
-                            isSelected = selectedOption == VideoPrivacy.PRIVATE.label,
+                            isSelected = selectedOption.label == VideoPrivacy.PRIVATE.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
-                                selectedOption = VideoPrivacy.PRIVATE.label
+                                selectedOption = VideoPrivacy.PRIVATE
                             })
 
                         SpacerUp(size = 16.dp)
@@ -126,10 +133,10 @@ fun ReviewScreen(navController: NavHostController, onDoneClick: () -> Unit = {})
                             isWhiteTheme = false,
                             description = "Video won’t be publicly visible on your listing. Anyone with the direct share link can still view it.",
                             eyeImgId = R.drawable.ic_hide_eye,
-                            isSelected = selectedOption == VideoPrivacy.UNLISTED.label,
+                            isSelected = selectedOption.label == VideoPrivacy.UNLISTED.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
-                                selectedOption = VideoPrivacy.UNLISTED.label
+                                selectedOption = VideoPrivacy.UNLISTED
                             })
 
                         SpacerUp(size = 16.dp)
@@ -138,10 +145,10 @@ fun ReviewScreen(navController: NavHostController, onDoneClick: () -> Unit = {})
                             isWhiteTheme = false,
                             description = "Video will be publicly visible on your property listing.",
                             eyeImgId = R.drawable.ic_view_eye,
-                            isSelected = selectedOption == VideoPrivacy.PUBLIC.label,
+                            isSelected = selectedOption.label == VideoPrivacy.PUBLIC.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
-                                selectedOption = VideoPrivacy.PUBLIC.label
+                                selectedOption = VideoPrivacy.PUBLIC
                             })
 
                         SpacerUp(size = 16.dp)

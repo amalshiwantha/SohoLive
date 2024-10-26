@@ -36,7 +36,7 @@ data class PrivateVideo(
     var castFor: String,
     var title: String,
     var description: String? = null,
-    val privacy: VideoPrivacy,
+    val privacy: VideoPrivacy = VideoPrivacy.PRIVATE,
     val property: Document? = null
 ) {
     val dayLabel: String

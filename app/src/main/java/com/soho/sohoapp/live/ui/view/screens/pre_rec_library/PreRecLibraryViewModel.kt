@@ -84,7 +84,7 @@ class PreRecLibraryViewModel() : ViewModel() {
             filePath = tmpFile2,
             createdDate = "2024-10-22 10:13:56",
             castFor = "Auction",
-            privacy = VideoPrivacy.PRIVATE,
+            privacy = VideoPrivacy.UNLISTED,
             title = "Just Title Second",
             description = "Just more description to display"
         )

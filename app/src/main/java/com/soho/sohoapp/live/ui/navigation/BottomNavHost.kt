@@ -183,19 +183,20 @@ fun BottomNavHost(
         }
 
         composable(route = NavigationPath.REVIEW.name) {
-            ReviewScreen(navController = navController, onDoneClick = {
-                navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
-                    //tab move
-                    onTabMoveClick(1)
+            ReviewScreen(
+                mGState = mGlobalState, navController = navController, onDoneClick = {
+                    navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
+                        //tab move
+                        onTabMoveClick(1)
 
-                    // Pop up to the start destination (or a specific destination) and clear the stack
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        inclusive = true
+                        // Pop up to the start destination (or a specific destination) and clear the stack
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            inclusive = true
+                        }
+                        // Ensure the new screen is the top-most screen
+                        launchSingleTop = true
                     }
-                    // Ensure the new screen is the top-most screen
-                    launchSingleTop = true
-                }
-            })
+                })
         }
 
         composable(route = NavigationPath.PRE_RECODED_LIST.name) {
