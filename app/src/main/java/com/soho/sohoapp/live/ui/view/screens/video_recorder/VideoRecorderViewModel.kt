@@ -38,6 +38,7 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
             vidDb.insertVideo(pvtVid)
             val getDa = vidDb.getVideoByPath(file.path.orEmpty())
             println("myVidRec saveDB $getDa")
+            mState.value = mState.value.copy(isSuccess = true)
         }
     }
 }

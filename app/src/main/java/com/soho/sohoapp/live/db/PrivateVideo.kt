@@ -3,7 +3,6 @@ package com.soho.sohoapp.live.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.soho.sohoapp.live.enums.VideoPrivacy
-import com.soho.sohoapp.live.network.response.Document
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -13,7 +12,8 @@ import kotlin.math.abs
 @Serializable
 @Entity(tableName = "private_videos")
 data class PrivateVideo(
-    @PrimaryKey val filePath: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val filePath: String,
     val createdDate: String,
     var castFor: String,
     var title: String,
