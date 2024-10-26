@@ -186,6 +186,7 @@ fun BottomNavHost(
             ReviewScreen(
                 mGState = mGlobalState, navController = navController, onDoneClick = {
                     navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
+
                         //tab move
                         onTabMoveClick(1)
 
@@ -195,6 +196,7 @@ fun BottomNavHost(
                         }
                         // Ensure the new screen is the top-most screen
                         launchSingleTop = true
+
                     }
                 })
         }

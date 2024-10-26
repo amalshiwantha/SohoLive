@@ -68,7 +68,13 @@ fun ReviewScreen(
         bottomBar = {
             ButtonColoured(
                 text = "Done",
-                onBtnClick = { onDoneClick() },
+                onBtnClick = {
+                    selectedItem?.let {
+                        navController.popBackStack()
+                    } ?: run {
+                        onDoneClick()
+                    }
+                },
                 color = AppGreen,
                 modifier = Modifier
                     .fillMaxWidth()
