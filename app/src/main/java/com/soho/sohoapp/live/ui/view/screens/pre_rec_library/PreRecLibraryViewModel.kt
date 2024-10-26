@@ -4,13 +4,14 @@ import android.os.Environment
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import java.io.File
 
 class PreRecLibraryViewModel() : ViewModel() {
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
 
     fun loadPvtVideo() {
-        mState.value = mState.value.copy(isSuccess = true)
+        mState.value = mState.value.copy(loadingState = ProgressBarState.Loading)
         getAllRecordedVideos()
     }
 
