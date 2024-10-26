@@ -45,6 +45,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
 import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,7 +56,8 @@ import java.util.concurrent.Executors
 const val PvtRecFolder = "SohoPreRecord"
 
 @Composable
-fun VideoRecorder(
+fun VideoRecorderScreen(
+    vmVidRec: VideoRecorderViewModel = koinInject(),
     onVideoSaved: (Uri) -> Unit
 ) {
     val context = LocalContext.current
@@ -154,10 +156,6 @@ fun VideoRecorder(
                 .align(Alignment.TopStart)
                 .padding(vertical = 32.dp, horizontal = 16.dp)
         )
-        /*Button(
-            onClick = { navController.navigate(NavigationPath.PRE_RECODED_LIST.name) }) {
-            TextWhite14Normal(title = "List")
-        }*/
 
         //Timer Top Right
         TimerCard(
@@ -222,7 +220,8 @@ fun VideoRecorder(
                                     if (recordEvent.hasError()) {
                                         println("myVidRec : Recording Error")
                                         Handler(Looper.getMainLooper()).post {
-                                            onVideoSaved(Uri.fromFile(videoFile))
+                                            vmVidRec.saveVideoItem(Uri.fromFile(videoFile))
+                                            //onVideoSaved(Uri.fromFile(videoFile))
                                         }
                                     } else {
                                         //Open Video Player screen with last recorded video
@@ -328,4 +327,3 @@ fun convertMinutesToHHMM(minutes: Int): String {
     val remainingMinutes = minutes % 60
     return "$hours hours and $remainingMinutes min"
 }
-

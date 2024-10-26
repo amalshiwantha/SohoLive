@@ -127,7 +127,7 @@ fun ReviewScreen(
                             isWhiteTheme = false,
                             description = "Video will only be visible to you. You can choose to publish it as unlisted or public when ready.",
                             eyeImgId = R.drawable.ic_time,
-                            isSelected = selectedOption.label == VideoPrivacy.PRIVATE.label,
+                            isSelected = selectedOption == VideoPrivacy.PRIVATE.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
                                 selectedOption = VideoPrivacy.PRIVATE
@@ -139,7 +139,7 @@ fun ReviewScreen(
                             isWhiteTheme = false,
                             description = "Video won’t be publicly visible on your listing. Anyone with the direct share link can still view it.",
                             eyeImgId = R.drawable.ic_hide_eye,
-                            isSelected = selectedOption.label == VideoPrivacy.UNLISTED.label,
+                            isSelected = selectedOption == VideoPrivacy.UNLISTED.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
                                 selectedOption = VideoPrivacy.UNLISTED
@@ -151,7 +151,7 @@ fun ReviewScreen(
                             isWhiteTheme = false,
                             description = "Video will be publicly visible on your property listing.",
                             eyeImgId = R.drawable.ic_view_eye,
-                            isSelected = selectedOption.label == VideoPrivacy.PUBLIC.label,
+                            isSelected = selectedOption == VideoPrivacy.PUBLIC.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
                                 selectedOption = VideoPrivacy.PUBLIC

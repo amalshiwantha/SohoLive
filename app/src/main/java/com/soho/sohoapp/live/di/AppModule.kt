@@ -19,6 +19,7 @@ import com.soho.sohoapp.live.ui.view.screens.splash.SplashViewModel
 import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsViewModel
 import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryViewModel
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageViewModel
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorderViewModel
 import com.soho.sohoapp.live.utility.NetworkUtils
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
@@ -60,4 +61,5 @@ val appModule = module {
     viewModel { ProfileViewModel(get()) }
     viewModel { PreRecLibraryViewModel() }
     viewModel { VidEditDetailsViewModel() }
+    viewModel { VideoRecorderViewModel(get()) }
 }

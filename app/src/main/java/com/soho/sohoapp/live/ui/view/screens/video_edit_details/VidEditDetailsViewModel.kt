@@ -29,7 +29,7 @@ class VidEditDetailsViewModel() : ViewModel() {
             filePath = tmpFile1,
             createdDate = "2024-10-26 12:23:56",
             castFor = "Inspection",
-            privacy = VideoPrivacy.PUBLIC,
+            privacy = VideoPrivacy.PUBLIC.label,
             title = "Just Title",
             description = "Just more description to display"
         )
@@ -38,7 +38,7 @@ class VidEditDetailsViewModel() : ViewModel() {
             filePath = tmpFile2,
             createdDate = "2024-10-22 10:13:56",
             castFor = "Inspection",
-            privacy = VideoPrivacy.PRIVATE,
+            privacy = VideoPrivacy.PRIVATE.label,
             title = "Just Title Second"
         )
 

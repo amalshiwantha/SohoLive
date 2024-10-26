@@ -18,8 +18,8 @@ data class PrivateVideo(
     var castFor: String,
     var title: String,
     var description: String? = null,
-    val privacy: VideoPrivacy = VideoPrivacy.PRIVATE,
-    val property: Document? = null
+    val privacy: String = VideoPrivacy.PRIVATE.label,
+    val propertyId: Int = 0
 ) {
     val dayLabel: String
         get() = getDayLabel(createdDate)

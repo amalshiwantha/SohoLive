@@ -33,7 +33,7 @@ import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsSc
 import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
-import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorder
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorderScreen
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 
 
@@ -150,7 +150,7 @@ fun BottomNavHost(
         }
 
         composable(route = NavigationPath.VIDEO_RECORDER.name) {
-            VideoRecorder(onVideoSaved = {
+            VideoRecorderScreen(onVideoSaved = {
                 val tempVidFile =
                     "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_004116.mp4"
                 navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(tempVidFile)}") {

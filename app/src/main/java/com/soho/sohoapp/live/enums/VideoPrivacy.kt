@@ -4,7 +4,9 @@ import androidx.compose.ui.graphics.Color
 import com.soho.sohoapp.live.ui.theme.PinkUnlisted
 import com.soho.sohoapp.live.ui.theme.PrivateGray
 import com.soho.sohoapp.live.ui.theme.PublicGreen
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class VideoPrivacy(val bgColor: Color, val label: String) {
     PUBLIC(PublicGreen, "PUBLIC"),
     UNLISTED(PinkUnlisted, "UNLISTED"),
