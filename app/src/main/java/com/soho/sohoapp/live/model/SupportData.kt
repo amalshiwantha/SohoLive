@@ -40,7 +40,7 @@ data class SmBtn(val color: Color, val txt: String, val icon: Int?)
 data class MainState(
     var liveFormat: MutableState<String> = mutableStateOf(LiveFormat.PRE.name),
     var liveOrientation: MutableState<String> = mutableStateOf(Orientation.PORT.name),
-    var stepId: MutableState<Int> = mutableIntStateOf(2),
+    var stepId: MutableState<Int> = mutableIntStateOf(0),
     var isPublic: MutableState<Boolean> = mutableStateOf(false),
 
     //Step #1

@@ -219,14 +219,14 @@ fun VideoRecorderScreen(
                                 is VideoRecordEvent.Finalize -> {
                                     if (recordEvent.hasError()) {
                                         println("myVidRec : Recording Error")
-                                        Handler(Looper.getMainLooper()).post {
-                                            vmVidRec.saveVideoItem(Uri.fromFile(videoFile))
-                                            //onVideoSaved(Uri.fromFile(videoFile))
-                                        }
                                     } else {
                                         //Open Video Player screen with last recorded video
                                         val lastVidUri = Uri.fromFile(videoFile)
                                         println("myVidRec : Recording Saved: ${lastVidUri}")
+                                        Handler(Looper.getMainLooper()).post {
+                                            vmVidRec.saveVideoItem(Uri.fromFile(videoFile))
+                                            //onVideoSaved(Uri.fromFile(videoFile))
+                                        }
                                     }
                                 }
                             }

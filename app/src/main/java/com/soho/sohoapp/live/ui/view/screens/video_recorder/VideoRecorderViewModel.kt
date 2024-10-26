@@ -15,7 +15,7 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
 
     fun saveVideoItem(pvtVid: Uri) {
         viewModelScope.launch {
-            println("saveDB ${pvtVid.path}")
+            println("myVidRec saveDB ${pvtVid.path}")
         }
     }
 }
