@@ -71,6 +71,10 @@ fun VideoRecorderScreen(
     //If save success then open player
     LaunchedEffect(mState.isSuccess) {
         if (mState.isSuccess) {
+            mGState.apply {
+                privateVideoId.value = mState.lastSavedId
+            }
+
             val tempVidFile =
                 "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_161648.mp4"
             onVideoSaved(Uri.parse(tempVidFile))

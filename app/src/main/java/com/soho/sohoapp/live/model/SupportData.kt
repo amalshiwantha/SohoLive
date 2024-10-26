@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.model
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -154,7 +155,8 @@ data class GlobalState(
     var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),
     var videoItemState: MutableState<VideoItem?> = mutableStateOf(null),
     var propertyItemState: MutableState<PropertyItem?> = mutableStateOf(null),
-    var privateVidItemState: MutableState<PrivateVideo?> = mutableStateOf(null)
+    var privateVidItemState: MutableState<PrivateVideo?> = mutableStateOf(null),
+    var privateVideoId: MutableState<Long> = mutableLongStateOf(0)
 )
 
 @Serializable

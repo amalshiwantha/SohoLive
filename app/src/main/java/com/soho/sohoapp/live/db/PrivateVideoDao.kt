@@ -9,7 +9,10 @@ import androidx.room.Update
 @Dao
 interface PrivateVideoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertVideo(video: PrivateVideo)
+    suspend fun insertVideo(video: PrivateVideo): Long
+
+    @Query("SELECT * FROM private_videos WHERE id = :id")
+    suspend fun getVideoById(id: Long): PrivateVideo?
 
     @Query("SELECT * FROM private_videos WHERE filePath = :filePath")
     suspend fun getVideoByPath(filePath: String): PrivateVideo?
