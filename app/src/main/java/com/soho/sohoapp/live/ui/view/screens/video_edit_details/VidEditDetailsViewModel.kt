@@ -15,7 +15,7 @@ class VidEditDetailsViewModel(private val vidDb: PrivateVideoDao) : ViewModel() 
 
     fun getLatestItem(pvtVidId: Long) {
         viewModelScope.launch {
-            val pvtVideo = vidDb.getVideoById(pvtVidId)
+            val pvtVideo = vidDb.getVideoById(pvtVidId.toInt())
             if (pvtVideo != null) {
                 mState.value = mState.value.copy(
                     privateVideo = mutableStateOf(pvtVideo),
@@ -26,9 +26,8 @@ class VidEditDetailsViewModel(private val vidDb: PrivateVideoDao) : ViewModel() 
 
     fun updateDetails(selectedItem: PrivateVideo?) {
         viewModelScope.launch {
-            //selectedItem?.let { vidDb.updateVideo(it) }
-            println("mySaved ${selectedItem}")
-            //mState.value = mState.value.copy(isSuccess = true)
+            selectedItem?.let { vidDb.updateVideo(it) }
+            mState.value = mState.value.copy(isSuccess = true)
         }
     }
 

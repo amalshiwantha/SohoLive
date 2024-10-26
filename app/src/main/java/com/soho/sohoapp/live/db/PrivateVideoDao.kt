@@ -12,7 +12,7 @@ interface PrivateVideoDao {
     suspend fun insertVideo(video: PrivateVideo): Long
 
     @Query("SELECT * FROM private_videos WHERE id = :id")
-    suspend fun getVideoById(id: Long): PrivateVideo?
+    suspend fun getVideoById(id: Int): PrivateVideo?
 
     @Query("SELECT * FROM private_videos WHERE filePath = :filePath")
     suspend fun getVideoByPath(filePath: String): PrivateVideo?
