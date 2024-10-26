@@ -92,6 +92,24 @@ fun VideoRecorderScreen(
         }
     }
 
+    var timerValue by remember { mutableStateOf("00:00") }
+    var isRecording by remember { mutableStateOf(false) }
+
+    // Timer logic
+    LaunchedEffect(isRecording) {
+        while (isRecording) {
+            delay(1000)
+            timerValue = updateTimer(timerValue)
+        }
+
+        //reset timer
+        if (!isRecording) {
+            delay(1000)
+            timerValue = "00:00"
+        }
+    }
+
+    //Main Content
     Box(modifier = Modifier.fillMaxSize()) {
         //Main Camera
         CameraPreview(
@@ -116,6 +134,12 @@ fun VideoRecorderScreen(
             )
         }
 
+        //Timer Top Right
+        TimerCard(
+            timerValue = timerValue,
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
+
         //Bottom Action Btn
         Row(
             modifier = Modifier
@@ -138,7 +162,9 @@ fun VideoRecorderScreen(
             }
             IconButton(
                 onClick = {
-                    recordVideo(controller)
+                    recordVideo(controller, onRecord = {
+                        isRecording = it
+                    })
                 }
             ) {
                 Icon(
@@ -151,8 +177,9 @@ fun VideoRecorderScreen(
 }
 
 @SuppressLint("MissingPermission")
-private fun recordVideo(controller: LifecycleCameraController) {
+private fun recordVideo(controller: LifecycleCameraController, onRecord: (Boolean) -> Unit) {
     if (recording != null) {
+        onRecord(false)
         recording?.stop()
         recording = null
         return
@@ -170,8 +197,10 @@ private fun recordVideo(controller: LifecycleCameraController) {
             is VideoRecordEvent.Finalize -> {
                 if (!event.hasError()) {
                     println("myVidRec : Recording Saved: ${videoFile.toUri()}")
+                    onRecord(false)
                 } else {
                     println("myVidRec : Recording Error")
+                    onRecord(false)
                     recording?.close()
                     recording = null
                 }
@@ -179,6 +208,7 @@ private fun recordVideo(controller: LifecycleCameraController) {
 
             is VideoRecordEvent.Start -> {
                 println("myVidRec : Recording Start")
+                onRecord(true)
             }
         }
     }

@@ -1,9 +1,12 @@
 package com.soho.sohoapp.live.ui.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.forget_pw.ForgetPwScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeScreen
@@ -11,6 +14,7 @@ import com.soho.sohoapp.live.ui.view.screens.pre_access.PreAccessScreen
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInScreen
 import com.soho.sohoapp.live.ui.view.screens.signup.SignUpScreen
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashScreen
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorderScreen
 
 @Composable
 fun AppNavHost(viewMMain: MainViewModel) {
@@ -34,6 +38,21 @@ fun AppNavHost(viewMMain: MainViewModel) {
         }
         composable(route = NavigationPath.HOME.name) {
             HomeScreen(navControllerHome = navController, viewMMain = viewMMain)
+        }
+
+        composable(route = NavigationPath.VIDEO_RECORDER.name) {
+            VideoRecorderScreen(
+                goLiveData = GoLiveSubmit(),
+                mGState = GlobalState(),
+                onVideoSaved = {
+                    val tempVidFile =
+                        "file:///storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241026_161648.mp4"
+                    navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(tempVidFile)}") {
+                        popUpTo(NavigationPath.VIDEO_RECORDER.name) {
+                            inclusive = true
+                        }
+                    }
+                })
         }
     }
 }
