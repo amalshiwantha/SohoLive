@@ -14,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,10 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
@@ -40,23 +39,41 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
-
-@Preview
-@Composable
-private fun PreviewReviewScreen() {
-    ReviewScreen(
-        mGState = GlobalState(), navController = rememberNavController()
-    )
-}
+import org.koin.compose.koinInject
 
 @Composable
 fun ReviewScreen(
+    vmReview: ReviewViewModel = koinInject(),
     mGState: GlobalState, navController: NavHostController, onDoneClick: () -> Unit = {}
 ) {
+    val states = vmReview.mState.value
+    val pvtVidId = mGState.privateVideoId.value
+    var selectedOption by remember { mutableStateOf(VideoPrivacy.PRIVATE.label) }
 
-    val selectedItem = mGState.privateVidItemState.value
+    /*val selectedItem = states.privateVideo.value
     val dfltSelection = selectedItem?.privacy ?: VideoPrivacy.PRIVATE
-    var selectedOption by remember { mutableStateOf(dfltSelection) }
+    var selectedOption by remember { mutableStateOf(dfltSelection) }*/
+
+    LaunchedEffect(states.isSuccess) {
+        if (states.isSuccess) {
+            onDoneClick()
+            //call when edit -> navController.popBackStack()
+        }
+    }
+
+    //Load Completed
+    LaunchedEffect(states.isLoadedItem) {
+        if (states.isLoadedItem) {
+            states.privateVideo.value?.let {
+                selectedOption = it.privacy
+            }
+        }
+    }
+
+    //get latest item
+    LaunchedEffect("get_latest") {
+        vmReview.getLatestItem(pvtVidId)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -69,11 +86,8 @@ fun ReviewScreen(
             ButtonColoured(
                 text = "Done",
                 onBtnClick = {
-                    selectedItem?.let {
-                        navController.popBackStack()
-                    } ?: run {
-                        onDoneClick()
-                    }
+                    val updatedItem = states.privateVideo.value?.copy(privacy = selectedOption)
+                    vmReview.updateDetails(updatedItem)
                 },
                 color = AppGreen,
                 modifier = Modifier
@@ -130,7 +144,7 @@ fun ReviewScreen(
                             isSelected = selectedOption == VideoPrivacy.PRIVATE.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
-                                selectedOption = VideoPrivacy.PRIVATE
+                                selectedOption = VideoPrivacy.PRIVATE.label
                             })
 
                         SpacerUp(size = 16.dp)
@@ -142,7 +156,7 @@ fun ReviewScreen(
                             isSelected = selectedOption == VideoPrivacy.UNLISTED.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
-                                selectedOption = VideoPrivacy.UNLISTED
+                                selectedOption = VideoPrivacy.UNLISTED.label
                             })
 
                         SpacerUp(size = 16.dp)
@@ -154,7 +168,7 @@ fun ReviewScreen(
                             isSelected = selectedOption == VideoPrivacy.PUBLIC.label,
                             txtColor = AppWhite,
                             onOptionSelected = {
-                                selectedOption = VideoPrivacy.PUBLIC
+                                selectedOption = VideoPrivacy.PUBLIC.label
                             })
 
                         SpacerUp(size = 16.dp)
