@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -188,6 +189,37 @@ fun PlayerScreen(
                             contentDescription = "Play"
                         )
                     }
+
+                    //Soho Watermark
+                    Image(
+                        painter = painterResource(id = R.drawable.soho_watermark),
+                        contentDescription = "soho watermark",
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(16.dp)
+                    )
+
+                    //property info
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_property_info),
+                        contentDescription = "proeprty watermark",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(start = 12.dp, end = 12.dp, bottom = 60.dp)
+                            .fillMaxWidth()
+                    )
+
+                    //Agent Watermark
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_agent_info),
+                        contentDescription = "agent watermark",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(horizontal = 12.dp)
+                            .fillMaxWidth()
+                    )
 
                 }
 
