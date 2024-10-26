@@ -13,13 +13,12 @@ import kotlinx.coroutines.launch
 class VidEditDetailsViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
 
-    fun getLatestItem() {
+    fun getLatestItem(pvtVidId: Long) {
         viewModelScope.launch {
-            val latestItem = vidDb.getLatestVideo()
-            if (latestItem != null) {
+            val pvtVideo = vidDb.getVideoById(pvtVidId)
+            if (pvtVideo != null) {
                 mState.value = mState.value.copy(
-                    privateVideo = mutableStateOf(latestItem),
-                    isFoundLatest = true
+                    privateVideo = mutableStateOf(pvtVideo),
                 )
             }
         }
@@ -27,9 +26,9 @@ class VidEditDetailsViewModel(private val vidDb: PrivateVideoDao) : ViewModel() 
 
     fun updateDetails(selectedItem: PrivateVideo?) {
         viewModelScope.launch {
-            selectedItem?.let { vidDb.updateVideo(it) }
+            //selectedItem?.let { vidDb.updateVideo(it) }
             println("mySaved ${selectedItem}")
-            mState.value = mState.value.copy(isSuccess = true)
+            //mState.value = mState.value.copy(isSuccess = true)
         }
     }
 

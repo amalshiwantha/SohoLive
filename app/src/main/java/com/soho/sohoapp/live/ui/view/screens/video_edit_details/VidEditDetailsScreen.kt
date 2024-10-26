@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -39,20 +40,14 @@ fun VidEditDetailsScreen(
     vmVidEdit: VidEditDetailsViewModel = koinInject(),
 ) {
     val states = vmVidEdit.mState.value
-    val selectedItem = mGState.privateVidItemState.value
+    val pvtVidId = mGState.privateVideoId.value
 
-    LaunchedEffect(states.isFoundLatest) {
-        if (states.isFoundLatest) {
-            mGState.privateVidItemState.value = states.privateVideo.value
-        }
-    }
-
+    //get latest item
     LaunchedEffect("get_latest") {
-        if (selectedItem == null) {
-            vmVidEdit.getLatestItem()
-        }
+        vmVidEdit.getLatestItem(pvtVidId)
     }
 
+    //if success update then close the screen
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
             navController.popBackStack()
@@ -73,7 +68,7 @@ fun VidEditDetailsScreen(
                 text = "Update",
                 color = AppGreen,
                 onBtnClick = {
-                    vmVidEdit.updateDetails(selectedItem)
+                    vmVidEdit.updateDetails(states.privateVideo.value)
                 },
                 modifier = Modifier.padding(16.dp)
             )
@@ -95,7 +90,7 @@ fun VidEditDetailsScreen(
                         .fillMaxSize()
                         .padding(16.dp)
                 ) {
-                    selectedItem?.let {
+                    states.privateVideo.value?.let {
                         EditForm(it)
                     }
                 }
