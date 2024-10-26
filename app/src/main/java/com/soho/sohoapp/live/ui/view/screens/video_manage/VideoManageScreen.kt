@@ -50,7 +50,6 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
-import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
@@ -67,7 +66,7 @@ import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
-import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
+import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
 import com.soho.sohoapp.live.utility.showToast

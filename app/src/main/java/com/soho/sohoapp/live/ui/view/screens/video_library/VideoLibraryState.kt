@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.view.screens.video
+package com.soho.sohoapp.live.ui.view.screens.video_library
 
 import androidx.compose.runtime.MutableState
 import com.soho.sohoapp.live.enums.FieldType

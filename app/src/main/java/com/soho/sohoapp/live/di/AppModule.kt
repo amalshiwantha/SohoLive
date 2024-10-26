@@ -12,7 +12,7 @@ import com.soho.sohoapp.live.ui.view.screens.profile.ProfileViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashViewModel
-import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryViewModel
+import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryViewModel
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageViewModel
 import com.soho.sohoapp.live.utility.NetworkUtils
 import kotlinx.serialization.json.Json

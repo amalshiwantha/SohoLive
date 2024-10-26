@@ -1,4 +1,4 @@
-package com.soho.sohoapp.live.ui.view.screens.video
+package com.soho.sohoapp.live.ui.view.screens.video_library
 
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest

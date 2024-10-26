@@ -11,7 +11,7 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
-import com.soho.sohoapp.live.ui.view.screens.video.VidLibEvent
+import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

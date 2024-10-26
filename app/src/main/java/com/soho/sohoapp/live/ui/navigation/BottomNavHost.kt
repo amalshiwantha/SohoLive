@@ -28,7 +28,7 @@ import com.soho.sohoapp.live.ui.view.screens.player.PlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.profile.ProfileScreen
 import com.soho.sohoapp.live.ui.view.screens.review.ReviewScreen
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
-import com.soho.sohoapp.live.ui.view.screens.video.VideoLibraryScreen
+import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorder
