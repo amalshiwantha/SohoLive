@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -270,6 +271,7 @@ fun Text700_14spLink(
 fun Text700_14spProperty(
     modifier: Modifier = Modifier,
     step: String,
+    isSingleLine: Boolean = false,
     color: Color = AppWhite,
 ) {
     val fontId = R.font.axiforma_regular
@@ -280,8 +282,10 @@ fun Text700_14spProperty(
         text = step,
         fontSize = 14.sp,
         lineHeight = 19.6.sp,
+        maxLines = if (isSingleLine) 1 else 2,
         fontFamily = FontFamily(Font(fontId)),
         fontWeight = FontWeight(700),
+        overflow = TextOverflow.Ellipsis,
         color = color,
         letterSpacing = 0.17.sp
     )
@@ -617,6 +621,7 @@ fun TextSwipeSelection(modifier: Modifier, title: String, textColor: Color) {
         )
     }
 }
+
 @Composable
 fun TextIconSwipeSelectionNoFilter(modifier: Modifier, title: String, textColor: Color, icon: Int) {
     Box(
