@@ -2,6 +2,8 @@ package com.soho.sohoapp.live
 
 import android.app.Application
 import android.content.Context
+import android.content.ContextWrapper
+import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import com.soho.sohoapp.live.di.appModule
 import org.koin.android.ext.koin.androidContext
@@ -17,6 +19,12 @@ class SohoLiveApp : Application() {
 
         fun getStringApp(@StringRes stringRes: Int): String {
             return context.getString(stringRes)
+        }
+
+        fun Context.getActivity(): ComponentActivity? = when (this) {
+            is ComponentActivity -> this
+            is ContextWrapper -> baseContext.getActivity()
+            else -> null
         }
     }
 

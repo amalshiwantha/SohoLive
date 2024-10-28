@@ -156,6 +156,7 @@ fun BottomNavHost(
 
         composable(route = NavigationPath.VIDEO_RECORDER.name) {
             VideoRecorderScreen(
+                navController = navController,
                 goLiveData = mGoLiveSubmit,
                 mGState = mGlobalState,
                 onVideoSaved = { filePath ->
