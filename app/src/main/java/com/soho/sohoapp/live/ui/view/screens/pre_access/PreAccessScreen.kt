@@ -217,15 +217,15 @@ fun BottomBtnIndicator(
         ButtonColoured(text = stringResource(R.string.log_in),
             color = AppGreen,
             onBtnClick = {
-                //navController.navigate(NavigationPath.SIGNIN.name)
+                navController.navigate(NavigationPath.SIGNIN.name)
 
-                navController.navigate(
+                /*navController.navigate(
                     "${NavigationPath.PLAYER.name}/${
                         Uri.encode(
                             "/storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241028_094508.mp4"
                         )
                     }"
-                )
+                )*/
             })
 
         /*ButtonOutlineWhite(

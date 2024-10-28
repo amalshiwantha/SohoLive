@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.model.GoLiveSubmit
@@ -32,7 +33,7 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
                 castFor = goLiveData.purpose.orEmpty(),
                 title = goLiveData.title.orEmpty(),
                 description = goLiveData.description.orEmpty(),
-                propertyId = goLiveData.propertyId
+                agentProperty = AgentProperty(propertyId = goLiveData.propertyId)
             )
             val savedRecId = vidDb.insertVideo(pvtVid)
             mState.value = mState.value.copy(lastSavedId = savedRecId, isSuccess = true)

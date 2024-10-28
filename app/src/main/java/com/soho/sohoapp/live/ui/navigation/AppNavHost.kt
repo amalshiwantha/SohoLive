@@ -42,27 +42,5 @@ fun AppNavHost(viewMMain: MainViewModel) {
         composable(route = NavigationPath.HOME.name) {
             HomeScreen(navControllerHome = navController, viewMMain = viewMMain)
         }
-
-        //TEMP
-        composable(
-            route = "${NavigationPath.PLAYER.name}/{uri}",
-            arguments = listOf(navArgument("uri") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val uriString = backStackEntry.arguments?.getString("uri")
-            val uri = uriString?.let { Uri.parse(it) }
-            uri?.let {
-                PlayerScreen(
-                    mGState = GlobalState(),
-                    navController = navController,
-                    fileUri = it,
-                    onNextClick = {
-                        navController.navigate(NavigationPath.REVIEW.name) {
-                            popUpTo(NavigationPath.REVIEW.name) {
-                                inclusive = true
-                            }
-                        }
-                    })
-            }
-        }
     }
 }
