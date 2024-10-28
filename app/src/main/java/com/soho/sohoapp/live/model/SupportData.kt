@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import com.soho.sohoapp.live.db.PrivateVideo
+import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.FormFields
@@ -141,7 +141,8 @@ data class GoLiveSubmit(
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
     var checkedPlatforms: MutableList<String> = mutableListOf(),
     var isHideAgent: Boolean = false,
-    var propertyType: String? = null
+    var propertyType: String? = null,
+    var agentProperty: AgentProperty? = null
 ) {
     constructor() : this(
         purpose = null,
@@ -149,6 +150,19 @@ data class GoLiveSubmit(
         description = null
     )
 }
+
+fun Document.toAgentProperty(): AgentProperty {
+    return AgentProperty(
+        propertyId = this.propertyId,
+        address = listOfNotNull(this.address1, this.address2).joinToString(", "),
+        bedrooms = this.bedroomCount.toInt(),
+        bathrooms = this.bathroomCount.toInt(),
+        parking = this.carspotCount.toInt(),
+        sizeSm = this.landSize?.toFloat() ?: 0.0f,
+        agent = if (this.getAgents().isNotEmpty()) this.getAgents()[0] else null
+    )
+}
+
 
 @Serializable
 data class GlobalState(

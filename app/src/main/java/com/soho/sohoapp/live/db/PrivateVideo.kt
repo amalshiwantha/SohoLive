@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.soho.sohoapp.live.enums.VideoPrivacy
+import com.soho.sohoapp.live.network.response.Agent
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -33,12 +34,8 @@ data class AgentProperty(
     val bathrooms: Int = 0,
     val parking: Int = 0,
     val sizeSm: Float = 0.0f,
-    val agentName: String? = null,
-    val agencyColor: String? = null,
-    val agentProfileUrl: String? = null,
-    val agencyLogoUrl: String? = null,
+    val agent: Agent? = null
 )
-
 
 fun getDayLabel(createdDate: String): String {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())

@@ -95,6 +95,7 @@ import com.soho.sohoapp.live.model.ScheduleDateTime
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
+import com.soho.sohoapp.live.model.toAgentProperty
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
@@ -480,6 +481,8 @@ fun GoLiveScreen(
                                     mGoLiveSubmit.apply {
                                         if (selectedProperty.isChecked) {
                                             propertyId = selectedProperty.propInfo.id?.toInt() ?: 0
+                                            agentProperty =
+                                                selectedProperty.propInfo.toAgentProperty()
                                             title = selectedProperty.propInfo.fullAddress()
                                             propertyType =
                                                 selectedProperty.propInfo.getPropertyState()
