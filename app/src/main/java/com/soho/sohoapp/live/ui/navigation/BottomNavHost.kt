@@ -14,6 +14,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
@@ -37,8 +38,7 @@ import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorderScreen
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
-import com.soho.sohoapp.live.utility.AppEvent
-import com.soho.sohoapp.live.utility.AppEventBus
+import kotlinx.serialization.json.Json
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -158,15 +158,15 @@ fun BottomNavHost(
                 goLiveData = mGoLiveSubmit,
                 mGState = mGlobalState,
                 onVideoSaved = {
-                navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}") {
-                    popUpTo(NavigationPath.VIDEO_RECORDER.name) {
-                        inclusive = true
+                    navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}") {
+                        popUpTo(NavigationPath.VIDEO_RECORDER.name) {
+                            inclusive = true
+                        }
                     }
-                }
-            })
+                })
         }
 
-        composable(
+        /*composable(
             route = "${NavigationPath.PLAYER.name}/{uri}",
             arguments = listOf(navArgument("uri") { type = NavType.StringType })
         ) { backStackEntry ->
@@ -185,7 +185,40 @@ fun BottomNavHost(
                         }
                     })
             }
+        }*/
+
+        composable(
+            route = "${NavigationPath.PLAYER.name}/{uri}/{agentPropertyJson}",
+            arguments = listOf(
+                navArgument("uri") { type = NavType.StringType },
+                navArgument("agentPropertyJson") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val uriString = backStackEntry.arguments?.getString("uri")
+            val agentPropertyJson = backStackEntry.arguments?.getString("agentPropertyJson")
+
+            val uri = uriString?.let { Uri.parse(it) }
+            val agentProperty = agentPropertyJson?.let {
+                Json { ignoreUnknownKeys = true }.decodeFromString<AgentProperty>(it)
+            }
+
+            uri?.let {
+                PlayerScreen(
+                    mGState = mGlobalState,
+                    navController = navController,
+                    fileUri = it,
+                    agentProperty = agentProperty,
+                    onNextClick = {
+                        navController.navigate(NavigationPath.REVIEW.name) {
+                            popUpTo(NavigationPath.REVIEW.name) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
+            }
         }
+
 
         composable(route = NavigationPath.REVIEW.name) {
             ReviewScreen(

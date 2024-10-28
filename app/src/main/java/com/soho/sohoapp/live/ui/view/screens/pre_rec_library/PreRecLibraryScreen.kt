@@ -38,8 +38,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
@@ -61,6 +63,8 @@ import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
 import com.soho.sohoapp.live.utility.showToast
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 
 @Composable
@@ -129,36 +133,33 @@ fun PreRecordLibraryScreen(
                 } else {
                     MainContent(videoList = states.videoList.value,
                         onPlay = { pvtItem ->
-                            mGState.apply {
-                                privateVideoId = mutableLongStateOf(pvtItem.id.toLong())
-                            }
-                            navController.navigate(
-                                "${NavigationPath.PLAYER.name}/${
-                                    Uri.encode(
-                                        pvtItem.filePath
-                                    )
-                                }"
-                            )
+                            openPlayEditor(navController, pvtItem, mGState)
                         },
                         onDelete = {
                             actionFile = it
                             isShowAlert = true
                         },
                         onEditPublish = { pvtItem ->
-                            mGState.apply {
-                                privateVideoId = mutableLongStateOf(pvtItem.id.toLong())
-                            }
-                            navController.navigate(
-                                "${NavigationPath.PLAYER.name}/${
-                                    Uri.encode(
-                                        pvtItem.filePath
-                                    )
-                                }"
-                            )
+                            openPlayEditor(navController, pvtItem, mGState)
                         })
                 }
             }
         }
+    }
+}
+
+fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGState: GlobalState) {
+    mGState.apply {
+        privateVideoId = mutableLongStateOf(pvtItem.id.toLong())
+    }
+
+    pvtItem.agentProperty?.let {
+        navigateToPlayerScreen(
+            navController,
+            Uri.encode(
+                pvtItem.filePath
+            ), it
+        )
     }
 }
 
@@ -322,5 +323,13 @@ fun ThumbCenterPlay(item: PrivateVideo, onClick: () -> Unit) {
     }
 }
 
+fun navigateToPlayerScreen(
+    navController: NavController,
+    videoUri: String,
+    agentProperty: AgentProperty
+) {
+    val agentPropertyJson = Json.encodeToString(agentProperty)
+    val encodedAgentProperty = Uri.encode(agentPropertyJson)
 
-
+    navController.navigate("${NavigationPath.PLAYER.name}/$videoUri/$encodedAgentProperty")
+}

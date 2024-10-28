@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
@@ -51,6 +52,7 @@ fun PlayerScreen(
     mGState: GlobalState,
     navController: NavHostController,
     fileUri: Uri,
+    agentProperty: AgentProperty?,
     onNextClick: () -> Unit = {}
 ) {
 
