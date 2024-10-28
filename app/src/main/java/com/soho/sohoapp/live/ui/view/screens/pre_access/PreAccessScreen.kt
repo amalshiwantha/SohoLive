@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.pre_access
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -216,7 +217,15 @@ fun BottomBtnIndicator(
         ButtonColoured(text = stringResource(R.string.log_in),
             color = AppGreen,
             onBtnClick = {
-                navController.navigate(NavigationPath.SIGNIN.name)
+                //navController.navigate(NavigationPath.SIGNIN.name)
+
+                navController.navigate(
+                    "${NavigationPath.PLAYER.name}/${
+                        Uri.encode(
+                            "/storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241028_094508.mp4"
+                        )
+                    }"
+                )
             })
 
         /*ButtonOutlineWhite(
