@@ -4,8 +4,6 @@ import android.graphics.Bitmap
 import android.media.ThumbnailUtils.createVideoThumbnail
 import android.net.Uri
 import android.provider.MediaStore
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.compose.foundation.Image
@@ -192,11 +190,14 @@ fun PlayerScreen(
 
 @Composable
 fun AgentPropertyInfo(agProp: AgentProperty, modifier: Modifier) {
+    val profImgSize = 40.dp
     agProp.agent?.let { agent ->
         Row(modifier = modifier.background(agent.agencyBgColor)) {
             //profile image and name
             Row(
-                modifier = Modifier.padding(14.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 //profile image
@@ -212,103 +213,39 @@ fun AgentPropertyInfo(agProp: AgentProperty, modifier: Modifier) {
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(profImgSize)
                             .clip(CircleShape)
                     )
                 } ?: kotlin.run {
-                    InitialProfileImage(agent.full_name, 40.dp, isSmall = true)
+                    InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
                 }
+
+                SpacerSide(size = 8.dp)
 
                 //name
                 Text700_14sp(step = agent.full_name, color = TextDark)
             }
 
             //agency logo
+            agent.banner_image?.let {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 8.dp)
+                ) {
+                    val urlPainter = rememberAsyncImagePainter(model = it)
 
-        }
-    }
-}
-
-@Composable
-fun VideoPlayerWithThumbnail(videoUri: String, isPlaying: Boolean, onClick: (Boolean) -> Unit) {
-    // Generate the thumbnail from the video URI
-    val thumbnailBitmap: Bitmap? = remember(videoUri) {
-        createVideoThumbnail(
-            Uri.parse(videoUri).path ?: "",
-            MediaStore.Images.Thumbnails.MINI_KIND
-        )
-    }
-
-    AndroidView(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                start = 32.dp, end = 32.dp, bottom = 64.dp,
-                top = 0.dp
-            ),
-        factory = { ctx ->
-            FrameLayout(ctx).apply {
-                val videoView = VideoView(ctx).apply {
-                    //MediaController
-                    val mediaController = MediaController(ctx)
-                    mediaController.setAnchorView(this)
-                    setMediaController(mediaController)
-
-                    //set Video Url
-                    setVideoURI(Uri.parse(videoUri))
-                    setOnPreparedListener { mediaPlayer ->
-                        if (isPlaying) mediaPlayer.start()
-                    }
-                    setOnCompletionListener {
-                        onClick(false)  // Reset thumbnail when video ends
-                    }
-                }
-
-                // Set up the thumbnail image
-                val thumbnailView = ImageView(ctx).apply {
-                    thumbnailBitmap?.let {
-                        setImageBitmap(it)
-                    }
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                    layoutParams = FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT
+                    Image(
+                        painter = urlPainter,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.size(width = profImgSize * 2, height = profImgSize)
                     )
-                }
-
-                addView(videoView)
-                addView(thumbnailView)
-
-                // Show/hide thumbnail based on playing state
-                videoView.setOnPreparedListener {
-                    if (isPlaying) {
-                        thumbnailView.visibility = ImageView.GONE
-                        it.start()
-                    } else {
-                        thumbnailView.visibility = ImageView.VISIBLE
-                    }
-                }
-
-                // Show thumbnail again on completion
-                videoView.setOnCompletionListener {
-                    thumbnailView.visibility =
-                        ImageView.VISIBLE
-                    onClick(false)
-                }
-
-                // Toggle thumbnail visibility when playback starts
-                thumbnailView.setOnClickListener {
-                    if (!isPlaying) {
-                        thumbnailView.visibility = ImageView.GONE
-                        videoView.start()
-                        onClick(true)
-                    }
                 }
             }
         }
-    )
+    }
 }
-
 
 @Composable
 fun BottomButton(onNextClick: () -> Unit, onEditClick: () -> Unit) {
