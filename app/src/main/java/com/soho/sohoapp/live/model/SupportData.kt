@@ -151,19 +151,6 @@ data class GoLiveSubmit(
     )
 }
 
-fun Document.toAgentProperty(): AgentProperty {
-    return AgentProperty(
-        propertyId = this.propertyId,
-        address = listOfNotNull(this.address1, this.address2).joinToString(", "),
-        bedrooms = this.bedroomCount.toInt(),
-        bathrooms = this.bathroomCount.toInt(),
-        parking = this.carspotCount.toInt(),
-        sizeSm = this.landSize?.toFloat() ?: 0.0f,
-        agent = if (this.getAgents().isNotEmpty()) this.getAgents()[0] else null
-    )
-}
-
-
 @Serializable
 data class GlobalState(
     var videoLibResState: MutableState<DataVidRes?> = mutableStateOf(null),

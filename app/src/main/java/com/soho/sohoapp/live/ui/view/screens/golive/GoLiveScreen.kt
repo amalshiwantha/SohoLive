@@ -95,7 +95,6 @@ import com.soho.sohoapp.live.model.ScheduleDateTime
 import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.TextFiledConfig
-import com.soho.sohoapp.live.model.toAgentProperty
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
@@ -161,6 +160,7 @@ import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.toAgentProperty
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.coroutines.GlobalScope

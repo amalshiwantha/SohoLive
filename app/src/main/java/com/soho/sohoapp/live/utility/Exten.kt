@@ -1,7 +1,21 @@
 package com.soho.sohoapp.live.utility
 
 import androidx.compose.ui.graphics.Color
+import com.soho.sohoapp.live.db.AgentProperty
+import com.soho.sohoapp.live.network.response.Document
 import java.util.Locale
+
+fun Document.toAgentProperty(): AgentProperty {
+    return AgentProperty(
+        propertyId = this.propertyId,
+        address = this.fullAddress(),
+        bedrooms = this.bedroomCount.toInt(),
+        bathrooms = this.bathroomCount.toInt(),
+        parking = this.carspotCount.toInt(),
+        areaSize = this.areaSize(),
+        agent = if (this.getAgents().isNotEmpty()) this.getAgents()[0] else null
+    )
+}
 
 fun String.hexToColor(): Color {
     try {

@@ -33,7 +33,7 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
                 castFor = goLiveData.purpose.orEmpty(),
                 title = goLiveData.title.orEmpty(),
                 description = goLiveData.description.orEmpty(),
-                agentProperty = AgentProperty(propertyId = goLiveData.propertyId)
+                agentProperty = goLiveData.agentProperty
             )
             val savedRecId = vidDb.insertVideo(pvtVid)
             mState.value = mState.value.copy(lastSavedId = savedRecId, isSuccess = true)

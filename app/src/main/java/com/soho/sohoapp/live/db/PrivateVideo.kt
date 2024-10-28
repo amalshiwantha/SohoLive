@@ -33,7 +33,7 @@ data class AgentProperty(
     val bedrooms: Int = 0,
     val bathrooms: Int = 0,
     val parking: Int = 0,
-    val sizeSm: Float = 0.0f,
+    val areaSize: Pair<String, Int>? = null,
     val agent: Agent? = null
 )
 
