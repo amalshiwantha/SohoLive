@@ -1,13 +1,16 @@
 package com.soho.sohoapp.live.ui.view.screens.player
 
 import android.graphics.Bitmap
-import android.media.ThumbnailUtils
+import android.media.ThumbnailUtils.createVideoThumbnail
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -38,6 +41,7 @@ import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -53,11 +57,11 @@ fun PlayerScreen(
 
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
-    var thumbnailBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-    // Extract the thumbnail from the video
-    LaunchedEffect(fileUri) {
-        thumbnailBitmap = getVideoThumbnail(fileUri)
+    val thumbnail: Bitmap? = remember(fileUri) {
+        createVideoThumbnail(
+            fileUri.path ?: "",
+            MediaStore.Images.Thumbnails.MINI_KIND
+        )
     }
 
     //show confirmation to delete video
@@ -102,18 +106,6 @@ fun PlayerScreen(
                 .padding(innerPadding)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-
-                /*if (!isPlaying) {
-                    thumbnailBitmap?.let { bitmap ->
-                        Image(
-                            bitmap = bitmap.asImageBitmap(),
-                            contentDescription = "Video Thumbnail",
-                            modifier = Modifier
-                                .fillMaxSize()
-                        )
-                    }
-                }*/
-
                 //Player
                 AndroidView(
                     modifier = Modifier
@@ -142,51 +134,31 @@ fun PlayerScreen(
                     }
                 )
 
-                if (isPlaying) {
-                    /*AndroidView(
-                        factory = { context ->
-                            // Create a VideoView
-                            val videoViewInstance = VideoView(context)
-
-                            // Set up the MediaController for play/pause and seek controls
-                            val mediaController = MediaController(context)
-                            mediaController.setAnchorView(videoViewInstance)
-                            videoViewInstance.setMediaController(mediaController)
-
-                            // Set the video URI to the VideoView
-                            videoViewInstance.setVideoURI(fileUri)
-
-                            // Start the video automatically
-                            videoViewInstance.setOnPreparedListener {
-                                it.start()
-                                it.pause()
-                            }
-
-                            videoViewInstance
-                        },
-                        update = {
-                            it.setVideoURI(fileUri)
-                            it.start()
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )*/
+                //Video Thumbnail
+                if (!isPlaying) {
+                    thumbnail?.let { bitmap ->
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = "Video Thumbnail",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start = 16.dp, end = 16.dp, bottom = 64.dp)
+                        )
+                    }
                 }
 
                 // Play IconButton in the center
                 if (!isPlaying) {
-                    IconButton(
-                        onClick = {
-                            isPlaying = !isPlaying
-                        },
+                    Image(
                         modifier = Modifier
+                            .clickable {
+                                isPlaying = true
+                            }
                             .align(Alignment.Center)
-                            .size(56.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_play),
-                            contentDescription = "Play"
-                        )
-                    }
+                            .size(56.dp),
+                        painter = painterResource(id = R.drawable.ic_play),
+                        contentDescription = "Play"
+                    )
                 }
 
                 //Soho Watermark
@@ -226,11 +198,92 @@ fun PlayerScreen(
 }
 
 @Composable
+fun VideoPlayerWithThumbnail(videoUri: String, isPlaying: Boolean, onClick: (Boolean) -> Unit) {
+    // Generate the thumbnail from the video URI
+    val thumbnailBitmap: Bitmap? = remember(videoUri) {
+        createVideoThumbnail(
+            Uri.parse(videoUri).path ?: "",
+            MediaStore.Images.Thumbnails.MINI_KIND
+        )
+    }
+
+    AndroidView(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                start = 32.dp, end = 32.dp, bottom = 64.dp,
+                top = 0.dp
+            ),
+        factory = { ctx ->
+            FrameLayout(ctx).apply {
+                val videoView = VideoView(ctx).apply {
+                    //MediaController
+                    val mediaController = MediaController(ctx)
+                    mediaController.setAnchorView(this)
+                    setMediaController(mediaController)
+
+                    //set Video Url
+                    setVideoURI(Uri.parse(videoUri))
+                    setOnPreparedListener { mediaPlayer ->
+                        if (isPlaying) mediaPlayer.start()
+                    }
+                    setOnCompletionListener {
+                        onClick(false)  // Reset thumbnail when video ends
+                    }
+                }
+
+                // Set up the thumbnail image
+                val thumbnailView = ImageView(ctx).apply {
+                    thumbnailBitmap?.let {
+                        setImageBitmap(it)
+                    }
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    layoutParams = FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                    )
+                }
+
+                addView(videoView)
+                addView(thumbnailView)
+
+                // Show/hide thumbnail based on playing state
+                videoView.setOnPreparedListener {
+                    if (isPlaying) {
+                        thumbnailView.visibility = ImageView.GONE
+                        it.start()
+                    } else {
+                        thumbnailView.visibility = ImageView.VISIBLE
+                    }
+                }
+
+                // Show thumbnail again on completion
+                videoView.setOnCompletionListener {
+                    thumbnailView.visibility =
+                        ImageView.VISIBLE
+                    onClick(false)
+                }
+
+                // Toggle thumbnail visibility when playback starts
+                thumbnailView.setOnClickListener {
+                    if (!isPlaying) {
+                        thumbnailView.visibility = ImageView.GONE
+                        videoView.start()
+                        onClick(true)
+                    }
+                }
+            }
+        }
+    )
+}
+
+
+@Composable
 fun BottomButton(onNextClick: () -> Unit, onEditClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(bottom = 32.dp, start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -266,7 +319,7 @@ fun deleteFileFromUri(fileUri: Uri): Boolean {
 }
 
 fun getVideoThumbnail(videoUri: Uri): Bitmap? {
-    return ThumbnailUtils.createVideoThumbnail(
+    return createVideoThumbnail(
         File(videoUri.path).toString(),
         MediaStore.Images.Thumbnails.MINI_KIND
     )
