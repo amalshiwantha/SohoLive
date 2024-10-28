@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +40,6 @@ import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.SpacerSide
-import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -162,13 +160,13 @@ fun PlayerScreen(
                 }
 
                 //Soho Watermark
-                /*Image(
+                Image(
                     painter = painterResource(id = R.drawable.soho_watermark),
-                    contentDescription = "soho watermark",
+                    contentDescription = "watermark",
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(16.dp)
-                )*/
+                        .padding(start = 52.dp, top = 8.dp)
+                )
 
                 //property info
                 /*Image(
