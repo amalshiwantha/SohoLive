@@ -47,14 +47,15 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
-import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
@@ -68,6 +69,7 @@ fun PlayerScreen(
 
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
+    var isShowPlayer by remember { mutableStateOf(true) }
     val thumbnail: Bitmap? = remember(fileUri) {
         createVideoThumbnail(
             fileUri.path ?: "",
@@ -98,10 +100,15 @@ fun PlayerScreen(
                 title = "",
                 rightIcon = R.drawable.ic_trash,
                 isAllowBack = mGState.isEditVideoData.value,
-                onBackClick = { navController.popBackStack() }, onRightClick = {
-                    //show confirmation to remove
-                    isShowAlert = true
-                })
+                onBackClick = {
+
+                    isShowPlayer = false
+
+                    GlobalScope.launch {
+                        delay(1000)
+                    }
+                    navController.popBackStack()
+                }, onRightClick = { isShowAlert = true })
         },
         bottomBar = {
             BottomButton(onNextClick = { onNextClick() }, onEditClick = {
@@ -118,32 +125,34 @@ fun PlayerScreen(
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 //Player
-                AndroidView(
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxSize(),
-                    factory = { ctx ->
-                        VideoView(ctx).apply {
-                            //set mediaController
-                            val mediaController = MediaController(ctx)
-                            mediaController.setAnchorView(this)
-                            setMediaController(mediaController)
+                if(isShowPlayer){
+                    AndroidView(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .fillMaxSize(),
+                        factory = { ctx ->
+                            VideoView(ctx).apply {
+                                //set mediaController
+                                val mediaController = MediaController(ctx)
+                                mediaController.setAnchorView(this)
+                                setMediaController(mediaController)
 
-                            //set video path
-                            setVideoURI(fileUri)
-                            setOnPreparedListener { mediaPlayer ->
-                                if (isPlaying) mediaPlayer.start()
+                                //set video path
+                                setVideoURI(fileUri)
+                                setOnPreparedListener { mediaPlayer ->
+                                    if (isPlaying) mediaPlayer.start()
+                                }
+                            }
+                        },
+                        update = { videoView ->
+                            if (isPlaying) {
+                                videoView.start()
+                            } else {
+                                videoView.pause()
                             }
                         }
-                    },
-                    update = { videoView ->
-                        if (isPlaying) {
-                            videoView.start()
-                        } else {
-                            videoView.pause()
-                        }
-                    }
-                )
+                    )
+                }
 
                 //Video Thumbnail
                 if (!isPlaying) {
