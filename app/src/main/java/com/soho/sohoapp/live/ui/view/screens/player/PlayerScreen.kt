@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.MediaController
 import android.widget.VideoView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -115,9 +116,17 @@ fun PlayerScreen(
 
                 //Player
                 AndroidView(
-                    modifier = Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
                     factory = { ctx ->
                         VideoView(ctx).apply {
+                            //set mediaController
+                            val mediaController = MediaController(ctx)
+                            mediaController.setAnchorView(this)
+                            setMediaController(mediaController)
+
+                            //set video path
                             setVideoURI(fileUri)
                             setOnPreparedListener { mediaPlayer ->
                                 if (isPlaying) mediaPlayer.start()
@@ -164,7 +173,7 @@ fun PlayerScreen(
                 }
 
                 // Play IconButton in the center
-                if(!isPlaying){
+                if (!isPlaying) {
                     IconButton(
                         onClick = {
                             isPlaying = !isPlaying
