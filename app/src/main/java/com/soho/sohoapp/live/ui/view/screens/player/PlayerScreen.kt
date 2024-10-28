@@ -107,9 +107,8 @@ fun PlayerScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 //Player
                 AndroidView(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                        .fillMaxSize(),
                     factory = { ctx ->
                         VideoView(ctx).apply {
                             //set mediaController
@@ -141,7 +140,7 @@ fun PlayerScreen(
                             contentDescription = "Video Thumbnail",
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(start = 16.dp, end = 16.dp, bottom = 64.dp)
+                                .padding(bottom = 16.dp)
                         )
                     }
                 }
@@ -180,7 +179,7 @@ fun PlayerScreen(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .padding(start = 45.dp, end = 45.dp, bottom = 64.dp)
+                        .padding(start = 43.dp, end = 43.dp, bottom = 16.dp)
                 )
 
             }
