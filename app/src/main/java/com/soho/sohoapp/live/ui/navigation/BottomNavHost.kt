@@ -38,6 +38,7 @@ import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorderScreen
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 
@@ -157,35 +158,20 @@ fun BottomNavHost(
             VideoRecorderScreen(
                 goLiveData = mGoLiveSubmit,
                 mGState = mGlobalState,
-                onVideoSaved = {
-                    navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(it.toString())}") {
-                        popUpTo(NavigationPath.VIDEO_RECORDER.name) {
-                            inclusive = true
-                        }
-                    }
-                })
-        }
+                onVideoSaved = { filePath ->
+                    mGoLiveSubmit.agentProperty?.let { agentProperty ->
+                        val agentPropertyJson = Json.encodeToString(agentProperty)
+                        val encodedAgentProperty = Uri.encode(agentPropertyJson)
 
-        /*composable(
-            route = "${NavigationPath.PLAYER.name}/{uri}",
-            arguments = listOf(navArgument("uri") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val uriString = backStackEntry.arguments?.getString("uri")
-            val uri = uriString?.let { Uri.parse(it) }
-            uri?.let {
-                PlayerScreen(
-                    mGState = mGlobalState,
-                    navController = navController,
-                    fileUri = it,
-                    onNextClick = {
-                        navController.navigate(NavigationPath.REVIEW.name) {
-                            popUpTo(NavigationPath.REVIEW.name) {
+                        navController.navigate("${NavigationPath.PLAYER.name}/${Uri.encode(filePath.toString())}/$encodedAgentProperty") {
+                            popUpTo(NavigationPath.VIDEO_RECORDER.name) {
                                 inclusive = true
                             }
                         }
-                    })
-            }
-        }*/
+                    }
+
+                })
+        }
 
         composable(
             route = "${NavigationPath.PLAYER.name}/{uri}/{agentPropertyJson}",
