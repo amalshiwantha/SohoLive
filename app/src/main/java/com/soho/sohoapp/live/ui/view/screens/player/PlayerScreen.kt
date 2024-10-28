@@ -44,11 +44,17 @@ import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
 import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14spProperty
+import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
+import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
 import java.io.File
 
 @Composable
@@ -189,58 +195,78 @@ fun PlayerScreen(
 }
 
 @Composable
-fun AgentPropertyInfo(agProp: AgentProperty, modifier: Modifier) {
-    val profImgSize = 40.dp
-    agProp.agent?.let { agent ->
-        Row(modifier = modifier.background(agent.agencyBgColor)) {
-            //profile image and name
+fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
+    Column(boxMod) {
+
+        //Property Info
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            agProp.address?.let {
+                Text700_14spProperty(step = it, color = AppWhite)
+            }
+            SpacerUp(size = 8.dp)
+            AmenitiesViewSmall(agProp, AppWhite)
+            SpacerUp(size = 16.dp)
+        }
+
+        //Agent Info
+        agProp.agent?.let { agent ->
+            val profImgSize = 40.dp
             Row(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .weight(1f),
-                verticalAlignment = Alignment.CenterVertically
+                    .background(agent.agencyBgColor)
+                    .fillMaxWidth()
             ) {
-                //profile image
-                agent.avatar_url?.let {
-                    val urlPainter = rememberAsyncImagePainter(
-                        model = it,
-                        placeholder = painterResource(id = R.drawable.profile_placeholder),
-                        error = painterResource(id = R.drawable.profile_placeholder)
-                    )
+                //profile image and name
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    //profile image
+                    agent.avatar_url?.let {
+                        val urlPainter = rememberAsyncImagePainter(
+                            model = it,
+                            placeholder = painterResource(id = R.drawable.profile_placeholder),
+                            error = painterResource(id = R.drawable.profile_placeholder)
+                        )
 
-                    Image(
-                        painter = urlPainter,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(profImgSize)
-                            .clip(CircleShape)
-                    )
-                } ?: kotlin.run {
-                    InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                        Image(
+                            painter = urlPainter,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(profImgSize)
+                                .clip(CircleShape)
+                        )
+                    } ?: kotlin.run {
+                        InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                    }
+
+                    SpacerSide(size = 8.dp)
+
+                    //name
+                    Text700_14sp(step = agent.full_name, color = TextDark)
                 }
 
-                SpacerSide(size = 8.dp)
+                //agency logo
+                agent.banner_image?.let {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 8.dp)
+                    ) {
+                        val urlPainter = rememberAsyncImagePainter(model = it)
 
-                //name
-                Text700_14sp(step = agent.full_name, color = TextDark)
-            }
-
-            //agency logo
-            agent.banner_image?.let {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(end = 8.dp)
-                ) {
-                    val urlPainter = rememberAsyncImagePainter(model = it)
-
-                    Image(
-                        painter = urlPainter,
-                        contentDescription = null,
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier.size(width = profImgSize * 2, height = profImgSize)
-                    )
+                        Image(
+                            painter = urlPainter,
+                            contentDescription = null,
+                            contentScale = ContentScale.FillWidth,
+                            modifier = Modifier.size(width = profImgSize * 2, height = profImgSize)
+                        )
+                    }
                 }
             }
         }

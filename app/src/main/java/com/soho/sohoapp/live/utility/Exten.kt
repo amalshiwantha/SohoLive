@@ -9,9 +9,9 @@ fun Document.toAgentProperty(): AgentProperty {
     return AgentProperty(
         propertyId = this.propertyId,
         address = this.fullAddress(),
-        bedrooms = this.bedroomCount.toInt(),
-        bathrooms = this.bathroomCount.toInt(),
-        parking = this.carspotCount.toInt(),
+        bedrooms = this.bedroomCount,
+        bathrooms = this.bathroomCount,
+        parking = this.carspotCount,
         areaSize = this.areaSize(),
         agent = if (this.getAgents().isNotEmpty()) this.getAgents()[0] else null
     )

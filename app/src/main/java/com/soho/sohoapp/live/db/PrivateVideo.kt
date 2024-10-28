@@ -30,9 +30,9 @@ data class PrivateVideo(
 data class AgentProperty(
     val propertyId: Int = 0,
     val address: String? = null,
-    val bedrooms: Int = 0,
-    val bathrooms: Int = 0,
-    val parking: Int = 0,
+    val bedrooms: Double = 0.0,
+    val bathrooms: Double = 0.0,
+    val parking: Double = 0.0,
     val areaSize: Pair<String, Int>? = null,
     val agent: Agent? = null
 )
