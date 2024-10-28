@@ -101,12 +101,7 @@ fun PlayerScreen(
                 rightIcon = R.drawable.ic_trash,
                 isAllowBack = mGState.isEditVideoData.value,
                 onBackClick = {
-
                     isShowPlayer = false
-
-                    GlobalScope.launch {
-                        delay(1000)
-                    }
                     navController.popBackStack()
                 }, onRightClick = { isShowAlert = true })
         },
