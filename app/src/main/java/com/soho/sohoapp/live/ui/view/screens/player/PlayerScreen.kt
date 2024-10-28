@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,12 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.AlertConfig
@@ -41,10 +44,13 @@ import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
+import com.soho.sohoapp.live.ui.components.InitialProfileImage
 import com.soho.sohoapp.live.ui.components.SpacerSide
+import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.TextDark
 import java.io.File
 
 @Composable
@@ -109,7 +115,8 @@ fun PlayerScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 //Player
                 AndroidView(
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
                         .fillMaxSize(),
                     factory = { ctx ->
                         VideoView(ctx).apply {
@@ -161,7 +168,7 @@ fun PlayerScreen(
                     )
                 }
 
-                //Soho Watermark
+                //Soho Overlay
                 Image(
                     painter = painterResource(id = R.drawable.soho_watermark),
                     contentDescription = "watermark",
@@ -170,21 +177,54 @@ fun PlayerScreen(
                         .padding(start = 52.dp, top = 8.dp)
                 )
 
-                //property info
-                //TODO
-
-                //Agent Watermark
-                Image(
-                    painter = painterResource(id = R.drawable.ic_agent_info),
-                    contentDescription = "agent watermark",
-                    contentScale = ContentScale.FillWidth,
-                    modifier = Modifier
+                //Agent & Property Overlay
+                agentProperty?.let {
+                    val mod = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
                         .padding(start = 43.dp, end = 43.dp, bottom = 16.dp)
-                )
-
+                    AgentPropertyInfo(it, mod)
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun AgentPropertyInfo(agProp: AgentProperty, modifier: Modifier) {
+    agProp.agent?.let { agent ->
+        Row(modifier = modifier.background(agent.agencyBgColor)) {
+            //profile image and name
+            Row(
+                modifier = Modifier.padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                //profile image
+                agent.avatar_url?.let {
+                    val urlPainter = rememberAsyncImagePainter(
+                        model = it,
+                        placeholder = painterResource(id = R.drawable.profile_placeholder),
+                        error = painterResource(id = R.drawable.profile_placeholder)
+                    )
+
+                    Image(
+                        painter = urlPainter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                    )
+                } ?: kotlin.run {
+                    InitialProfileImage(agent.full_name, 40.dp, isSmall = true)
+                }
+
+                //name
+                Text700_14sp(step = agent.full_name, color = TextDark)
+            }
+
+            //agency logo
+
         }
     }
 }

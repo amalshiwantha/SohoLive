@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.soho.sohoapp.live.utility.getInitialBg
 
 @Composable
-fun InitialProfileImage(name: String, imgSize: Dp) {
+fun InitialProfileImage(name: String, imgSize: Dp, isSmall : Boolean = false) {
     val nameInitial = name.split(" ")
         .mapNotNull { it.firstOrNull()?.toString() }
         .joinToString("")
@@ -44,7 +44,7 @@ fun InitialProfileImage(name: String, imgSize: Dp) {
         Text(
             text = nameInitial,
             color = Color.White,
-            fontSize = 18.sp,
+            fontSize = if(isSmall) 14.sp else 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             modifier = Modifier

@@ -1,5 +1,7 @@
 package com.soho.sohoapp.live.network.response
 
+import android.graphics.Color.parseColor
+import androidx.compose.ui.graphics.Color
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.PropertyState
 import kotlinx.serialization.SerialName
@@ -215,11 +217,18 @@ data class Agent(
     val slug: String,
     val full_name: String,
     val avatar_url: String?,
-    val agent_bg_colour: String,
+    val agent_bg_colour: String = "#FFFFFF",
     val banner_image: String?,
     val rating_count: Float?,
     val reviews_count: Float?
-)
+) {
+    val agencyBgColor: Color
+        get() = try {
+            Color(parseColor(agent_bg_colour))
+        } catch (e: IllegalArgumentException) {
+            Color(parseColor("#FFFFFF"))
+        }
+}
 
 @Serializable
 data class Photo(
