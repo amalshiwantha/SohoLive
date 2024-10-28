@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
-import android.widget.MediaController
 import android.widget.VideoView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -100,61 +98,76 @@ fun PlayerScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(brushMainGradientBg)
+                .padding(innerPadding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
 
-                Box(modifier = Modifier.fillMaxSize()) {
-
-                    if (!isPlaying) {
-                        thumbnailBitmap?.let { bitmap ->
-                            Image(
-                                bitmap = bitmap.asImageBitmap(),
-                                contentDescription = "Video Thumbnail",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                            )
-                        }
-                    }
-
-                    //Player
-                    if (isPlaying) {
-                        AndroidView(
-                            factory = { context ->
-                                // Create a VideoView
-                                val videoViewInstance = VideoView(context)
-
-                                // Set up the MediaController for play/pause and seek controls
-                                val mediaController = MediaController(context)
-                                mediaController.setAnchorView(videoViewInstance)
-                                videoViewInstance.setMediaController(mediaController)
-
-                                // Set the video URI to the VideoView
-                                videoViewInstance.setVideoURI(fileUri)
-
-                                // Start the video automatically
-                                videoViewInstance.setOnPreparedListener {
-                                    it.start()
-                                    it.pause()
-                                }
-
-                                videoViewInstance
-                            },
-                            update = {
-                                it.setVideoURI(fileUri)
-                                it.start()
-                            },
-                            modifier = Modifier.fillMaxSize()
+                /*if (!isPlaying) {
+                    thumbnailBitmap?.let { bitmap ->
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = "Video Thumbnail",
+                            modifier = Modifier
+                                .fillMaxSize()
                         )
                     }
+                }*/
 
-                    // Play IconButton in the center
+                //Player
+                AndroidView(
+                    modifier = Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
+                    factory = { ctx ->
+                        VideoView(ctx).apply {
+                            setVideoURI(fileUri)
+                            setOnPreparedListener { mediaPlayer ->
+                                if (isPlaying) mediaPlayer.start()
+                            }
+                        }
+                    },
+                    update = { videoView ->
+                        if (isPlaying) {
+                            videoView.start()
+                        } else {
+                            videoView.pause()
+                        }
+                    }
+                )
+
+                if (isPlaying) {
+                    /*AndroidView(
+                        factory = { context ->
+                            // Create a VideoView
+                            val videoViewInstance = VideoView(context)
+
+                            // Set up the MediaController for play/pause and seek controls
+                            val mediaController = MediaController(context)
+                            mediaController.setAnchorView(videoViewInstance)
+                            videoViewInstance.setMediaController(mediaController)
+
+                            // Set the video URI to the VideoView
+                            videoViewInstance.setVideoURI(fileUri)
+
+                            // Start the video automatically
+                            videoViewInstance.setOnPreparedListener {
+                                it.start()
+                                it.pause()
+                            }
+
+                            videoViewInstance
+                        },
+                        update = {
+                            it.setVideoURI(fileUri)
+                            it.start()
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )*/
+                }
+
+                // Play IconButton in the center
+                if(!isPlaying){
                     IconButton(
                         onClick = {
-                            isPlaying = true
+                            isPlaying = !isPlaying
                         },
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -165,39 +178,38 @@ fun PlayerScreen(
                             contentDescription = "Play"
                         )
                     }
-
-                    //Soho Watermark
-                    /*Image(
-                        painter = painterResource(id = R.drawable.soho_watermark),
-                        contentDescription = "soho watermark",
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(16.dp)
-                    )*/
-
-                    //property info
-                    /*Image(
-                        painter = painterResource(id = R.drawable.ic_property_info),
-                        contentDescription = "proeprty watermark",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(start = 12.dp, end = 12.dp, bottom = 60.dp)
-                            .fillMaxWidth()
-                    )*/
-
-                    //Agent Watermark
-                    /*Image(
-                        painter = painterResource(id = R.drawable.ic_agent_info),
-                        contentDescription = "agent watermark",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(horizontal = 12.dp)
-                            .fillMaxWidth()
-                    )*/
-
                 }
+
+                //Soho Watermark
+                /*Image(
+                    painter = painterResource(id = R.drawable.soho_watermark),
+                    contentDescription = "soho watermark",
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(16.dp)
+                )*/
+
+                //property info
+                /*Image(
+                    painter = painterResource(id = R.drawable.ic_property_info),
+                    contentDescription = "proeprty watermark",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 12.dp, end = 12.dp, bottom = 60.dp)
+                        .fillMaxWidth()
+                )*/
+
+                //Agent Watermark
+                /*Image(
+                    painter = painterResource(id = R.drawable.ic_agent_info),
+                    contentDescription = "agent watermark",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(horizontal = 12.dp)
+                        .fillMaxWidth()
+                )*/
 
             }
         }
