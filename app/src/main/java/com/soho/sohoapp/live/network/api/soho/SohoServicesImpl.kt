@@ -172,7 +172,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         }.body()
     }
 
-    override suspend fun uploadVideo(authToken: String, videoFile: File): String {
+    override suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String {
         return httpClient.submitFormWithBinaryData(
             url = "http://intbuy.ceylonapz.com/dev/upload.php",
             formData = formData {
@@ -188,8 +188,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             onUpload { bytesSentTotal, contentLength ->
                 if (contentLength != 0L) {
                     val progress = (bytesSentTotal * 100 / contentLength).toInt()
-                    //onProgress(progress)
-                    println("Upload Progress: $progress%")
+                    onProgress(progress)
                 }
             }
         }.bodyAsText()

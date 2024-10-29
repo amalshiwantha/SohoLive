@@ -50,5 +50,5 @@ interface SohoApiServices {
 
     suspend fun endStream(authToken: String, streamId: String): LiveResponse
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
-    suspend fun uploadVideo(authToken: String, videoFile: File): String
+    suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String
 }

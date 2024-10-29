@@ -8,5 +8,4 @@ sealed class ApiState<T> {
         ApiState<T>()
 
     data class Alert<T>(val alertState: AlertState = AlertState.Idle) : ApiState<T>()
-
 }

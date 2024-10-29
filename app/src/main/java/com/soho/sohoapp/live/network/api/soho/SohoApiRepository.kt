@@ -231,7 +231,13 @@ class SohoApiRepository(private val service: SohoApiServices) {
         flow {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
-                val apiResponse = service.uploadVideo(authToken = authToken, videoFile = videoFile)
+                val apiResponse = service.uploadVideo(
+                    authToken = authToken,
+                    videoFile = videoFile,
+                    onProgress = { progress ->
+                        println("Upload Progress: $progress%")
+                        //emit(ApiState.Progress(progress = it))
+                    })
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
                 e.message?.let {
