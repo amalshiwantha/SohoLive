@@ -186,7 +186,6 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
                 append(HttpHeaders.Authorization, authToken)
                 append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
             }
-        }.toString()
+        }.bodyAsText()
     }
-
 }
