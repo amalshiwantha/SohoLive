@@ -17,8 +17,8 @@ import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.onUpload
 import io.ktor.client.request.delete
-import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
@@ -34,7 +34,6 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.http.headers
 import io.ktor.http.takeFrom
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
@@ -185,6 +184,13 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             headers {
                 append(HttpHeaders.Authorization, authToken)
                 append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+            }
+            onUpload { bytesSentTotal, contentLength ->
+                if (contentLength != 0L) {
+                    val progress = (bytesSentTotal * 100 / contentLength).toInt()
+                    //onProgress(progress)
+                    println("Upload Progress: $progress%")
+                }
             }
         }.bodyAsText()
     }
