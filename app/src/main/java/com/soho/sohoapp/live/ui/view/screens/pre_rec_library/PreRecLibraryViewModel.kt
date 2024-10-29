@@ -74,7 +74,9 @@ class PreRecLibraryViewModel(
     }
 
     fun uploadVideo(authToken: String, recFile: File) {
-        apiRepo.uploadVideo(authToken, recFile).onEach { apiState ->
+        apiRepo.uploadVideo(authToken, recFile, onProgress = {
+            println("Upload Progress: $it%")
+        }).onEach { apiState ->
 
             when (apiState) {
 

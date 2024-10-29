@@ -17,8 +17,10 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class SohoApiRepository(private val service: SohoApiServices) {
@@ -227,7 +229,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
             }
         }
 
-    fun uploadVideo(authToken: String, videoFile: File): Flow<ApiState<String>> =
+    fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): Flow<ApiState<String>> =
         flow {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
@@ -235,8 +237,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                     authToken = authToken,
                     videoFile = videoFile,
                     onProgress = { progress ->
-                        println("Upload Progress: $progress%")
-                        //emit(ApiState.Progress(progress = it))
+                        onProgress(progress)
                     })
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
