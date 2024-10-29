@@ -10,6 +10,9 @@ import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -24,6 +27,9 @@ class PreRecLibraryViewModel(
 
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
+    private val _uploadProgress = MutableStateFlow(0)
+    val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
     fun loadPvtVideo() {
         mState.value = mState.value.copy(isLoading = mutableStateOf(true))
@@ -74,9 +80,10 @@ class PreRecLibraryViewModel(
     }
 
     fun uploadVideo(authToken: String, recFile: File) {
+        mState.value = mState.value.copy(isUploading = mutableStateOf(true))
+
         apiRepo.uploadVideo(authToken, recFile, onProgress = {
-            println("Uploading AS $it%")
-            mState.value = mState.value.copy(isUploading = mutableStateOf(true))
+           _uploadProgress.value = it
         }).onEach { apiState ->
 
             when (apiState) {

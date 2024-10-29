@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,13 +19,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +74,7 @@ import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 import java.io.File
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreRecordLibraryScreen(
     mGState: GlobalState,
@@ -77,14 +84,26 @@ fun PreRecordLibraryScreen(
     val states = vmPreRecLib.mState.value
     var isShowAlert by remember { mutableStateOf(false) }
     var actionFile by remember { mutableStateOf(Uri.parse("")) }
+    val uploadProgress by vmPreRecLib.uploadProgress.collectAsState()
 
-    //show Progress count
-    LaunchedEffect(states.isUploading.value) {
-        if(states.isUploading.value){
-
-        }
+    //show upload Progress
+    if (states.isUploading.value) {
+        val title = if (uploadProgress == 100) "Completed" else "Uploading..."
+        AlertDialog(
+            onDismissRequest = { },
+            title = { Text(text = title) },
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LinearProgressIndicator(progress = uploadProgress / 100f)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "$uploadProgress%")
+                }
+            },
+            confirmButton = {},
+            dismissButton = {},
+            modifier = Modifier
+        )
     }
-
 
     //load pvt video list
     LaunchedEffect(states.videoList.value) {
