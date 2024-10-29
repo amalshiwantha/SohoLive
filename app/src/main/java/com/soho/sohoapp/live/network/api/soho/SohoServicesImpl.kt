@@ -20,6 +20,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -31,7 +32,9 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
+import io.ktor.http.headers
 import io.ktor.http.takeFrom
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
@@ -171,21 +174,19 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     }
 
     override suspend fun uploadVideo(authToken: String, videoFile: File): String {
-        return httpClient.post {
-            url {
-                takeFrom("http://intbuy.ceylonapz.com/")
-                encodedPath += SohoApiServices.UPLOAD
-            }
-            //header("Authorization", authToken)
-
-            val fileBytes = videoFile.readBytes()
-            setBody(MultiPartFormDataContent(formData {
-                append("videoFile", fileBytes, Headers.build {
+        return httpClient.submitFormWithBinaryData(
+            url = "http://intbuy.ceylonapz.com/dev/upload.php",
+            formData = formData {
+                append("videoFile", videoFile.readBytes(), Headers.build {
                     append(HttpHeaders.ContentDisposition, "filename=\"${videoFile.name}\"")
                 })
-            }))
-
-        }.bodyAsText()
+            }
+        ) {
+            headers {
+                append(HttpHeaders.Authorization, authToken)
+                append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+            }
+        }.toString()
     }
 
 }
