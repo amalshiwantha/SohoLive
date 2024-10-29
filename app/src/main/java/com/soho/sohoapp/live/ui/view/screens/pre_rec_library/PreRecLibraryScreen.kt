@@ -66,6 +66,7 @@ import com.soho.sohoapp.live.utility.showToast
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
+import java.io.File
 
 @Composable
 fun PreRecordLibraryScreen(
@@ -141,6 +142,9 @@ fun PreRecordLibraryScreen(
                         },
                         onEditPublish = { pvtItem ->
                             openPlayEditor(navController, pvtItem, mGState)
+                        },
+                        onUpload = {
+                            vmPreRecLib.uploadVideo("authToken", File(it.path))
                         })
                 }
             }
@@ -167,6 +171,7 @@ fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGSt
 fun MainContent(
     onPlay: (PrivateVideo) -> Unit,
     onDelete: (Uri) -> Unit,
+    onUpload: (Uri) -> Unit,
     onEditPublish: (PrivateVideo) -> Unit,
     videoList: MutableList<PrivateVideo>
 ) {
@@ -197,7 +202,7 @@ fun MainContent(
                             onDelete(Uri.parse(it))
                         },
                         onDownloadVideo = {
-                            showToast("Not Implemented")
+                            onUpload(Uri.parse(it))
                         },
                         onClickManage = {
                             onEditPublish(it)
@@ -214,7 +219,7 @@ private fun PvtVidItemView(
     onClickManage: (PrivateVideo) -> Unit,
     onDeleteVideo: (String) -> Unit,
     onPlayVideo: (PrivateVideo) -> Unit,
-    onDownloadVideo: (Pair<String, String>) -> Unit
+    onDownloadVideo: (String) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
@@ -254,7 +259,7 @@ private fun PvtVidItemView(
             //Delete and Download btns
             Row {
                 ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
-                    onDownloadVideo(Pair(item.filePath, item.title))
+                    onDownloadVideo(item.filePath)
                 })
                 SpacerSide(size = 8.dp)
                 ActionIconButton(R.drawable.ic_trash, onClickAction = {

@@ -19,6 +19,7 @@ import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.io.File
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
@@ -226,6 +227,25 @@ class SohoApiRepository(private val service: SohoApiServices) {
             }
         }
 
+    fun uploadVideo(authToken: String, videoFile: File): Flow<ApiState<String>> =
+        flow {
+            try {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+                val apiResponse = service.uploadVideo(authToken = authToken, videoFile = videoFile)
+                emit(ApiState.Data(data = apiResponse))
+            } catch (e: Exception) {
+                e.message?.let {
+                    emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
+                        message = it
+                    })))
+                }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
+
+
+    //ERROR
     private fun getAlertState(errorMsg: String): AlertState {
         val config = AlertConfig.API_ERROR.apply {
             message = errorMsg

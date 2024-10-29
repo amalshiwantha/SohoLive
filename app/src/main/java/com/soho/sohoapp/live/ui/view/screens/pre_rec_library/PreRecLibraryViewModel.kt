@@ -7,13 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.db.PrivateVideoDao
+import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
+import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PreRecLibraryViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
+class PreRecLibraryViewModel(
+    private val vidDb: PrivateVideoDao,
+    private val apiRepo: SohoApiRepository,
+) : ViewModel() {
 
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -64,6 +71,28 @@ class PreRecLibraryViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
         } else {
             emptyList()
         }
+    }
+
+    fun uploadVideo(authToken: String, recFile: File) {
+        apiRepo.uploadVideo(authToken, recFile).onEach { apiState ->
+
+            when (apiState) {
+
+                is ApiState.Data -> {
+                    apiState.data?.let { result ->
+                        println("myUplaod $result")
+                    }
+                }
+
+                is ApiState.Loading -> {
+                    println("myUplaod loadgin")
+                }
+
+                is ApiState.Alert -> {
+                    println("myUplaod alert")
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     // Sort function
