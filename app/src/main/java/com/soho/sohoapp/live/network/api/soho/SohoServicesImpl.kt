@@ -18,15 +18,22 @@ import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.http.takeFrom
+import java.io.File
 
 class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     override suspend fun login(signInRequest: SignInRequest): AuthResponse {
@@ -162,5 +169,21 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             header("Authorization", authToken)
             setBody(liveReq)
         }.body()
+    }
+
+    override suspend fun uploadVideo(authToken: String, videoFile: File): HttpResponse {
+        return httpClient.submitFormWithBinaryData(
+            url = "http://intbuy.ceylonapz.com/dev/upload.php",
+            formData = formData {
+                append("videoFile", videoFile.readBytes(), Headers.build {
+                    append(HttpHeaders.ContentDisposition, "filename=\"${videoFile.name}\"")
+                })
+            }
+        ) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer $authToken")
+                append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+            }
+        }
     }
 }

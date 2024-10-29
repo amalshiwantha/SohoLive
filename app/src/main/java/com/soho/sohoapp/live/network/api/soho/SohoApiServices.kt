@@ -13,6 +13,8 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
+import io.ktor.client.statement.HttpResponse
+import java.io.File
 
 
 interface SohoApiServices {
@@ -47,4 +49,5 @@ interface SohoApiServices {
 
     suspend fun endStream(authToken: String, streamId: String): LiveResponse
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
+    suspend fun uploadVideo(authToken: String, videoFile: File): HttpResponse
 }
