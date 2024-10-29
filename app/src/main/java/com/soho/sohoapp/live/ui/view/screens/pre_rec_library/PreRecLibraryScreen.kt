@@ -78,6 +78,14 @@ fun PreRecordLibraryScreen(
     var isShowAlert by remember { mutableStateOf(false) }
     var actionFile by remember { mutableStateOf(Uri.parse("")) }
 
+    //show Progress count
+    LaunchedEffect(states.isUploading.value) {
+        if(states.isUploading.value){
+
+        }
+    }
+
+
     //load pvt video list
     LaunchedEffect(states.videoList.value) {
         if (states.videoList.value.isEmpty()) {

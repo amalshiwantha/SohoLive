@@ -75,7 +75,8 @@ class PreRecLibraryViewModel(
 
     fun uploadVideo(authToken: String, recFile: File) {
         apiRepo.uploadVideo(authToken, recFile, onProgress = {
-            println("Upload Progress: $it%")
+            println("Uploading AS $it%")
+            mState.value = mState.value.copy(isUploading = mutableStateOf(true))
         }).onEach { apiState ->
 
             when (apiState) {
@@ -83,6 +84,7 @@ class PreRecLibraryViewModel(
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
                         println("myUplaod $result")
+                        mState.value = mState.value.copy(isUploading = mutableStateOf(false))
                     }
                 }
 
