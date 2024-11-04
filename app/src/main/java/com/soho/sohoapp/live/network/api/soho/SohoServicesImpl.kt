@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.network.api.soho
 
 import com.soho.sohoapp.live.BuildConfig
+import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
@@ -173,7 +174,11 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         }.body()
     }
 
-    override suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String {
+    override suspend fun uploadVideo(
+        authToken: String,
+        videoFile: File,
+        onProgress: (Int) -> Unit
+    ): String {
         return httpClient.submitFormWithBinaryData(
             url = "http://intbuy.ceylonapz.com/dev/upload.php",
             formData = formData {
@@ -197,7 +202,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
 
     override suspend fun uploadMux(
         authToken: String,
-        goLiveData: GoLiveSubmit
+        videoInfo: VideoInfo
     ): MuxUploadResponse {
         return httpClient.post {
             url {
@@ -206,7 +211,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             }
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
-            setBody(goLiveData)
+            setBody(videoInfo)
         }.body()
     }
 }

@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.network.api.soho
 
+import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
@@ -14,7 +15,6 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
-import io.ktor.client.statement.HttpResponse
 import java.io.File
 
 
@@ -53,5 +53,5 @@ interface SohoApiServices {
     suspend fun endStream(authToken: String, streamId: String): LiveResponse
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
     suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String
-    suspend fun uploadMux(authToken: String, goLiveData: GoLiveSubmit): MuxUploadResponse
+    suspend fun uploadMux(authToken: String, videoInfo: VideoInfo): MuxUploadResponse
 }

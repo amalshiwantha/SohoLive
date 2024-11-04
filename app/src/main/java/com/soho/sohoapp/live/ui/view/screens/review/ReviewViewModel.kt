@@ -45,8 +45,10 @@ class ReviewViewModel(
             }
 
             dataStore.userProfile.collect { profile ->
-                profile?.let {
-                    uploadVideoMux(it.authenticationToken, mGoLiveSubmit)
+                profile?.let { prof ->
+                    updatedVideoItem?.videoInfo?.let { vidInfo ->
+                        uploadVideoMux(prof.authenticationToken, vidInfo)
+                    }
                 }
             }
         }
@@ -65,9 +67,9 @@ class ReviewViewModel(
     }
 
 
-    private fun uploadVideoMux(authToken: String, submitData: GoLiveSubmit) {
+    private fun uploadVideoMux(authToken: String, videoInfo: VideoInfo) {
 
-        apiRepo.uploadMuxVideo(authToken, submitData).onEach { apiState ->
+        apiRepo.uploadMuxVideo(authToken, videoInfo).onEach { apiState ->
 
             when (apiState) {
 

@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.network.api.soho
 
+import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.SignInRequest
@@ -256,16 +257,14 @@ class SohoApiRepository(private val service: SohoApiServices) {
 
     fun uploadMuxVideo(
         authToken: String,
-        goLiveData: GoLiveSubmit
+        videoInfo: VideoInfo
     ): Flow<ApiState<MuxUploadResponse>> =
         flow {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
                 val apiResponse = service.uploadMux(
                     authToken = authToken,
-                    goLiveData = goLiveData.copy().apply {
-                        this.purpose = purpose?.lowercase()
-                    }
+                    videoInfo = videoInfo
                 )
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
