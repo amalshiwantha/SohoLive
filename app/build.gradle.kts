@@ -135,6 +135,8 @@ dependencies {
     implementation(libs.ktor.okhttp)
     implementation(libs.ktor.serialization)
     implementation(libs.ktor.negotiation)
+    implementation("io.ktor:ktor-client-cio:2.0.0")
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
 
     //bottom nav
     implementation(libs.androidx.navigation.compose.v282)

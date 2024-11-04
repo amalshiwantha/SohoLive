@@ -1,8 +1,11 @@
 package com.soho.sohoapp.live
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import com.soho.sohoapp.live.di.appModule
@@ -36,6 +39,17 @@ class SohoLiveApp : Application() {
         startKoin {
             androidContext(this@SohoLiveApp)
             modules(appModule)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "download_channel",
+                "File download",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

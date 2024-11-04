@@ -46,7 +46,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.enums.AlertConfig
@@ -68,11 +73,14 @@ import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
+import com.soho.sohoapp.live.utility.VideoUploadWorker
+import com.soho.sohoapp.live.utility.VideoUploadWorker.Companion.FILE_URI_TO_UPLOAD
 import com.soho.sohoapp.live.utility.showToast
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 import java.io.File
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -171,7 +179,22 @@ fun PreRecordLibraryScreen(
                             openPlayEditor(navController, pvtItem, mGState)
                         },
                         onUpload = {
-                            vmPreRecLib.uploadVideo("authToken", File(it.path))
+                            //vmPreRecLib.uploadVideo("authToken", File(it.path))
+                            /*val videoUploadWork = OneTimeWorkRequestBuilder<VideoUploadWorker>()
+                                .setInputData(workDataOf(FILE_URI_TO_UPLOAD to it.path))
+                                .build()
+
+                            WorkManager.getInstance(context).enqueue(videoUploadWork)*/
+
+
+                            val uploadWorkRequest =
+                                OneTimeWorkRequestBuilder<VideoUploadWorker>()
+                                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                                    .setInputData(
+                                        workDataOf(FILE_URI_TO_UPLOAD to it.path)
+                                    )
+                                    .build()
+                            WorkManager.getInstance(context).enqueue(uploadWorkRequest)
                         })
                 }
             }
