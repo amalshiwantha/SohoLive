@@ -104,7 +104,7 @@ fun PreRecordLibraryScreen(
             modifier = Modifier
         )
 
-        if (uploadProgress == 1) {
+        if (uploadProgress == 100) {
             mGState.uploadUrl.value = null
             mGState.videoFilePath.value = null
         }

@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import com.mux.video.upload.MuxUploadSdk
+import com.mux.video.upload.api.MuxUploadManager
 import com.soho.sohoapp.live.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -54,5 +55,6 @@ class SohoLiveApp : Application() {
         }
 
         MuxUploadSdk.initialize(appContext = this)
+        MuxUploadManager.resumeAllCachedJobs()
     }
 }
