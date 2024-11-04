@@ -89,7 +89,12 @@ fun ReviewScreen(
                 text = "Done",
                 onBtnClick = {
                     val updatedItem = states.privateVideo.value?.copy(privacy = selectedOption)
-                    vmReview.updateUpload(updatedItem, mGoLiveSubmit)
+
+                    if (mGState.isEditVideoData.value) {
+                        vmReview.updateUpload(updatedItem, null)
+                    } else {
+                        vmReview.updateUpload(updatedItem, mGoLiveSubmit)
+                    }
                 },
                 color = AppGreen,
                 modifier = Modifier

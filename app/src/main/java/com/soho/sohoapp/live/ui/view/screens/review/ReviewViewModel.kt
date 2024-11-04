@@ -35,13 +35,18 @@ class ReviewViewModel(
         }
     }
 
-    fun updateUpload(updatedVideoItem: PrivateVideo?, mGoLiveSubmit: GoLiveSubmit) {
+    fun updateUpload(updatedVideoItem: PrivateVideo?, mGoLiveSubmit: GoLiveSubmit?) {
         viewModelScope.launch {
             mState.value = mState.value.copy(isUploading = mutableStateOf(true))
 
-            updatedVideoItem?.let {
-                it.videoInfo = mGoLiveSubmit.toVideoInfo()
-                vidDb.updateVideo(it)
+            updatedVideoItem?.let { vidItem ->
+
+                //if having mGoLiveSubmit have to save
+                mGoLiveSubmit?.let {
+                    vidItem.videoInfo = mGoLiveSubmit.toVideoInfo()
+                }
+
+                vidDb.updateVideo(vidItem)
             }
 
             dataStore.userProfile.collect { profile ->
