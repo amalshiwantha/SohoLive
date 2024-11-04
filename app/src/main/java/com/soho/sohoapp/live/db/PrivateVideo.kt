@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.network.response.Agent
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,13 +30,13 @@ data class PrivateVideo(
 
 @Serializable
 data class VideoInfo(
-    val streamType: String? = null,
-    val propertyListingId: Int = 0,
-    val title: String? = null,
-    val description: String? = null,
-    val agentProfileId: Int = 0,
-    val unlisted: Boolean = false,
-    val orientation: String? = null
+    @SerialName("stream_type") val streamType: String? = null,
+    @SerialName("property_listing_id") val propertyListingId: Int = 0,
+    @SerialName("title") val title: String? = null,
+    @SerialName("description") val description: String? = null,
+    @SerialName("agent_profile_id") val agentProfileId: Int = 0,
+    @SerialName("unlisted") val unlisted: Boolean = false,
+    @SerialName("orientation") val orientation: String? = null
 )
 
 @Serializable
