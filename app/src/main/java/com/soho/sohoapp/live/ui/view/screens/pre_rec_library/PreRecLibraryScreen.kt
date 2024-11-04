@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -86,24 +84,8 @@ fun PreRecordLibraryScreen(
     var actionFile by remember { mutableStateOf(Uri.parse("")) }
     val uploadProgress by vmPreRecLib.uploadProgress.collectAsState()
 
-    //show upload Progress
+    //clear upload state
     if (states.isUploading.value) {
-        val title = if (uploadProgress == 100) "Completed" else "Uploading..."
-        AlertDialog(
-            onDismissRequest = { },
-            title = { Text(text = title) },
-            text = {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    LinearProgressIndicator(progress = uploadProgress / 100f)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "$uploadProgress%")
-                }
-            },
-            confirmButton = {},
-            dismissButton = {},
-            modifier = Modifier
-        )
-
         if (uploadProgress == 100) {
             mGState.uploadUrl.value = null
             mGState.videoFilePath.value = null
@@ -171,6 +153,19 @@ fun PreRecordLibraryScreen(
                 if (states.isLoading.value) {
                     CenterMessageProgress(message = "Loading Private Video...")
                 } else {
+
+                    //display upload progress
+                    if (states.isUploading.value) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            LinearProgressIndicator(progress = uploadProgress / 100f)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text400_14sp(info = "$uploadProgress%")
+                        }
+                    }
+
                     MainContent(videoList = states.videoList.value,
                         onPlay = { pvtItem ->
                             openPlayEditor(navController, pvtItem, mGState)
