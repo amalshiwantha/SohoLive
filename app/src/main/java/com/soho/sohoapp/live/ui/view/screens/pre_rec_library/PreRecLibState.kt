@@ -8,6 +8,7 @@ data class PreRecLibState(
     val isSuccess: Boolean = false,
     val isLoadedItem: Boolean = false,
     val uploadUrl: String? = null,
+    val fileUrl: String? = null,
     var privateVideo: MutableState<PrivateVideo?> = mutableStateOf(null),
     var isLoading: MutableState<Boolean> = mutableStateOf(false),
     var videoList: MutableState<MutableList<PrivateVideo>> = mutableStateOf(mutableListOf()),

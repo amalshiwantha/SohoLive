@@ -58,6 +58,7 @@ fun ReviewScreen(
         if (states.isSuccess) {
 
             mGState.uploadUrl.value = states.uploadUrl
+            mGState.videoFilePath.value = states.fileUrl
 
             if (mGState.isEditVideoData.value) {
                 navController.popBackStack()

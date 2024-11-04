@@ -120,7 +120,6 @@ fun PreRecordLibraryScreen(
 
     LaunchedEffect(mGState.uploadUrl) {
         mGState.uploadUrl.value?.let {
-            println("myUplaod ready $it")
             val fileVid = File(mGState.videoFilePath.value)
             vmPreRecLib.uploadVideo(fileVid, it)
         }
@@ -195,7 +194,6 @@ fun PreRecordLibraryScreen(
 fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGState: GlobalState) {
     mGState.apply {
         privateVideoId = mutableLongStateOf(pvtItem.id.toLong())
-        videoFilePath = mutableStateOf(pvtItem.filePath)
     }
 
     pvtItem.agentProperty?.let {

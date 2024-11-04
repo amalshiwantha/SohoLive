@@ -29,6 +29,7 @@ class ReviewViewModel(
             if (pvtVideo != null) {
                 mState.value = mState.value.copy(
                     privateVideo = mutableStateOf(pvtVideo),
+                    fileUrl = pvtVideo.filePath,
                     isLoadedItem = true
                 )
             }
