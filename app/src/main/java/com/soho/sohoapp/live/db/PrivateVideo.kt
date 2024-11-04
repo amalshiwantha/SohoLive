@@ -21,10 +21,22 @@ data class PrivateVideo(
     var description: String? = null,
     var privacy: String = VideoPrivacy.PRIVATE.label,
     var agentProperty: AgentProperty? = null,
+    val videoInfo: VideoInfo? = null
 ) {
     val dayLabel: String
         get() = getDayLabel(createdDate)
 }
+
+@Serializable
+data class VideoInfo(
+    val streamType: String? = null,
+    val propertyListingId: Int = 0,
+    val title: String? = null,
+    val description: String? = null,
+    val agentProfileId: Int = 0,
+    val unlisted: Boolean = false,
+    val orientation: String? = null
+)
 
 @Serializable
 data class AgentProperty(

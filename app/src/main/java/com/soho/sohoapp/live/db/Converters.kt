@@ -19,4 +19,16 @@ class Converters {
     fun toAgentProperty(agentPropertyString: String?): AgentProperty? {
         return agentPropertyString?.let { json.decodeFromString(it) }
     }
+
+
+    @TypeConverter
+    fun fromVideoInfo(videoInfo: VideoInfo?): String? {
+        return videoInfo?.let { json.encodeToString(it) }
+    }
+
+
+    @TypeConverter
+    fun toVideoInfo(videoInfoString: String?): VideoInfo? {
+        return videoInfoString?.let { json.decodeFromString(it) }
+    }
 }
