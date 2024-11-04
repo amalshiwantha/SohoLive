@@ -34,15 +34,12 @@ class ReviewViewModel(
         }
     }
 
-    fun updateDetails(selectedItem: PrivateVideo?) {
+    fun updateUpload(selectedItem: PrivateVideo?, mGoLiveSubmit: GoLiveSubmit) {
         viewModelScope.launch {
-            selectedItem?.let { vidDb.updateVideo(it) }
-            mState.value = mState.value.copy(isSuccess = true)
-        }
-    }
+            mState.value = mState.value.copy(isUploading = mutableStateOf(true))
 
-    fun doUpload(mGoLiveSubmit: GoLiveSubmit) {
-        viewModelScope.launch {
+            selectedItem?.let { vidDb.updateVideo(it) }
+
             dataStore.userProfile.collect { profile ->
                 profile?.let {
                     uploadVideoMux(it.authenticationToken, mGoLiveSubmit)
@@ -59,8 +56,9 @@ class ReviewViewModel(
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        println("myUplaod Res $result")
-                        mState.value = mState.value.copy(isUploading = mutableStateOf(false))
+                        println("myUplaod Res ${result.data?.uploadUrl}")
+                        mState.value =
+                            mState.value.copy(isUploading = mutableStateOf(false), isSuccess = true)
                     }
                 }
 
