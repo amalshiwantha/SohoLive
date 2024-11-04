@@ -138,6 +138,9 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:2.0.0")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
+    //mux uploader
+    implementation("com.mux.video:upload:0.4.1")
+
     //bottom nav
     implementation(libs.androidx.navigation.compose.v282)
 
