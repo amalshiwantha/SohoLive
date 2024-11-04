@@ -70,9 +70,13 @@ class ReviewViewModel(
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
                         val uploadUrl = result.data?.uploadUrl
-                        uploadNow(uploadUrl)
+
                         mState.value =
-                            mState.value.copy(isUploading = mutableStateOf(false), isSuccess = true)
+                            mState.value.copy(
+                                uploadUrl = uploadUrl,
+                                isUploading = mutableStateOf(false),
+                                isSuccess = true
+                            )
                     }
                 }
 

@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mux.video.upload.api.MuxUpload
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
@@ -30,6 +31,28 @@ class PreRecLibraryViewModel(
 
     private val _uploadProgress = MutableStateFlow(0)
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
+
+    fun uploadVideo(recFile: File, uploadUrl: String) {
+        viewModelScope.launch {
+
+            val muxUpload = MuxUpload.Builder(uploadUrl, recFile).build()
+
+            muxUpload.setProgressListener { progress ->
+                _uploadProgress.value = (progress.bytesUploaded / 100f).toInt()
+                println("myUpload Prog : $progress")
+            }
+
+            muxUpload.setResultListener { result ->
+                if (result.isSuccess) {
+                    println("myUpload Done")
+                } else {
+                    println("myUpload Failed")
+                }
+            }
+
+            muxUpload.start()
+        }
+    }
 
     fun loadPvtVideo() {
         mState.value = mState.value.copy(isLoading = mutableStateOf(true))
@@ -79,11 +102,11 @@ class PreRecLibraryViewModel(
         }
     }
 
-    fun uploadVideo(authToken: String, recFile: File) {
+    fun uploadVideoOLD(authToken: String, recFile: File) {
         mState.value = mState.value.copy(isUploading = mutableStateOf(true))
 
         apiRepo.uploadVideo(authToken, recFile, onProgress = {
-           _uploadProgress.value = it
+            _uploadProgress.value = it
         }).onEach { apiState ->
 
             when (apiState) {

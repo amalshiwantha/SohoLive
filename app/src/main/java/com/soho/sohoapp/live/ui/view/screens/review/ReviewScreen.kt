@@ -44,9 +44,11 @@ import org.koin.compose.koinInject
 
 @Composable
 fun ReviewScreen(
+    mGState: GlobalState,
     mGoLiveSubmit: GoLiveSubmit,
     vmReview: ReviewViewModel = koinInject(),
-    mGState: GlobalState, navController: NavHostController, onDoneClick: () -> Unit = {}
+    navController: NavHostController,
+    onDoneClick: () -> Unit = {}
 ) {
     val states = vmReview.mState.value
     val pvtVidId = mGState.privateVideoId.value
@@ -54,6 +56,9 @@ fun ReviewScreen(
 
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
+
+            mGState.uploadUrl.value = states.uploadUrl
+
             if (mGState.isEditVideoData.value) {
                 navController.popBackStack()
             } else {
