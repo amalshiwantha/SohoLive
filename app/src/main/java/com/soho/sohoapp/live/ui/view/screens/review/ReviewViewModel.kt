@@ -39,6 +39,7 @@ class ReviewViewModel(
         viewModelScope.launch {
             mState.value = mState.value.copy(isUploading = mutableStateOf(true))
 
+            //update local DB
             updatedVideoItem?.let { vidItem ->
 
                 //if having mGoLiveSubmit have to save
@@ -49,6 +50,7 @@ class ReviewViewModel(
                 vidDb.updateVideo(vidItem)
             }
 
+            //update server
             dataStore.userProfile.collect { profile ->
                 profile?.let { prof ->
                     updatedVideoItem?.videoInfo?.let { vidInfo ->
@@ -58,19 +60,6 @@ class ReviewViewModel(
             }
         }
     }
-
-    private fun GoLiveSubmit.toVideoInfo(): VideoInfo {
-        return VideoInfo(
-            streamType = this.purpose,
-            propertyListingId = this.propertyId,
-            title = this.title,
-            description = this.description,
-            agentProfileId = this.agentId ?: 0,
-            unlisted = this.isSohoPublic,
-            orientation = this.orientation
-        )
-    }
-
 
     private fun uploadVideoMux(authToken: String, videoInfo: VideoInfo) {
 
@@ -91,5 +80,17 @@ class ReviewViewModel(
                 is ApiState.Alert -> {}
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun GoLiveSubmit.toVideoInfo(): VideoInfo {
+        return VideoInfo(
+            streamType = this.purpose,
+            propertyListingId = this.propertyId,
+            title = this.title,
+            description = this.description,
+            agentProfileId = this.agentId ?: 0,
+            unlisted = this.isSohoPublic,
+            orientation = this.orientation
+        )
     }
 }
