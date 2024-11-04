@@ -13,6 +13,7 @@ import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
+import com.soho.sohoapp.live.network.response.MuxUploadResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -256,7 +257,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
     fun uploadMuxVideo(
         authToken: String,
         goLiveData: GoLiveSubmit
-    ): Flow<ApiState<GoLiveSubmitResponse>> =
+    ): Flow<ApiState<MuxUploadResponse>> =
         flow {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))

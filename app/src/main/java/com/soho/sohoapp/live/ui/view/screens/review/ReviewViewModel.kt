@@ -52,25 +52,21 @@ class ReviewViewModel(
     }
 
     private fun uploadVideoMux(authToken: String, submitData: GoLiveSubmit) {
-        println("myUplaod ApisubmitData  $submitData")
+
         apiRepo.uploadMuxVideo(authToken, submitData).onEach { apiState ->
 
             when (apiState) {
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        println("myUplaod Api $result")
+                        println("myUplaod Res $result")
                         mState.value = mState.value.copy(isUploading = mutableStateOf(false))
                     }
                 }
 
-                is ApiState.Loading -> {
-                    println("myUplaod Api loadgin")
-                }
+                is ApiState.Loading -> {}
 
-                is ApiState.Alert -> {
-                    println("myUplaod Api alert")
-                }
+                is ApiState.Alert -> {}
             }
         }.launchIn(viewModelScope)
     }

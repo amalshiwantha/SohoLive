@@ -4,6 +4,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class MuxUploadResponse(
+    @SerialName("data") val data: DataUrl? = null,
+    @SerialName("response") val response: String? = null,
+    @SerialName("response_type") val responseType: String? = null,
+)
+
+@Serializable
+data class DataUrl(
+    @SerialName("url") val uploadUrl: String? = null
+)
+
+@Serializable
 data class GoLiveSubmitResponse(
     @SerialName("data") val data: DataGoLiveSubmit? = null,
     @SerialName("response") val response: String? = null,
@@ -27,7 +39,7 @@ data class DataGoLiveSubmit(
     @SerialName("mux_status") val muxStatus: String,
     @SerialName("soho_link") val sohoLink: String,
     @SerialName("thumbnail_url") val thumbnailUrl: String? = null,
-    @SerialName("playback_id") val playbackId: String,
+    @SerialName("playback_id") val playbackId: String
 )
 
 @Serializable

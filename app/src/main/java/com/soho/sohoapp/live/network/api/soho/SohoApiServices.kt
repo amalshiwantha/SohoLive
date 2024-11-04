@@ -9,6 +9,7 @@ import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
+import com.soho.sohoapp.live.network.response.MuxUploadResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -52,5 +53,5 @@ interface SohoApiServices {
     suspend fun endStream(authToken: String, streamId: String): LiveResponse
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
     suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String
-    suspend fun uploadMux(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse
+    suspend fun uploadMux(authToken: String, goLiveData: GoLiveSubmit): MuxUploadResponse
 }

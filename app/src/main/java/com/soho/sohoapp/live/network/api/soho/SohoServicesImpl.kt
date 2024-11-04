@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.LiveEndRequest
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
+import com.soho.sohoapp.live.network.response.MuxUploadResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -197,7 +198,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
     override suspend fun uploadMux(
         authToken: String,
         goLiveData: GoLiveSubmit
-    ): GoLiveSubmitResponse {
+    ): MuxUploadResponse {
         return httpClient.post {
             url {
                 takeFrom(BuildConfig.BASE_URL)
