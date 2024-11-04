@@ -262,7 +262,9 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
                 val apiResponse = service.uploadMux(
                     authToken = authToken,
-                    goLiveData = goLiveData
+                    goLiveData = goLiveData.copy().apply {
+                        this.purpose = purpose?.lowercase()
+                    }
                 )
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {

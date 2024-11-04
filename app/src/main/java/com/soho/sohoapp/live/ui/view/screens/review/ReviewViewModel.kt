@@ -52,7 +52,7 @@ class ReviewViewModel(
     }
 
     private fun uploadVideoMux(authToken: String, submitData: GoLiveSubmit) {
-
+        println("myUplaod ApisubmitData  $submitData")
         apiRepo.uploadMuxVideo(authToken, submitData).onEach { apiState ->
 
             when (apiState) {

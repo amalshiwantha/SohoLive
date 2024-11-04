@@ -136,6 +136,7 @@ data class GoLiveSubmit(
     @SerialName("simulcast_targets") var targets: MutableList<GoLivePlatform> = mutableListOf(),
     @SerialName("schedules_at") var schedulesAt: MutableList<ScheduleDateTime> = mutableListOf(),
     @SerialName("unlisted") var isSohoPublic: Boolean = false,
+    @SerialName("orientation") var orientation: String = "portrait",
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),
     var errors: MutableMap<FormFields, String> = mutableMapOf(),
