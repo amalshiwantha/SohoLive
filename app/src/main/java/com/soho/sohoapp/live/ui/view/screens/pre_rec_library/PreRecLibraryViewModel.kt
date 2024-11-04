@@ -33,13 +33,20 @@ class PreRecLibraryViewModel(
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
     fun uploadVideo(recFile: File, uploadUrl: String) {
+        mState.value = mState.value.copy(isUploading = mutableStateOf(true))
+
         viewModelScope.launch {
 
             val muxUpload = MuxUpload.Builder(uploadUrl, recFile).build()
 
             muxUpload.setProgressListener { progress ->
-                _uploadProgress.value = (progress.bytesUploaded / 100f).toInt()
-                println("myUpload Prog : $progress")
+                val percentage = if (progress.totalBytes > 0) {
+                    (progress.bytesUploaded.toFloat() / progress.totalBytes.toFloat()) * 100
+                } else {
+                    0f
+                }
+                _uploadProgress.value = percentage.toInt()
+                println("myUpload Progress Now: $percentage%")
             }
 
             muxUpload.setResultListener { result ->
@@ -48,6 +55,8 @@ class PreRecLibraryViewModel(
                 } else {
                     println("myUpload Failed")
                 }
+
+                mState.value = mState.value.copy(isUploading = mutableStateOf(false))
             }
 
             muxUpload.start()
