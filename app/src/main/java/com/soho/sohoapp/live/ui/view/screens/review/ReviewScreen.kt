@@ -22,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -31,7 +30,6 @@ import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.components.AppTopBar
-import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -102,23 +100,6 @@ fun ReviewScreen(
                         vmReview.updateUpload(updatedItem, mGoLiveSubmit)
                     }
                 })
-
-            /*ButtonColoured(
-                text = "Done",
-                onBtnClick = {
-                    val updatedItem = states.privateVideo.value?.copy(privacy = selectedOption)
-
-                    if (mGState.isEditVideoData.value) {
-                        vmReview.updateUpload(updatedItem, null)
-                    } else {
-                        vmReview.updateUpload(updatedItem, mGoLiveSubmit)
-                    }
-                },
-                color = AppGreen,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )*/
         }
     ) { innerPadding ->
 

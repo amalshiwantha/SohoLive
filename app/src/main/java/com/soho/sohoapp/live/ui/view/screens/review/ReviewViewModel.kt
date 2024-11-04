@@ -69,6 +69,8 @@ class ReviewViewModel(
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
+                        val uploadUrl = result.data?.uploadUrl
+                        uploadNow(uploadUrl)
                         mState.value =
                             mState.value.copy(isUploading = mutableStateOf(false), isSuccess = true)
                     }
@@ -79,6 +81,10 @@ class ReviewViewModel(
                 is ApiState.Alert -> {}
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun uploadNow(uploadUrl: String?) {
+        println("fileUpload $uploadUrl")
     }
 
     private fun GoLiveSubmit.toVideoInfo(): VideoInfo {

@@ -30,7 +30,7 @@ data class PrivateVideo(
 
 @Serializable
 data class VideoInfo(
-    @SerialName("stream_type") val streamType: String? = null,
+    @SerialName("stream_type") var streamType: String? = null,
     @SerialName("property_listing_id") val propertyListingId: Int = 0,
     @SerialName("title") val title: String? = null,
     @SerialName("description") val description: String? = null,
