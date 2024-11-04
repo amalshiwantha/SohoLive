@@ -17,10 +17,8 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import java.io.File
 
 class SohoApiRepository(private val service: SohoApiServices) {
@@ -229,7 +227,11 @@ class SohoApiRepository(private val service: SohoApiServices) {
             }
         }
 
-    fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): Flow<ApiState<String>> =
+    fun uploadVideo(
+        authToken: String,
+        videoFile: File,
+        onProgress: (Int) -> Unit
+    ): Flow<ApiState<String>> =
         flow {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
@@ -239,6 +241,29 @@ class SohoApiRepository(private val service: SohoApiServices) {
                     onProgress = { progress ->
                         onProgress(progress)
                     })
+                emit(ApiState.Data(data = apiResponse))
+            } catch (e: Exception) {
+                e.message?.let {
+                    emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
+                        message = it
+                    })))
+                }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
+
+    fun uploadMuxVideo(
+        authToken: String,
+        goLiveData: GoLiveSubmit
+    ): Flow<ApiState<GoLiveSubmitResponse>> =
+        flow {
+            try {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+                val apiResponse = service.uploadMux(
+                    authToken = authToken,
+                    goLiveData = goLiveData
+                )
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
                 e.message?.let {

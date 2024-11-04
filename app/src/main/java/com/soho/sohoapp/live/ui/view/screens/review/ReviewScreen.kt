@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -43,6 +44,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun ReviewScreen(
+    mGoLiveSubmit: GoLiveSubmit,
     vmReview: ReviewViewModel = koinInject(),
     mGState: GlobalState, navController: NavHostController, onDoneClick: () -> Unit = {}
 ) {
@@ -87,7 +89,8 @@ fun ReviewScreen(
                 text = "Done",
                 onBtnClick = {
                     val updatedItem = states.privateVideo.value?.copy(privacy = selectedOption)
-                    vmReview.updateDetails(updatedItem)
+                    //vmReview.updateDetails(updatedItem)
+                    vmReview.doUpload(mGoLiveSubmit)
                 },
                 color = AppGreen,
                 modifier = Modifier

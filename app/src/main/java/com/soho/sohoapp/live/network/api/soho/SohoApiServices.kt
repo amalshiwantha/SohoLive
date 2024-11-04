@@ -29,7 +29,8 @@ interface SohoApiServices {
         const val VIDEO_PRIVACY_UPDATE = "asset/{propertyId}"
         const val END_STREAM = "live_stream/{live_stream_id}/complete"
         const val ROLLBACK_STREAM = "live_stream/{live_stream_id}"
-        const val UPLOAD = "dev/upload.php"
+        const val TEST_UPLOAD = "dev/upload.php"
+        const val MUX_UPLOAD = "/video/upload"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
@@ -51,4 +52,5 @@ interface SohoApiServices {
     suspend fun endStream(authToken: String, streamId: String): LiveResponse
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
     suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String
+    suspend fun uploadMux(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse
 }

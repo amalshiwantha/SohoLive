@@ -61,5 +61,5 @@ val appModule = module {
     viewModel { PreRecLibraryViewModel(get(), get()) }
     viewModel { VidEditDetailsViewModel(get()) }
     viewModel { VideoRecorderViewModel(get()) }
-    viewModel { ReviewViewModel(get()) }
+    viewModel { ReviewViewModel(get(), get(), get()) }
 }

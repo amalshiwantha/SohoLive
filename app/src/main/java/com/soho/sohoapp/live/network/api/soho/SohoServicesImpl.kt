@@ -193,4 +193,19 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             }
         }.bodyAsText()
     }
+
+    override suspend fun uploadMux(
+        authToken: String,
+        goLiveData: GoLiveSubmit
+    ): GoLiveSubmitResponse {
+        return httpClient.post {
+            url {
+                takeFrom(BuildConfig.BASE_URL)
+                encodedPath += SohoApiServices.MUX_UPLOAD
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+            setBody(goLiveData)
+        }.body()
+    }
 }

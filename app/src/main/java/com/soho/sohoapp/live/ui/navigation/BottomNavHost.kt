@@ -209,6 +209,7 @@ fun BottomNavHost(
 
         composable(route = NavigationPath.REVIEW.name) {
             ReviewScreen(
+                mGoLiveSubmit = mGoLiveSubmit,
                 mGState = mGlobalState, navController = navController, onDoneClick = {
                     navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
                         //tab move
