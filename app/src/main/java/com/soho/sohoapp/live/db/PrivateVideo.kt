@@ -22,7 +22,7 @@ data class PrivateVideo(
     var description: String? = null,
     var privacy: String = VideoPrivacy.PRIVATE.label,
     var agentProperty: AgentProperty? = null,
-    val videoInfo: VideoInfo? = null
+    var videoInfo: VideoInfo? = null
 ) {
     val dayLabel: String
         get() = getDayLabel(createdDate)
