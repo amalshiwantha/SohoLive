@@ -189,7 +189,6 @@ fun PreRecordLibraryScreen(
 
                             val uploadWorkRequest =
                                 OneTimeWorkRequestBuilder<VideoUploadWorker>()
-                                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                                     .setInputData(
                                         workDataOf(FILE_URI_TO_UPLOAD to it.path)
                                     )

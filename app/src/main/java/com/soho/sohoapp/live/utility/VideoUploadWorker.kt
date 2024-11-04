@@ -1,15 +1,10 @@
 package com.soho.sohoapp.live.utility
 
 import android.content.Context
-import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
-import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.SohoLiveApp.Companion.context
-import kotlinx.coroutines.delay
+import com.soho.sohoapp.live.network.api.soho.UploadApi
 import java.io.File
-import kotlin.random.Random
 
 class VideoUploadWorker(
     context: Context,
@@ -20,10 +15,8 @@ class VideoUploadWorker(
 
         val filePath = inputData.getString(FILE_URI_TO_UPLOAD) ?: return Result.failure()
         val file = File(filePath)
-        println("myUpload file ${file.exists()}")
 
         if (!file.exists()) return Result.failure()
-        println("myUpload file $filePath")
 
         uploadFile(file)
         Result.success()
@@ -47,21 +40,22 @@ class VideoUploadWorker(
         }
     }
 
-    private suspend fun uploadFile(uri: File?) {
+    private suspend fun uploadFile(file: File?) {
 
-        if (uri == null) throw UploadingFailedException.FileNotFound
+        if (file == null) throw UploadingFailedException.FileNotFound
 
         sendNotification("Uploading File")
-        for (i in 0..100) {
-            delay(1000)
-            println("myUpload prog $i")
-        }
+
+        UploadApi().uploadVideo("au", file, onProgress = {
+            println("myUpload prog $it")
+        })
+
         sendNotification("Uploaded Successfully")
     }
 
     private fun sendNotification(message: String) {
         NotificationHelper().createNotification(
-            title = "File Uploader",
+            title = "Private Video Uploader",
             message = message
         )
     }
@@ -72,7 +66,7 @@ class VideoUploadWorker(
 }
 
 sealed class UploadingFailedException(override val message: String) : Exception(message) {
-    object FileNotFound : UploadingFailedException(message = "File not found! try again.")
-    object Failed :
+    data object FileNotFound : UploadingFailedException(message = "File not found! try again.")
+    data object Failed :
         UploadingFailedException(message = "Upload File Failed! will try again in 10 seconds")
 }
