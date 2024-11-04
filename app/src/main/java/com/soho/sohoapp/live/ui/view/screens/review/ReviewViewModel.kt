@@ -69,7 +69,6 @@ class ReviewViewModel(
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        println("myUplaod Res ${result.data?.uploadUrl}")
                         mState.value =
                             mState.value.copy(isUploading = mutableStateOf(false), isSuccess = true)
                     }
