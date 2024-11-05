@@ -9,13 +9,14 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 
-class NotificationHelper() {
+class NotificationHelper {
 
     companion object {
-        private const val CHANNEL_ID = "file_uploader_channel"
-        private const val CHANNEL_NAME = "File Uploader"
+        private const val CHANNEL_ID = "video_uploader_channel"
+        private const val CHANNEL_NAME = "Video Upload Notifications"
         private const val CHANNEL_DESCRIPTION =
             "Notifications for file upload progress and completion"
     }
@@ -24,46 +25,44 @@ class NotificationHelper() {
         createNotificationChannel()
     }
 
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = CHANNEL_DESCRIPTION
             }
-
             val notificationManager: NotificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    fun createNotification(title: String, message: String) {
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
+    fun showNotification(context: Context, progress: Int) {
+        val title = if (progress == 100) "Video Upload Complete" else "Uploading Video File"
+        val content =
+            if (progress != 100) "Completed $progress%" else "Your file has been uploaded."
 
-        with(NotificationManagerCompat.from(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
-            }
-            notify(System.currentTimeMillis().toInt(), notification)
+        val notificationManager = NotificationManagerCompat.from(context)
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setSmallIcon(R.drawable.ic_upgrade)
+            .setProgress(100, progress, false)
+            .setOnlyAlertOnce(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)  // Ensures higher visibility
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)  // Shows on lock screen
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
         }
+        notificationManager.notify(1, notificationBuilder.build())
     }
 }

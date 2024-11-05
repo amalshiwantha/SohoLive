@@ -46,8 +46,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
-import com.soho.sohoapp.live.SohoLiveApp.Companion.createNotificationChannel
-import com.soho.sohoapp.live.SohoLiveApp.Companion.showDownloadNotification
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.enums.AlertConfig
@@ -69,6 +67,7 @@ import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
+import com.soho.sohoapp.live.utility.NotificationHelper
 import com.soho.sohoapp.live.utility.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -168,15 +167,18 @@ fun PreRecordLibraryScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            LinearProgressIndicator(progress =  uploadProgress / 100f)
+                            LinearProgressIndicator(progress = uploadProgress / 100f)
                             Spacer(modifier = Modifier.height(8.dp))
                             Text400_14sp(info = "$uploadProgress%")
 
                             //show progress in notification try
-                            createNotificationChannel(context)
+                            val uploadNotification = NotificationHelper()
                             LaunchedEffect(uploadProgress) {
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    showDownloadNotification(context, uploadProgress, 100)
+                                    uploadNotification.showNotification(
+                                        context,
+                                        uploadProgress
+                                    )
                                 }
                             }
                         }
