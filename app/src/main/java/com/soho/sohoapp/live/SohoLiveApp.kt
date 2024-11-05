@@ -65,6 +65,8 @@ class SohoLiveApp : Application() {
                 .setSmallIcon(R.drawable.ic_upgrade)
                 .setProgress(maxProgress, progress, false)
                 .setOnlyAlertOnce(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)  // Ensures higher visibility
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)  // Shows on lock screen
 
             if (ActivityCompat.checkSelfPermission(
                     context,
