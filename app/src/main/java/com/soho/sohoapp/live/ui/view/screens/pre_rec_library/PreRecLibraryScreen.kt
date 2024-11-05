@@ -45,6 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
+import com.soho.sohoapp.live.SohoLiveApp.Companion.createNotificationChannel
+import com.soho.sohoapp.live.SohoLiveApp.Companion.showDownloadNotification
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.enums.AlertConfig
@@ -67,6 +70,10 @@ import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
 import com.soho.sohoapp.live.utility.showToast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
@@ -156,13 +163,22 @@ fun PreRecordLibraryScreen(
 
                     //display upload progress
                     if (states.isUploading.value) {
+
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            LinearProgressIndicator(progress = uploadProgress / 100f)
+                            LinearProgressIndicator(progress =  uploadProgress / 100f)
                             Spacer(modifier = Modifier.height(8.dp))
                             Text400_14sp(info = "$uploadProgress%")
+
+                            //show progress in notification try
+                            createNotificationChannel(context)
+                            LaunchedEffect(uploadProgress) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    showDownloadNotification(context, uploadProgress, 100)
+                                }
+                            }
                         }
                     }
 
@@ -185,6 +201,31 @@ fun PreRecordLibraryScreen(
         }
     }
 }
+
+suspend fun downloadFileWithProgress() {
+    val totalSize = 100  // Total size (100%) for demonstration
+    var currentProgress = 0
+
+    while (currentProgress < totalSize) {
+        // Simulate downloading - increase progress
+        currentProgress += 5
+
+
+        // Simulate delay between updates
+        delay(500)
+    }
+
+    // When download completes, remove the progress and show completion
+    /*val notificationManager = NotificationManagerCompat.from(context)
+    val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        .setContentTitle("Download Complete")
+        .setContentText("Your file has been downloaded.")
+        .setSmallIcon(R.drawable.ic_download_complete)
+        .setProgress(0, 0, false)
+        .build()
+    notificationManager.notify(1, notification)*/
+}
+
 
 fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGState: GlobalState) {
     mGState.apply {
