@@ -35,8 +35,11 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
     fun uploadNow(data: UploadData) {
-        println("uploadData $data")
-        //uploadVideo()
+        println("myUpload uploadData $data")
+
+        val filePath = data.path ?: return
+        val uploadUrl = data.url ?: return
+        uploadVideo(File(filePath), uploadUrl)
     }
 
     //Upload Video
