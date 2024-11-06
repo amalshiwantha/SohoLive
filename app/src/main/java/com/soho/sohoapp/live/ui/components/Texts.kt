@@ -336,6 +336,27 @@ fun Text700_16sp(
 }
 
 @Composable
+fun Text700_10sp(
+    modifier: Modifier = Modifier,
+    title: String,
+    isCenter: Boolean = false,
+    color: Color = AppWhite
+) {
+    Text(
+        textAlign = if (isCenter) TextAlign.Center else TextAlign.Left,
+        modifier = modifier,
+        text = title,
+        fontSize = 10.sp,
+        lineHeight = 16.sp,
+        maxLines = 1,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(700),
+        color = color,
+        letterSpacing = 0.12.sp
+    )
+}
+
+@Composable
 fun TextProgress(
     modifier: Modifier = Modifier,
     title: String,

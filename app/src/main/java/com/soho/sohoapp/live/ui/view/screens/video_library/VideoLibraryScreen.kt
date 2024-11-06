@@ -72,6 +72,7 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_10sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
@@ -361,10 +362,18 @@ fun UploadStatusView(progress: Int) {
             SpacerUp(size = 8.dp)
             Text400_12sp(label = "Please refresh the page shortly using pull-to-refresh to view it.")
             SpacerUp(size = 16.dp)
-            LinearProgressIndicator(
-                progress = progress.toFloat() / 100,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LinearProgressIndicator(
+                    progress = progress.toFloat() / 100,
+                    modifier = Modifier.weight(1f)
+                )
+                SpacerSide(size = 8.dp)
+                Text700_10sp(title = "$progress%")
+            }
         }
     }
 }
