@@ -63,7 +63,6 @@ import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
 import com.soho.sohoapp.live.utility.showToast
-import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
@@ -142,9 +141,6 @@ fun PreRecordLibraryScreen(
                         },
                         onEditPublish = { pvtItem ->
                             openPlayEditor(navController, pvtItem, mGState)
-                        },
-                        onUpload = {
-                            //vmPreRecLib.uploadVideoOLD("authToken", File(it.path))
                         })
                 }
             }
@@ -171,7 +167,6 @@ fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGSt
 fun MainContent(
     onPlay: (PrivateVideo) -> Unit,
     onDelete: (Uri) -> Unit,
-    onUpload: (Uri) -> Unit,
     onEditPublish: (PrivateVideo) -> Unit,
     videoList: MutableList<PrivateVideo>
 ) {
@@ -201,9 +196,6 @@ fun MainContent(
                         onDeleteVideo = {
                             onDelete(Uri.parse(it))
                         },
-                        onDownloadVideo = {
-                            onUpload(Uri.parse(it))
-                        },
                         onClickManage = {
                             onEditPublish(it)
                         })
@@ -218,8 +210,7 @@ private fun PvtVidItemView(
     item: PrivateVideo,
     onClickManage: (PrivateVideo) -> Unit,
     onDeleteVideo: (String) -> Unit,
-    onPlayVideo: (PrivateVideo) -> Unit,
-    onDownloadVideo: (String) -> Unit
+    onPlayVideo: (PrivateVideo) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
@@ -257,15 +248,10 @@ private fun PvtVidItemView(
             SpacerSide(size = 8.dp)
 
             //Delete and Download btns
-            Row {
-                ActionIconButton(R.drawable.ic_download_bold, onClickAction = {
-                    onDownloadVideo(item.filePath)
-                })
-                SpacerSide(size = 8.dp)
-                ActionIconButton(R.drawable.ic_trash, onClickAction = {
-                    onDeleteVideo(item.filePath)
-                })
-            }
+            SpacerSide(size = 8.dp)
+            ActionIconButton(R.drawable.ic_trash, onClickAction = {
+                onDeleteVideo(item.filePath)
+            })
         }
     }
 }
