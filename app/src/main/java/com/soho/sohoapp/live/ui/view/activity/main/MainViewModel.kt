@@ -14,6 +14,7 @@ import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.NotificationHelper
 import com.soho.sohoapp.live.utility.UploadService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,14 +42,16 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _stateUploadLevel = MutableStateFlow("")
     val stateUploadLevel: StateFlow<String> = _stateUploadLevel.asStateFlow()
 
+    val uploadNotification = NotificationHelper()
+
     fun uploadNow(data: UploadData) {
         println("myUpload uploadData $data")
 
         val filePath = data.path ?: return
         val uploadUrl = data.url ?: return
-        //uploadVideo(File(filePath), uploadUrl)
+        uploadVideo(File(filePath), uploadUrl)
 
-        startUploadService(filePath, uploadUrl)
+        //startUploadService(filePath, uploadUrl)
     }
 
     private fun startUploadService(filePath: String, uploadUrl: String) {
@@ -75,8 +78,16 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
                 } else {
                     0f
                 }
+
                 _uploadProgress.value = percentage.toInt()
                 println("myUpload Progress Now: $percentage%")
+
+                viewModelScope.launch {
+                    uploadNotification.showNotification(
+                        context,
+                        percentage.toInt()
+                    )
+                }
             }
 
             muxUpload.setResultListener { result ->
