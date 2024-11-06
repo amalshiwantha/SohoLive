@@ -25,12 +25,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -291,6 +291,11 @@ private fun Content(
             onShowPvtVideo()
         }, modifier = Modifier.padding(16.dp))
 
+        //Show Upload Progress
+        if (mGState.uploadStatus.value == "uploading") {
+            UploadStatusView(mGState.uploadProgress.value)
+        }
+
         //Live Video List
         if (isShowProgress) {
             CenterMessageProgress(message = state.loadingMessage)
@@ -313,16 +318,12 @@ private fun Content(
                     items(dataList) { item ->
                         when (item.status) {
                             VideoStatus.IN_PROG.status -> {
-                                InProgItemView()
+                                if (mGState.uploadStatus.value != "uploading") {
+                                    InProgItemView()
+                                }
                             }
 
                             VideoStatus.READY.status -> {
-
-                                //Show Upload Progress
-                                val uploadProgress by mGState.uploadProgress.collectAsState()
-                                println("vidProg $uploadProgress")
-                                println("vidProg state : ${mGState.uploadStatus.value}")
-
                                 ListItemView(item,
                                     onClickManage = { onManageClick(it) },
                                     onShareVideo = { shareIntent(it) },
@@ -338,6 +339,32 @@ private fun Content(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun UploadStatusView(progress: Int) {
+    println("vidProg $progress")
+
+    Card(
+        modifier = Modifier.padding(bottom = 24.dp, start = 16.dp, end = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text700_14sp(step = "Your video is being uploaded...")
+            SpacerUp(size = 8.dp)
+            Text400_12sp(label = "Please refresh the page shortly using pull-to-refresh to view it.")
+            SpacerUp(size = 16.dp)
+            LinearProgressIndicator(
+                progress = progress.toFloat() / 100,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
