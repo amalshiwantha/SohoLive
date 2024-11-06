@@ -34,6 +34,9 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _uploadProgress = MutableStateFlow(0)
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
+    private val _stateUploadLevel = MutableStateFlow("")
+    val stateUploadLevel: StateFlow<String> = _stateUploadLevel.asStateFlow()
+
     fun uploadNow(data: UploadData) {
         println("myUpload uploadData $data")
 
@@ -44,10 +47,8 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
 
     //Upload Video
     private fun uploadVideo(recFile: File, uploadUrl: String) {
-        //mState.value = mState.value.copy(isUploading = mutableStateOf(true))
-
         viewModelScope.launch {
-
+            _stateUploadLevel.value = "uploading"
             val muxUpload = MuxUpload.Builder(uploadUrl, recFile).build()
 
             muxUpload.setProgressListener { progress ->
@@ -63,11 +64,11 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             muxUpload.setResultListener { result ->
                 if (result.isSuccess) {
                     println("myUpload Done")
+                    _stateUploadLevel.value = "done"
                 } else {
+                    _stateUploadLevel.value = "failed"
                     println("myUpload Failed")
                 }
-
-                //mState.value = mState.value.copy(isUploading = mutableStateOf(false))
             }
 
             muxUpload.start()

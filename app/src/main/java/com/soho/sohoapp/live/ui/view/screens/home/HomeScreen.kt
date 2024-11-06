@@ -24,7 +24,6 @@ import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.model.GlobalState
-import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
@@ -55,6 +54,7 @@ fun HomeScreen(
     val ebUpload =
         AppEventBus.events.collectAsState(initial = AppEvent.UploadVideo(UploadData()))
     val msUploadProgress by viewMMain.uploadProgress.collectAsState()
+    val msUploadLevel by viewMMain.stateUploadLevel.collectAsState()
 
     /*
     * Upload Video eventBus
@@ -73,6 +73,11 @@ fun HomeScreen(
     //upload progress update as GlobalState
     LaunchedEffect(msUploadProgress) {
         mGlobalState.setUploadProgress(msUploadProgress)
+    }
+
+    //Update upload status
+    LaunchedEffect(msUploadLevel) {
+        mGlobalState.uploadStatus.value = msUploadLevel
     }
 
     //get title for selected tab

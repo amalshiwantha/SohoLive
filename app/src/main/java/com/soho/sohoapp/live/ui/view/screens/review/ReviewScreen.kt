@@ -60,8 +60,6 @@ fun ReviewScreen(
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
 
-            mGState.uploadUrl.value = states.uploadUrl
-            mGState.videoFilePath.value = states.fileUrl
             AppEventBus.sendEvent(
                 AppEvent.UploadVideo(
                     UploadData(

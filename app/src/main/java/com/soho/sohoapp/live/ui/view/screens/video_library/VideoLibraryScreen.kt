@@ -321,6 +321,7 @@ private fun Content(
                                 //Show Upload Progress
                                 val uploadProgress by mGState.uploadProgress.collectAsState()
                                 println("vidProg $uploadProgress")
+                                println("vidProg state : ${mGState.uploadStatus.value}")
 
                                 ListItemView(item,
                                     onClickManage = { onManageClick(it) },
