@@ -556,16 +556,22 @@ fun Text800_10sp(modifier: Modifier = Modifier, label: String) {
 }
 
 @Composable
-fun Text800_12sp(modifier: Modifier = Modifier, label: String) {
+fun Text800_12sp(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtAlign: TextAlign = TextAlign.Left,
+    isBold: Boolean = true
+) {
     Text(
         modifier = modifier,
         text = label,
         fontSize = 12.sp,
         lineHeight = 16.8.sp,
         letterSpacing = 0.14.sp,
+        textAlign = txtAlign,
         color = Color(0xFFFFFFFF),
         fontWeight = FontWeight(800),
-        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontFamily = if (isBold) FontFamily(Font(R.font.axiforma)) else FontFamily(Font(R.font.axiforma_regular)),
     )
 }
 

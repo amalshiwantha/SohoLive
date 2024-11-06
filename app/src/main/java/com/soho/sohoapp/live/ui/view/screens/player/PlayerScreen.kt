@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
+import com.soho.sohoapp.live.ui.components.PreRecVidSuccessView
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
@@ -53,9 +55,7 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
@@ -67,6 +67,7 @@ fun PlayerScreen(
     onNextClick: () -> Unit = {}
 ) {
 
+    var showSuccessMessage by remember { mutableStateOf(true) }
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
     var isShowPlayer by remember { mutableStateOf(true) }
@@ -120,7 +121,7 @@ fun PlayerScreen(
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 //Player
-                if(isShowPlayer){
+                if (isShowPlayer) {
                     AndroidView(
                         modifier = Modifier
                             .padding(bottom = 16.dp)
@@ -174,6 +175,19 @@ fun PlayerScreen(
                         painter = painterResource(id = R.drawable.ic_play),
                         contentDescription = "Play"
                     )
+                }
+
+                //If record done then show a message
+                if (!mGState.isEditVideoData.value) {
+                    if (showSuccessMessage) {
+                        PreRecVidSuccessView(modifier = Modifier.align(Alignment.Center), onDismiss = {
+                            showSuccessMessage = false
+                        })
+                        LaunchedEffect(Unit) {
+                            delay(5000)
+                            showSuccessMessage = false
+                        }
+                    }
                 }
 
                 //Soho Overlay

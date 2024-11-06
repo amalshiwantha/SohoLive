@@ -9,14 +9,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +39,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,6 +68,40 @@ import com.soho.sohoapp.live.ui.theme.YoutubeRedDark
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 import kotlinx.coroutines.delay
+
+@Composable
+fun PreRecVidSuccessView(modifier: Modifier, onDismiss: () -> Unit) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(64.dp)
+            .clickable { onDismiss() }
+            .background(
+                color = Color(0xCC32003E),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text800_12sp(
+                label = "Your video was created successfully " +
+                        "and saved privately. You can preview " +
+                        "and edit it before publishing.", isBold = false, txtAlign = TextAlign.Center
+            )
+        }
+    }
+}
 
 @Composable
 fun NotEnableStreamAlert(
@@ -521,6 +560,12 @@ fun AppAlertDialog(
         },
         modifier = Modifier
     )
+}
+
+@Preview
+@Composable
+private fun PreRecVidSuccessViewPreview() {
+    PreRecVidSuccessView(modifier = Modifier, onDismiss = {})
 }
 
 @Preview
