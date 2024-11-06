@@ -21,6 +21,9 @@ import com.soho.sohoapp.live.network.response.DataVidRes
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VideoItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -166,7 +169,16 @@ data class GlobalState(
     var isEditVideoData: MutableState<Boolean> = mutableStateOf(false),
     var uploadUrl: MutableState<String?> = mutableStateOf(null),
     var videoFilePath: MutableState<String?> = mutableStateOf(null)
-)
+) {
+    @Transient
+    private val _uploadProgress = MutableStateFlow(0)
+    @Transient
+    val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
+
+    fun setUploadProgress(progress: Int) {
+        _uploadProgress.value = progress
+    }
+}
 
 @Serializable
 data class PlatformToken(

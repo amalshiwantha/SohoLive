@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
 import com.soho.sohoapp.live.ui.components.HandleBackPress
@@ -48,6 +49,22 @@ fun HomeScreen(
     var showTopBar by remember { mutableStateOf(true) }
     val esLogout =
         AppEventBus.events.collectAsState(initial = AppEvent.NavigateToLogin(false))
+    val ebUpload =
+        AppEventBus.events.collectAsState(initial = AppEvent.UploadVideo(UploadData()))
+
+    /*
+    * Upload Video eventBus
+    * */
+    LaunchedEffect(ebUpload.value) {
+        val uploadData = when (val event = ebUpload.value) {
+            is AppEvent.UploadVideo -> event.data
+            else -> UploadData()
+        }
+
+        uploadData?.let {
+            viewMMain.uploadNow(uploadData)
+        }
+    }
 
     //get title for selected tab
     LaunchedEffect(navController) {
