@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.soho.sohoapp.live.db.PrivateVideo
 
 data class PreRecLibState(
+    val isDone: Boolean = false,
     val isSuccess: Boolean = false,
     val isLoadedItem: Boolean = false,
     val uploadUrl: String? = null,

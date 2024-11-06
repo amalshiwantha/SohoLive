@@ -60,12 +60,20 @@ class ReviewViewModel(
                 vidDb.updateVideo(vidItem)
 
                 //get upload url
-                dataStore.userProfile.collect { profile ->
-                    profile?.let { prof ->
-                        vidItem.videoInfo?.let { vidInfo ->
-                            uploadVideoMux(prof.authenticationToken, vidInfo)
+                if (vidItem.privacy != VideoPrivacy.PRIVATE.label) {
+                    dataStore.userProfile.collect { profile ->
+                        profile?.let { prof ->
+                            vidItem.videoInfo?.let { vidInfo ->
+                                uploadVideoMux(prof.authenticationToken, vidInfo)
+                            }
                         }
                     }
+                } else {
+                    mState.value =
+                        mState.value.copy(
+                            isUploading = mutableStateOf(false),
+                            isDone = true
+                        )
                 }
             }
         }

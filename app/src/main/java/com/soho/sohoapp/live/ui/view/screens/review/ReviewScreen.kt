@@ -57,6 +57,16 @@ fun ReviewScreen(
     val pvtVidId = mGState.privateVideoId.value
     var selectedOption by remember { mutableStateOf(VideoPrivacy.PRIVATE.label) }
 
+    //if privacy changed as private then back to pre rec library
+    LaunchedEffect(states.isDone) {
+        if (states.isDone) {
+            doNavigate(mGState, navController, onDoneClick = {
+                onDoneClick()
+            })
+        }
+    }
+
+    //if get upload url api call success then star the upload
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
 
@@ -69,12 +79,9 @@ fun ReviewScreen(
                 )
             )
 
-            if (mGState.isEditVideoData.value) {
-                navController.popBackStack()
-            } else {
-                mGState.privateVideoId.value = -1
+            doNavigate(mGState, navController, onDoneClick = {
                 onDoneClick()
-            }
+            })
         }
     }
 
@@ -200,5 +207,14 @@ fun ReviewScreen(
                 }
             }
         }
+    }
+}
+
+fun doNavigate(mGState: GlobalState, navController: NavHostController, onDoneClick: () -> Unit) {
+    if (mGState.isEditVideoData.value) {
+        navController.popBackStack()
+    } else {
+        mGState.privateVideoId.value = -1
+        onDoneClick()
     }
 }
