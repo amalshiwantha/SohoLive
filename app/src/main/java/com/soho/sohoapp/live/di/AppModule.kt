@@ -59,7 +59,7 @@ val appModule = module {
     viewModel { VideoManageViewModel(get(), get()) }
     viewModel { LiveStreamViewModel(get(), get()) }
     viewModel { ProfileViewModel(get()) }
-    viewModel { PreRecLibraryViewModel(get(), get()) }
+    viewModel { PreRecLibraryViewModel(get()) }
     viewModel { VidEditDetailsViewModel(get()) }
     viewModel { VideoRecorderViewModel(get()) }
     viewModel { ReviewViewModel(get(), get(), get()) }

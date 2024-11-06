@@ -88,15 +88,15 @@ fun PreRecordLibraryScreen(
     val states = vmPreRecLib.mState.value
     var isShowAlert by remember { mutableStateOf(false) }
     var actionFile by remember { mutableStateOf(Uri.parse("")) }
-    val uploadProgress by vmPreRecLib.uploadProgress.collectAsState()
+    //val uploadProgress by vmPreRecLib.uploadProgress.collectAsState()
 
-    //clear upload state
-    if (states.isUploading.value) {
+    //clear upload state [isUploading]
+    /*if (states.isUploading.value) {
         if (uploadProgress == 100) {
             mGState.uploadUrl.value = null
             mGState.videoFilePath.value = null
         }
-    }
+    }*/
 
     //load pvt video list
     LaunchedEffect(states.videoList.value) {
@@ -106,12 +106,13 @@ fun PreRecordLibraryScreen(
         }
     }
 
-    LaunchedEffect(mGState.uploadUrl) {
+    //[isUploading]
+    /*LaunchedEffect(mGState.uploadUrl) {
         mGState.uploadUrl.value?.let {
             val fileVid = File(mGState.videoFilePath.value)
             vmPreRecLib.uploadVideo(fileVid, it)
         }
-    }
+    }*/
 
     //show confirmation to delete video
     if (isShowAlert) {
@@ -160,8 +161,8 @@ fun PreRecordLibraryScreen(
                     CenterMessageProgress(message = "Loading Private Video...")
                 } else {
 
-                    //display upload progress
-                    if (states.isUploading.value) {
+                    //display upload progress [isUploading]
+                    /*if (states.isUploading.value) {
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -182,7 +183,7 @@ fun PreRecordLibraryScreen(
                                 }
                             }
                         }
-                    }
+                    }*/
 
                     MainContent(videoList = states.videoList.value,
                         onPlay = { pvtItem ->

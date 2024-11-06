@@ -1,7 +1,9 @@
 package com.soho.sohoapp.live.ui.view.activity.main
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mux.video.upload.api.MuxUpload
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 
 class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _isCallSMConnect = MutableStateFlow(SocialMediaInfo.NONE)
@@ -28,6 +31,40 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _stateOpenLiveCast = MutableStateFlow("")
     val stateOpenLiveCast: StateFlow<String> = _stateOpenLiveCast.asStateFlow()
 
+    private val _uploadProgress = MutableStateFlow(0)
+    val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
+
+    //Upload Video
+    fun uploadVideo(recFile: File, uploadUrl: String) {
+        //mState.value = mState.value.copy(isUploading = mutableStateOf(true))
+
+        viewModelScope.launch {
+
+            val muxUpload = MuxUpload.Builder(uploadUrl, recFile).build()
+
+            muxUpload.setProgressListener { progress ->
+                val percentage = if (progress.totalBytes > 0) {
+                    (progress.bytesUploaded.toFloat() / progress.totalBytes.toFloat()) * 100
+                } else {
+                    0f
+                }
+                _uploadProgress.value = percentage.toInt()
+                println("myUpload Progress Now: $percentage%")
+            }
+
+            muxUpload.setResultListener { result ->
+                if (result.isSuccess) {
+                    println("myUpload Done")
+                } else {
+                    println("myUpload Failed")
+                }
+
+                //mState.value = mState.value.copy(isUploading = mutableStateOf(false))
+            }
+
+            muxUpload.start()
+        }
+    }
 
     //update LiveData
     fun updateSocialMediaState(smInfo: SocialMediaInfo) {

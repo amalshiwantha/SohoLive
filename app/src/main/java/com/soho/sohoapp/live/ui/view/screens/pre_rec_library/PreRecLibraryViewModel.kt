@@ -5,63 +5,21 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mux.video.upload.api.MuxUpload
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
-import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PreRecLibraryViewModel(
-    private val vidDb: PrivateVideoDao,
-    private val apiRepo: SohoApiRepository,
+    private val vidDb: PrivateVideoDao
 ) : ViewModel() {
 
     val mState: MutableState<PreRecLibState> = mutableStateOf(PreRecLibState())
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-
-    private val _uploadProgress = MutableStateFlow(0)
-    val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
-
-    fun uploadVideo(recFile: File, uploadUrl: String) {
-        mState.value = mState.value.copy(isUploading = mutableStateOf(true))
-
-        viewModelScope.launch {
-
-            val muxUpload = MuxUpload.Builder(uploadUrl, recFile).build()
-
-            muxUpload.setProgressListener { progress ->
-                val percentage = if (progress.totalBytes > 0) {
-                    (progress.bytesUploaded.toFloat() / progress.totalBytes.toFloat()) * 100
-                } else {
-                    0f
-                }
-                _uploadProgress.value = percentage.toInt()
-                println("myUpload Progress Now: $percentage%")
-            }
-
-            muxUpload.setResultListener { result ->
-                if (result.isSuccess) {
-                    println("myUpload Done")
-                } else {
-                    println("myUpload Failed")
-                }
-
-                mState.value = mState.value.copy(isUploading = mutableStateOf(false))
-            }
-
-            muxUpload.start()
-        }
-    }
 
     fun loadPvtVideo() {
         mState.value = mState.value.copy(isLoading = mutableStateOf(true))
@@ -109,33 +67,6 @@ class PreRecLibraryViewModel(
         } else {
             emptyList()
         }
-    }
-
-    fun uploadVideoOLD(authToken: String, recFile: File) {
-        mState.value = mState.value.copy(isUploading = mutableStateOf(true))
-
-        apiRepo.uploadVideo(authToken, recFile, onProgress = {
-            _uploadProgress.value = it
-        }).onEach { apiState ->
-
-            when (apiState) {
-
-                is ApiState.Data -> {
-                    apiState.data?.let { result ->
-                        println("myUplaod $result")
-                        mState.value = mState.value.copy(isUploading = mutableStateOf(false))
-                    }
-                }
-
-                is ApiState.Loading -> {
-                    println("myUplaod loadgin")
-                }
-
-                is ApiState.Alert -> {
-                    println("myUplaod alert")
-                }
-            }
-        }.launchIn(viewModelScope)
     }
 
     // Sort function
