@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
@@ -43,6 +44,7 @@ fun HomeScreen(
     val context = LocalContext.current
     val uiState by homeVm.uiState.collectAsState()
     val navController = rememberNavController()
+    val mGlobalState by remember { mutableStateOf(GlobalState()) }
     var navigationSelectedItem by remember { mutableIntStateOf(0) }
     var selectedTabTitle by remember { mutableStateOf(context.getString(R.string.create_livestream)) }
     var showBottomBar by remember { mutableStateOf(true) }
@@ -116,7 +118,7 @@ fun HomeScreen(
                 .background(brushMainGradientBg)
                 .padding(innerPadding)
         ) {
-            BottomNavHost(navController, viewMMain, onTabMoveClick = {
+            BottomNavHost(navController, viewMMain, mGlobalState = mGlobalState, onTabMoveClick = {
                 navigationSelectedItem = it
             })
 

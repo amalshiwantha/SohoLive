@@ -45,7 +45,9 @@ import kotlinx.serialization.json.Json
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun BottomNavHost(
-    navController: NavHostController, mainViewModel: MainViewModel,
+    navController: NavHostController,
+    mainViewModel: MainViewModel,
+    mGlobalState: GlobalState,
     onTabMoveClick: (Int) -> Unit
 ) {
     var onGoLiveResult by remember { mutableStateOf<DataGoLive?>(null) }
@@ -53,7 +55,6 @@ fun BottomNavHost(
     var mState by remember { mutableStateOf(GoLiveAssets()) }
     val scheduleSlots = remember { mutableStateListOf<ScheduleSlots>() }
     val mGoLiveSubmit by remember { mutableStateOf(GoLiveSubmit()) }
-    val mGlobalState by remember { mutableStateOf(GlobalState()) }
 
     NavHost(
         navController = navController, startDestination = NavigationPath.GO_LIVE.name
