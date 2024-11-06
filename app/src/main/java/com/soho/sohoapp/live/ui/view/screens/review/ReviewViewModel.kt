@@ -49,9 +49,9 @@ class ReviewViewModel(
                     vidItem.videoInfo?.apply {
                         unlisted = when (vidItem.privacy) {
                             VideoPrivacy.UNLISTED.label -> true
-                            VideoPrivacy.PRIVATE.label -> true
+                            VideoPrivacy.PRIVATE.label -> false
                             VideoPrivacy.PUBLIC.label -> false
-                            else -> true
+                            else -> false
                         }
                     }
                 }
