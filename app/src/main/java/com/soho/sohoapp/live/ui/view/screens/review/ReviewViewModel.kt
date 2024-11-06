@@ -56,20 +56,17 @@ class ReviewViewModel(
                     }
                 }
 
+                //save video info
                 vidDb.updateVideo(vidItem)
-            }
 
-            //get upload url
-            if (updatedVideoItem?.privacy != VideoPrivacy.PRIVATE.label) {
+                //get upload url
                 dataStore.userProfile.collect { profile ->
                     profile?.let { prof ->
-                        updatedVideoItem?.videoInfo?.let { vidInfo ->
+                        vidItem.videoInfo?.let { vidInfo ->
                             uploadVideoMux(prof.authenticationToken, vidInfo)
                         }
                     }
                 }
-            } else {
-                //go back screen
             }
         }
     }
