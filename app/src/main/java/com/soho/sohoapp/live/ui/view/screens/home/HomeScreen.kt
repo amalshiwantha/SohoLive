@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.db.AppDatabase
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.AppTopBar
@@ -177,8 +178,8 @@ fun isTopBarVisible(backStack: NavBackStackEntry?): Boolean {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHome() {
-    HomeScreen(
+    /*HomeScreen(
         navControllerHome = NavHostController(LocalContext.current),
-        viewMMain = MainViewModel(dataStore = AppDataStoreManager(LocalContext.current))
-    )
+        viewMMain = MainViewModel(dataStore = AppDataStoreManager(LocalContext.current), vidDb = getDatabase(LocalContext.current).privateVideoDao())
+    )*/
 }

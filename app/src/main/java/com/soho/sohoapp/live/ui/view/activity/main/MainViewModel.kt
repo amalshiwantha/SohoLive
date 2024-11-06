@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mux.video.upload.api.MuxUpload
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
@@ -24,7 +25,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
-class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
+class MainViewModel(
+    private val dataStore: AppDataStoreManager,
+    private val vidDb: PrivateVideoDao
+) : ViewModel() {
     private val _isCallSMConnect = MutableStateFlow(SocialMediaInfo.NONE)
     val isCallSMConnect: StateFlow<SocialMediaInfo> = _isCallSMConnect.asStateFlow()
 
@@ -112,7 +116,7 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
 
         //remove form db
         viewModelScope.launch {
-            //dataStore.deleteRecord(recFile.name)
+            vidDb.deleteVideoByPath(recFile.path)
         }
     }
 

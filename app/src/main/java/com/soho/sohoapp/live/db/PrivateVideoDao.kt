@@ -25,4 +25,7 @@ interface PrivateVideoDao {
 
     @Update
     suspend fun updateVideo(video: PrivateVideo)
+
+    @Query("DELETE FROM private_videos WHERE filePath = :filePath")
+    suspend fun deleteVideoByPath(filePath: String): Int
 }

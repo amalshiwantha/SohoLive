@@ -53,7 +53,7 @@ val appModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { SignInViewModel(get(), get()) }
     viewModel { GoLiveViewModel(get(), get()) }
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { VideoLibraryViewModel(get(), get()) }
     viewModel { VideoManageViewModel(get(), get()) }
