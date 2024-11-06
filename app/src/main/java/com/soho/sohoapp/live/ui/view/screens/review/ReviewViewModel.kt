@@ -59,13 +59,17 @@ class ReviewViewModel(
                 vidDb.updateVideo(vidItem)
             }
 
-            //update server
-            dataStore.userProfile.collect { profile ->
-                profile?.let { prof ->
-                    updatedVideoItem?.videoInfo?.let { vidInfo ->
-                        uploadVideoMux(prof.authenticationToken, vidInfo)
+            //get upload url
+            if (updatedVideoItem?.privacy != VideoPrivacy.PRIVATE.label) {
+                dataStore.userProfile.collect { profile ->
+                    profile?.let { prof ->
+                        updatedVideoItem?.videoInfo?.let { vidInfo ->
+                            uploadVideoMux(prof.authenticationToken, vidInfo)
+                        }
                     }
                 }
+            } else {
+                //go back screen
             }
         }
     }
@@ -80,12 +84,12 @@ class ReviewViewModel(
                     apiState.data?.let { result ->
                         val uploadUrl = result.data?.uploadUrl
 
-                        /*mState.value =
+                        mState.value =
                             mState.value.copy(
                                 uploadUrl = uploadUrl,
                                 isUploading = mutableStateOf(false),
                                 isSuccess = true
-                            )*/
+                            )
                     }
                 }
 
