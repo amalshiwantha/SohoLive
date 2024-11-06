@@ -116,6 +116,15 @@ fun VideoLibraryScreen(
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     var playVideoUrl by remember { mutableStateOf("") }
 
+    //Reload the list once upload done
+    LaunchedEffect(mGState.uploadStatus.value) {
+        mGState.uploadStatus.value?.let {
+            if(it == "done"){
+                vmVidLib.reLoadData()
+            }
+        }
+    }
+
     //open video player
     LaunchedEffect(playVideoUrl) {
         if (playVideoUrl.isNotEmpty()) {
