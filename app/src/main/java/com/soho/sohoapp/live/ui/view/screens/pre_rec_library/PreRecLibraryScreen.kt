@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,14 +20,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.enums.AlertConfig
@@ -67,18 +62,12 @@ import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
 import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
-import com.soho.sohoapp.live.utility.NotificationHelper
 import com.soho.sohoapp.live.utility.showToast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
-import java.io.File
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreRecordLibraryScreen(
     mGState: GlobalState,
@@ -88,15 +77,6 @@ fun PreRecordLibraryScreen(
     val states = vmPreRecLib.mState.value
     var isShowAlert by remember { mutableStateOf(false) }
     var actionFile by remember { mutableStateOf(Uri.parse("")) }
-    //val uploadProgress by vmPreRecLib.uploadProgress.collectAsState()
-
-    //clear upload state [isUploading]
-    /*if (states.isUploading.value) {
-        if (uploadProgress == 100) {
-            mGState.uploadUrl.value = null
-            mGState.videoFilePath.value = null
-        }
-    }*/
 
     //load pvt video list
     LaunchedEffect(states.videoList.value) {
@@ -105,14 +85,6 @@ fun PreRecordLibraryScreen(
             vmPreRecLib.loadPvtVideo()
         }
     }
-
-    //[isUploading]
-    /*LaunchedEffect(mGState.uploadUrl) {
-        mGState.uploadUrl.value?.let {
-            val fileVid = File(mGState.videoFilePath.value)
-            vmPreRecLib.uploadVideo(fileVid, it)
-        }
-    }*/
 
     //show confirmation to delete video
     if (isShowAlert) {
@@ -160,31 +132,6 @@ fun PreRecordLibraryScreen(
                 if (states.isLoading.value) {
                     CenterMessageProgress(message = "Loading Private Video...")
                 } else {
-
-                    //display upload progress [isUploading]
-                    /*if (states.isUploading.value) {
-
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            LinearProgressIndicator(progress = uploadProgress / 100f)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text400_14sp(info = "$uploadProgress%")
-
-                            //show progress in notification try
-                            val uploadNotification = NotificationHelper()
-                            LaunchedEffect(uploadProgress) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    uploadNotification.showNotification(
-                                        context,
-                                        uploadProgress
-                                    )
-                                }
-                            }
-                        }
-                    }*/
-
                     MainContent(videoList = states.videoList.value,
                         onPlay = { pvtItem ->
                             openPlayEditor(navController, pvtItem, mGState)
@@ -204,31 +151,6 @@ fun PreRecordLibraryScreen(
         }
     }
 }
-
-suspend fun downloadFileWithProgress() {
-    val totalSize = 100  // Total size (100%) for demonstration
-    var currentProgress = 0
-
-    while (currentProgress < totalSize) {
-        // Simulate downloading - increase progress
-        currentProgress += 5
-
-
-        // Simulate delay between updates
-        delay(500)
-    }
-
-    // When download completes, remove the progress and show completion
-    /*val notificationManager = NotificationManagerCompat.from(context)
-    val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-        .setContentTitle("Download Complete")
-        .setContentText("Your file has been downloaded.")
-        .setSmallIcon(R.drawable.ic_download_complete)
-        .setProgress(0, 0, false)
-        .build()
-    notificationManager.notify(1, notification)*/
-}
-
 
 fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGState: GlobalState) {
     mGState.apply {
