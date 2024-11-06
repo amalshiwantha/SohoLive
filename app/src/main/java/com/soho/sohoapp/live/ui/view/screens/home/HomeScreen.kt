@@ -57,6 +57,11 @@ fun HomeScreen(
     val msUploadProgress by viewMMain.uploadProgress.collectAsState()
     val msUploadLevel by viewMMain.stateUploadLevel.collectAsState()
 
+    //Delete old video files
+    LaunchedEffect("delete old files") {
+        viewMMain.deleteOldFiles()
+    }
+
     /*
     * Upload Video eventBus
     * */

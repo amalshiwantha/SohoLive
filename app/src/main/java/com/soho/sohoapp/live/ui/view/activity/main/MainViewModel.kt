@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class MainViewModel(
     private val dataStore: AppDataStoreManager,
@@ -110,6 +112,7 @@ class MainViewModel(
         }
     }
 
+    //delete file after upload
     private fun deleteFileAndRecord(recFile: File) {
         //remove from storage
         deleteFileFromUri(vidFile = recFile)
@@ -117,6 +120,23 @@ class MainViewModel(
         //remove form db
         viewModelScope.launch {
             vidDb.deleteVideoByPath(recFile.path)
+        }
+    }
+
+    //delete all files
+    fun deleteOldFiles() {
+        viewModelScope.launch {
+            val videos = vidDb.getAllVideos()
+            val thresholdDate = LocalDate.now().minusDays(30)
+
+            videos.forEach { video ->
+                val videoDate =
+                    LocalDate.parse(video.createdDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                if (videoDate.isBefore(thresholdDate)) {
+                    vidDb.deleteVideoByPath(video.filePath)
+                    deleteFileFromUri(vidFile = File(video.filePath))
+                }
+            }
         }
     }
 
