@@ -46,13 +46,15 @@ class ReviewViewModel(
                 //if having mGoLiveSubmit have to save
                 mGoLiveSubmit?.let {
                     vidItem.videoInfo = mGoLiveSubmit.toVideoInfo()
-                    vidItem.videoInfo?.apply {
-                        unlisted = when (vidItem.privacy) {
-                            VideoPrivacy.UNLISTED.label -> true
-                            VideoPrivacy.PRIVATE.label -> false
-                            VideoPrivacy.PUBLIC.label -> false
-                            else -> false
-                        }
+                }
+
+                //update unlisted state according to the vidItem.privacy
+                vidItem.videoInfo?.apply {
+                    unlisted = when (vidItem.privacy) {
+                        VideoPrivacy.UNLISTED.label -> true
+                        VideoPrivacy.PRIVATE.label -> false
+                        VideoPrivacy.PUBLIC.label -> false
+                        else -> false
                     }
                 }
 
