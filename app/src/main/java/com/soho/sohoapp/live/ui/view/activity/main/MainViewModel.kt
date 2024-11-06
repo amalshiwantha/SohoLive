@@ -1,8 +1,11 @@
 package com.soho.sohoapp.live.ui.view.activity.main
 
+import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mux.video.upload.api.MuxUpload
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -11,6 +14,7 @@ import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.UploadService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,7 +46,21 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
 
         val filePath = data.path ?: return
         val uploadUrl = data.url ?: return
-        uploadVideo(File(filePath), uploadUrl)
+        //uploadVideo(File(filePath), uploadUrl)
+
+        startUploadService(filePath, uploadUrl)
+    }
+
+    private fun startUploadService(filePath: String, uploadUrl: String) {
+        val intent = Intent(context, UploadService::class.java).apply {
+            putExtra(UploadService.EXTRA_FILE_PATH, filePath)
+            putExtra(UploadService.EXTRA_UPLOAD_URL, uploadUrl)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent)
+        } else {
+            context.startService(intent)
+        }
     }
 
     //Upload Video
