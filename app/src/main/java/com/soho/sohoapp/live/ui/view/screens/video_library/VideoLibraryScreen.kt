@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.video_library
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -294,7 +295,7 @@ private fun Content(
 
         //Show Upload Progress
         if (mGState.uploadStatus.value == "uploading") {
-            UploadStatusView(mGState.uploadProgress.value)
+            UploadStatusView(mGState)
         }
 
         //Live Video List
@@ -344,10 +345,10 @@ private fun Content(
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun UploadStatusView(progress: Int) {
-    println("vidProg $progress")
-
+fun UploadStatusView(gState: GlobalState) {
+    val prog = gState.uploadProgress.value
     Card(
         modifier = Modifier.padding(bottom = 24.dp, start = 16.dp, end = 16.dp),
         colors = CardDefaults.cardColors(containerColor = ItemCardBg)
@@ -368,11 +369,11 @@ fun UploadStatusView(progress: Int) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 LinearProgressIndicator(
-                    progress = progress.toFloat() / 100,
+                    progress = prog.toFloat() / 100,
                     modifier = Modifier.weight(1f)
                 )
                 SpacerSide(size = 8.dp)
-                Text700_10sp(title = "$progress%")
+                Text700_10sp(title = "$prog%")
             }
         }
     }
