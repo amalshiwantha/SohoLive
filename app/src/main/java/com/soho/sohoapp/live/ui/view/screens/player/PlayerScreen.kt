@@ -180,9 +180,11 @@ fun PlayerScreen(
                 //If record done then show a message
                 if (!mGState.isEditVideoData.value) {
                     if (showSuccessMessage) {
-                        PreRecVidSuccessView(modifier = Modifier.align(Alignment.Center), onDismiss = {
-                            showSuccessMessage = false
-                        })
+                        PreRecVidSuccessView(
+                            modifier = Modifier.align(Alignment.Center),
+                            onDismiss = {
+                                showSuccessMessage = false
+                            })
                         LaunchedEffect(Unit) {
                             delay(5000)
                             showSuccessMessage = false
@@ -317,11 +319,11 @@ fun BottomButton(onNextClick: () -> Unit, onEditClick: () -> Unit) {
     }
 }
 
-fun deleteFileFromUri(fileUri: Uri): Boolean {
+fun deleteFileFromUri(fileUri: Uri? = null, vidFile: File? = null): Boolean {
     return try {
-        val file = File(fileUri.path) // Convert Uri to File
+        val file = vidFile ?: File(fileUri?.path)
         if (file.exists()) {
-            file.delete() // Delete the file
+            file.delete()
         } else {
             false
         }

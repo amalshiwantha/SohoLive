@@ -12,6 +12,7 @@ import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.UploadData
+import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NotificationHelper
@@ -93,6 +94,7 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             muxUpload.setResultListener { result ->
                 if (result.isSuccess) {
                     println("myUpload Done")
+                    deleteFileAndRecord(recFile)
                     _stateUploadLevel.value = "done"
                 } else {
                     _stateUploadLevel.value = "failed"
@@ -101,6 +103,16 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
             }
 
             muxUpload.start()
+        }
+    }
+
+    private fun deleteFileAndRecord(recFile: File) {
+        //remove from storage
+        deleteFileFromUri(vidFile = recFile)
+
+        //remove form db
+        viewModelScope.launch {
+            //dataStore.deleteRecord(recFile.name)
         }
     }
 
