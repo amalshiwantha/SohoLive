@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -316,6 +317,11 @@ private fun Content(
                             }
 
                             VideoStatus.READY.status -> {
+
+                                //Show Upload Progress
+                                val uploadProgress by mGState.uploadProgress.collectAsState()
+                                println("vidProg $uploadProgress")
+
                                 ListItemView(item,
                                     onClickManage = { onManageClick(it) },
                                     onShareVideo = { shareIntent(it) },
