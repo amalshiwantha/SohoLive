@@ -8,6 +8,7 @@ import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.db.VideoInfo
+import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
@@ -42,10 +43,17 @@ class ReviewViewModel(
 
             //update local DB
             updatedVideoItem?.let { vidItem ->
-
                 //if having mGoLiveSubmit have to save
                 mGoLiveSubmit?.let {
                     vidItem.videoInfo = mGoLiveSubmit.toVideoInfo()
+                    vidItem.videoInfo?.apply {
+                        unlisted = when (vidItem.privacy) {
+                            VideoPrivacy.UNLISTED.label -> true
+                            VideoPrivacy.PRIVATE.label -> true
+                            VideoPrivacy.PUBLIC.label -> false
+                            else -> true
+                        }
+                    }
                 }
 
                 vidDb.updateVideo(vidItem)
@@ -72,12 +80,12 @@ class ReviewViewModel(
                     apiState.data?.let { result ->
                         val uploadUrl = result.data?.uploadUrl
 
-                        mState.value =
+                        /*mState.value =
                             mState.value.copy(
                                 uploadUrl = uploadUrl,
                                 isUploading = mutableStateOf(false),
                                 isSuccess = true
-                            )
+                            )*/
                     }
                 }
 
@@ -86,10 +94,6 @@ class ReviewViewModel(
                 is ApiState.Alert -> {}
             }
         }.launchIn(viewModelScope)
-    }
-
-    private fun uploadNow(uploadUrl: String?) {
-        println("fileUpload $uploadUrl")
     }
 
     private fun GoLiveSubmit.toVideoInfo(): VideoInfo {
