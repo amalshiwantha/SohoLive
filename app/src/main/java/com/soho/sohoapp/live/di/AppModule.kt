@@ -3,7 +3,6 @@ package com.soho.sohoapp.live.di
 import androidx.room.Room
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.db.AppDatabase
-import com.soho.sohoapp.live.db.MIGRATION_1_2
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.api.soho.SohoApiServices
 import com.soho.sohoapp.live.network.api.soho.SohoServicesImpl
@@ -45,7 +44,8 @@ val appModule = module {
             androidContext(),
             AppDatabase::class.java,
             "soho_live_db"
-        ).addMigrations(MIGRATION_1_2).build()
+        ).build()
+        //.addMigrations(MIGRATION_1_2)
     }
     single { get<AppDatabase>().privateVideoDao() }
 
