@@ -25,6 +25,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /*
+* call upload api with url and path
+* */
+data class UploadData(val url: String? = null, val path: String? = null)
+
+/*
 * on board data display
 * */
 data class OnboardingData(val imageRes: Int, val info: String)

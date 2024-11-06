@@ -74,6 +74,7 @@ import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
+import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -165,9 +166,25 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
                     var isShowSMConnectedModel by remember { mutableStateOf(false) }
                     var isShowSmLogoutConfirm by remember { mutableStateOf(false) }
                     var smLogoutSelection by remember { mutableStateOf(SocialMediaProfile()) }
+                    val ebUpload =
+                        AppEventBus.events.collectAsState(initial = AppEvent.UploadVideo(UploadData()))
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
+
+                    /*
+                    * Upload Video eventBus
+                    * */
+                    LaunchedEffect(ebUpload.value) {
+                        val uploadData = when (val event = ebUpload.value) {
+                            is AppEvent.UploadVideo -> event.data
+                            else -> UploadData()
+                        }
+
+                        uploadData?.let {
+                            viewMMain.uploadNow(uploadData)
+                        }
+                    }
 
                     /*
                     * show alert message to confirm logout

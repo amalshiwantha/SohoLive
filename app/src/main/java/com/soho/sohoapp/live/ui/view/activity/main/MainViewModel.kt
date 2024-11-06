@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.ui.view.activity.main
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mux.video.upload.api.MuxUpload
@@ -9,6 +8,7 @@ import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.SocialMediaProfile
+import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,8 +34,13 @@ class MainViewModel(private val dataStore: AppDataStoreManager) : ViewModel() {
     private val _uploadProgress = MutableStateFlow(0)
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
+    fun uploadNow(data: UploadData) {
+        println("uploadData $data")
+        //uploadVideo()
+    }
+
     //Upload Video
-    fun uploadVideo(recFile: File, uploadUrl: String) {
+    private fun uploadVideo(recFile: File, uploadUrl: String) {
         //mState.value = mState.value.copy(isUploading = mutableStateOf(true))
 
         viewModelScope.launch {

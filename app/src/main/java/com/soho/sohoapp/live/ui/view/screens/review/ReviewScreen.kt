@@ -29,6 +29,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -40,6 +41,8 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
 import org.koin.compose.koinInject
 
 @Composable
@@ -59,6 +62,14 @@ fun ReviewScreen(
 
             mGState.uploadUrl.value = states.uploadUrl
             mGState.videoFilePath.value = states.fileUrl
+            AppEventBus.sendEvent(
+                AppEvent.UploadVideo(
+                    UploadData(
+                        states.uploadUrl,
+                        states.fileUrl
+                    )
+                )
+            )
 
             if (mGState.isEditVideoData.value) {
                 navController.popBackStack()
