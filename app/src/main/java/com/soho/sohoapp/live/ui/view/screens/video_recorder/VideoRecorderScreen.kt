@@ -57,8 +57,10 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
+import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.ui.components.ButtonColoredIconWrap
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
@@ -66,6 +68,7 @@ import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.utility.RotateScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 import java.io.File
@@ -92,6 +95,22 @@ fun VideoRecorderScreen(
     var hasCameraPermission by remember { mutableStateOf(false) }
     var hasMicPermission by remember { mutableStateOf(false) }
     var shouldShowSettingsButton by remember { mutableStateOf(false) }
+    var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
+    var isRotateLandScreen by remember { mutableStateOf(false) }
+
+    //Rotate Screen
+    LaunchedEffect(rotateScreen) {
+        if (rotateScreen == Orientation.LAND.name) {
+            isRotateLandScreen = true
+        }
+    }
+
+    if (isRotateLandScreen) {
+        cont.getActivity()?.let {
+            RotateScreen(rotateScreen, it)
+            isRotateLandScreen = false
+        }
+    }
 
     // Launcher for requesting multiple permissions
     val permissionsLauncher = rememberLauncherForActivityResult(
@@ -153,10 +172,18 @@ fun VideoRecorderScreen(
     //If save success then open player
     LaunchedEffect(mState.isSuccess) {
         if (mState.isSuccess) {
+
+            //Reset Rotate
+            isRotateLandScreen = rotateScreen == Orientation.LAND.name
+            if (isRotateLandScreen) {
+                rotateScreen = Orientation.PORT.name
+            }
+
             mGState.apply {
                 privateVideoId.value = mState.lastSavedId
             }
             recFile?.let { onVideoSaved(it) }
+
             vmVidRec.reset()
         }
     }
@@ -245,7 +272,7 @@ fun VideoRecorderScreen(
             //Camera Switch
             Image(
                 painter = painterResource(id = R.drawable.ic_cam_switch),
-                contentDescription = "",
+                contentDescription = "Camera Switch",
                 modifier = Modifier.clickable {
                     if (!isRecording) {
                         controller.cameraSelector =

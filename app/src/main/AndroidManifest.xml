@@ -45,6 +45,7 @@
             android:theme="@style/Theme.Broadcast" />
         <activity
             android:name=".ui.view.activity.main.MainActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SohoLive"

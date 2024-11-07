@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Environment
 import android.util.Base64
@@ -19,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +31,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -37,6 +40,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+
+@Composable
+fun RotateScreen(rotateScreen: String, componentActivity: ComponentActivity) {
+
+    val newOrientation = if (rotateScreen == Orientation.LAND.name) {
+        Configuration.ORIENTATION_LANDSCAPE
+    } else {
+        Configuration.ORIENTATION_PORTRAIT
+    }
+
+    componentActivity.requestedOrientation =
+        if (newOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+}
 
 fun getThumbUrl(playbackId: String): String {
     return "https://image.mux.com/${playbackId}/thumbnail.png?fit_mode=preserve&time=5"
