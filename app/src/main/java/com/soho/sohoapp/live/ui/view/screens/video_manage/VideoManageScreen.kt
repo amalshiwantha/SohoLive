@@ -456,15 +456,19 @@ fun VisibleInfoView() {
 
 @Composable
 fun PrivacyOption(
-    text: String, description: String, isSelected: Boolean,
+    text: String,
+    description: String,
+    isSelected: Boolean,
     eyeImgId: Int,
     onOptionSelected: () -> Unit,
     txtColor: Color,
     isWhiteTheme: Boolean,
+    isShowSelection: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
     val privacyConfig = VideoPrivacy.fromLabel(text)
 
-    Column(modifier = Modifier
+    Column(modifier = modifier
         .fillMaxWidth()
         .clickable { onOptionSelected() }) {
 
@@ -474,11 +478,13 @@ fun PrivacyOption(
             horizontalArrangement = Arrangement.Center,
         ) {
             //privacy radio button
-            val radioIcon = if (isSelected) R.drawable.radio_active else R.drawable.radio_inactive
-            Image(
-                painter = painterResource(id = radioIcon), contentDescription = null
-            )
-            SpacerSide(size = 8.dp)
+            if(isShowSelection){
+                val radioIcon = if (isSelected) R.drawable.radio_active else R.drawable.radio_inactive
+                Image(
+                    painter = painterResource(id = radioIcon), contentDescription = null
+                )
+                SpacerSide(size = 8.dp)
+            }
 
             //labels public, unlisted and live
             Row(
@@ -533,9 +539,10 @@ fun PrivacyOption(
         }
 
         //info
+        val startPadding = if(isShowSelection) 24.dp else 0.dp
         SpacerUp(size = 8.dp)
         Text400_14sp(
-            info = description, modifier = Modifier.padding(start = 24.dp), color = txtColor
+            info = description, modifier = Modifier.padding(start = startPadding), color = txtColor
         )
     }
 }

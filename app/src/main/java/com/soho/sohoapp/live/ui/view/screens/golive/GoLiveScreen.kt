@@ -128,6 +128,7 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
+import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
@@ -147,6 +148,7 @@ import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.LinkTxtColor
+import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.theme.RentTxtColor
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.theme.lowGreen
@@ -155,6 +157,7 @@ import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
 import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert
+import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacySettings
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
@@ -1754,10 +1757,7 @@ private fun SocialMediaListing(
     SpacerUp(size = 24.dp)
 
     if (selectedFormat.value == LiveFormat.PRE.name) {
-        InfoCard(
-            "Pre-Recorded Videos",
-            "You can manage video visibility on your property listings after the video has been recorded."
-        )
+        PreRecordContent()
     } else {
         /*finally display SM list with checkBox or connect button*/
         smList.forEach { item ->
@@ -1803,6 +1803,90 @@ private fun SocialMediaListing(
     }
 
     SpacerUp(size = 40.dp)
+}
+
+@Composable
+fun PreRecordContent() {
+    Column {
+        Text800_20sp(label = "Pre-record video")
+        SpacerUp(size = 8.dp)
+        Text400_14sp(info = "Once recording is completed, your video will be saved as private video. You can choose to publish it later.")
+
+        SpacerUp(size = 24.dp)
+        Text700_14sp(step = "Video status will be:")
+
+        SpacerUp(size = 16.dp)
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = AppWhite)
+        ) {
+            PrivacyOption(
+                text = VideoPrivacy.PRIVATE.label,
+                isWhiteTheme = true,
+                description = "This is your video’s default status. Private videos are only visible to you in the Soho Livecast app.",
+                eyeImgId = R.drawable.ic_time,
+                isSelected = true,
+                txtColor = TextDark,
+                onOptionSelected = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SpacerUp(size = 24.dp)
+            Image(painter = painterResource(id = R.drawable.down_arrow), contentDescription = "")
+            SpacerUp(size = 24.dp)
+        }
+
+        Text700_14sp(step = "After recording, you can update the status to:")
+        SpacerUp(size = 16.dp)
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = OptionDarkBg)
+        ) {
+            PrivacyOption(
+                text = VideoPrivacy.UNLISTED.label,
+                isWhiteTheme = false,
+                description = "Publish as Unlisted. Your video won’t be publicly visible on your listing. Anyone with the direct share link can still view it.",
+                eyeImgId = R.drawable.ic_hide_eye,
+                isSelected = false,
+                txtColor = AppWhite,
+                onOptionSelected = {},
+                isShowSelection = false,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        SpacerUp(size = 16.dp)
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = OptionDarkBg)
+        ) {
+            PrivacyOption(
+                text = VideoPrivacy.PUBLIC.label,
+                isWhiteTheme = false,
+                description = "Publish as Public. Your video will be publicly visible on your property listing.",
+                eyeImgId = R.drawable.ic_view_eye,
+                isSelected = false,
+                txtColor = AppWhite,
+                onOptionSelected = {},
+                isShowSelection = false,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        /*InfoCard(
+            "Pre-Recorded Videos",
+            "You can manage video visibility on your property listings after the video has been recorded."
+        )*/
+    }
 }
 
 @Composable
