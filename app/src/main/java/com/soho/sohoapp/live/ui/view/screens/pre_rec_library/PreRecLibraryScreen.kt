@@ -22,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,9 +36,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
@@ -48,10 +47,7 @@ import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
-import com.soho.sohoapp.live.ui.components.AppTopBar
-import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
-import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
@@ -59,17 +55,13 @@ import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
+import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
-import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
-import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
-import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
-import com.soho.sohoapp.live.ui.view.screens.video_manage.NoDataView
 import com.soho.sohoapp.live.utility.showToast
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -115,29 +107,51 @@ fun PreRecordLibraryScreen(
             })
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = BgGradientPurpleLight,
-        topBar = {
-            AppTopBar(
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(brushMainGradientBg)
+    ) {
+        val (actionBar, content) = createRefs()
+
+        //TopActionBar
+        Column(modifier = Modifier.constrainAs(actionBar) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }) {
+            SpacerUp(size = 8.dp)
+
+            TopAppBarCustomClose(
                 title = "Private Videos",
-                isAllowBack = false,
                 rightIcon = R.drawable.ic_close_circle,
-                onBackClick = {},
-                onRightClick = { navController.popBackStack() }
+                modifier = Modifier,
+                onCloseClick = {
+                    navController.popBackStack()
+                }
             )
-        },
-        content = { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding) // Apply the inner padding here
-                    .background(brushMainGradientBg)
-            ) {
-                // Your content here
+
+            SpacerUp(size = 64.dp)
+        }
+
+        //ListContent
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .constrainAs(content) {
+                    top.linkTo(actionBar.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+        ) {
+            items(100) { index ->
+                // Replace with your own item content
+                Text400_14sp(info = "Item #$index")
             }
         }
-    )
+    }
 
     /*Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -367,7 +381,10 @@ private fun NoDataScreen() {
                 txtAlign = TextAlign.Center
             )
             SpacerUp(size = 8.dp)
-            Text400_14sp(info = "Recorded videos will be permanently deleted after upload.", txtAlign = TextAlign.Center)
+            Text400_14sp(
+                info = "Recorded videos will be permanently deleted after upload.",
+                txtAlign = TextAlign.Center
+            )
         }
     }
 }
