@@ -72,6 +72,7 @@ fun TopAppBarProfile(
 fun TopAppBarActionBack(
     title: String? = null,
     rightIcon: Int? = null,
+    isShowBack: Boolean = true,
     modifier: Modifier = Modifier,
     onActionClick: () -> Unit = {},
     onBackClick: () -> Unit = {}
@@ -84,17 +85,21 @@ fun TopAppBarActionBack(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Back Button on the left
-        IconButton(onClick = { onBackClick() }) {
-            Icon(
-                imageVector = Icons.Sharp.ArrowBackIosNew,
-                tint = AppWhite,
-                contentDescription = "Back"
-            )
+        if(isShowBack){
+            IconButton(onClick = { onBackClick() }) {
+                Icon(
+                    imageVector = Icons.Sharp.ArrowBackIosNew,
+                    tint = AppWhite,
+                    contentDescription = "Back"
+                )
+            }
         }
 
         // Title in the center
         title?.let {
-            TextTopBarTitle(title = it, modifier = Modifier.weight(1f).padding(horizontal = 16.dp))
+            TextTopBarTitle(title = it, modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp))
         }
 
         // Optional right action button
