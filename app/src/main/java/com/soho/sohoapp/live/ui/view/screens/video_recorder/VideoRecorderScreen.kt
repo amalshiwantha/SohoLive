@@ -33,13 +33,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -221,22 +217,12 @@ fun VideoRecorderScreen(
                 )
             }
 
-            //Switch Camera View
-            IconButton(
-                onClick = {
-                    controller.cameraSelector =
-                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        } else CameraSelector.DEFAULT_BACK_CAMERA
-                },
-                modifier = Modifier
-                    .offset(16.dp, 16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Cameraswitch,
-                    contentDescription = "Switch camera"
-                )
-            }
+            //Top Left Soho Watermark
+            Image(
+                painter = painterResource(id = R.drawable.soho_watermark),
+                contentDescription = "watermark",
+                modifier = Modifier.offset(16.dp, 16.dp)
+            )
 
             //Timer Top Right
             TimerCard(
@@ -253,7 +239,8 @@ fun VideoRecorderScreen(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }
-            .fillMaxWidth()
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             //Camera Switch
             Image(
@@ -399,7 +386,7 @@ private fun recordVideo(
 fun TimerCard(timerValue: String, modifier: Modifier) {
     Card(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 32.dp),
+            .padding(16.dp),
         colors = CardDefaults.cardColors(containerColor = AppRed),
         shape = RoundedCornerShape(12.dp)
     ) {
