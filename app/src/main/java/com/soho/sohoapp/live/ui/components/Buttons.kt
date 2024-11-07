@@ -238,6 +238,44 @@ fun ButtonGradientIcon(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ButtonColoredIconWrap(
+    title: String,
+    btnColor: Color,
+    txtColor: Color = AppWhite,
+    icon: Int? = null,
+    modifier: Modifier = Modifier,
+    onBtnClick: () -> Unit
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        onClick = { onBtnClick() }
+    ) {
+        Box(
+            modifier = modifier
+                .align(Alignment.CenterHorizontally)
+                .background(btnColor)
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            ) {
+                if (icon != null) {
+                    Image(
+                        painter = painterResource(id = icon),
+                        contentDescription = "null",
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Text800_14sp(label = title, txtColor = txtColor)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun ButtonColoredIcon(
     title: String,
     btnColor: Color,

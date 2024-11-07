@@ -19,10 +19,13 @@ import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.AudioConfig
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -59,7 +63,7 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
-import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
+import com.soho.sohoapp.live.ui.components.ButtonColoredIconWrap
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
@@ -242,7 +246,7 @@ fun VideoRecorderScreen(
         }
 
         //Bottom Buttons
-        Column(modifier = Modifier
+        Row(modifier = Modifier
             .padding(16.dp)
             .constrainAs(bottomButton) {
                 bottom.linkTo(parent.bottom)
@@ -251,6 +255,20 @@ fun VideoRecorderScreen(
             }
             .fillMaxWidth()
         ) {
+            //Camera Switch
+            Image(
+                painter = painterResource(id = R.drawable.ic_cam_switch),
+                contentDescription = "",
+                modifier = Modifier.clickable {
+                    controller.cameraSelector =
+                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                            CameraSelector.DEFAULT_FRONT_CAMERA
+                        } else CameraSelector.DEFAULT_BACK_CAMERA
+                })
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            //Stop & Rec Button
             StartStopButton(isRecording, onBtnClick = {
                 recordVideo(controller, onRecord = {
                     isRecording = it
@@ -273,7 +291,12 @@ fun StartStopButton(isStart: Boolean, onBtnClick: () -> Unit) {
     val txtColor = if (isStart) AppRed else AppWhite
     val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
 
-    ButtonColoredIcon(title = btnTxt, btnColor = btnColor, txtColor = txtColor, icon = btnIcon) {
+    ButtonColoredIconWrap(
+        title = btnTxt,
+        btnColor = btnColor,
+        txtColor = txtColor,
+        icon = btnIcon
+    ) {
         onBtnClick()
     }
 }
