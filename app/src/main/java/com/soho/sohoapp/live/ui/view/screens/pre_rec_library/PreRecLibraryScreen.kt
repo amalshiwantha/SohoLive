@@ -37,6 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -47,6 +49,7 @@ import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
+import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -55,8 +58,10 @@ import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_10sp
+import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
@@ -177,7 +182,7 @@ fun MainContent(
             .fillMaxSize()
     ) {
         if (videoList.isEmpty()) {
-            NoDataView(modifier = Modifier.fillMaxSize(), "No Private Videos")
+            NoDataScreen()
         } else {
             //delete info
             Text400_14sp(info = "Drafts will be permanently deleted after 7 days. After that, you won’t be able to access them.")
@@ -311,6 +316,32 @@ fun ThumbCenterPlay(item: PrivateVideo, onClick: () -> Unit) {
             }
         }
 
+    }
+}
+
+@Composable
+private fun NoDataScreen() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_videos_play_list),
+                contentDescription = ""
+            )
+            SpacerUp(size = 40.dp)
+            Text800_14sp(
+                label = "No private videos available",
+                txtAlign = TextAlign.Center
+            )
+            SpacerUp(size = 8.dp)
+            Text400_14sp(info = "Recorded videos will be permanently deleted after upload.", txtAlign = TextAlign.Center)
+        }
     }
 }
 
