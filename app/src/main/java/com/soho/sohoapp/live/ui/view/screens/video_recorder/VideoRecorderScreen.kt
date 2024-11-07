@@ -19,6 +19,7 @@ import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.video.AudioConfig
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -56,10 +59,13 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppRed
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.TextDark
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
@@ -170,73 +176,104 @@ fun VideoRecorderScreen(
         }
     }
 
-    //Main Content
-    Box(modifier = Modifier.fillMaxSize()) {
-        //Main Camera
-        if (hasCameraPermission && hasMicPermission) {
-            CameraPreview(
-                controller = controller,
-                modifier = Modifier.fillMaxSize()
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BgGradientPurpleDark)
+    ) {
+        val (cameraContent, bottomButton) = createRefs()
+
+        //Camera Content
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .constrainAs(cameraContent) {
+                top.linkTo(parent.top)
+                bottom.linkTo(bottomButton.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                height = Dimension.fillToConstraints
+            })
+        {
+            //Main Camera
+            if (hasCameraPermission && hasMicPermission) {
+                CameraPreview(
+                    controller = controller,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                val mod = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(16.dp)
+                PermissionView(
+                    mod,
+                    cont.getActivity(),
+                    permissionsLauncher,
+                    hasCameraPermission,
+                    hasMicPermission,
+                    shouldShowSettingsButton,
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            //Switch Camera View
+            IconButton(
+                onClick = {
+                    controller.cameraSelector =
+                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                            CameraSelector.DEFAULT_FRONT_CAMERA
+                        } else CameraSelector.DEFAULT_BACK_CAMERA
+                },
+                modifier = Modifier
+                    .offset(16.dp, 16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Cameraswitch,
+                    contentDescription = "Switch camera"
+                )
+            }
+
+            //Timer Top Right
+            TimerCard(
+                timerValue = timerValue,
+                modifier = Modifier.align(Alignment.TopEnd)
             )
-        } else {
-            val mod = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-                .padding(16.dp)
-            PermissionView(
-                mod,
-                cont.getActivity(),
-                permissionsLauncher,
-                hasCameraPermission,
-                hasMicPermission,
-                shouldShowSettingsButton,
-                onBackClick = {
-                    navController.popBackStack()
+
+            //Bottom Action Btn
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(32.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                ButtonOutlineWhite(text = if (isRecording) "Stop" else "Start") {
+                    recordVideo(controller, onRecord = {
+                        isRecording = it
+                    }, onDone = {
+                        recFile = it
+                        vmVidRec.saveVideoItem(
+                            goLiveData,
+                            it
+                        )
+                    })
                 }
-            )
+            }
         }
 
-        //Switch Camera View
-        IconButton(
-            onClick = {
-                controller.cameraSelector =
-                    if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                        CameraSelector.DEFAULT_FRONT_CAMERA
-                    } else CameraSelector.DEFAULT_BACK_CAMERA
-            },
-            modifier = Modifier
-                .offset(16.dp, 16.dp)
+        //Bottom Buttons
+        Column(modifier = Modifier
+            .constrainAs(bottomButton) {
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+            .fillMaxWidth()
         ) {
-            Icon(
-                imageVector = Icons.Default.Cameraswitch,
-                contentDescription = "Switch camera"
-            )
-        }
+            ButtonColoured(text = "Record Now", color = AppGreen) {
 
-        //Timer Top Right
-        TimerCard(
-            timerValue = timerValue,
-            modifier = Modifier.align(Alignment.TopEnd)
-        )
-
-        //Bottom Action Btn
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(32.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            ButtonOutlineWhite(text = if (isRecording) "Stop" else "Start") {
-                recordVideo(controller, onRecord = {
-                    isRecording = it
-                }, onDone = {
-                    recFile = it
-                    vmVidRec.saveVideoItem(
-                        goLiveData,
-                        it
-                    )
-                })
             }
         }
     }
