@@ -119,7 +119,7 @@ fun VideoLibraryScreen(
     //Reload the list once upload done
     LaunchedEffect(mGState.uploadStatus.value) {
         mGState.uploadStatus.value?.let {
-            if(it == "done"){
+            if (it == "done") {
                 vmVidLib.reLoadData()
             }
         }
@@ -177,6 +177,12 @@ fun VideoLibraryScreen(
                     vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
                 })
         }
+    }
+
+    //If PvtVid Record is done then auto open pvtVidLib screen
+    if (mGState.isOpenPvtVidLib.value) {
+        navController.navigate(NavigationPath.PRE_RECODED_LIST.name)
+        mGState.isOpenPvtVidLib.value = false
     }
 
     //display main content with pull to refresh
