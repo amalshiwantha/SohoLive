@@ -95,6 +95,9 @@ import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -180,9 +183,11 @@ fun VideoLibraryScreen(
     }
 
     //If PvtVid Record is done then auto open pvtVidLib screen
-    if (mGState.isOpenPvtVidLib.value) {
-        navController.navigate(NavigationPath.PRE_RECODED_LIST.name)
-        mGState.isOpenPvtVidLib.value = false
+    LaunchedEffect(mGState.isOpenPvtVidLib.value) {
+        if (mGState.isOpenPvtVidLib.value) {
+            navController.navigate(NavigationPath.PRE_RECODED_LIST.name)
+            mGState.isOpenPvtVidLib.value = false
+        }
     }
 
     //display main content with pull to refresh
@@ -223,7 +228,7 @@ fun VideoLibraryScreen(
     }*/
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalyticsBottomSheet(
     showBottomSheet: Boolean, analyticsData: VideoAnalytics, onVisibility: (Boolean) -> Unit
@@ -240,8 +245,9 @@ fun AnalyticsBottomSheet(
             ViewersAnalyticsContent(analyticsData)
         }
     }
-}
+}*/
 
+/*
 @Composable
 fun ViewersAnalyticsContent(data: VideoAnalytics) {
     Column(
@@ -278,6 +284,7 @@ fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
         Text700_14sp(step = value)
     }
 }
+*/
 
 @Composable
 private fun Content(
@@ -295,6 +302,7 @@ private fun Content(
     LaunchedEffect(downloadStatus) {
         if (downloadStatus.isNotEmpty()) {
             showToast(downloadStatus)
+            downloadStatus = ""
         }
     }
 
@@ -323,9 +331,11 @@ private fun Content(
             }
 
             if (dataList.isNullOrEmpty()) {
-                NoDataScreen(onClick = {
-                    onClickReloadVideoList()
-                })
+                if (mGState.uploadStatus.value != "uploading") {
+                    NoDataScreen(onClick = {
+                        onClickReloadVideoList()
+                    })
+                }
             } else {
                 LazyColumn(
                     Modifier
