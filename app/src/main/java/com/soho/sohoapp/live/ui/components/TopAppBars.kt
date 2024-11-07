@@ -69,6 +69,48 @@ fun TopAppBarProfile(
 }
 
 @Composable
+fun TopAppBarActionBack(
+    title: String? = null,
+    rightIcon: Int? = null,
+    modifier: Modifier = Modifier,
+    onActionClick: () -> Unit = {},
+    onBackClick: () -> Unit = {}
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Back Button on the left
+        IconButton(onClick = { onBackClick() }) {
+            Icon(
+                imageVector = Icons.Sharp.ArrowBackIosNew,
+                tint = AppWhite,
+                contentDescription = "Back"
+            )
+        }
+
+        // Title in the center
+        title?.let {
+            TextTopBarTitle(title = it, modifier = Modifier.weight(1f).padding(horizontal = 16.dp))
+        }
+
+        // Optional right action button
+        rightIcon?.let {
+            IconButton(onClick = { onActionClick() }) {
+                Icon(
+                    painter = painterResource(id = it),
+                    tint = AppWhite,
+                    contentDescription = "Action Button"
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun TopAppBarCustomClose(
     title: String,
     rightIcon: Int,

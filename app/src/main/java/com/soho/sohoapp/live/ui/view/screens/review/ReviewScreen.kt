@@ -3,16 +3,13 @@ package com.soho.sohoapp.live.ui.view.screens.review
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,21 +21,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.UploadData
-import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
+import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
-import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
@@ -74,8 +72,7 @@ fun ReviewScreen(
             AppEventBus.sendEvent(
                 AppEvent.UploadVideo(
                     UploadData(
-                        states.uploadUrl,
-                        states.fileUrl
+                        states.uploadUrl, states.fileUrl
                     )
                 )
             )
@@ -100,115 +97,140 @@ fun ReviewScreen(
         vmReview.getLatestItem(pvtVidId)
     }
 
-    Scaffold(
-        containerColor = BgGradientPurpleLight,
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            AppTopBar(
-                title = "",
-                onBackClick = { navController.popBackStack() }, onRightClick = { })
-        },
-        bottomBar = {
-            ButtonColouredProgress(text = "Done",
-                isLoading = states.isUploading.value,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                color = AppGreen,
-                onBtnClick = {
-                    val updatedItem = states.privateVideo.value?.copy(privacy = selectedOption)
+    //Main Content
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(brushMainGradientBg)
+    ) {
+        val (actionBar, content, bottomButton) = createRefs()
 
-                    if (mGState.isEditVideoData.value) {
-                        vmReview.updateUpload(updatedItem, null)
-                    } else {
-                        vmReview.updateUpload(updatedItem, mGoLiveSubmit)
-                    }
-                })
-        }
-    ) { innerPadding ->
-
-        Column(
+        //TopActionBar
+        TopAppBarActionBack(
             modifier = Modifier
-                .fillMaxSize()
-                .background(brushMainGradientBg)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally // Centers content horizontally
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_done_circle),
-                    contentDescription = ""
-                )
-                SpacerUp(size = 24.dp)
-                Text950_20sp(title = "Review or publish it now")
-                SpacerUp(size = 8.dp)
-                Text400_14sp(
-                    info = "Video will be available in your video gallery. You can publish it as unlisted or public.",
-                    txtAlign = TextAlign.Center
-                )
-                SpacerUp(size = 24.dp)
+                .fillMaxWidth()
+                .constrainAs(actionBar) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            onBackClick = {
+                doNavigate(mGState, navController, onDoneClick = {
+                    onDoneClick()
+                })
+            })
 
-                //Option Card
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = MaterialTheme.shapes.small,
-                    colors = CardDefaults.cardColors(containerColor = OptionDarkBg)
-                )
-                {
+        //Center Content
+        LazyColumn(modifier = Modifier
+            .fillMaxWidth()
+            .constrainAs(content) {
+                top.linkTo(actionBar.bottom)
+                bottom.linkTo(bottomButton.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                height =
+                    Dimension.fillToConstraints
+            }) {
+            item {
+                Column(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        PrivacyOption(text = VideoPrivacy.PRIVATE.label,
-                            isWhiteTheme = false,
-                            description = "Video will only be visible to you. You can choose to publish it as unlisted or public when ready.",
-                            eyeImgId = R.drawable.ic_time,
-                            isSelected = selectedOption == VideoPrivacy.PRIVATE.label,
-                            txtColor = AppWhite,
-                            onOptionSelected = {
-                                selectedOption = VideoPrivacy.PRIVATE.label
-                            })
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_done_circle),
+                            contentDescription = ""
+                        )
+                        SpacerUp(size = 24.dp)
+                        Text950_20sp(title = "Review or publish it now")
+                        SpacerUp(size = 8.dp)
+                        Text400_14sp(
+                            info = "Video will be available in your video gallery. You can publish it as unlisted or public.",
+                            txtAlign = TextAlign.Center
+                        )
+                        SpacerUp(size = 24.dp)
+                    }
 
-                        SpacerUp(size = 16.dp)
+                    //Option Card
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        shape = MaterialTheme.shapes.small,
+                        colors = CardDefaults.cardColors(containerColor = OptionDarkBg)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            PrivacyOption(text = VideoPrivacy.PRIVATE.label,
+                                isWhiteTheme = false,
+                                description = "Video will only be visible to you. You can choose to publish it as unlisted or public when ready.",
+                                eyeImgId = R.drawable.ic_time,
+                                isSelected = selectedOption == VideoPrivacy.PRIVATE.label,
+                                txtColor = AppWhite,
+                                onOptionSelected = {
+                                    selectedOption = VideoPrivacy.PRIVATE.label
+                                })
 
-                        PrivacyOption(text = VideoPrivacy.UNLISTED.label,
-                            isWhiteTheme = false,
-                            description = "Video won’t be publicly visible on your listing. Anyone with the direct share link can still view it.",
-                            eyeImgId = R.drawable.ic_hide_eye,
-                            isSelected = selectedOption == VideoPrivacy.UNLISTED.label,
-                            txtColor = AppWhite,
-                            onOptionSelected = {
-                                selectedOption = VideoPrivacy.UNLISTED.label
-                            })
+                            SpacerUp(size = 16.dp)
 
-                        SpacerUp(size = 16.dp)
+                            PrivacyOption(text = VideoPrivacy.UNLISTED.label,
+                                isWhiteTheme = false,
+                                description = "Video won’t be publicly visible on your listing. Anyone with the direct share link can still view it.",
+                                eyeImgId = R.drawable.ic_hide_eye,
+                                isSelected = selectedOption == VideoPrivacy.UNLISTED.label,
+                                txtColor = AppWhite,
+                                onOptionSelected = {
+                                    selectedOption = VideoPrivacy.UNLISTED.label
+                                })
 
-                        PrivacyOption(text = VideoPrivacy.PUBLIC.label,
-                            isWhiteTheme = false,
-                            description = "Video will be publicly visible on your property listing.",
-                            eyeImgId = R.drawable.ic_view_eye,
-                            isSelected = selectedOption == VideoPrivacy.PUBLIC.label,
-                            txtColor = AppWhite,
-                            onOptionSelected = {
-                                selectedOption = VideoPrivacy.PUBLIC.label
-                            })
+                            SpacerUp(size = 16.dp)
 
-                        SpacerUp(size = 16.dp)
+                            PrivacyOption(text = VideoPrivacy.PUBLIC.label,
+                                isWhiteTheme = false,
+                                description = "Video will be publicly visible on your property listing.",
+                                eyeImgId = R.drawable.ic_view_eye,
+                                isSelected = selectedOption == VideoPrivacy.PUBLIC.label,
+                                txtColor = AppWhite,
+                                onOptionSelected = {
+                                    selectedOption = VideoPrivacy.PUBLIC.label
+                                })
 
-                        //Bottom Info Card
-                        InfoCard(message = "Once video is published, it can no longer be made private.")
+                            SpacerUp(size = 16.dp)
+
+                            //Bottom Info Card
+                            InfoCard(message = "Once video is published, it can no longer be made private.")
+                        }
                     }
                 }
             }
         }
+
+        //Bottom Button
+        ButtonColouredProgress(text = "Done",
+            isLoading = states.isUploading.value,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .constrainAs(bottomButton) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            color = AppGreen,
+            onBtnClick = {
+                val updatedItem = states.privateVideo.value?.copy(privacy = selectedOption)
+
+                if (mGState.isEditVideoData.value) {
+                    vmReview.updateUpload(updatedItem, null)
+                } else {
+                    vmReview.updateUpload(updatedItem, mGoLiveSubmit)
+                }
+            })
     }
 }
 
