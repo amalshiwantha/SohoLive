@@ -63,6 +63,7 @@ import com.soho.sohoapp.live.ui.components.TextFieldWhiteIcon
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.TextDark
@@ -147,6 +148,7 @@ fun ScheduleScreen(
     }
 
     Scaffold(
+        containerColor = BgGradientPurpleLight,
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(

@@ -20,16 +20,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,7 +56,6 @@ import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.enums.VideoStatus
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.VidLibRequest
-import com.soho.sohoapp.live.model.VideoAnalytics
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.VideoItem
@@ -78,16 +73,12 @@ import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_14sp
-import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.TextBadge
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
-import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
-import com.soho.sohoapp.live.ui.theme.BottomBarBg
-import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -95,9 +86,6 @@ import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -228,64 +216,6 @@ fun VideoLibraryScreen(
     }*/
 }
 
-/*@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AnalyticsBottomSheet(
-    showBottomSheet: Boolean, analyticsData: VideoAnalytics, onVisibility: (Boolean) -> Unit
-) {
-    val bottomSheetState = rememberModalBottomSheetState()
-
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            containerColor = BottomBarBg,
-            dragHandle = { DragHandle(color = BottomSheetDrag) },
-            onDismissRequest = { onVisibility(false) },
-            sheetState = bottomSheetState
-        ) {
-            ViewersAnalyticsContent(analyticsData)
-        }
-    }
-}*/
-
-/*
-@Composable
-fun ViewersAnalyticsContent(data: VideoAnalytics) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        Text800_20sp(label = "Viewers Analytics")
-        SpacerUp(size = 24.dp)
-
-        AnalyticsItem(label = "Total Views", value = data.getTotalPlayTime().toString())
-        AnalyticsItem(label = "Facebook", value = data.fb.toString(), isSubItem = true)
-        AnalyticsItem(label = "Youtube", value = data.yt.toString(), isSubItem = true)
-        AnalyticsItem(label = "LinkedIn", value = data.li.toString(), isSubItem = true)
-        AnalyticsItem(label = "Soho.com.au", value = data.soho.toString(), isSubItem = true)
-        AnalyticsItem(label = "Average Playing Minutes", value = data.getFormattedPlayTime())
-        SpacerUp(size = 8.dp)
-    }
-}
-
-@Composable
-fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 24.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text700_14sp(
-            step = label,
-            isBold = false,
-            modifier = Modifier.padding(start = if (isSubItem) 30.dp else 0.dp)
-        )
-        Text700_14sp(step = value)
-    }
-}
-*/
-
 @Composable
 private fun Content(
     isShowProgress: Boolean,
@@ -306,11 +236,7 @@ private fun Content(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .background(brushMainGradientBg)
-            .fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         //Private Video Button
         ButtonOutLinedIcon(text = "Private Videos", icon = R.drawable.ic_pvt_video, onBtnClick = {
             onShowPvtVideo()
@@ -743,6 +669,65 @@ fun PropertyImageCenterPlay(playBackId: String?, onClick: () -> Unit) {
         )
     }
 }
+
+
+/*@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AnalyticsBottomSheet(
+    showBottomSheet: Boolean, analyticsData: VideoAnalytics, onVisibility: (Boolean) -> Unit
+) {
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            containerColor = BottomBarBg,
+            dragHandle = { DragHandle(color = BottomSheetDrag) },
+            onDismissRequest = { onVisibility(false) },
+            sheetState = bottomSheetState
+        ) {
+            ViewersAnalyticsContent(analyticsData)
+        }
+    }
+}*/
+
+/*
+@Composable
+fun ViewersAnalyticsContent(data: VideoAnalytics) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Text800_20sp(label = "Viewers Analytics")
+        SpacerUp(size = 24.dp)
+
+        AnalyticsItem(label = "Total Views", value = data.getTotalPlayTime().toString())
+        AnalyticsItem(label = "Facebook", value = data.fb.toString(), isSubItem = true)
+        AnalyticsItem(label = "Youtube", value = data.yt.toString(), isSubItem = true)
+        AnalyticsItem(label = "LinkedIn", value = data.li.toString(), isSubItem = true)
+        AnalyticsItem(label = "Soho.com.au", value = data.soho.toString(), isSubItem = true)
+        AnalyticsItem(label = "Average Playing Minutes", value = data.getFormattedPlayTime())
+        SpacerUp(size = 8.dp)
+    }
+}
+
+@Composable
+fun AnalyticsItem(label: String, value: String, isSubItem: Boolean = false) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text700_14sp(
+            step = label,
+            isBold = false,
+            modifier = Modifier.padding(start = if (isSubItem) 30.dp else 0.dp)
+        )
+        Text700_14sp(step = value)
+    }
+}
+*/
 
 @Preview
 @Composable

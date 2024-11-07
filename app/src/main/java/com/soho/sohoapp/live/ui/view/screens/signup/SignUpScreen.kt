@@ -31,6 +31,7 @@ import com.soho.sohoapp.live.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 
 @Composable
 fun SignUpScreen(
@@ -40,6 +41,7 @@ fun SignUpScreen(
     val scrollState = rememberScrollState()
 
     Scaffold(
+        containerColor = BgGradientPurpleLight,
         modifier = modifier.fillMaxSize(),
         topBar = {
             AppTopBar(

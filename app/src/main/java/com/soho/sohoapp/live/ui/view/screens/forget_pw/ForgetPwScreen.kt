@@ -30,6 +30,7 @@ import com.soho.sohoapp.live.ui.components.TextSubtitleWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 
 @Composable
 fun ForgetPwScreen(
@@ -39,6 +40,7 @@ fun ForgetPwScreen(
     val scrollState = rememberScrollState()
 
     Scaffold(
+        containerColor = BgGradientPurpleLight,
         modifier = modifier.fillMaxSize(),
         topBar = {
             AppTopBar(

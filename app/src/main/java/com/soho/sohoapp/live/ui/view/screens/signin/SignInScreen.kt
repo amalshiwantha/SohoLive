@@ -44,6 +44,7 @@ import com.soho.sohoapp.live.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.utility.NetworkUtils
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -72,7 +73,9 @@ fun SignInScreen(
         }
     }
 
-    Scaffold(modifier = modifier.fillMaxSize(),
+    Scaffold(
+        containerColor = BgGradientPurpleLight,
+        modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackBarState) },
         topBar = {
             AppTopBar(title = stringResource(R.string.signin_title),

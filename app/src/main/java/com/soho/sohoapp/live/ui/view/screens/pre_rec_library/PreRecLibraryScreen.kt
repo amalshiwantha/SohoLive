@@ -62,6 +62,9 @@ import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
@@ -114,6 +117,30 @@ fun PreRecordLibraryScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = BgGradientPurpleLight,
+        topBar = {
+            AppTopBar(
+                title = "Private Videos",
+                isAllowBack = false,
+                rightIcon = R.drawable.ic_close_circle,
+                onBackClick = {},
+                onRightClick = { navController.popBackStack() }
+            )
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding) // Apply the inner padding here
+                    .background(brushMainGradientBg)
+            ) {
+                // Your content here
+            }
+        }
+    )
+
+    /*Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = "Private Videos",
@@ -150,7 +177,7 @@ fun PreRecordLibraryScreen(
                 }
             }
         }
-    }
+    }*/
 }
 
 fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGState: GlobalState) {

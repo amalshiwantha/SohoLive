@@ -53,6 +53,7 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
 import kotlinx.coroutines.delay
@@ -95,6 +96,7 @@ fun PlayerScreen(
     }
 
     Scaffold(
+        containerColor = BgGradientPurpleLight,
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(

@@ -32,6 +32,7 @@ import com.soho.sohoapp.live.ui.components.HandleBackPress
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.BottomNavHost
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
@@ -116,7 +117,9 @@ fun HomeScreen(
     //HandleBackPress
     HandleBackPress(navController = navController)
 
-    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+    Scaffold(
+        containerColor = BgGradientPurpleLight,
+        modifier = Modifier.fillMaxSize(), topBar = {
         if (showBottomBar && showTopBar) {
             AppTopBar(title = selectedTabTitle,
                 isAllowBack = false,

@@ -30,6 +30,7 @@ import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
 import org.koin.compose.koinInject
 
@@ -55,6 +56,7 @@ fun VidEditDetailsScreen(
     }
 
     Scaffold(
+        containerColor = BgGradientPurpleLight,
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
