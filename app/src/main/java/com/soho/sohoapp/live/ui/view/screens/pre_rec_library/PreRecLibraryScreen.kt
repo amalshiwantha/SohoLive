@@ -48,6 +48,7 @@ import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
+import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
@@ -107,6 +108,7 @@ fun PreRecordLibraryScreen(
             })
     }
 
+    //Main Content
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -135,63 +137,32 @@ fun PreRecordLibraryScreen(
         }
 
         //ListContent
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .constrainAs(content) {
-                    top.linkTo(actionBar.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                }
-        ) {
-            items(100) { index ->
-                // Replace with your own item content
-                Text400_14sp(info = "Item #$index")
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .constrainAs(content) {
+                top.linkTo(actionBar.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+            }) {
+
+            if (states.isLoading.value) {
+                CenterMessageProgress(message = "Loading Private Video...")
+            } else {
+                MainContent(videoList = states.videoList.value,
+                    onPlay = { pvtItem ->
+                        openPlayEditor(navController, pvtItem, mGState)
+                    },
+                    onDelete = {
+                        actionFile = it
+                        isShowAlert = true
+                    },
+                    onEditPublish = { pvtItem ->
+                        openPlayEditor(navController, pvtItem, mGState)
+                    })
             }
         }
     }
-
-    /*Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            AppTopBar(
-                title = "Private Videos",
-                isAllowBack = false,
-                rightIcon = R.drawable.ic_close_circle,
-                onBackClick = { }, onRightClick = { navController.popBackStack() })
-        }
-    ) { innerPadding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(brushMainGradientBg)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-            ) {
-                if (states.isLoading.value) {
-                    CenterMessageProgress(message = "Loading Private Video...")
-                } else {
-                    MainContent(videoList = states.videoList.value,
-                        onPlay = { pvtItem ->
-                            openPlayEditor(navController, pvtItem, mGState)
-                        },
-                        onDelete = {
-                            actionFile = it
-                            isShowAlert = true
-                        },
-                        onEditPublish = { pvtItem ->
-                            openPlayEditor(navController, pvtItem, mGState)
-                        })
-                }
-            }
-        }
-    }*/
 }
 
 fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGState: GlobalState) {
@@ -366,8 +337,7 @@ private fun NoDataScreen() {
         Column(
             modifier = Modifier
                 .align(Alignment.Center)
-                .fillMaxWidth()
-                .padding(16.dp),
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
