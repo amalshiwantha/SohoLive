@@ -247,10 +247,12 @@ fun VideoRecorderScreen(
                 painter = painterResource(id = R.drawable.ic_cam_switch),
                 contentDescription = "",
                 modifier = Modifier.clickable {
-                    controller.cameraSelector =
-                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        } else CameraSelector.DEFAULT_BACK_CAMERA
+                    if (!isRecording) {
+                        controller.cameraSelector =
+                            if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                CameraSelector.DEFAULT_FRONT_CAMERA
+                            } else CameraSelector.DEFAULT_BACK_CAMERA
+                    }
                 })
 
             Spacer(modifier = Modifier.weight(1f))
