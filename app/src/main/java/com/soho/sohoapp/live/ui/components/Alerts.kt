@@ -74,7 +74,7 @@ fun PreRecVidSuccessView(modifier: Modifier, onDismiss: () -> Unit) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(64.dp)
+            .padding(32.dp)
             .clickable { onDismiss() }
             .background(
                 color = Color(0xCC32003E),
