@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,6 +32,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
@@ -40,7 +41,6 @@ import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
-import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
@@ -49,11 +49,11 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
+import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
-import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
 import kotlinx.coroutines.delay
@@ -95,31 +95,42 @@ fun PlayerScreen(
             })
     }
 
-    Scaffold(
-        containerColor = BgGradientPurpleLight,
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            AppTopBar(
-                title = "",
-                rightIcon = R.drawable.ic_trash,
-                isAllowBack = mGState.isEditVideoData.value,
-                onBackClick = {
-                    isShowPlayer = false
-                    navController.popBackStack()
-                }, onRightClick = { isShowAlert = true })
-        },
-        bottomBar = {
-            BottomButton(onNextClick = { onNextClick() }, onEditClick = {
-                navController.navigate(NavigationPath.VIDEO_EDIT_DETAILS.name)
-            })
-        }
-    ) { innerPadding ->
+    //Main Content
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(brushMainGradientBg)
+    ) {
+        val (actionBar, content, bottomButton) = createRefs()
 
+        //TopActionBar
+        TopAppBarActionBack(
+            rightIcon = R.drawable.ic_trash,
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(actionBar) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            onBackClick = {
+                isShowPlayer = false
+                navController.popBackStack()
+            },
+            onActionClick = { isShowAlert = true })
+
+        //Center Player
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brushMainGradientBg)
-                .padding(innerPadding)
+                .constrainAs(content) {
+                    top.linkTo(actionBar.bottom)
+                    bottom.linkTo(bottomButton.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    height = Dimension.fillToConstraints
+                }
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 //Player
@@ -200,7 +211,7 @@ fun PlayerScreen(
                     contentDescription = "watermark",
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 52.dp, top = 8.dp)
+                        .padding(16.dp)
                 )
 
                 //Agent & Property Overlay
@@ -208,11 +219,21 @@ fun PlayerScreen(
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .padding(start = 43.dp, end = 43.dp, bottom = 16.dp)
+                        .padding(bottom = 16.dp)
                     AgentPropertyInfo(it, mod)
                 }
             }
         }
+
+        //Bottom Button
+        BottomButton(modifier = Modifier
+            .constrainAs(bottomButton) {
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }, onNextClick = { onNextClick() }, onEditClick = {
+            navController.navigate(NavigationPath.VIDEO_EDIT_DETAILS.name)
+        })
     }
 }
 
@@ -237,6 +258,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
             val profImgSize = 40.dp
             Row(
                 modifier = Modifier
+                    .padding(horizontal = 5.dp)
                     .background(agent.agencyBgColor)
                     .fillMaxWidth()
             ) {
@@ -296,11 +318,11 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
 }
 
 @Composable
-fun BottomButton(onNextClick: () -> Unit, onEditClick: () -> Unit) {
+fun BottomButton(modifier: Modifier, onNextClick: () -> Unit, onEditClick: () -> Unit) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp, top = 32.dp),
+            .padding(16.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
