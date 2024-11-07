@@ -241,6 +241,7 @@ fun ButtonGradientIcon(
 fun ButtonColoredIcon(
     title: String,
     btnColor: Color,
+    txtColor: Color = AppWhite,
     icon: Int? = null,
     modifier: Modifier = Modifier,
     onBtnClick: () -> Unit
@@ -269,7 +270,7 @@ fun ButtonColoredIcon(
                         contentScale = ContentScale.Crop
                     )
                 }
-                Text800_14sp(label = title)
+                Text800_14sp(label = title, txtColor = txtColor)
             }
         }
     }

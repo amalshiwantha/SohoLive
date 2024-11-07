@@ -23,7 +23,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,16 +54,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
-import com.soho.sohoapp.live.ui.components.ButtonColoured
-import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
+import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
-import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppRed
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.TextDark
 import kotlinx.coroutines.delay
@@ -240,31 +239,11 @@ fun VideoRecorderScreen(
                 timerValue = timerValue,
                 modifier = Modifier.align(Alignment.TopEnd)
             )
-
-            //Bottom Action Btn
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(32.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                ButtonOutlineWhite(text = if (isRecording) "Stop" else "Start") {
-                    recordVideo(controller, onRecord = {
-                        isRecording = it
-                    }, onDone = {
-                        recFile = it
-                        vmVidRec.saveVideoItem(
-                            goLiveData,
-                            it
-                        )
-                    })
-                }
-            }
         }
 
         //Bottom Buttons
         Column(modifier = Modifier
+            .padding(16.dp)
             .constrainAs(bottomButton) {
                 bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)
@@ -272,10 +251,30 @@ fun VideoRecorderScreen(
             }
             .fillMaxWidth()
         ) {
-            ButtonColoured(text = "Record Now", color = AppGreen) {
-
-            }
+            StartStopButton(isRecording, onBtnClick = {
+                recordVideo(controller, onRecord = {
+                    isRecording = it
+                }, onDone = {
+                    recFile = it
+                    vmVidRec.saveVideoItem(
+                        goLiveData,
+                        it
+                    )
+                })
+            })
         }
+    }
+}
+
+@Composable
+fun StartStopButton(isStart: Boolean, onBtnClick: () -> Unit) {
+    val btnTxt = if (isStart) "Stop" else "Go Live"
+    val btnColor = if (isStart) AppWhite else AppRed
+    val txtColor = if (isStart) AppRed else AppWhite
+    val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
+
+    ButtonColoredIcon(title = btnTxt, btnColor = btnColor, txtColor = txtColor, icon = btnIcon) {
+        onBtnClick()
     }
 }
 
