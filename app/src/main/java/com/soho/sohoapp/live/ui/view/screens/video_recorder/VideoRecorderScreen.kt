@@ -5,9 +5,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -141,6 +143,8 @@ fun VideoRecorderScreen(
     )
 
     // Check initial permissions
+    RequestNotificationPermission()
+
     LaunchedEffect(Unit) {
         hasCameraPermission = ContextCompat.checkSelfPermission(
             context, Manifest.permission.CAMERA
@@ -296,6 +300,29 @@ fun VideoRecorderScreen(
                     )
                 })
             })
+        }
+    }
+}
+
+@Composable
+fun RequestNotificationPermission() {
+    val context = LocalContext.current
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            Toast.makeText(context, "Notification permission denied. So upload progress will not show.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Check if permission is needed
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(permission)
+            }
         }
     }
 }
