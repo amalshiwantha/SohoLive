@@ -93,6 +93,7 @@ fun VideoRecorderScreen(
     val cont = LocalContext.current
     val mState = vmVidRec.mState.value
     var timerValue by remember { mutableStateOf("00:00") }
+    var isCompletedMinRecTime by remember { mutableStateOf(false) }
     var isRecording by remember { mutableStateOf(false) }
     var hasCameraPermission by remember { mutableStateOf(false) }
     var hasMicPermission by remember { mutableStateOf(false) }
@@ -196,7 +197,9 @@ fun VideoRecorderScreen(
     LaunchedEffect(isRecording) {
         while (isRecording) {
             delay(1000)
-            timerValue = updateTimer(timerValue)
+            timerValue = updateTimer(timerValue, onMinRecTimeDone = {
+                isCompletedMinRecTime = it
+            })
         }
 
         //reset timer
@@ -289,7 +292,7 @@ fun VideoRecorderScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             //Stop & Rec Button
-            StartStopButton(isRecording, onBtnClick = {
+            StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
                 recordVideo(controller, onRecord = {
                     isRecording = it
                 }, onDone = {
@@ -312,7 +315,11 @@ fun RequestNotificationPermission() {
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (!isGranted) {
-            Toast.makeText(context, "Notification permission denied. So upload progress will not show.", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                "Notification not allowed. So upload progress will not show.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -320,7 +327,11 @@ fun RequestNotificationPermission() {
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             val permission = Manifest.permission.POST_NOTIFICATIONS
-            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 notificationPermissionLauncher.launch(permission)
             }
         }
@@ -328,11 +339,19 @@ fun RequestNotificationPermission() {
 }
 
 @Composable
-fun StartStopButton(isStart: Boolean, onBtnClick: () -> Unit) {
+fun StartStopButton(isStart: Boolean, isMinRecTimeDone: Boolean, onBtnClick: () -> Unit) {
     val btnTxt = if (isStart) "Stop" else "Go Live"
     val btnColor = if (isStart) AppWhite else AppRed
     val txtColor = if (isStart) AppRed else AppWhite
     val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
+    var isAllowClick = false
+
+    //if start then check recTime has complete 10sec to stop
+    if (isStart && isMinRecTimeDone) {
+        isAllowClick = true
+    } else if (!isStart) {
+        isAllowClick = true
+    }
 
     ButtonColoredIconWrap(
         title = btnTxt,
@@ -340,7 +359,9 @@ fun StartStopButton(isStart: Boolean, onBtnClick: () -> Unit) {
         txtColor = txtColor,
         icon = btnIcon
     ) {
-        onBtnClick()
+        if (isAllowClick) {
+            onBtnClick()
+        }
     }
 }
 
@@ -400,6 +421,7 @@ private fun recordVideo(
     onRecord: (Boolean) -> Unit,
     onDone: (Uri) -> Unit
 ) {
+
     if (recording != null) {
         onRecord(false)
         recording?.stop()
@@ -453,7 +475,7 @@ fun TimerCard(timerValue: String, modifier: Modifier) {
 }
 
 // Function to update timer string
-fun updateTimer(currentTimer: String): String {
+fun updateTimer(currentTimer: String, onMinRecTimeDone: (Boolean) -> Unit): String {
     val parts = currentTimer.split(":").map { it.toInt() }
     var minutes = parts[0]
     var seconds = parts[1] + 1
@@ -461,6 +483,13 @@ fun updateTimer(currentTimer: String): String {
     if (seconds >= 60) {
         seconds = 0
         minutes += 1
+    }
+
+    // Check if 10 seconds have passed
+    if (minutes == 0 && seconds >= 10) {
+        onMinRecTimeDone(true)
+    } else if (minutes > 0 || seconds < 10) {
+        onMinRecTimeDone(false)
     }
 
     return String.format("%02d:%02d", minutes, seconds)
