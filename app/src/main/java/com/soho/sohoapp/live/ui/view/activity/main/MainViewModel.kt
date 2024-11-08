@@ -105,7 +105,7 @@ class MainViewModel(
                         _stateUploadLevel.value = "completed" //display done message
                         delay(5000)
 
-                        //deleteFileAndRecord(recFile)
+                        deleteFileAndRecord(recFile)
                         _stateUploadLevel.value = "done" // reload call vidList api
 
                         delay(500)
