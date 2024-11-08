@@ -74,6 +74,8 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TextBadge
+import com.soho.sohoapp.live.ui.components.TextUploadComplete
+import com.soho.sohoapp.live.ui.components.TextUploadErr
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -82,6 +84,7 @@ import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
@@ -237,17 +240,19 @@ private fun Content(
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(brushMainGradientBg)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brushMainGradientBg)
+    ) {
         //Private Video Button
         ButtonOutLinedIcon(text = "Private Videos", icon = R.drawable.ic_pvt_video, onBtnClick = {
             onShowPvtVideo()
         }, modifier = Modifier.padding(16.dp))
 
         //Show Upload Progress
-        if (mGState.uploadStatus.value == "uploading") {
-            UploadStatusView(mGState)
+        if (mGState.uploadStatus.value != "hide") {
+            UploadProgressStatusView(mGState)
         }
 
         //Live Video List
@@ -301,8 +306,10 @@ private fun Content(
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun UploadStatusView(gState: GlobalState) {
+fun UploadProgressStatusView(gState: GlobalState) {
     val prog = gState.uploadProgress.value
+    val status = gState.uploadStatus.value
+
     Card(
         modifier = Modifier.padding(bottom = 24.dp, start = 16.dp, end = 16.dp),
         colors = CardDefaults.cardColors(containerColor = ItemCardBg)
@@ -313,21 +320,51 @@ fun UploadStatusView(gState: GlobalState) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text700_14sp(step = "Your video is being uploaded...")
-            SpacerUp(size = 8.dp)
-            Text400_12sp(label = "Please refresh the page shortly using pull-to-refresh to view it.")
+            Text700_14sp(step = "Your pre-recorded video is being uploaded")
             SpacerUp(size = 16.dp)
+            LinearProgressIndicator(
+                progress = prog.toFloat() / 100,
+                modifier = Modifier.fillMaxWidth()
+            )
+            SpacerUp(size = 10.dp)
+            // Row for progress text and cancel button
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                LinearProgressIndicator(
-                    progress = prog.toFloat() / 100,
-                    modifier = Modifier.weight(1f)
-                )
-                SpacerSide(size = 8.dp)
-                Text700_10sp(title = "$prog%")
+                // Progress & Status text
+                when (status) {
+                    "uploading" -> {
+                        Text700_10sp(title = "$prog%")
+                    }
+                    "completed" -> {
+                        TextUploadComplete()
+                    }
+                    "failed" -> {
+                        TextUploadErr()
+                    }
+                }
+
+                // Cancel & Dismiss button
+                when (status) {
+                    "uploading" -> {
+                        Text700_10sp(
+                            title = "Cancel Upload",
+                            color = LinkTxtColor,
+                            modifier = Modifier.clickable {
+                                //doCancelUpload
+                            })
+                    }
+                    "failed" -> {
+                        Text700_10sp(
+                            title = "Dismiss",
+                            color = LinkTxtColor,
+                            modifier = Modifier.clickable {
+                                gState.uploadStatus.value = "hide"
+                            })
+                    }
+                }
             }
         }
     }
@@ -429,7 +466,10 @@ private fun NoDataScreen(onClick: () -> Unit) {
                 txtAlign = TextAlign.Center
             )
             SpacerUp(size = 8.dp)
-            Text400_14sp(info = stringResource(R.string.no_data_msg), txtAlign = TextAlign.Center)
+            Text400_14sp(
+                info = stringResource(R.string.no_data_msg),
+                txtAlign = TextAlign.Center
+            )
 
             SpacerUp(size = 40.dp)
             ButtonColoredIcon(

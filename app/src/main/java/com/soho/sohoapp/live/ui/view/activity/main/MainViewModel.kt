@@ -18,6 +18,7 @@ import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.NotificationHelper
 import com.soho.sohoapp.live.utility.UploadService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,7 +47,7 @@ class MainViewModel(
     private val _uploadProgress = MutableStateFlow(0)
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
-    private val _stateUploadLevel = MutableStateFlow("")
+    private val _stateUploadLevel = MutableStateFlow("hide")
     val stateUploadLevel: StateFlow<String> = _stateUploadLevel.asStateFlow()
 
     val uploadNotification = NotificationHelper()
@@ -87,7 +88,6 @@ class MainViewModel(
                 }
 
                 _uploadProgress.value = percentage.toInt()
-                println("myUpload Progress Now: $percentage%")
 
                 viewModelScope.launch {
                     uploadNotification.showNotification(
@@ -99,12 +99,21 @@ class MainViewModel(
 
             muxUpload.setResultListener { result ->
                 if (result.isSuccess) {
-                    println("myUpload Done")
-                    deleteFileAndRecord(recFile)
-                    _stateUploadLevel.value = "done"
+
+                    viewModelScope.launch {
+                        //this delay called to until get vidListApi retrun pre_process
+                        _stateUploadLevel.value = "completed" //display done message
+                        delay(5000)
+
+                        //deleteFileAndRecord(recFile)
+                        _stateUploadLevel.value = "done" // reload call vidList api
+
+                        delay(500)
+                        _stateUploadLevel.value = "hide" //hide upload progress
+                    }
+
                 } else {
-                    _stateUploadLevel.value = "failed"
-                    println("myUpload Failed")
+                    _stateUploadLevel.value = "failed" //display error message
                 }
             }
 
@@ -131,7 +140,10 @@ class MainViewModel(
 
             videos.forEach { video ->
                 val videoDate =
-                    LocalDate.parse(video.createdDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    LocalDate.parse(
+                        video.createdDate,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    )
                 if (videoDate.isBefore(thresholdDate)) {
                     vidDb.deleteVideoByPath(video.filePath)
                     deleteFileFromUri(vidFile = File(video.filePath))

@@ -3,12 +3,15 @@ package com.soho.sohoapp.live.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -354,6 +357,72 @@ fun Text700_10sp(
         color = color,
         letterSpacing = 0.12.sp
     )
+}
+
+@Composable
+fun TextUploadComplete(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Image(painter = painterResource(id = R.drawable.ic_success_tick), contentDescription = "warning")
+        SpacerSide(size = 4.dp)
+        Text(
+            text = "Completed",
+            fontSize = 10.sp,
+            lineHeight = 16.sp,
+            fontFamily = FontFamily(Font(R.font.axiforma)),
+            fontWeight = FontWeight(700),
+            color = AppWhite,
+            letterSpacing = 0.12.sp,
+        )
+        SpacerSide(size = 8.dp)
+        Text(
+            text = "Please Wait...",
+            fontSize = 10.sp,
+            lineHeight = 16.sp,
+            fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+            fontWeight = FontWeight(400),
+            color = AppWhite,
+            letterSpacing = 0.12.sp,
+        )
+    }
+}
+
+@Composable
+fun TextUploadErr(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Image(painter = painterResource(id = R.drawable.ic_warning), contentDescription = "warning")
+        SpacerSide(size = 4.dp)
+        Text(
+            text = "Error",
+            fontSize = 10.sp,
+            lineHeight = 16.sp,
+            fontFamily = FontFamily(Font(R.font.axiforma)),
+            fontWeight = FontWeight(700),
+            color = Color(0xFFE13831),
+            letterSpacing = 0.12.sp,
+        )
+        SpacerSide(size = 8.dp)
+        Text(
+            text = "Please try again in your private videos.",
+            fontSize = 10.sp,
+            lineHeight = 16.sp,
+            fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+            fontWeight = FontWeight(400),
+            color = Color(0xFFE13831),
+            letterSpacing = 0.12.sp,
+        )
+    }
 }
 
 @Composable
