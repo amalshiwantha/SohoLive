@@ -211,15 +211,15 @@ fun PlayerScreen(
                     contentDescription = "watermark",
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(16.dp)
+                        .padding(start = 32.dp, top = 16.dp)
                 )
 
-                //Agent & Property Overlay
+                //Agent & Property Overlayi
                 agentProperty?.let {
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp)
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
                     AgentPropertyInfo(it, mod)
                 }
             }
