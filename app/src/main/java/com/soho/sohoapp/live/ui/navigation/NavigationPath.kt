@@ -21,5 +21,6 @@ enum class NavigationPath {
     VIDEO_EDIT_DETAILS,
     PRE_RECODED_LIST,
     PLAYER,
-    REVIEW
+    REVIEW,
+    TEMPLATE
 }

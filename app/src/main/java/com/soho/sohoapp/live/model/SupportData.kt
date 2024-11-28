@@ -51,6 +51,7 @@ data class MainState(
     var liveOrientation: MutableState<String> = mutableStateOf(Orientation.PORT.name),
     var stepId: MutableState<Int> = mutableIntStateOf(0),
     var isPublic: MutableState<Boolean> = mutableStateOf(false),
+    var isTemplateWithBrand: MutableState<Boolean> = mutableStateOf(true),
 
     //Step #1
     var goLiveApiRes: DataGoLive? = null,

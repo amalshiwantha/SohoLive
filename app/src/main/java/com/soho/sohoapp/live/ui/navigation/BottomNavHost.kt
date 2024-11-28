@@ -36,6 +36,7 @@ import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsSc
 import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
 import com.soho.sohoapp.live.ui.view.screens.video_player.VideoPlayerScreen
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.TemplateScreen
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.VideoRecorderScreen
 import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 import kotlinx.serialization.encodeToString
@@ -153,6 +154,19 @@ fun BottomNavHost(
 
             // Pass the arguments to the VideoScreen
             VideoPlayerScreen(navController = navController, title = title, url = url)
+        }
+
+        composable(route = NavigationPath.TEMPLATE.name) {
+            TemplateScreen(
+                navController = navController,
+                goLiveData = mGoLiveSubmit,
+                onStartRecClick = {
+                    navController.navigate(NavigationPath.VIDEO_RECORDER.name){
+                        popUpTo(NavigationPath.TEMPLATE.name) {
+                            inclusive = true
+                        }
+                    }
+                })
         }
 
         composable(route = NavigationPath.VIDEO_RECORDER.name) {

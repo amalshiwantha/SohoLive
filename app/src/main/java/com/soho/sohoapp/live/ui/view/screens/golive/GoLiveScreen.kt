@@ -252,7 +252,7 @@ fun GoLiveScreen(
                     })
             } else {
                 //Open Pre-Recorder Screen
-                navController.navigate(NavigationPath.VIDEO_RECORDER.name)
+                navController.navigate(NavigationPath.TEMPLATE.name)
             }
         }, onCancel = {
             isShowOrientationModel = false

@@ -14,7 +14,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.CameraSelector
 import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
@@ -27,7 +26,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,8 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -70,11 +66,9 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_10sp
-import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
-import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.RotateScreen
 import kotlinx.coroutines.delay
@@ -106,8 +100,6 @@ fun VideoRecorderScreen(
     var shouldShowSettingsButton by remember { mutableStateOf(false) }
     var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
-    var isTemplateWithBrand by remember { mutableStateOf(true) }
-    var isShowRecorder by remember { mutableStateOf(false) }
 
     //Rotate Screen
     LaunchedEffect(rotateScreen) {
@@ -219,137 +211,72 @@ fun VideoRecorderScreen(
 
     //Content permission view and Camera
     if (hasCameraPermission && hasMicPermission) {
-        //Template Camera Preview
-        ConstraintLayout(
+        //RecorderScreen
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
-        ) {
-            val (cameraPreview, bottomTemplate) = createRefs()
+                .background(BgGradientPurpleDark)
+        )
+        {
+            //Main Camera
+            CameraPreview(
+                controller = controller,
+                modifier = Modifier.fillMaxSize()
+            )
 
-            //CamPreview
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .constrainAs(cameraPreview) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(bottomTemplate.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    height = Dimension.fillToConstraints
-                })
-            {
-                //Main Camera
-                CameraPreview(
-                    controller = controller,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(64.dp)
-                        .align(Alignment.Center)
-                )
+            //Top Left Soho Watermark
+            Image(
+                painter = painterResource(id = R.drawable.soho_watermark),
+                contentDescription = "watermark",
+                modifier = Modifier.offset(16.dp, 16.dp)
+            )
 
-                //Top Left Soho Watermark
-                Image(
-                    painter = painterResource(id = R.drawable.soho_watermark),
-                    contentDescription = "watermark",
-                    modifier = Modifier.padding(top = 32.dp, start = 32.dp)
-                )
+            //Timer Top Right
+            TimerCard(
+                timerValue = timerValue,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            )
 
-                //Timer Top Right
-                TimerCard(
-                    timerValue = "PREVIEW",
-                    bgColor = HintGray,
-                    txtColor = AppWhite,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 32.dp, end = 32.dp)
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            ) {
 
                 //bottom agent info and property info
                 goLiveData.agentProperty?.let {
-                    if (isTemplateWithBrand) {
-                        val mod = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                        AgentPropertyInfo(agProp = it, boxMod = mod)
+                    if (MainStateHolder.mState.isTemplateWithBrand.value) {
+                        AgentPropertyInfo(
+                            agProp = it,
+                            boxMod = Modifier.fillMaxWidth()
+                        )
                     }
                 }
-            }
 
-            //template selection and rec start button
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(bottomTemplate) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                shape = RoundedCornerShape(
-                    topStart = 16.dp,
-                    topEnd = 16.dp,
-                    bottomStart = 0.dp,
-                    bottomEnd = 0.dp
-                ),
-                colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
-            ) {
-                Column(
+                //Bottom Stop Button
+                Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 0.dp,
+                        bottomStart = 0.dp,
+                        bottomEnd = 0.dp
+                    ),
+                    colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
                 ) {
-
-                    Text800_14sp(label = "Apply agent & agency branding")
-
-                    SpacerUp(size = 16.dp)
-
-                    //selections
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        BrandingOption(
-                            isSelected = isTemplateWithBrand,
-                            label = "With Branding",
-                            image = R.drawable.template_with_brand,
-                            onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
-                        )
-                        BrandingOption(
-                            isSelected = !isTemplateWithBrand,
-                            label = "No Branding",
-                            image = R.drawable.template_with_brand,
-                            onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
-                        )
-                    }
-
-                    SpacerUp(size = 16.dp)
-
-                    //bottom start and cam switch buttons
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.End
                     ) {
-                        //Camera Switch
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_cam_switch),
-                            contentDescription = "Camera Switch",
-                            modifier = Modifier.clickable {
-                                if (!isRecording) {
-                                    controller.cameraSelector =
-                                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                                            CameraSelector.DEFAULT_FRONT_CAMERA
-                                        } else CameraSelector.DEFAULT_BACK_CAMERA
-                                }
-                            })
-
-                        Spacer(modifier = Modifier.weight(1f))
-
                         //Stop & Rec Button
                         StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
                             recordVideo(controller, onRecord = {
                                 isRecording = it
-                                isShowRecorder = true
                             }, onDone = {
                                 recFile = it
                                 vmVidRec.saveVideoItem(
@@ -358,89 +285,11 @@ fun VideoRecorderScreen(
                                 )
                             })
                         })
+
                     }
                 }
             }
         }
-
-        //RecorderScreen
-        if (isShowRecorder) {
-
-            //Camera Content
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(BgGradientPurpleDark)
-            )
-            {
-                //Main Camera
-                CameraPreview(
-                    controller = controller,
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                //Top Left Soho Watermark
-                Image(
-                    painter = painterResource(id = R.drawable.soho_watermark),
-                    contentDescription = "watermark",
-                    modifier = Modifier.offset(16.dp, 16.dp)
-                )
-
-                //Timer Top Right
-                TimerCard(
-                    timerValue = timerValue,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(16.dp)
-                )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                ) {
-
-                    //bottom agent info and property info
-                    goLiveData.agentProperty?.let {
-                        if (isTemplateWithBrand) {
-                            AgentPropertyInfo(
-                                agProp = it,
-                                boxMod = Modifier.fillMaxWidth()
-                            )
-                        }
-                    }
-
-                    //Bottom Stop Button
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomStart = 0.dp,
-                            bottomEnd = 0.dp
-                        ),
-                        colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            //Stop & Rec Button
-                            StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
-                                recordVideo(controller, onRecord = {
-                                    isRecording = it
-                                }, onDone = {})
-                            })
-
-                        }
-                    }
-                }
-            }
-        }
-
     } else {
         //permission view
         Box(

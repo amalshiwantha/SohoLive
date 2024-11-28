@@ -1,0 +1,404 @@
+package com.soho.sohoapp.live.ui.view.screens.video_recorder
+
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.os.StatFs
+import android.provider.Settings
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.CameraSelector
+import androidx.camera.video.FileOutputOptions
+import androidx.camera.video.Recording
+import androidx.camera.video.VideoRecordEvent
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
+import androidx.camera.view.video.AudioConfig
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
+import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
+import com.soho.sohoapp.live.enums.Orientation
+import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.ui.components.ButtonColoredIconWrap
+import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text700_12sp
+import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text800_10sp
+import com.soho.sohoapp.live.ui.components.Text800_14sp
+import com.soho.sohoapp.live.ui.theme.AppRed
+import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
+import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
+import com.soho.sohoapp.live.utility.RotateScreen
+import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+
+@Composable
+fun TemplateScreen(
+    navController: NavHostController,
+    goLiveData: GoLiveSubmit,
+    vmVidRec: VideoRecorderViewModel = koinInject(),
+    onStartRecClick: () -> Unit
+) {
+    val cont = LocalContext.current
+    val mState = vmVidRec.mState.value
+    var timerValue by remember { mutableStateOf("00:00") }
+    var isCompletedMinRecTime by remember { mutableStateOf(false) }
+    var isRecording by remember { mutableStateOf(false) }
+    var hasCameraPermission by remember { mutableStateOf(false) }
+    var hasMicPermission by remember { mutableStateOf(false) }
+    var shouldShowSettingsButton by remember { mutableStateOf(false) }
+    var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
+    var isRotateLandScreen by remember { mutableStateOf(false) }
+    var isTemplateWithBrand by remember { mutableStateOf(MainStateHolder.mState.isTemplateWithBrand.value) }
+
+    //Rotate Screen
+    LaunchedEffect(rotateScreen) {
+        if (rotateScreen == Orientation.LAND.name) {
+            isRotateLandScreen = true
+        }
+    }
+
+    if (isRotateLandScreen) {
+        cont.getActivity()?.let {
+            RotateScreen(rotateScreen, it)
+            isRotateLandScreen = false
+        }
+    }
+
+    // Launcher for requesting multiple permissions
+    val permissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            hasCameraPermission = permissions[Manifest.permission.CAMERA] ?: false
+            hasMicPermission = permissions[Manifest.permission.RECORD_AUDIO] ?: false
+
+            // Check if permissions are denied permanently
+            cont.getActivity()?.let {
+                if (!hasCameraPermission || !ActivityCompat.shouldShowRequestPermissionRationale(
+                        it,
+                        Manifest.permission.CAMERA
+                    )
+                ) {
+                    shouldShowSettingsButton = true
+                }
+
+                if (!hasCameraPermission || !ActivityCompat.shouldShowRequestPermissionRationale(
+                        it,
+                        Manifest.permission.RECORD_AUDIO
+                    )
+                ) {
+                    shouldShowSettingsButton = true
+                }
+            }
+        }
+    )
+
+    // Check initial permissions
+    RequestNotificationPermission()
+
+    LaunchedEffect(Unit) {
+        hasCameraPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        hasMicPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+
+        // Request permissions if any are not granted
+        if (!hasCameraPermission || !hasMicPermission) {
+            permissionsLauncher.launch(
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO
+                )
+            )
+        }
+    }
+
+    val controller = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(
+                CameraController.VIDEO_CAPTURE
+            )
+        }
+    }
+
+    //If save success then open player
+    LaunchedEffect(mState.isSuccess) {
+        if (mState.isSuccess) {
+
+        }
+    }
+
+    //Content permission view and Camera
+    if (hasCameraPermission && hasMicPermission) {
+        //Template Camera Preview
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
+            val (cameraPreview, bottomTemplate) = createRefs()
+
+            //CamPreview
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .constrainAs(cameraPreview) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(bottomTemplate.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    height = Dimension.fillToConstraints
+                })
+            {
+                //Main Camera
+                CameraPreview(
+                    controller = controller,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(64.dp)
+                        .align(Alignment.Center)
+                )
+
+                //Top Left Soho Watermark
+                Image(
+                    painter = painterResource(id = R.drawable.soho_watermark),
+                    contentDescription = "watermark",
+                    modifier = Modifier.padding(top = 32.dp, start = 32.dp)
+                )
+
+                //Timer Top Right
+                TimerCard(
+                    timerValue = "PREVIEW",
+                    bgColor = HintGray,
+                    txtColor = AppWhite,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 32.dp, end = 32.dp)
+                )
+
+                //bottom agent info and property info
+                goLiveData.agentProperty?.let {
+                    if (isTemplateWithBrand) {
+                        val mod = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                        AgentPropertyInfo(agProp = it, boxMod = mod)
+                    }
+                }
+            }
+
+            //template selection and rec start button
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(bottomTemplate) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                ),
+                colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+
+                    Text800_14sp(label = "Apply agent & agency branding")
+
+                    SpacerUp(size = 16.dp)
+
+                    //selections
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        BrandingOption(
+                            isSelected = isTemplateWithBrand,
+                            label = "With Branding",
+                            image = R.drawable.template_with_brand,
+                            onSelectTemplate = {
+                                isTemplateWithBrand = !isTemplateWithBrand
+                                MainStateHolder.mState.isTemplateWithBrand.value = isTemplateWithBrand
+                            }
+                        )
+                        BrandingOption(
+                            isSelected = !isTemplateWithBrand,
+                            label = "No Branding",
+                            image = R.drawable.template_with_brand,
+                            onSelectTemplate = {
+                                isTemplateWithBrand = !isTemplateWithBrand
+                                MainStateHolder.mState.isTemplateWithBrand.value = isTemplateWithBrand
+                            }
+                        )
+                    }
+
+                    SpacerUp(size = 16.dp)
+
+                    //bottom start and cam switch buttons
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        //Camera Switch
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_cam_switch),
+                            contentDescription = "Camera Switch",
+                            modifier = Modifier.clickable {
+                                if (!isRecording) {
+                                    controller.cameraSelector =
+                                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                            CameraSelector.DEFAULT_FRONT_CAMERA
+                                        } else CameraSelector.DEFAULT_BACK_CAMERA
+                                }
+                            })
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        //Stop & Rec Button
+                        StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                            onStartRecClick()
+                        })
+                    }
+                }
+            }
+        }
+
+    } else {
+        //permission view
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BgGradientPurpleDark)
+        ) {
+            val mod = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .padding(16.dp)
+            PermissionView(
+                mod,
+                cont.getActivity(),
+                permissionsLauncher,
+                hasCameraPermission,
+                hasMicPermission,
+                shouldShowSettingsButton,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PermissionView(
+    mod: Modifier,
+    activity: ComponentActivity?,
+    permissionsLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, @JvmSuppressWildcards Boolean>>,
+    hasCameraPermission: Boolean,
+    hasMicPermission: Boolean,
+    shouldShowSettingsButton: Boolean,
+    onBackClick: () -> Unit
+) {
+    val buttonText =
+        if (shouldShowSettingsButton) "Go to Settings" else "Request Permissions"
+
+    Column(
+        modifier = mod,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally // Centers content horizontally
+    ) {
+        Text700_14sp(
+            step = "Camera and Microphone permissions are required to record video.",
+            color = AppWhite,
+            isCenter = true,
+            isBold = false
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(onClick = {
+            if (shouldShowSettingsButton) {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                activity?.startActivity(intent)
+                onBackClick()
+            } else {
+                if (!hasCameraPermission || !hasMicPermission) {
+                    permissionsLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.RECORD_AUDIO
+                        )
+                    )
+                }
+            }
+        }) {
+            Text(buttonText)
+        }
+    }
+}
