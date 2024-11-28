@@ -220,7 +220,7 @@ fun VideoRecorderScreen(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgGradientPurpleDark)
+            .background(Color.Black)
     ) {
         val (cameraPreview, bottomTemplate) = createRefs()
 
@@ -278,6 +278,8 @@ fun VideoRecorderScreen(
                     .align(Alignment.TopEnd)
                     .padding(top = 32.dp, end = 32.dp)
             )
+
+            //bottom agent info and proeprt info
         }
 
         //template selection
