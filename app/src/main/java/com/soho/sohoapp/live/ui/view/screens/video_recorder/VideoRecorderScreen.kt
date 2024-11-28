@@ -76,6 +76,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.RotateScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
@@ -279,7 +280,13 @@ fun VideoRecorderScreen(
                     .padding(top = 32.dp, end = 32.dp)
             )
 
-            //bottom agent info and proeprt info
+            //bottom agent info and property info
+            goLiveData.agentProperty?.let {
+                val mod = Modifier
+                    .align(Alignment.BottomStart).padding(horizontal = 12.dp)
+                    .fillMaxWidth()
+                AgentPropertyInfo(agProp = it, boxMod = mod)
+            }
         }
 
         //template selection
