@@ -611,14 +611,14 @@ fun Text400_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color =
 }
 
 @Composable
-fun Text800_10sp(modifier: Modifier = Modifier, label: String) {
+fun Text800_10sp(modifier: Modifier = Modifier, label: String, txtColor: Color = logoutRed) {
     Text(
         modifier = modifier,
         text = label,
         fontSize = 10.sp,
         lineHeight = 14.sp,
         letterSpacing = 0.9.sp,
-        color = Color(0xFFE13831),
+        color = txtColor,
         fontWeight = FontWeight(800),
         fontFamily = FontFamily(Font(R.font.axiforma)),
     )

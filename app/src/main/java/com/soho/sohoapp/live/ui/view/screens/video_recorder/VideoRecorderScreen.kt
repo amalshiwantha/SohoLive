@@ -35,7 +35,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -70,11 +69,12 @@ import com.soho.sohoapp.live.ui.components.ButtonColoredIconWrap
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
-import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
+import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.utility.RotateScreen
 import kotlinx.coroutines.delay
@@ -239,7 +239,10 @@ fun VideoRecorderScreen(
             if (hasCameraPermission && hasMicPermission) {
                 CameraPreview(
                     controller = controller,
-                    modifier = Modifier.fillMaxSize().padding(64.dp).align(Alignment.Center)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(64.dp)
+                        .align(Alignment.Center)
                 )
             } else {
                 val mod = Modifier
@@ -263,13 +266,17 @@ fun VideoRecorderScreen(
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.offset(16.dp, 16.dp)
+                modifier = Modifier.padding(top = 32.dp, start = 32.dp)
             )
 
             //Timer Top Right
             TimerCard(
                 timerValue = "PREVIEW",
-                modifier = Modifier.align(Alignment.TopEnd)
+                bgColor = HintGray,
+                txtColor = AppWhite,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 32.dp, end = 32.dp)
             )
         }
 
@@ -645,15 +652,19 @@ private fun recordVideo(
 }
 
 @Composable
-fun TimerCard(timerValue: String, modifier: Modifier) {
+fun TimerCard(
+    timerValue: String,
+    modifier: Modifier,
+    bgColor: Color = AppRed,
+    txtColor: Color = AppWhite
+) {
     Card(
-        modifier = modifier
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = AppRed),
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = bgColor),
         shape = RoundedCornerShape(12.dp)
     ) {
-        Box(modifier = Modifier.padding(8.dp)) {
-            TextWhite14Normal(title = timerValue)
+        Box(modifier = Modifier.padding(vertical = 7.dp, horizontal = 8.dp)) {
+            Text800_10sp(label = timerValue, txtColor = txtColor)
         }
     }
 }
