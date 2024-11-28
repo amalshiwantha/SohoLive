@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -238,7 +239,7 @@ fun VideoRecorderScreen(
             if (hasCameraPermission && hasMicPermission) {
                 CameraPreview(
                     controller = controller,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize().padding(64.dp).align(Alignment.Center)
                 )
             } else {
                 val mod = Modifier
