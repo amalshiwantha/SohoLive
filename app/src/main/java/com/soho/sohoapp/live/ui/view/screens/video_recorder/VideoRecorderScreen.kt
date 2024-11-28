@@ -76,6 +76,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
+import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfoNoPadding
 import com.soho.sohoapp.live.utility.RotateScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
@@ -365,76 +366,77 @@ fun VideoRecorderScreen(
 
         //RecorderScreen
         if (isShowRecorder) {
-            ConstraintLayout(
+
+            //Camera Content
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(BgGradientPurpleDark)
-            ) {
-                val (cameraContent, bottomButton) = createRefs()
+            )
+            {
+                //Main Camera
+                CameraPreview(
+                    controller = controller,
+                    modifier = Modifier.fillMaxSize()
+                )
 
-                //Camera Content
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .constrainAs(cameraContent) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(bottomButton.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        height = Dimension.fillToConstraints
-                    })
-                {
-                    //Main Camera
-                    CameraPreview(
-                        controller = controller,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                //Top Left Soho Watermark
+                Image(
+                    painter = painterResource(id = R.drawable.soho_watermark),
+                    contentDescription = "watermark",
+                    modifier = Modifier.offset(16.dp, 16.dp)
+                )
 
-                    //Top Left Soho Watermark
-                    Image(
-                        painter = painterResource(id = R.drawable.soho_watermark),
-                        contentDescription = "watermark",
-                        modifier = Modifier.offset(16.dp, 16.dp)
-                    )
+                //Timer Top Right
+                TimerCard(
+                    timerValue = timerValue,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                )
 
-                    //Timer Top Right
-                    TimerCard(
-                        timerValue = timerValue,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(16.dp)
-                    )
-                }
-
-                //Bottom Buttons
-                Card(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .constrainAs(bottomButton) {
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 0.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
-                    ),
-                    colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
+                        .align(Alignment.BottomCenter)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        //Stop & Rec Button
-                        StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
-                            recordVideo(controller, onRecord = {
-                                isRecording = it
-                            }, onDone = {})
-                        })
 
+                    //bottom agent info and property info
+                    goLiveData.agentProperty?.let {
+                        if (isTemplateWithBrand) {
+                            AgentPropertyInfoNoPadding(
+                                agProp = it,
+                                boxMod = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                    //Bottom Stop Button
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(
+                            topStart = 0.dp,
+                            topEnd = 0.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        ),
+                        colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            //Stop & Rec Button
+                            StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                                recordVideo(controller, onRecord = {
+                                    isRecording = it
+                                }, onDone = {})
+                            })
+
+                        }
                     }
                 }
             }
