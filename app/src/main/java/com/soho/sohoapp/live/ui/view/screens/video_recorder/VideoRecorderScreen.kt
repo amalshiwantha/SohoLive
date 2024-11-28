@@ -282,10 +282,12 @@ fun VideoRecorderScreen(
 
             //bottom agent info and property info
             goLiveData.agentProperty?.let {
-                val mod = Modifier
-                    .align(Alignment.BottomStart).padding(horizontal = 12.dp)
-                    .fillMaxWidth()
-                AgentPropertyInfo(agProp = it, boxMod = mod)
+                if(isTemplateWithBrand){
+                    val mod = Modifier
+                        .align(Alignment.BottomStart).padding(horizontal = 12.dp)
+                        .fillMaxWidth()
+                    AgentPropertyInfo(agProp = it, boxMod = mod)
+                }
             }
         }
 
