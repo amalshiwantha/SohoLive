@@ -100,6 +100,13 @@ fun VideoRecorderScreen(
     var shouldShowSettingsButton by remember { mutableStateOf(false) }
     var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
+    val controller = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(
+                CameraController.VIDEO_CAPTURE
+            )
+        }
+    }
 
     //Rotate Screen
     LaunchedEffect(rotateScreen) {
@@ -166,14 +173,6 @@ fun VideoRecorderScreen(
         }
     }
 
-    val controller = remember {
-        LifecycleCameraController(context).apply {
-            setEnabledUseCases(
-                CameraController.VIDEO_CAPTURE
-            )
-        }
-    }
-
     //If save success then open player
     LaunchedEffect(mState.isSuccess) {
         if (mState.isSuccess) {
@@ -207,6 +206,22 @@ fun VideoRecorderScreen(
             delay(1000)
             timerValue = "00:00"
         }
+    }
+
+    //Auto Start Recording
+    LaunchedEffect("startRecording") {
+        println("myVidRec : Recording Stadby")
+        delay(3000)
+        println("myVidRec : Recording Ready")
+        startStopRecord(controller, onRecord = {
+            isRecording = it
+        }, onDone = {
+            recFile = it
+            vmVidRec.saveVideoItem(
+                goLiveData,
+                it
+            )
+        })
     }
 
     //Content permission view and Camera
@@ -275,7 +290,7 @@ fun VideoRecorderScreen(
                     ) {
                         //Stop & Rec Button
                         StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
-                            recordVideo(controller, onRecord = {
+                            startStopRecord(controller, onRecord = {
                                 isRecording = it
                             }, onDone = {
                                 recFile = it
@@ -314,6 +329,18 @@ fun VideoRecorderScreen(
             )
         }
     }
+}
+
+fun startStopRecord(
+    controller: LifecycleCameraController,
+    onRecord: (Boolean) -> Unit,
+    onDone: (Uri) -> Unit
+) {
+    recordVideo(controller, onRecord = {
+        onRecord(it)
+    }, onDone = {
+        onDone(it)
+    })
 }
 
 @Composable
