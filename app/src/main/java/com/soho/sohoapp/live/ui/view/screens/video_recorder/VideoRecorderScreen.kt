@@ -105,6 +105,7 @@ fun VideoRecorderScreen(
     var shouldShowSettingsButton by remember { mutableStateOf(false) }
     var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
+    var isTemplateWithBrand by remember { mutableStateOf(true) }
 
     //Rotate Screen
     LaunchedEffect(rotateScreen) {
@@ -304,14 +305,16 @@ fun VideoRecorderScreen(
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     BrandingOption(
-                        isSelected = true,
+                        isSelected = isTemplateWithBrand,
                         label = "With Branding",
-                        image = R.drawable.template_with_brand
+                        image = R.drawable.template_with_brand,
+                        onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
                     )
                     BrandingOption(
-                        isSelected = false,
+                        isSelected = !isTemplateWithBrand,
                         label = "No Branding",
-                        image = R.drawable.template_with_brand
+                        image = R.drawable.template_with_brand,
+                        onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
                     )
                 }
 
@@ -458,9 +461,10 @@ fun VideoRecorderScreen(
 }
 
 @Composable
-fun BrandingOption(isSelected: Boolean, label: String, image: Int) {
+fun BrandingOption(isSelected: Boolean, label: String, image: Int, onSelectTemplate: () -> Unit) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onSelectTemplate() }
     ) {
         Box(modifier = Modifier.size(width = 72.dp, height = 128.dp)) {
             //Brand
@@ -471,7 +475,7 @@ fun BrandingOption(isSelected: Boolean, label: String, image: Int) {
             )
 
             //Tick Selection
-            if(isSelected){
+            if (isSelected) {
                 Image(
                     painter = painterResource(id = R.drawable.brand_selection_tick),
                     contentDescription = "",
