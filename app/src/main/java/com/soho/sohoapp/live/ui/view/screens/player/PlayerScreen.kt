@@ -258,7 +258,6 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
             val profImgSize = 40.dp
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 5.dp)
                     .background(agent.agencyBgColor)
                     .fillMaxWidth()
             ) {
@@ -317,7 +316,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
     }
 }
 
-@Composable
+/*@Composable
 fun AgentPropertyInfoNoPadding(agProp: AgentProperty, boxMod: Modifier) {
     Column(boxMod) {
 
@@ -394,7 +393,7 @@ fun AgentPropertyInfoNoPadding(agProp: AgentProperty, boxMod: Modifier) {
             }
         }
     }
-}
+}*/
 
 @Composable
 fun BottomButton(modifier: Modifier, onNextClick: () -> Unit, onEditClick: () -> Unit) {

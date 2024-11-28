@@ -76,7 +76,6 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
-import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfoNoPadding
 import com.soho.sohoapp.live.utility.RotateScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
@@ -108,7 +107,7 @@ fun VideoRecorderScreen(
     var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
     var isTemplateWithBrand by remember { mutableStateOf(true) }
-    var isShowRecorder by remember { mutableStateOf(true) }
+    var isShowRecorder by remember { mutableStateOf(false) }
 
     //Rotate Screen
     LaunchedEffect(rotateScreen) {
@@ -270,7 +269,7 @@ fun VideoRecorderScreen(
                     if (isTemplateWithBrand) {
                         val mod = Modifier
                             .align(Alignment.BottomStart)
-                            .padding(horizontal = 12.dp)
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth()
                         AgentPropertyInfo(agProp = it, boxMod = mod)
                     }
@@ -404,7 +403,7 @@ fun VideoRecorderScreen(
                     //bottom agent info and property info
                     goLiveData.agentProperty?.let {
                         if (isTemplateWithBrand) {
-                            AgentPropertyInfoNoPadding(
+                            AgentPropertyInfo(
                                 agProp = it,
                                 boxMod = Modifier.fillMaxWidth()
                             )
