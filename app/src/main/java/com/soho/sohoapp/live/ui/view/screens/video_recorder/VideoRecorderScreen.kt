@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -47,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -64,7 +66,10 @@ import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.ui.components.ButtonColoredIconWrap
+import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TextWhite14Normal
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -209,19 +214,20 @@ fun VideoRecorderScreen(
         }
     }
 
+    //Template
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
             .background(BgGradientPurpleDark)
     ) {
-        val (cameraContent, bottomButton) = createRefs()
+        val (cameraPreview, bottomTemplate) = createRefs()
 
-        //Camera Content
+        //CamPreview
         Box(modifier = Modifier
             .fillMaxSize()
-            .constrainAs(cameraContent) {
+            .constrainAs(cameraPreview) {
                 top.linkTo(parent.top)
-                bottom.linkTo(bottomButton.top)
+                bottom.linkTo(bottomTemplate.top)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 height = Dimension.fillToConstraints
@@ -260,50 +266,223 @@ fun VideoRecorderScreen(
 
             //Timer Top Right
             TimerCard(
-                timerValue = timerValue,
+                timerValue = "PREVIEW",
                 modifier = Modifier.align(Alignment.TopEnd)
             )
         }
 
-        //Bottom Buttons
-        Row(modifier = Modifier
-            .padding(16.dp)
-            .constrainAs(bottomButton) {
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-            .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+        //template selection
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(bottomTemplate) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            shape = RoundedCornerShape(
+                topStart = 16.dp,
+                topEnd = 16.dp,
+                bottomStart = 0.dp,
+                bottomEnd = 0.dp
+            ),
+            colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
         ) {
-            //Camera Switch
-            Image(
-                painter = painterResource(id = R.drawable.ic_cam_switch),
-                contentDescription = "Camera Switch",
-                modifier = Modifier.clickable {
-                    if (!isRecording) {
-                        controller.cameraSelector =
-                            if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                                CameraSelector.DEFAULT_FRONT_CAMERA
-                            } else CameraSelector.DEFAULT_BACK_CAMERA
-                    }
-                })
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
 
-            Spacer(modifier = Modifier.weight(1f))
+                Text800_14sp(label = "Apply agent & agency branding")
 
-            //Stop & Rec Button
-            StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
-                recordVideo(controller, onRecord = {
-                    isRecording = it
-                }, onDone = {
-                    recFile = it
-                    vmVidRec.saveVideoItem(
-                        goLiveData,
-                        it
+                SpacerUp(size = 16.dp)
+
+                //selections
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    BrandingOption(
+                        isSelected = true,
+                        label = "With Branding",
+                        image = R.drawable.template_with_brand
                     )
-                })
-            })
+                    BrandingOption(
+                        isSelected = false,
+                        label = "No Branding",
+                        image = R.drawable.template_with_brand
+                    )
+                }
+
+                SpacerUp(size = 16.dp)
+
+                //bottom start and cam switch buttons
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    //Camera Switch
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_cam_switch),
+                        contentDescription = "Camera Switch",
+                        modifier = Modifier.clickable {
+                            if (!isRecording) {
+                                controller.cameraSelector =
+                                    if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                        CameraSelector.DEFAULT_FRONT_CAMERA
+                                    } else CameraSelector.DEFAULT_BACK_CAMERA
+                            }
+                        })
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    //Stop & Rec Button
+                    StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                        recordVideo(controller, onRecord = {
+                            isRecording = it
+                        }, onDone = {
+                            recFile = it
+                            vmVidRec.saveVideoItem(
+                                goLiveData,
+                                it
+                            )
+                        })
+                    })
+                }
+            }
         }
+    }
+
+    //RecorderScreen
+    val isShowRecorder = false
+    if (isShowRecorder) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BgGradientPurpleDark)
+        ) {
+            val (cameraContent, bottomButton) = createRefs()
+
+            //Camera Content
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .constrainAs(cameraContent) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(bottomButton.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    height = Dimension.fillToConstraints
+                })
+            {
+                //Main Camera
+                if (hasCameraPermission && hasMicPermission) {
+                    CameraPreview(
+                        controller = controller,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    val mod = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .padding(16.dp)
+                    PermissionView(
+                        mod,
+                        cont.getActivity(),
+                        permissionsLauncher,
+                        hasCameraPermission,
+                        hasMicPermission,
+                        shouldShowSettingsButton,
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                //Top Left Soho Watermark
+                Image(
+                    painter = painterResource(id = R.drawable.soho_watermark),
+                    contentDescription = "watermark",
+                    modifier = Modifier.offset(16.dp, 16.dp)
+                )
+
+                //Timer Top Right
+                TimerCard(
+                    timerValue = timerValue,
+                    modifier = Modifier.align(Alignment.TopEnd)
+                )
+            }
+
+            //Bottom Buttons
+            Row(modifier = Modifier
+                .padding(16.dp)
+                .constrainAs(bottomButton) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                //Camera Switch
+                Image(
+                    painter = painterResource(id = R.drawable.ic_cam_switch),
+                    contentDescription = "Camera Switch",
+                    modifier = Modifier.clickable {
+                        if (!isRecording) {
+                            controller.cameraSelector =
+                                if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                    CameraSelector.DEFAULT_FRONT_CAMERA
+                                } else CameraSelector.DEFAULT_BACK_CAMERA
+                        }
+                    })
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                //Stop & Rec Button
+                StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                    recordVideo(controller, onRecord = {
+                        isRecording = it
+                    }, onDone = {
+                        recFile = it
+                        vmVidRec.saveVideoItem(
+                            goLiveData,
+                            it
+                        )
+                    })
+                })
+            }
+        }
+    }
+}
+
+@Composable
+fun BrandingOption(isSelected: Boolean, label: String, image: Int) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(modifier = Modifier.size(width = 72.dp, height = 128.dp)) {
+            //Brand
+            Image(
+                painter = painterResource(id = image),
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = ""
+            )
+
+            //Tick Selection
+            if(isSelected){
+                Image(
+                    painter = painterResource(id = R.drawable.brand_selection_tick),
+                    contentDescription = "",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+
+        SpacerUp(size = 8.dp)
+        val txtColor = if (isSelected) Color.White else Color(0xFF99979C)
+        Text700_12sp(label = label, txtColor = txtColor)
     }
 }
 
@@ -340,7 +519,7 @@ fun RequestNotificationPermission() {
 
 @Composable
 fun StartStopButton(isStart: Boolean, isMinRecTimeDone: Boolean, onBtnClick: () -> Unit) {
-    val btnTxt = if (isStart) "Stop" else "Go Live"
+    val btnTxt = if (isStart) "Stop" else "Record Now"
     val btnColor = if (isStart) AppWhite else AppRed
     val txtColor = if (isStart) AppRed else AppWhite
     val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
