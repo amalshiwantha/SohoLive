@@ -75,7 +75,6 @@ import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
-import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.RotateScreen
 import kotlinx.coroutines.delay
@@ -217,27 +216,28 @@ fun VideoRecorderScreen(
         }
     }
 
-    //Template
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        val (cameraPreview, bottomTemplate) = createRefs()
+    //Content permission view and Camera
+    if (hasCameraPermission && hasMicPermission) {
+        //Template Camera Preview
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
+            val (cameraPreview, bottomTemplate) = createRefs()
 
-        //CamPreview
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .constrainAs(cameraPreview) {
-                top.linkTo(parent.top)
-                bottom.linkTo(bottomTemplate.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                height = Dimension.fillToConstraints
-            })
-        {
-            //Main Camera
-            if (hasCameraPermission && hasMicPermission) {
+            //CamPreview
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .constrainAs(cameraPreview) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(bottomTemplate.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    height = Dimension.fillToConstraints
+                })
+            {
+                //Main Camera
                 CameraPreview(
                     controller = controller,
                     modifier = Modifier
@@ -245,104 +245,190 @@ fun VideoRecorderScreen(
                         .padding(64.dp)
                         .align(Alignment.Center)
                 )
-            } else {
-                val mod = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
-                    .padding(16.dp)
-                PermissionView(
-                    mod,
-                    cont.getActivity(),
-                    permissionsLauncher,
-                    hasCameraPermission,
-                    hasMicPermission,
-                    shouldShowSettingsButton,
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
+
+                //Top Left Soho Watermark
+                Image(
+                    painter = painterResource(id = R.drawable.soho_watermark),
+                    contentDescription = "watermark",
+                    modifier = Modifier.padding(top = 32.dp, start = 32.dp)
                 )
+
+                //Timer Top Right
+                TimerCard(
+                    timerValue = "PREVIEW",
+                    bgColor = HintGray,
+                    txtColor = AppWhite,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 32.dp, end = 32.dp)
+                )
+
+                //bottom agent info and property info
+                goLiveData.agentProperty?.let {
+                    if (isTemplateWithBrand) {
+                        val mod = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(horizontal = 12.dp)
+                            .fillMaxWidth()
+                        AgentPropertyInfo(agProp = it, boxMod = mod)
+                    }
+                }
             }
 
-            //Top Left Soho Watermark
-            Image(
-                painter = painterResource(id = R.drawable.soho_watermark),
-                contentDescription = "watermark",
-                modifier = Modifier.padding(top = 32.dp, start = 32.dp)
-            )
-
-            //Timer Top Right
-            TimerCard(
-                timerValue = "PREVIEW",
-                bgColor = HintGray,
-                txtColor = AppWhite,
+            //template selection and rec start button
+            Card(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 32.dp, end = 32.dp)
-            )
-
-            //bottom agent info and property info
-            goLiveData.agentProperty?.let {
-                if(isTemplateWithBrand){
-                    val mod = Modifier
-                        .align(Alignment.BottomStart).padding(horizontal = 12.dp)
+                    .fillMaxWidth()
+                    .constrainAs(bottomTemplate) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                ),
+                colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
+            ) {
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
-                    AgentPropertyInfo(agProp = it, boxMod = mod)
+                        .padding(16.dp)
+                ) {
+
+                    Text800_14sp(label = "Apply agent & agency branding")
+
+                    SpacerUp(size = 16.dp)
+
+                    //selections
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        BrandingOption(
+                            isSelected = isTemplateWithBrand,
+                            label = "With Branding",
+                            image = R.drawable.template_with_brand,
+                            onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
+                        )
+                        BrandingOption(
+                            isSelected = !isTemplateWithBrand,
+                            label = "No Branding",
+                            image = R.drawable.template_with_brand,
+                            onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
+                        )
+                    }
+
+                    SpacerUp(size = 16.dp)
+
+                    //bottom start and cam switch buttons
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        //Camera Switch
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_cam_switch),
+                            contentDescription = "Camera Switch",
+                            modifier = Modifier.clickable {
+                                if (!isRecording) {
+                                    controller.cameraSelector =
+                                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                            CameraSelector.DEFAULT_FRONT_CAMERA
+                                        } else CameraSelector.DEFAULT_BACK_CAMERA
+                                }
+                            })
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        //Stop & Rec Button
+                        StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                            recordVideo(controller, onRecord = {
+                                isRecording = it
+                            }, onDone = {
+                                recFile = it
+                                vmVidRec.saveVideoItem(
+                                    goLiveData,
+                                    it
+                                )
+                            })
+                        })
+                    }
                 }
             }
         }
 
-        //template selection
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(bottomTemplate) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            shape = RoundedCornerShape(
-                topStart = 16.dp,
-                topEnd = 16.dp,
-                bottomStart = 0.dp,
-                bottomEnd = 0.dp
-            ),
-            colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
-        ) {
-            Column(
+        //RecorderScreen
+        val isShowRecorder = false
+        if (isShowRecorder) {
+            ConstraintLayout(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                    .fillMaxSize()
+                    .background(BgGradientPurpleDark)
             ) {
+                val (cameraContent, bottomButton) = createRefs()
 
-                Text800_14sp(label = "Apply agent & agency branding")
+                //Camera Content
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .constrainAs(cameraContent) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(bottomButton.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        height = Dimension.fillToConstraints
+                    })
+                {
+                    //Main Camera
+                    if (hasCameraPermission && hasMicPermission) {
+                        CameraPreview(
+                            controller = controller,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        val mod = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
+                            .padding(16.dp)
+                        PermissionView(
+                            mod,
+                            cont.getActivity(),
+                            permissionsLauncher,
+                            hasCameraPermission,
+                            hasMicPermission,
+                            shouldShowSettingsButton,
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
 
-                SpacerUp(size = 16.dp)
-
-                //selections
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    BrandingOption(
-                        isSelected = isTemplateWithBrand,
-                        label = "With Branding",
-                        image = R.drawable.template_with_brand,
-                        onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
+                    //Top Left Soho Watermark
+                    Image(
+                        painter = painterResource(id = R.drawable.soho_watermark),
+                        contentDescription = "watermark",
+                        modifier = Modifier.offset(16.dp, 16.dp)
                     )
-                    BrandingOption(
-                        isSelected = !isTemplateWithBrand,
-                        label = "No Branding",
-                        image = R.drawable.template_with_brand,
-                        onSelectTemplate = { isTemplateWithBrand = !isTemplateWithBrand }
+
+                    //Timer Top Right
+                    TimerCard(
+                        timerValue = timerValue,
+                        modifier = Modifier.align(Alignment.TopEnd)
                     )
                 }
 
-                SpacerUp(size = 16.dp)
-
-                //bottom start and cam switch buttons
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                //Bottom Buttons
+                Row(modifier = Modifier
+                    .padding(16.dp)
+                    .constrainAs(bottomButton) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     //Camera Switch
@@ -375,106 +461,27 @@ fun VideoRecorderScreen(
                 }
             }
         }
-    }
 
-    //RecorderScreen
-    val isShowRecorder = false
-    if (isShowRecorder) {
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(BgGradientPurpleDark)
-        ) {
-            val (cameraContent, bottomButton) = createRefs()
-
-            //Camera Content
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .constrainAs(cameraContent) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(bottomButton.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    height = Dimension.fillToConstraints
-                })
-            {
-                //Main Camera
-                if (hasCameraPermission && hasMicPermission) {
-                    CameraPreview(
-                        controller = controller,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    val mod = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                        .padding(16.dp)
-                    PermissionView(
-                        mod,
-                        cont.getActivity(),
-                        permissionsLauncher,
-                        hasCameraPermission,
-                        hasMicPermission,
-                        shouldShowSettingsButton,
-                        onBackClick = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-
-                //Top Left Soho Watermark
-                Image(
-                    painter = painterResource(id = R.drawable.soho_watermark),
-                    contentDescription = "watermark",
-                    modifier = Modifier.offset(16.dp, 16.dp)
-                )
-
-                //Timer Top Right
-                TimerCard(
-                    timerValue = timerValue,
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
-            }
-
-            //Bottom Buttons
-            Row(modifier = Modifier
+    } else {
+        //permission view
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(BgGradientPurpleDark)) {
+            val mod = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
                 .padding(16.dp)
-                .constrainAs(bottomButton) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+            PermissionView(
+                mod,
+                cont.getActivity(),
+                permissionsLauncher,
+                hasCameraPermission,
+                hasMicPermission,
+                shouldShowSettingsButton,
+                onBackClick = {
+                    navController.popBackStack()
                 }
-                .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                //Camera Switch
-                Image(
-                    painter = painterResource(id = R.drawable.ic_cam_switch),
-                    contentDescription = "Camera Switch",
-                    modifier = Modifier.clickable {
-                        if (!isRecording) {
-                            controller.cameraSelector =
-                                if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                                    CameraSelector.DEFAULT_FRONT_CAMERA
-                                } else CameraSelector.DEFAULT_BACK_CAMERA
-                        }
-                    })
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                //Stop & Rec Button
-                StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
-                    recordVideo(controller, onRecord = {
-                        isRecording = it
-                    }, onDone = {
-                        recFile = it
-                        vmVidRec.saveVideoItem(
-                            goLiveData,
-                            it
-                        )
-                    })
-                })
-            }
+            )
         }
     }
 }
@@ -587,7 +594,7 @@ private fun PermissionView(
     ) {
         Text700_14sp(
             step = "Camera and Microphone permissions are required to record video.",
-            color = TextDark,
+            color = AppWhite,
             isCenter = true,
             isBold = false
         )
