@@ -37,6 +37,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -66,6 +69,7 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_10sp
+import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
@@ -100,6 +104,7 @@ fun VideoRecorderScreen(
     var shouldShowSettingsButton by remember { mutableStateOf(false) }
     var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(true) }
     val controller = remember {
         LifecycleCameraController(context).apply {
             setEnabledUseCases(
@@ -210,9 +215,8 @@ fun VideoRecorderScreen(
 
     //Auto Start Recording
     LaunchedEffect("startRecording") {
-        println("myVidRec : Recording Stadby")
-        delay(3000)
-        println("myVidRec : Recording Ready")
+        delay(4000)
+        isLoading = false
         startStopRecord(controller, onRecord = {
             isRecording = it
         }, onDone = {
@@ -238,6 +242,32 @@ fun VideoRecorderScreen(
                 controller = controller,
                 modifier = Modifier.fillMaxSize()
             )
+
+            if (isLoading) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.Center),
+                    shape = MaterialTheme.shapes.large,
+                    colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text800_12sp(
+                            label = "Preparing Recorder. " +
+                                    "Recording will start automatically.",
+                            isBold = false,
+                            txtAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        CircularProgressIndicator(color = AppWhite)
+                    }
+                }
+            }
 
             //Top Left Soho Watermark
             Image(
@@ -290,15 +320,17 @@ fun VideoRecorderScreen(
                     ) {
                         //Stop & Rec Button
                         StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
-                            startStopRecord(controller, onRecord = {
-                                isRecording = it
-                            }, onDone = {
-                                recFile = it
-                                vmVidRec.saveVideoItem(
-                                    goLiveData,
-                                    it
-                                )
-                            })
+                            if (!isLoading) {
+                                startStopRecord(controller, onRecord = {
+                                    isRecording = it
+                                }, onDone = {
+                                    recFile = it
+                                    vmVidRec.saveVideoItem(
+                                        goLiveData,
+                                        it
+                                    )
+                                })
+                            }
                         })
 
                     }

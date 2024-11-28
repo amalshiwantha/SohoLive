@@ -322,6 +322,7 @@ fun Text700_16sp(
     modifier: Modifier = Modifier,
     title: String,
     isCenter: Boolean = false,
+    isBold: Boolean = true,
     color: Color = AppWhite
 ) {
     Text(
@@ -331,7 +332,7 @@ fun Text700_16sp(
         fontSize = 16.sp,
         lineHeight = 25.6.sp,
         maxLines = 2,
-        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontFamily = FontFamily(Font(if (isBold) R.font.axiforma else R.font.axiforma_regular)),
         fontWeight = FontWeight(700),
         color = color,
         letterSpacing = 0.19.sp
