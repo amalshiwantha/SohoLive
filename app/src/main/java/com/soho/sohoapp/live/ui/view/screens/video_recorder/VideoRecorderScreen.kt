@@ -107,7 +107,7 @@ fun VideoRecorderScreen(
     var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
     var isTemplateWithBrand by remember { mutableStateOf(true) }
-    var isShowRecorder by remember { mutableStateOf(false) }
+    var isShowRecorder by remember { mutableStateOf(true) }
 
     //Rotate Screen
     LaunchedEffect(rotateScreen) {
@@ -406,28 +406,36 @@ fun VideoRecorderScreen(
                 }
 
                 //Bottom Buttons
-                Row(modifier = Modifier
-                    .padding(16.dp)
-                    .constrainAs(bottomButton) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-                    .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(bottomButton) {
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    shape = RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 0.dp,
+                        bottomStart = 0.dp,
+                        bottomEnd = 0.dp
+                    ),
+                    colors = CardDefaults.cardColors(containerColor = BgGradientPurpleDark)
                 ) {
-                    //Stop & Rec Button
-                    StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
-                        recordVideo(controller, onRecord = {
-                            isRecording = it
-                        }, onDone = {
-                            recFile = it
-                            vmVidRec.saveVideoItem(
-                                goLiveData,
-                                it
-                            )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        //Stop & Rec Button
+                        StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                            recordVideo(controller, onRecord = {
+                                isRecording = it
+                            }, onDone = {})
                         })
-                    })
+
+                    }
                 }
             }
         }
