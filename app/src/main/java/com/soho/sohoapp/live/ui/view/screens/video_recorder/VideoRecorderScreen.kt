@@ -107,6 +107,7 @@ fun VideoRecorderScreen(
     var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
     var isTemplateWithBrand by remember { mutableStateOf(true) }
+    var isShowRecorder by remember { mutableStateOf(false) }
 
     //Rotate Screen
     LaunchedEffect(rotateScreen) {
@@ -348,6 +349,7 @@ fun VideoRecorderScreen(
                         StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
                             recordVideo(controller, onRecord = {
                                 isRecording = it
+                                isShowRecorder = true
                             }, onDone = {
                                 recFile = it
                                 vmVidRec.saveVideoItem(
@@ -362,7 +364,6 @@ fun VideoRecorderScreen(
         }
 
         //RecorderScreen
-        val isShowRecorder = false
         if (isShowRecorder) {
             ConstraintLayout(
                 modifier = Modifier
@@ -383,28 +384,10 @@ fun VideoRecorderScreen(
                     })
                 {
                     //Main Camera
-                    if (hasCameraPermission && hasMicPermission) {
-                        CameraPreview(
-                            controller = controller,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else {
-                        val mod = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Center)
-                            .padding(16.dp)
-                        PermissionView(
-                            mod,
-                            cont.getActivity(),
-                            permissionsLauncher,
-                            hasCameraPermission,
-                            hasMicPermission,
-                            shouldShowSettingsButton,
-                            onBackClick = {
-                                navController.popBackStack()
-                            }
-                        )
-                    }
+                    CameraPreview(
+                        controller = controller,
+                        modifier = Modifier.fillMaxSize()
+                    )
 
                     //Top Left Soho Watermark
                     Image(
@@ -416,7 +399,9 @@ fun VideoRecorderScreen(
                     //Timer Top Right
                     TimerCard(
                         timerValue = timerValue,
-                        modifier = Modifier.align(Alignment.TopEnd)
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
                     )
                 }
 
@@ -431,21 +416,6 @@ fun VideoRecorderScreen(
                     .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    //Camera Switch
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_cam_switch),
-                        contentDescription = "Camera Switch",
-                        modifier = Modifier.clickable {
-                            if (!isRecording) {
-                                controller.cameraSelector =
-                                    if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                                        CameraSelector.DEFAULT_FRONT_CAMERA
-                                    } else CameraSelector.DEFAULT_BACK_CAMERA
-                            }
-                        })
-
-                    Spacer(modifier = Modifier.weight(1f))
-
                     //Stop & Rec Button
                     StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
                         recordVideo(controller, onRecord = {
@@ -464,9 +434,11 @@ fun VideoRecorderScreen(
 
     } else {
         //permission view
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(BgGradientPurpleDark)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BgGradientPurpleDark)
+        ) {
             val mod = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center)
