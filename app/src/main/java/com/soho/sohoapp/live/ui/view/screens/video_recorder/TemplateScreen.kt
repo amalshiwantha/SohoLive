@@ -471,7 +471,7 @@ fun LandscapeView(
                     )
 
                 }
-                SpacerUp(size = 16.dp)
+                SpacerUp(size = 8.dp)
 
                 //selections
                 Column(modifier = Modifier.fillMaxWidth()) {
