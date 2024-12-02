@@ -622,8 +622,6 @@ fun updateTimer(currentTimer: String, onMinRecTimeDone: (Boolean) -> Unit): Stri
     // Check if 10 seconds have passed
     if (minutes == 0 && seconds >= 10) {
         onMinRecTimeDone(true)
-    } else if (minutes > 0 || seconds < 10) {
-        onMinRecTimeDone(false)
     }
 
     return String.format("%02d:%02d", minutes, seconds)
