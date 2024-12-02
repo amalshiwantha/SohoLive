@@ -26,6 +26,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -65,6 +66,7 @@ import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.ui.components.ButtonColoredIconWrap
+import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
@@ -400,6 +402,36 @@ fun BrandingOption(isSelected: Boolean, label: String, image: Int, onSelectTempl
         }
 
         SpacerUp(size = 8.dp)
+        val txtColor = if (isSelected) Color.White else Color(0xFF99979C)
+        Text700_12sp(label = label, txtColor = txtColor)
+    }
+}
+
+@Composable
+fun BrandingOptionLand(isSelected: Boolean, label: String, image: Int, onSelectTemplate: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable { onSelectTemplate() }.fillMaxWidth()
+    ) {
+        Box(modifier = Modifier.size(width = 72.dp, height = 128.dp)) {
+            //Brand
+            Image(
+                painter = painterResource(id = image),
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = ""
+            )
+
+            //Tick Selection
+            if (isSelected) {
+                Image(
+                    painter = painterResource(id = R.drawable.brand_selection_tick),
+                    contentDescription = "",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+
+        SpacerSide(size = 8.dp)
         val txtColor = if (isSelected) Color.White else Color(0xFF99979C)
         Text700_12sp(label = label, txtColor = txtColor)
     }

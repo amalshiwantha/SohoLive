@@ -53,6 +53,7 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
@@ -434,20 +435,17 @@ fun LandscapeView(
         ) {
             Column(
                 modifier = Modifier
+                    .align(Alignment.TopStart)
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
 
                 Text800_14sp(label = "Apply agent & agency branding")
-
                 SpacerUp(size = 16.dp)
 
                 //selections
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    BrandingOption(
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    BrandingOptionLand(
                         isSelected = isTemplateWithBrand,
                         label = "With Branding",
                         image = R.drawable.template_with_brand,
@@ -455,7 +453,10 @@ fun LandscapeView(
                             onSelection(!isTemplateWithBrand)
                         }
                     )
-                    BrandingOption(
+
+                    SpacerUp(size = 8.dp)
+
+                    BrandingOptionLand(
                         isSelected = !isTemplateWithBrand,
                         label = "No Branding",
                         image = R.drawable.template_with_brand,
@@ -464,8 +465,6 @@ fun LandscapeView(
                         }
                     )
                 }
-
-                SpacerUp(size = 16.dp)
             }
 
             //bottom start and cam switch buttons
