@@ -217,7 +217,7 @@ fun VideoRecorderScreen(
 
     //Auto Start Recording
     LaunchedEffect("startRecording") {
-        delay(4000)
+        delay(2000)
         isLoading = false
         startStopRecord(controller, onRecord = {
             isRecording = it
@@ -470,7 +470,7 @@ fun RequestNotificationPermission() {
 
 @Composable
 fun StartStopButton(isStart: Boolean, isMinRecTimeDone: Boolean, onBtnClick: () -> Unit) {
-    val btnTxt = if (isStart) "Stop" else "Record Now"
+    val btnTxt = if (isStart) "End" else "Record Now"
     val btnColor = if (isStart) AppWhite else AppRed
     val txtColor = if (isStart) AppRed else AppWhite
     val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
