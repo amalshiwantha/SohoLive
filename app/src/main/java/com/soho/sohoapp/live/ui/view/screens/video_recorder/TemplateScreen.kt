@@ -432,7 +432,70 @@ fun LandscapeView(
                 .fillMaxHeight()
                 .background(BgGradientPurpleDark)
         ) {
-            // Add your camera preview UI components here
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+
+                Text800_14sp(label = "Apply agent & agency branding")
+
+                SpacerUp(size = 16.dp)
+
+                //selections
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    BrandingOption(
+                        isSelected = isTemplateWithBrand,
+                        label = "With Branding",
+                        image = R.drawable.template_with_brand,
+                        onSelectTemplate = {
+                            onSelection(!isTemplateWithBrand)
+                        }
+                    )
+                    BrandingOption(
+                        isSelected = !isTemplateWithBrand,
+                        label = "No Branding",
+                        image = R.drawable.template_with_brand,
+                        onSelectTemplate = {
+                            onSelection(!isTemplateWithBrand)
+                        }
+                    )
+                }
+
+                SpacerUp(size = 16.dp)
+            }
+
+            //bottom start and cam switch buttons
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                //Camera Switch
+                Image(
+                    painter = painterResource(id = R.drawable.ic_cam_switch),
+                    contentDescription = "Camera Switch",
+                    modifier = Modifier.clickable {
+                        if (!isRecording) {
+                            controller.cameraSelector =
+                                if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                    CameraSelector.DEFAULT_FRONT_CAMERA
+                                } else CameraSelector.DEFAULT_BACK_CAMERA
+                        }
+                    })
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                //Stop & Rec Button
+                StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                    onStartRecClick()
+                })
+            }
         }
     }
 }
