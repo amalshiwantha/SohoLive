@@ -413,7 +413,7 @@ fun BrandingOptionLand(isSelected: Boolean, label: String, image: Int, onSelectT
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable { onSelectTemplate() }.fillMaxWidth()
     ) {
-        Box(modifier = Modifier.size(width = 72.dp, height = 128.dp)) {
+        Box(modifier = Modifier.size(width = 156.dp, height = 120.dp)) {
             //Brand
             Image(
                 painter = painterResource(id = image),

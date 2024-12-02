@@ -448,7 +448,7 @@ fun LandscapeView(
                     BrandingOptionLand(
                         isSelected = isTemplateWithBrand,
                         label = "With Branding",
-                        image = R.drawable.template_with_brand,
+                        image = R.drawable.template_with_brand_land,
                         onSelectTemplate = {
                             onSelection(!isTemplateWithBrand)
                         }
@@ -459,7 +459,7 @@ fun LandscapeView(
                     BrandingOptionLand(
                         isSelected = !isTemplateWithBrand,
                         label = "No Branding",
-                        image = R.drawable.template_with_brand,
+                        image = R.drawable.template_without_brand_land,
                         onSelectTemplate = {
                             onSelection(!isTemplateWithBrand)
                         }
