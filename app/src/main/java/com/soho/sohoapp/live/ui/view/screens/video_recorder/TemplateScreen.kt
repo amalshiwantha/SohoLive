@@ -86,10 +86,7 @@ fun TemplateScreen(
 
     // Handle back press
     BackHandler(enabled = true) {
-        if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
-            rotateScreen(Orientation.PORT.name, activity)
-        }
-        navController.popBackStack()
+        backClose(navController, activity)
     }
 
     //Rotate Screen
@@ -180,7 +177,7 @@ fun TemplateScreen(
                     updateSelection(it)
                 },
                 onBackClick = {
-                    navController.popBackStack()
+                    backClose(navController,activity)
                 })
         } else {
             PortraitView(
@@ -217,11 +214,18 @@ fun TemplateScreen(
                 hasMicPermission,
                 shouldShowSettingsButton,
                 onBackClick = {
-                    navController.popBackStack()
+                    backClose(navController,activity)
                 }
             )
         }
     }
+}
+
+fun backClose(navController: NavHostController, activity: ComponentActivity) {
+    if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
+        rotateScreen(Orientation.PORT.name, activity)
+    }
+    navController.popBackStack()
 }
 
 fun updateSelection(it: Boolean) {
