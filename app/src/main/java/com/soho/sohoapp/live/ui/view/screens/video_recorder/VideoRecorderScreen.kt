@@ -76,7 +76,7 @@ import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
-import com.soho.sohoapp.live.utility.RotateScreen
+import com.soho.sohoapp.live.utility.rotateScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 import java.io.File
@@ -124,7 +124,7 @@ fun VideoRecorderScreen(
 
     if (isRotateLandScreen) {
         cont.getActivity()?.let {
-            RotateScreen(rotateScreen, it)
+            rotateScreen(rotateScreen, it)
             isRotateLandScreen = false
         }
     }

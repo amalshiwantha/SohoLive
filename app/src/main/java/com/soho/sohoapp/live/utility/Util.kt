@@ -41,9 +41,7 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-@Composable
-fun RotateScreen(rotateScreen: String, componentActivity: ComponentActivity) {
-
+fun rotateScreen(rotateScreen: String, componentActivity: ComponentActivity) {
     val newOrientation = if (rotateScreen == Orientation.LAND.name) {
         Configuration.ORIENTATION_LANDSCAPE
     } else {

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,7 +62,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
-import com.soho.sohoapp.live.utility.RotateScreen
+import com.soho.sohoapp.live.utility.rotateScreen
 import org.koin.compose.koinInject
 
 
@@ -73,16 +74,23 @@ fun TemplateScreen(
     onStartRecClick: () -> Unit
 ) {
     val cont = LocalContext.current
-    val mState = vmVidRec.mState.value
-    var timerValue by remember { mutableStateOf("00:00") }
-    var isCompletedMinRecTime by remember { mutableStateOf(false) }
-    var isRecording by remember { mutableStateOf(false) }
+    val isCompletedMinRecTime by remember { mutableStateOf(false) }
+    val isRecording by remember { mutableStateOf(false) }
     var hasCameraPermission by remember { mutableStateOf(false) }
     var hasMicPermission by remember { mutableStateOf(false) }
     var shouldShowSettingsButton by remember { mutableStateOf(false) }
-    var rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
+    val rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
     var isTemplateWithBrand by remember { mutableStateOf(MainStateHolder.mState.isTemplateWithBrand.value) }
+    val activity = LocalContext.current as ComponentActivity
+
+    // Handle back press
+    BackHandler(enabled = true) {
+        if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
+            rotateScreen(Orientation.PORT.name, activity)
+        }
+        navController.popBackStack()
+    }
 
     //Rotate Screen
     LaunchedEffect(rotateScreen) {
@@ -92,10 +100,8 @@ fun TemplateScreen(
     }
 
     if (isRotateLandScreen) {
-        cont.getActivity()?.let {
-            RotateScreen(rotateScreen, it)
-            isRotateLandScreen = false
-        }
+        rotateScreen(rotateScreen, activity)
+        isRotateLandScreen = false
     }
 
     // Launcher for requesting multiple permissions
@@ -159,24 +165,24 @@ fun TemplateScreen(
 
     //Content permission view and Camera
     if (hasCameraPermission && hasMicPermission) {
-        //Template Camera Preview
-        LandscapeView(controller,
-            goLiveData,
-            isTemplateWithBrand,
-            isCompletedMinRecTime,
-            isRecording,
-            onStartRecClick = {
-                onStartRecClick()
-            },
-            onSelection = {
-                isTemplateWithBrand = it
-                updateSelection(it)
-            },
-            onBackClick = {
-                navController.popBackStack()
-            })
 
-        if (false) {
+        if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
+            LandscapeView(controller,
+                goLiveData,
+                isTemplateWithBrand,
+                isCompletedMinRecTime,
+                isRecording,
+                onStartRecClick = {
+                    onStartRecClick()
+                },
+                onSelection = {
+                    isTemplateWithBrand = it
+                    updateSelection(it)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                })
+        } else {
             PortraitView(
                 controller,
                 goLiveData,
@@ -190,7 +196,6 @@ fun TemplateScreen(
                     isTemplateWithBrand = it
                     updateSelection(it)
                 })
-
         }
 
     } else {
