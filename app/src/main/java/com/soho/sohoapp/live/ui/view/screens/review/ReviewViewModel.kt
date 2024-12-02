@@ -10,6 +10,7 @@ import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.pre_rec_library.PreRecLibState
@@ -46,6 +47,8 @@ class ReviewViewModel(
                 //if having mGoLiveSubmit have to save
                 mGoLiveSubmit?.let {
                     vidItem.videoInfo = mGoLiveSubmit.toVideoInfo()
+                    vidItem.videoInfo?.orientation = MainStateHolder.mState.liveOrientation.value
+                    vidItem.videoInfo?.isEnableTemplate = MainStateHolder.mState.isTemplateWithBrand.value
                 }
 
                 //update unlisted state according to the vidItem.privacy

@@ -36,7 +36,8 @@ data class VideoInfo(
     @SerialName("description") val description: String? = null,
     @SerialName("agent_profile_id") val agentProfileId: Int = 0,
     @SerialName("unlisted") var unlisted: Boolean = true,
-    @SerialName("orientation") val orientation: String? = null
+    @SerialName("orientation") var orientation: String? = null,
+    var isEnableTemplate: Boolean = false
 )
 
 @Serializable
