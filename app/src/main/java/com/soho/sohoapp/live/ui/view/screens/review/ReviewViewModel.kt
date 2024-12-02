@@ -45,11 +45,9 @@ class ReviewViewModel(
             //update local DB
             updatedVideoItem?.let { vidItem ->
                 //if having mGoLiveSubmit have to save
-                mGoLiveSubmit?.let {
+                /*mGoLiveSubmit?.let {
                     vidItem.videoInfo = mGoLiveSubmit.toVideoInfo()
-                    vidItem.videoInfo?.orientation = MainStateHolder.mState.liveOrientation.value
-                    vidItem.videoInfo?.isEnableTemplate = MainStateHolder.mState.isTemplateWithBrand.value
-                }
+                }*/
 
                 //update unlisted state according to the vidItem.privacy
                 vidItem.videoInfo?.apply {
@@ -109,16 +107,15 @@ class ReviewViewModel(
             }
         }.launchIn(viewModelScope)
     }
+}
 
-    private fun GoLiveSubmit.toVideoInfo(): VideoInfo {
-        return VideoInfo(
-            streamType = this.purpose,
-            propertyListingId = this.propertyId,
-            title = this.title,
-            description = this.description,
-            agentProfileId = this.agentId ?: 0,
-            unlisted = this.isSohoPublic,
-            orientation = this.orientation
-        )
-    }
+fun GoLiveSubmit.toVideoInfo(): VideoInfo {
+    return VideoInfo(
+        streamType = this.purpose,
+        propertyListingId = this.propertyId,
+        title = this.title,
+        description = this.description,
+        agentProfileId = this.agentId ?: 0,
+        unlisted = this.isSohoPublic
+    )
 }
