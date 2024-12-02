@@ -15,7 +15,8 @@ import androidx.core.view.setPadding
 @Composable
 fun CameraPreview(
     controller: LifecycleCameraController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    camPadding : Int = 0
 ) {
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     AndroidView(
@@ -23,7 +24,7 @@ fun CameraPreview(
             PreviewView(it).apply {
                 this.controller = controller
                 controller.bindToLifecycle(lifecycleOwner)
-                this.setPadding(150)
+                this.setPadding(camPadding)
             }
         },
         modifier = modifier

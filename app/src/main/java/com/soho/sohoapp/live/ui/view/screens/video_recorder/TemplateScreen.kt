@@ -263,9 +263,9 @@ fun PortraitView(
             //Main Camera
             CameraPreview(
                 controller = controller,
+                camPadding = 100,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(64.dp)
                     .align(Alignment.Center)
             )
 
@@ -273,7 +273,7 @@ fun PortraitView(
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.padding(top = 32.dp, start = 32.dp)
+                modifier = Modifier.padding(50.dp)
             )
 
             //Timer Top Right
@@ -283,7 +283,7 @@ fun PortraitView(
                 txtColor = AppWhite,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 32.dp, end = 32.dp)
+                    .padding(50.dp)
             )
 
             //bottom agent info and property info
@@ -291,7 +291,7 @@ fun PortraitView(
                 if (isTemplateWithBrand) {
                     val mod = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(horizontal = 16.dp)
+                        .padding(35.dp)
                         .fillMaxWidth()
                     AgentPropertyInfo(agProp = it, boxMod = mod)
                 }
@@ -406,6 +406,7 @@ fun LandscapeView(
             Box {
                 CameraPreview(
                     controller = controller,
+                    camPadding = 150,
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.Center)
