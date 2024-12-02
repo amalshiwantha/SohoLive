@@ -224,19 +224,20 @@ fun PlayerScreen(
                         .padding(start = 32.dp, top = 16.dp)
                 )
 
-                states.privateVideo.value?.let {
-                    val isTemplated = it.videoInfo?.isEnableTemplate
-                    val orie = it.videoInfo?.orientation
-                    println("isTemplated $isTemplated :: $orie")
-                }
-
                 //Agent & Property Overlay
-                agentProperty?.let {
-                    val mod = Modifier
-                        .align(Alignment.BottomStart)
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
-                    AgentPropertyInfo(it, mod)
+                states.privateVideo.value?.let { pvtVid ->
+                    val isTemplated = pvtVid.videoInfo?.isEnableTemplate ?: false
+                    val orie = pvtVid.videoInfo?.orientation
+
+                    if (isTemplated) {
+                        agentProperty?.let {
+                            val mod = Modifier
+                                .align(Alignment.BottomStart)
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp, vertical = 16.dp)
+                            AgentPropertyInfo(it, mod)
+                        }
+                    }
                 }
             }
         }
