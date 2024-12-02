@@ -161,19 +161,22 @@ fun TemplateScreen(
         //Template Camera Preview
         LandscapeView()
 
-        PortraitView(
-            controller,
-            goLiveData,
-            isTemplateWithBrand,
-            isCompletedMinRecTime,
-            isRecording,
-            onStartRecClick = {
-                onStartRecClick()
-            },
-            onSelection = {
-                isTemplateWithBrand = it
-                MainStateHolder.mState.isTemplateWithBrand.value = isTemplateWithBrand
-            })
+        if (false) {
+            PortraitView(
+                controller,
+                goLiveData,
+                isTemplateWithBrand,
+                isCompletedMinRecTime,
+                isRecording,
+                onStartRecClick = {
+                    onStartRecClick()
+                },
+                onSelection = {
+                    isTemplateWithBrand = it
+                    MainStateHolder.mState.isTemplateWithBrand.value = isTemplateWithBrand
+                })
+
+        }
 
     } else {
         //permission view
@@ -356,22 +359,20 @@ fun LandscapeView() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // Left Section (Selection area) - 40% of the screen
         Box(
             modifier = Modifier
-                .weight(0.4f) // 40% of the screen width
+                .weight(0.6f)
                 .fillMaxHeight()
-                .background(Color(0xFF3B0B39)) // Purple background
+                .background(Color.Black)
         ) {
             // Add your selection UI components here
         }
 
-        // Right Section (Camera preview area) - 60% of the screen
         Box(
             modifier = Modifier
-                .weight(0.6f) // 60% of the screen width
+                .weight(0.4f)
                 .fillMaxHeight()
-                .background(Color(0xFF1F0121)) // Dark purple background
+                .background(BgGradientPurpleDark)
         ) {
             // Add your camera preview UI components here
         }
