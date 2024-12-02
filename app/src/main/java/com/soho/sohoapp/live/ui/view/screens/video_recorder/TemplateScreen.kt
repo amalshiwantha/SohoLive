@@ -18,6 +18,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -389,29 +391,32 @@ fun LandscapeView(
     onBackClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         //camera View
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .weight(0.6f)
-                .fillMaxHeight()
+                .fillMaxSize()
                 .background(Color.Black)
         ) {
             //camera
-            CameraPreview(
-                controller = controller,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center)
-            )
+            Column(modifier = Modifier
+                .align(Alignment.Center)
+                .size(200.dp)) {
+                Box {
+                    CameraPreview(
+                        controller = controller,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
 
             //sohoLogo
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(start = 100.dp, top = 60.dp)
             )
 
             //Timer
@@ -421,7 +426,7 @@ fun LandscapeView(
                 txtColor = AppWhite,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(end = 100.dp, top = 60.dp)
             )
 
             //bottom agent info and property info
@@ -430,6 +435,7 @@ fun LandscapeView(
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
+                        .padding(start = 85.dp, end = 85.dp, bottom = 40.dp)
                     AgentPropertyInfo(agProp = it, boxMod = mod)
                 }
             }
