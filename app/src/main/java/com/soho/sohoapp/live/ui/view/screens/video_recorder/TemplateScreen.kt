@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -53,7 +54,6 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
-import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
@@ -171,6 +171,9 @@ fun TemplateScreen(
             onSelection = {
                 isTemplateWithBrand = it
                 updateSelection(it)
+            },
+            onBackClick = {
+                navController.popBackStack()
             })
 
         if (false) {
@@ -309,7 +312,7 @@ fun PortraitView(
                     .padding(16.dp)
             ) {
 
-                Text800_14sp(label = "Apply agent & agency branding")
+                Text800_14sp(label = stringResource(R.string.apply_agent_agency_branding))
 
                 SpacerUp(size = 16.dp)
 
@@ -378,6 +381,7 @@ fun LandscapeView(
     isRecording: Boolean,
     onStartRecClick: () -> Unit,
     onSelection: (Boolean) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -440,7 +444,22 @@ fun LandscapeView(
                     .padding(16.dp)
             ) {
 
-                Text800_14sp(label = "Apply agent & agency branding")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Text800_14sp(
+                        label = stringResource(R.string.apply_agent_agency_branding),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Image(
+                        modifier = Modifier.clickable { onBackClick() },
+                        painter = painterResource(id = R.drawable.circle_close),
+                        contentDescription = "close_button"
+                    )
+
+                }
                 SpacerUp(size = 16.dp)
 
                 //selections
