@@ -177,7 +177,7 @@ fun TemplateScreen(
                     updateSelection(it)
                 },
                 onBackClick = {
-                    backClose(navController,activity)
+                    backClose(navController, activity)
                 })
         } else {
             PortraitView(
@@ -192,6 +192,9 @@ fun TemplateScreen(
                 onSelection = {
                     isTemplateWithBrand = it
                     updateSelection(it)
+                },
+                onBackClick = {
+                    backClose(navController, activity)
                 })
         }
 
@@ -214,7 +217,7 @@ fun TemplateScreen(
                 hasMicPermission,
                 shouldShowSettingsButton,
                 onBackClick = {
-                    backClose(navController,activity)
+                    backClose(navController, activity)
                 }
             )
         }
@@ -241,6 +244,7 @@ fun PortraitView(
     isRecording: Boolean,
     onStartRecClick: () -> Unit,
     onSelection: (Boolean) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -267,6 +271,16 @@ fun PortraitView(
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
+            )
+
+            //back close button
+            Image(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .clickable { onBackClick() }
+                    .padding(8.dp),
+                painter = painterResource(id = R.drawable.circle_close),
+                contentDescription = "close_button"
             )
 
             //Top Left Soho Watermark
