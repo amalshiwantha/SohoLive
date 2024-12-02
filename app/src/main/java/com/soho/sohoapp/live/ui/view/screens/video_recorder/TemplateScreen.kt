@@ -159,7 +159,18 @@ fun TemplateScreen(
     //Content permission view and Camera
     if (hasCameraPermission && hasMicPermission) {
         //Template Camera Preview
-        LandscapeView()
+        LandscapeView(controller,
+            goLiveData,
+            isTemplateWithBrand,
+            isCompletedMinRecTime,
+            isRecording,
+            onStartRecClick = {
+                onStartRecClick()
+            },
+            onSelection = {
+                isTemplateWithBrand = it
+                updateSelection(it)
+            })
 
         if (false) {
             PortraitView(
@@ -173,7 +184,7 @@ fun TemplateScreen(
                 },
                 onSelection = {
                     isTemplateWithBrand = it
-                    MainStateHolder.mState.isTemplateWithBrand.value = isTemplateWithBrand
+                    updateSelection(it)
                 })
 
         }
@@ -202,6 +213,10 @@ fun TemplateScreen(
             )
         }
     }
+}
+
+fun updateSelection(it: Boolean) {
+    MainStateHolder.mState.isTemplateWithBrand.value = it
 }
 
 @Composable
@@ -354,7 +369,15 @@ fun PortraitView(
 }
 
 @Composable
-fun LandscapeView() {
+fun LandscapeView(
+    controller: LifecycleCameraController,
+    goLiveData: GoLiveSubmit,
+    isTemplateWithBrand: Boolean,
+    isCompletedMinRecTime: Boolean,
+    isRecording: Boolean,
+    onStartRecClick: () -> Unit,
+    onSelection: (Boolean) -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -365,7 +388,30 @@ fun LandscapeView() {
                 .fillMaxHeight()
                 .background(Color.Black)
         ) {
-            // Add your selection UI components here
+            //camera
+            CameraPreview(
+                controller = controller,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center)
+            )
+
+            //sohoLogo
+            Image(
+                painter = painterResource(id = R.drawable.soho_watermark),
+                contentDescription = "watermark",
+                modifier = Modifier.padding(16.dp)
+            )
+
+            //Timer
+            TimerCard(
+                timerValue = "PREVIEW",
+                bgColor = HintGray,
+                txtColor = AppWhite,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            )
         }
 
         Box(
