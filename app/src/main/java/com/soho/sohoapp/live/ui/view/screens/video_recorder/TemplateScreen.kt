@@ -382,6 +382,7 @@ fun LandscapeView(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        //camera View
         Box(
             modifier = Modifier
                 .weight(0.6f)
@@ -412,8 +413,19 @@ fun LandscapeView(
                     .align(Alignment.TopEnd)
                     .padding(16.dp)
             )
+
+            //bottom agent info and property info
+            goLiveData.agentProperty?.let {
+                if (isTemplateWithBrand) {
+                    val mod = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                    AgentPropertyInfo(agProp = it, boxMod = mod)
+                }
+            }
         }
 
+        // selection view
         Box(
             modifier = Modifier
                 .weight(0.4f)
