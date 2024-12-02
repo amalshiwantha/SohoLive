@@ -56,7 +56,9 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
+import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsViewModel
 import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
 import java.io.File
 
 @Composable
@@ -65,9 +67,12 @@ fun PlayerScreen(
     navController: NavHostController,
     fileUri: Uri,
     agentProperty: AgentProperty?,
+    vmVidEdit: VidEditDetailsViewModel = koinInject(),
     onNextClick: () -> Unit = {}
 ) {
 
+    val states = vmVidEdit.mState.value
+    val pvtVidId = mGState.privateVideoId.value
     var showSuccessMessage by remember { mutableStateOf(true) }
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
@@ -77,6 +82,11 @@ fun PlayerScreen(
             fileUri.path ?: "",
             MediaStore.Images.Thumbnails.MINI_KIND
         )
+    }
+
+    //get latest item
+    LaunchedEffect("get_latest") {
+        vmVidEdit.getLatestItem(pvtVidId)
     }
 
     //show confirmation to delete video
@@ -214,7 +224,13 @@ fun PlayerScreen(
                         .padding(start = 32.dp, top = 16.dp)
                 )
 
-                //Agent & Property Overlayi
+                states.privateVideo.value?.let {
+                    val isTemplated = it.videoInfo?.isEnableTemplate
+                    val orie = it.videoInfo?.orientation
+                    println("isTemplated $isTemplated :: $orie")
+                }
+
+                //Agent & Property Overlay
                 agentProperty?.let {
                     val mod = Modifier
                         .align(Alignment.BottomStart)

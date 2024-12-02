@@ -170,7 +170,6 @@ fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGSt
         privateVideoId = mutableLongStateOf(pvtItem.id.toLong())
     }
 
-    println("isOrvtn "+pvtItem.videoInfo?.orientation)
     pvtItem.agentProperty?.let {
         navigateToPlayerScreen(
             navController,
