@@ -164,7 +164,9 @@ private fun LoginForm(viewModel: SignInViewModel, loginState: SignInState) {
 
         //error email visibility
         errorState[FieldType.LOGIN_EMAIL]?.let {
-            TextError(errorMsg = it)
+            if(it.isNotEmpty()){
+                TextError(errorMsg = it)
+            }
         }
 
         SpacerUp(24.dp)
