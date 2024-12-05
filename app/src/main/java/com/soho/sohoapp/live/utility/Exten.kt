@@ -6,6 +6,10 @@ import com.soho.sohoapp.live.network.response.Document
 import java.text.DecimalFormat
 import java.util.Locale
 
+fun String.isMulticast(): Boolean {
+    return this.contains("Multicast")
+}
+
 fun String.toErrorCode(): Int {
     return if (this.contains("404")) 404 else if (this.contains("403")) 403 else 500
 }

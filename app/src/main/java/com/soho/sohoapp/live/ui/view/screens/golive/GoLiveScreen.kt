@@ -144,6 +144,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.BorderGray
 import com.soho.sohoapp.live.ui.theme.CardGray
+import com.soho.sohoapp.live.ui.theme.DisableGray
 import com.soho.sohoapp.live.ui.theme.ErrorRed
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
@@ -164,6 +165,7 @@ import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.isMulticast
 import com.soho.sohoapp.live.utility.toAgentProperty
 import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
@@ -2102,8 +2104,13 @@ private fun SocialMediaItemContent(
                 })
             } else {
                 //button
-                ButtonConnect(text = "Connect", color = info.btnColor) {
-                    onSMItemClicked.invoke(info.name)
+                val isMulticast = mState.activePlan.value?.name?.isMulticast() ?: false
+                val btnColor = if (isMulticast) info.btnColor else DisableGray
+
+                ButtonConnect(text = "Connect", color = btnColor) {
+                    if (isMulticast) {
+                        onSMItemClicked.invoke(info.name)
+                    }
                 }
             }
         }
