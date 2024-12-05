@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,6 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,11 +42,15 @@ import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text700_14spLink
+import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarProfile
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import org.koin.compose.koinInject
 import java.net.URLEncoder
@@ -106,11 +119,9 @@ private fun MainContent(
             .padding(16.dp)) {
 
             Column {
-                Text700_14spLink(name = "Subscription", onClick = {
+                CurrentPlanCard(onPlanClick = {
                     navCont.navigate(NavigationPath.SUBSCRIPTION.name)
                 })
-
-                SpacerUp(size = 24.dp)
 
                 Text700_14spLink(name = "Terms", onClick = {
                     openWebView(
@@ -119,7 +130,6 @@ private fun MainContent(
                         navCont = navCont
                     )
                 })
-
                 SpacerUp(size = 24.dp)
 
                 Text700_14spLink(name = "Privacy Policy", onClick = {
@@ -129,9 +139,9 @@ private fun MainContent(
                         navCont = navCont
                     )
                 })
-
                 SpacerUp(size = 24.dp)
 
+                /*
                 Text700_14spLink(name = "Support", onClick = {
                     openWebView(
                         title = "Support",
@@ -139,8 +149,7 @@ private fun MainContent(
                         navCont = navCont
                     )
                 })
-
-                SpacerUp(size = 24.dp)
+                SpacerUp(size = 24.dp)*/
 
                 LogoutView(onLogout = {
                     vmProfile.showLogoutConfirm()
@@ -160,6 +169,110 @@ private fun MainContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 })
+    }
+}
+
+@Composable
+fun CurrentPlanCard(onPlanClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text400_14sp(info = "Your Current Plan")
+            SpacerUp(size = 8.dp)
+            Text950_20sp(title = "Singlecast 60 (Monthly)")
+            SpacerUp(size = 24.dp)
+
+            UsageButton(openUsage = {})
+            SpacerUp(size = 16.dp)
+            PlansButton(openPlans = {
+                onPlanClick()
+            })
+        }
+    }
+}
+
+@Composable
+fun UsageButton(openUsage: () -> Unit) {
+    OutlinedCard(
+        modifier = Modifier
+            .clickable { openUsage() }
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = AppWhite,
+                shape = MaterialTheme.shapes.large
+            ),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(Modifier.weight(1f)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chart),
+                    contentDescription = "Chart icon",
+                    tint = AppWhite
+                )
+                SpacerSide(size = 13.dp)
+                Text700_14spBold(step = "See Your Usage")
+            }
+
+            Icon(
+                painter = painterResource(id = R.drawable.next_back),
+                contentDescription = "Next",
+                tint = AppWhite
+            )
+        }
+    }
+}
+
+@Composable
+fun PlansButton(openPlans: () -> Unit) {
+    val bgColor = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF9041FE),
+            Color(0xFFA207BD)
+        )
+    )
+
+    Card(
+        modifier = Modifier
+            .clickable { openPlans() }
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.large)
+            .background(brush = bgColor),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(Modifier.weight(1f)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.livecast_white),
+                    contentDescription = "LiveCast icon",
+                    tint = AppWhite
+                )
+                SpacerSide(size = 13.dp)
+                Text700_14spBold(step = "View All Plans")
+            }
+
+            Icon(
+                painter = painterResource(id = R.drawable.next_back),
+                contentDescription = "Next",
+                tint = AppWhite
+            )
+        }
     }
 }
 
