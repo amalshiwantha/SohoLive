@@ -34,8 +34,8 @@ interface SohoApiServices {
         const val ROLLBACK_STREAM = "live_stream/{live_stream_id}"
         const val TEST_UPLOAD = "dev/upload.php"
         const val MUX_UPLOAD = "/video/upload"
-        const val SUBS_PLANS = "/plans/mobile"
-        const val ACTIVE_PLAN = "/plans/active"
+        const val SUBS_PLANS = "plans/mobile"
+        const val ACTIVE_PLAN = "plans/active"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
