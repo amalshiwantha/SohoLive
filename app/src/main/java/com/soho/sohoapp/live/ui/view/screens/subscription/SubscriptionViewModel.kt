@@ -51,9 +51,11 @@ class SubscriptionViewModel(
             when (apiState) {
 
                 is ApiState.Data -> {
-                    println("mySubs :  Data :: ${apiState.data}")
                     apiState.data?.let { result ->
-                        val res = result.data
+                        mState.value = mState.value.copy(
+                            planListRes = result.data,
+                            isSuccess = result.data.isNotEmpty()
+                        )
                     }
                 }
 
