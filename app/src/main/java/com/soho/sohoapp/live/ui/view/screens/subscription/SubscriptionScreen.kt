@@ -79,7 +79,7 @@ fun SubscriptionScreen(
 }
 
 @Composable
-fun NoNetView(onRetryClick: () -> Unit) {
+private fun NoNetView(onRetryClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +90,7 @@ fun NoNetView(onRetryClick: () -> Unit) {
 }
 
 @Composable
-fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
+private fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,7 +118,8 @@ fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
 
         //Content
         Column(modifier = Modifier
-            .fillMaxWidth().padding(bottom = 24.dp)
+            .fillMaxWidth()
+            .padding(bottom = 24.dp)
             .constrainAs(content) {
                 top.linkTo(actionBar.bottom)
                 start.linkTo(parent.start)
@@ -131,12 +132,14 @@ fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
 }
 
 @Composable
-fun PlanContent(mState: SubscriptionState) {
+private fun PlanContent(mState: SubscriptionState) {
     if (mState.isLoading) {
         CenterMessageProgress(message = mState.loadingMessage)
     } else {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             items(mState.planListRes) { plan ->
                 SubsPlanCard(plan)
@@ -146,7 +149,7 @@ fun PlanContent(mState: SubscriptionState) {
 }
 
 @Composable
-fun SubsPlanCard(plan: SubscriptionCategory) {
+private fun SubsPlanCard(plan: SubscriptionCategory) {
     val isSingleCast = isSingleCast(plan.title)
 
     Card(
@@ -228,7 +231,7 @@ private fun CastTermCard(subPlan: SubscriptionPlan, isSelected: Boolean) {
 }
 
 @Composable
-fun CastTerms(terms: PlanTerms) {
+private fun CastTerms(terms: PlanTerms) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -278,7 +281,7 @@ private fun BulletPointText(value: String) {
 }
 
 @Composable
-fun SubtitleCastTo(isSingle: Boolean, subTitle: String) {
+private fun SubtitleCastTo(isSingle: Boolean, subTitle: String) {
     Column {
         //SM List icon
         Row(
@@ -326,7 +329,6 @@ private fun getCastIcon(isSingle: Boolean): Int {
 private fun isSingleCast(title: String): Boolean {
     return title.lowercase().contains("single")
 }
-
 
 //Preview
 
