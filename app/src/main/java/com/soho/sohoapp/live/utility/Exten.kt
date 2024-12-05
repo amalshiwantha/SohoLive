@@ -3,9 +3,13 @@ package com.soho.sohoapp.live.utility
 import androidx.compose.ui.graphics.Color
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.network.response.Document
+import java.text.DecimalFormat
 import java.util.Locale
 
-import java.text.DecimalFormat
+fun String.toCapsFirstLetter(): String {
+    return this.replaceFirstChar { it.uppercase() }
+}
+
 
 fun Int.formatNumber(): String {
     val formatter = DecimalFormat("#,###")

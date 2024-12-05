@@ -37,7 +37,9 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.network.response.PlanData
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -52,6 +54,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.logoutRed
+import com.soho.sohoapp.live.utility.toCapsFirstLetter
 import org.koin.compose.koinInject
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -60,7 +63,9 @@ import java.nio.charset.StandardCharsets
 fun ProfileScreen(
     vmProfile: ProfileViewModel = koinInject(),
     navController: NavHostController,
+    mGState: GlobalState,
 ) {
+    val activePlan = mGState.activePlan.value
     val sProfile = vmProfile.mState.value
     var isShowAlert by remember { mutableStateOf(false) }
 
@@ -83,14 +88,15 @@ fun ProfileScreen(
             })
     }
 
-    MainContent(vmProfile, sProfile, navController)
+    MainContent(vmProfile, sProfile, navController, activePlan)
 }
 
 @Composable
 private fun MainContent(
     vmProfile: ProfileViewModel,
     sProfile: ProfileState,
-    navCont: NavHostController
+    navCont: NavHostController,
+    activePlan: PlanData?
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -119,9 +125,11 @@ private fun MainContent(
             .padding(16.dp)) {
 
             Column {
-                CurrentPlanCard(onPlanClick = {
-                    navCont.navigate(NavigationPath.SUBSCRIPTION.name)
-                })
+                activePlan?.let {
+                    CurrentPlanCard(onPlanClick = {
+                        navCont.navigate(NavigationPath.SUBSCRIPTION.name)
+                    }, it)
+                }
 
                 Text700_14spLink(name = "Terms", onClick = {
                     openWebView(
@@ -173,7 +181,7 @@ private fun MainContent(
 }
 
 @Composable
-fun CurrentPlanCard(onPlanClick: () -> Unit) {
+fun CurrentPlanCard(onPlanClick: () -> Unit, planData: PlanData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -184,7 +192,7 @@ fun CurrentPlanCard(onPlanClick: () -> Unit) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text400_14sp(info = "Your Current Plan")
             SpacerUp(size = 8.dp)
-            Text950_20sp(title = "Singlecast 60 (Monthly)")
+            Text950_20sp(title = "${planData.name} (${planData.interval.toCapsFirstLetter()})")
             SpacerUp(size = 24.dp)
 
             UsageButton(openUsage = {})
@@ -301,7 +309,8 @@ private fun openWebView(title: String, url: String, navCont: NavHostController) 
 @Composable
 fun PreviewProfile() {
     ProfileScreen(
+        vmProfile = ProfileViewModel(dataStore = AppDataStoreManager(LocalContext.current)),
         navController = NavHostController(LocalContext.current),
-        vmProfile = ProfileViewModel(dataStore = AppDataStoreManager(LocalContext.current))
+        mGState = GlobalState()
     )
 }

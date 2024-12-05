@@ -87,7 +87,7 @@ fun BottomNavHost(
             )
         }
         composable(route = NavigationPath.PROFILE.name) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, mGState = mGlobalState)
         }
         composable(route = NavigationPath.SET_SCHEDULE.name) {
             ScheduleScreen(
@@ -162,7 +162,7 @@ fun BottomNavHost(
                 navController = navController,
                 goLiveData = mGoLiveSubmit,
                 onStartRecClick = {
-                    navController.navigate(NavigationPath.VIDEO_RECORDER.name){
+                    navController.navigate(NavigationPath.VIDEO_RECORDER.name) {
                         popUpTo(NavigationPath.TEMPLATE.name) {
                             inclusive = true
                         }
