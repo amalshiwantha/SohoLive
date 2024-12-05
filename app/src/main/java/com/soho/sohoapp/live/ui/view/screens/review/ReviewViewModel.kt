@@ -10,10 +10,10 @@ import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GoLiveSubmit
-import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.pre_rec_library.PreRecLibState
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -67,7 +67,27 @@ class ReviewViewModel(
                     dataStore.userProfile.collect { profile ->
                         profile?.let { prof ->
                             vidItem.videoInfo?.let { vidInfo ->
-                                uploadVideoMux(prof.authenticationToken, vidInfo)
+
+                                //Check Active Plan and call uploadVideoMux
+                                apiRepo.getCurrentPlan(profile.authenticationToken)
+                                    .onEach { apiState ->
+                                        when (apiState) {
+                                            is ApiState.Data -> {
+                                                apiState.data?.let { activeRes ->
+                                                    if (!activeRes.responseType.equals(ERR_VAL)) {
+                                                        uploadVideoMux(
+                                                            prof.authenticationToken,
+                                                            vidInfo
+                                                        )
+                                                    } else {
+                                                        //Logout Now
+                                                    }
+                                                }
+                                            }
+
+                                            else -> {}
+                                        }
+                                    }.launchIn(viewModelScope)
                             }
                         }
                     }
