@@ -22,8 +22,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.datastore.AppDataStoreManager
-import com.soho.sohoapp.live.db.AppDatabase
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.AppTopBar
@@ -108,6 +106,7 @@ fun HomeScreen(
         }
 
         if (isLogout) {
+            viewMMain.clearLogout()
             navControllerHome.navigate(NavigationPath.PRE_ACCESS.name) {
                 popUpTo(NavigationPath.HOME.name) { inclusive = true }
             }
@@ -120,19 +119,19 @@ fun HomeScreen(
     Scaffold(
         containerColor = BgGradientPurpleLight,
         modifier = Modifier.fillMaxSize(), topBar = {
-        if (showBottomBar && showTopBar) {
-            AppTopBar(title = selectedTabTitle,
-                isAllowBack = false,
-                onBackClick = { },
-                onRightClick = {})
-        }
-    }, bottomBar = {
-        if (showBottomBar) {
-            BottomNavigationBar(navController, navigationSelectedItem, onTabClick = {
-                navigationSelectedItem = it
-            })
-        }
-    }) { innerPadding ->
+            if (showBottomBar && showTopBar) {
+                AppTopBar(title = selectedTabTitle,
+                    isAllowBack = false,
+                    onBackClick = { },
+                    onRightClick = {})
+            }
+        }, bottomBar = {
+            if (showBottomBar) {
+                BottomNavigationBar(navController, navigationSelectedItem, onTabClick = {
+                    navigationSelectedItem = it
+                })
+            }
+        }) { innerPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()

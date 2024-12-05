@@ -11,8 +11,10 @@ import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.UploadData
+import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
@@ -251,6 +253,28 @@ class MainViewModel(
     fun updateLiveCastState(castEnd: CastEnd) {
         viewModelScope.launch {
             AppEventBus.sendEvent(AppEvent.LiveEndStatus(castEnd))
+        }
+    }
+
+    fun clearLogout() {
+        viewModelScope.launch {
+            val smFb = SocialMediaProfile().apply {
+                smInfo = SocialMediaInfo.FACEBOOK
+                profile.isConnected = false
+                smInfo.isConnect = false
+                smInfo.isItemChecked = false
+            }
+
+            val smYT = SocialMediaProfile().apply {
+                smInfo = SocialMediaInfo.YOUTUBE
+                profile.isConnected = false
+                smInfo.isConnect = false
+                smInfo.isItemChecked = false
+            }
+            doLogout(smFb)
+            doLogout(smYT)
+            MainStateHolder.mState.reset()
+            dataStore.clearAllData()
         }
     }
 }

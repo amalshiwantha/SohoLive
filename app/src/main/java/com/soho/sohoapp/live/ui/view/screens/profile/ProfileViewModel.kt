@@ -34,23 +34,6 @@ class ProfileViewModel(
 
             ProfileEvent.LogoutDismissAlert -> {
                 viewModelScope.launch {
-                    val smFb = SocialMediaProfile().apply {
-                        smInfo = SocialMediaInfo.FACEBOOK
-                        profile.isConnected = false
-                        smInfo.isConnect = false
-                        smInfo.isItemChecked = false
-                    }
-
-                    val smYT = SocialMediaProfile().apply {
-                        smInfo = SocialMediaInfo.YOUTUBE
-                        profile.isConnected = false
-                        smInfo.isConnect = false
-                        smInfo.isItemChecked = false
-                    }
-                    doLogout(smFb)
-                    doLogout(smYT)
-                    MainStateHolder.mState.reset()
-                    dataStore.clearAllData()
                     AppEventBus.sendEvent(AppEvent.NavigateToLogin(true))
                 }
                 mState.value = mState.value.copy(alertState = AlertState.Idle)
