@@ -72,13 +72,14 @@ class ReviewViewModel(
                         profile?.let { prof ->
                             vidItem.videoInfo?.let { vidInfo ->
 
-                                //Check Active Plan and call uploadVideoMux
+                                //Check ActivePlan and call uploadVideoMux
                                 apiRepo.getCurrentPlan(profile.authenticationToken)
                                     .onEach { apiState ->
                                         when (apiState) {
                                             is ApiState.Data -> {
                                                 apiState.data?.let { activeRes ->
                                                     if (!activeRes.responseType.equals(ERR_VAL)) {
+                                                        //call uploadVideoMux
                                                         uploadVideoMux(
                                                             prof.authenticationToken,
                                                             vidInfo
