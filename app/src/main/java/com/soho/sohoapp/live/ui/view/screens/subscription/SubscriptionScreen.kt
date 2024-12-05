@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +42,7 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -195,10 +197,12 @@ private fun SubsPlanCard(plan: SubscriptionCategory, mGState: GlobalState) {
 
             //Cast Plans List
             plan.plans.forEach {
-                val isSelected = it.id == mGState.activePlan.value?.id
-                CastTermCard(it, isSelected)
+                if (it.id == mGState.activePlan.value?.id) {
+                    CastTermCardSelected(it)
+                } else {
+                    CastTermCard(it)
+                }
             }
-            SpacerUp(size = 24.dp)
 
             //Info View
             Text400_12sp(
@@ -211,9 +215,7 @@ private fun SubsPlanCard(plan: SubscriptionCategory, mGState: GlobalState) {
 }
 
 @Composable
-private fun CastTermCard(subPlan: SubscriptionPlan, isSelected: Boolean) {
-    val isSelectedBg = if (isSelected) SelectedOrange else ItemCardBg
-
+private fun CastTermCard(subPlan: SubscriptionPlan) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -224,7 +226,7 @@ private fun CastTermCard(subPlan: SubscriptionPlan, isSelected: Boolean) {
                 shape = MaterialTheme.shapes.small
             ),
         shape = MaterialTheme.shapes.small,
-        colors = CardDefaults.cardColors(containerColor = isSelectedBg)
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
     ) {
         Column(
             modifier = Modifier
@@ -237,12 +239,58 @@ private fun CastTermCard(subPlan: SubscriptionPlan, isSelected: Boolean) {
 
             CastTerms(subPlan.terms)
 
-            if (!isSelected) {
-                Text400_12sp(
-                    label = "Please visit our website for more details.",
-                    txtColor = HintGray
-                )
+            Text400_12sp(
+                label = "Please visit our website for more details.",
+                txtColor = HintGray
+            )
+        }
+    }
+}
+
+@Composable
+private fun CastTermCardSelected(subPlan: SubscriptionPlan) {
+    val innerCardRadius = 8.dp
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp),
+        shape = RoundedCornerShape(innerCardRadius),
+        colors = CardDefaults.cardColors(containerColor = SelectedOrange)
+    ) {
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            SpacerUp(size = 8.dp)
+            Text800_10sp(label = "CURRENT", txtColor = AppWhite)
+            SpacerUp(size = 4.dp)
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                shape = RoundedCornerShape(
+                    topStart = 0.dp,
+                    topEnd = 0.dp,
+                    bottomStart = innerCardRadius,
+                    bottomEnd = innerCardRadius
+                ),
+                colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text700_14sp(step = subPlan.name)
+                    CastTerms(subPlan.terms)
+                }
             }
+
         }
     }
 }
