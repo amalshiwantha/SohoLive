@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,7 +44,6 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
@@ -117,7 +118,7 @@ fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
 
         //Content
         Column(modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().padding(bottom = 24.dp)
             .constrainAs(content) {
                 top.linkTo(actionBar.bottom)
                 start.linkTo(parent.start)
@@ -131,17 +132,14 @@ fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
 
 @Composable
 fun PlanContent(mState: SubscriptionState) {
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxSize()
-    ) {
-        if (mState.isLoading) {
-            //Loading View
-            CenterMessageProgress(message = mState.loadingMessage)
-        } else {
-            mState.planListRes.forEach {
-                SubsPlanCard(it)
+    if (mState.isLoading) {
+        CenterMessageProgress(message = mState.loadingMessage)
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(16.dp)
+        ) {
+            items(mState.planListRes) { plan ->
+                SubsPlanCard(plan)
             }
         }
     }
