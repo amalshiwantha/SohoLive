@@ -13,7 +13,9 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Data
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_500
 import com.soho.sohoapp.live.utility.formValidation
+import com.soho.sohoapp.live.utility.toErrorCode
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -74,16 +76,26 @@ class SignInViewModel(
                             setAsLoggedState(result.data)
                             mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
                         } else {
-                            mStateLogin.value =
-                                mStateLogin.value.copy(
-                                    alertState = AlertState.Display(
-                                        AlertConfig.SIGN_IN_ERROR.apply {
-                                            result.response?.let {
-                                                message = it
-                                            }
-                                        }
-                                    )
-                                )
+                            val errCode = result.response?.toErrorCode() ?: ERR_500
+
+                            when (errCode) {
+                                ERR_500 -> {
+                                    mStateLogin.value =
+                                        mStateLogin.value.copy(
+                                            alertState = AlertState.Display(
+                                                AlertConfig.SIGN_IN_ERROR.apply {
+                                                    result.response?.let {
+                                                        message = it
+                                                    }
+                                                }
+                                            )
+                                        )
+                                }
+
+                                else -> {
+
+                                }
+                            }
                         }
                     }
                 }

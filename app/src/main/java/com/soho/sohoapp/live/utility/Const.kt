@@ -7,5 +7,8 @@ class Const {
         const val YT_VERIFY = "https://support.google.com/youtube/answer/171664"
         const val FB_MORE =
             "https://www.facebook.com/business/help/216491699144904?id=1123223941353904"
+        const val ERR_500 = 500
+        const val ERR_403 = 403
+        const val ERR_404 = 404
     }
 }
