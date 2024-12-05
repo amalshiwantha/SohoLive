@@ -206,9 +206,11 @@ private fun SubsPlanCard(plan: SubscriptionCategory, mGState: GlobalState) {
 
             //Info View
             Text400_12sp(
+                modifier = Modifier,
                 label = "Unfortunately, you can't modify your plan or view pricing in the app. We know it's not ideal.",
-                txtColor = HintGray
+                txtColor = HintGray, isCenter = true
             )
+
             SpacerUp(size = 16.dp)
         }
     }

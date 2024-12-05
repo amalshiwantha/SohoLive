@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -369,7 +368,10 @@ fun TextUploadComplete(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_success_tick), contentDescription = "warning")
+        Image(
+            painter = painterResource(id = R.drawable.ic_success_tick),
+            contentDescription = "warning"
+        )
         SpacerSide(size = 4.dp)
         Text(
             text = "Completed",
@@ -597,7 +599,13 @@ fun Text400_10sp(modifier: Modifier = Modifier, label: String, txtColor: Color =
 }
 
 @Composable
-fun Text400_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color = AppWhite) {
+fun Text400_12sp(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtColor: Color = AppWhite,
+    isCenter: Boolean = false
+) {
+    val txtAlign = if (isCenter) TextAlign.Center else TextAlign.Left
     Text(
         modifier = modifier,
         text = label,
@@ -606,9 +614,33 @@ fun Text400_12sp(modifier: Modifier = Modifier, label: String, txtColor: Color =
         maxLines = 2,
         letterSpacing = 0.14.sp,
         color = txtColor,
+        textAlign = txtAlign,
         fontWeight = FontWeight(400),
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
     )
+}
+
+@Composable
+fun Text400_12spCenter(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtColor: Color = AppWhite
+) {
+    Box(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            lineHeight = 16.8.sp,
+            maxLines = 2,
+            letterSpacing = 0.14.sp,
+            color = txtColor,
+            fontWeight = FontWeight(400),
+            fontFamily = FontFamily(Font(R.font.axiforma_regular))
+        )
+    }
 }
 
 @Composable
