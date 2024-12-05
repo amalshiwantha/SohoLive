@@ -304,8 +304,10 @@ class SohoApiRepository(private val service: SohoApiServices) {
         flow {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+
                 val apiResponse = service.activePlan(authToken = authToken)
                 MainStateHolder.mState.activePlan.value = apiResponse.data
+
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
                 e.message?.let {

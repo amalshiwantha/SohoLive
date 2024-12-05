@@ -72,15 +72,6 @@ fun SubscriptionScreen(
         }
     }
 
-    //Update ActivePlan status
-    LaunchedEffect(mState.isCalledActivePlan) {
-        if (mState.isCalledActivePlan) {
-            mState.activePlanRes?.let {
-                MainStateHolder.mState.activePlan.value = it
-            }
-        }
-    }
-
     //Main Content
     if (netUtil.isNetworkAvailable()) {
         MainContent(mState, mGState, onBackClick = {

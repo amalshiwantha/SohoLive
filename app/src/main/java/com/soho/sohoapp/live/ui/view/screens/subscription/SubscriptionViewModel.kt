@@ -33,16 +33,10 @@ class SubscriptionViewModel(
         apiRepo.getCurrentPlan(authToken).onEach { apiState ->
             when (apiState) {
                 is ApiState.Data -> {
-                    val activePlan = apiState.data?.data
-                    mState.value =
-                        mState.value.copy(isCalledActivePlan = true, activePlanRes = activePlan)
                     getSubsPlans(authToken)
                 }
 
-                is ApiState.Alert -> {}
-                is ApiState.Loading -> {
-                    mState.value = mState.value.copy(isLoading = true)
-                }
+                else -> {}
             }
         }.launchIn(viewModelScope)
     }

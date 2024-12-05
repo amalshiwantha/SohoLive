@@ -11,7 +11,6 @@ import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
-import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
@@ -75,18 +74,8 @@ class ProfileViewModel(
         }
     }
 
-    fun getActivePlan(authToken: String) {
-        apiRepo.getCurrentPlan(authToken).onEach { apiState ->
-            when (apiState) {
-                is ApiState.Data -> {
-                    val activePlan = apiState.data?.data
-                    MainStateHolder.mState.activePlan.value = activePlan
-                }
-
-                is ApiState.Alert -> {}
-                is ApiState.Loading -> {}
-            }
-        }.launchIn(viewModelScope)
+    private fun getActivePlan(authToken: String) {
+        apiRepo.getCurrentPlan(authToken).onEach { _ -> }.launchIn(viewModelScope)
     }
 
     fun showLogoutConfirm() {
