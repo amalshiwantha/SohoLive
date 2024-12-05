@@ -220,6 +220,11 @@ fun GoLiveScreen(
     var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), false)) }
     var isShowOrientationModel by remember { mutableStateOf(false) }
 
+    /*get active plan status*/
+    LaunchedEffect("active_plan") {
+        goLiveVm.callActivePlan()
+    }
+
     /*
     * show stream not enabled view
     * */

@@ -21,6 +21,11 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
+import com.soho.sohoapp.live.utility.getForceExitMessage
+import com.soho.sohoapp.live.utility.toErrorCode
 import io.ktor.utils.io.printStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -146,7 +151,8 @@ class GoLiveViewModel(
                             liveState.value = liveState.value.copy(goLiveResults = res)
                         } else {
                             if (errorMsg?.contains("not enabled") == true) {
-                                liveState.value = liveState.value.copy(isStreamNotEnabled = mutableStateOf(true))
+                                liveState.value =
+                                    liveState.value.copy(isStreamNotEnabled = mutableStateOf(true))
                             } else {
                                 liveState.value =
                                     liveState.value.copy(alertState = AlertState.Display(AlertConfig.GO_LIVE_SUBMIT_ERROR.apply {
@@ -370,6 +376,33 @@ class GoLiveViewModel(
 
         } ?: run {
             emptyList()
+        }
+    }
+
+    fun callActivePlan() {
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    //Check ActivePlan and call callVideoLibrary
+                    apiRepo.getCurrentPlan(it.authenticationToken)
+                        .onEach { apiState ->
+                            when (apiState) {
+                                is ApiState.Data -> {
+                                    apiState.data?.let { activeRes ->
+                                        if (activeRes.responseType.equals(ERR_VAL)) {
+                                            //ForceLogout Now
+                                            val forceExit =
+                                                getForceExitMessage(activeRes.response?.toErrorCode())
+                                            AppEventBus.sendEvent(AppEvent.ForceLogout(forceExit))
+                                        }
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }.launchIn(viewModelScope)
+                }
+            }
         }
     }
 
