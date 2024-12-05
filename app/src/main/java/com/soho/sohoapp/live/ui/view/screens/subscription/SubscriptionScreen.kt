@@ -1,17 +1,24 @@
 package com.soho.sohoapp.live.ui.view.screens.subscription
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,9 +30,11 @@ import com.soho.sohoapp.live.model.SubscriptionCategory
 import com.soho.sohoapp.live.model.SubscriptionPlan
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
-import com.soho.sohoapp.live.ui.components.Text700_10sp
+import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.view.screens.golive.NoInternetScreen
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -128,7 +137,9 @@ fun PlanContent(mState: SubscriptionState) {
 }
 
 @Composable
-fun SubsPlanCard(planInfo: SubscriptionCategory) {
+fun SubsPlanCard(plan: SubscriptionCategory) {
+    val isSingleCast = isSingleCast(plan.title)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -137,9 +148,71 @@ fun SubsPlanCard(planInfo: SubscriptionCategory) {
         colors = CardDefaults.cardColors(containerColor = ItemCardBg)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text700_10sp(title = planInfo.title)
+            //Cast Icon
+            Image(
+                painter = painterResource(id = getCastIcon(isSingleCast)),
+                contentDescription = "cast_icon"
+            )
+            SpacerUp(size = 16.dp)
+
+            //Title
+            Text950_20sp(title = plan.title)
+            SpacerUp(size = 16.dp)
+
+            //Subtitle
+            SubtitleCastTo(isSingleCast, plan.subTitle)
         }
     }
+}
+
+@Composable
+fun SubtitleCastTo(isSingle: Boolean, subTitle: String) {
+    Column {
+        //SM List icon
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp, CenterHorizontally)
+        ) {
+            Text400_14sp(info = "Cast to")
+
+            Image(
+                painter = painterResource(id = R.drawable.soho_logo),
+                modifier = Modifier.size(16.dp),
+                contentDescription = "soho_logo"
+            )
+
+            if (!isSingle) {
+                Image(
+                    painter = painterResource(id = R.drawable.cast_sm_fb),
+                    contentDescription = "fb_logo"
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.cast_sm_yt),
+                    contentDescription = "fb_logo"
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.cast_sm_li),
+                    contentDescription = "fb_logo"
+                )
+            }
+        }
+
+        SpacerUp(size = 16.dp)
+
+        Text400_14sp(info = subTitle, color = HintGray)
+    }
+}
+
+private fun getCastIcon(isSingle: Boolean): Int {
+    return if (isSingle) {
+        R.drawable.singlecast
+    } else {
+        R.drawable.multicast
+    }
+}
+
+private fun isSingleCast(title: String): Boolean {
+    return title.lowercase().contains("single")
 }
 
 
@@ -166,8 +239,8 @@ private fun ScreenNoNet() {
 
 //sample data
 val subscriptionCategory = SubscriptionCategory(
-    title = "Title",
-    subTitle = "Subtitle example",
+    title = "Single Cast",
+    subTitle = "Live stream to your property inspections to your listing",
     features = listOf(
         "Feature 1: Cast to multiple destinations",
         "Feature 2: 90 Days In-App Storage",
