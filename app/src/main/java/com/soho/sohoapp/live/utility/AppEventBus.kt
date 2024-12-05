@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.utility
 
 import com.soho.sohoapp.live.enums.CastEnd
+import com.soho.sohoapp.live.model.ForceExit
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.UploadData
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,6 +14,7 @@ sealed class AppEvent {
     data class NavigateToLogin(val isLogout: Boolean) : AppEvent()
     data class OpenWebView(val url: String?) : AppEvent()
     data class UploadVideo(val data: UploadData?) : AppEvent()
+    data class ForceLogout(val forceExit: ForceExit?) : AppEvent()
 }
 
 object AppEventBus {

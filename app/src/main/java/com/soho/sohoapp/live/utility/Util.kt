@@ -33,7 +33,11 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.AlertData
+import com.soho.sohoapp.live.model.ForceExit
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_403
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_404
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_500
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -41,6 +45,26 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
+//Get Force Logout Error message
+fun getForceExitMessage(errCode: Int?): ForceExit {
+    return when (errCode) {
+        ERR_403 -> ForceExit(
+            "Not eligible",
+            "Your current plan is not eligible for multicast. Please upgrade to a multicast plan.",
+            ERR_403
+        )
+
+        ERR_404 -> ForceExit(
+            "Subscription expired",
+            "Contact us at support.soho.com.au or visit soho.com.au/agents/livecast for more information",
+            ERR_404
+        )
+
+        else -> ForceExit("", "", ERR_500)
+    }
+}
+
+//Rotate Screen for Video Recording
 fun rotateScreen(rotateScreen: String, componentActivity: ComponentActivity) {
     val newOrientation = if (rotateScreen == Orientation.LAND.name) {
         Configuration.ORIENTATION_LANDSCAPE

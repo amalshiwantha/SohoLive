@@ -13,7 +13,11 @@ import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.pre_rec_library.PreRecLibState
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
+import com.soho.sohoapp.live.utility.getForceExitMessage
+import com.soho.sohoapp.live.utility.toErrorCode
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -80,7 +84,9 @@ class ReviewViewModel(
                                                             vidInfo
                                                         )
                                                     } else {
-                                                        //Logout Now
+                                                        //ForceLogout Now
+                                                        val forceExit = getForceExitMessage(activeRes.response?.toErrorCode())
+                                                        AppEventBus.sendEvent(AppEvent.ForceLogout(forceExit))
                                                     }
                                                 }
                                             }

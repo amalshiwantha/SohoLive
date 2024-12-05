@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -34,6 +33,7 @@ import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_404
 
 @Composable
 fun HomeScreen(
@@ -53,6 +53,8 @@ fun HomeScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.NavigateToLogin(false))
     val ebUpload =
         AppEventBus.events.collectAsState(initial = AppEvent.UploadVideo(UploadData()))
+    val ebForceLogout =
+        AppEventBus.events.collectAsState(initial = AppEvent.ForceLogout(null))
     val msUploadProgress by viewMMain.uploadProgress.collectAsState()
     val msUploadLevel by viewMMain.stateUploadLevel.collectAsState()
 
@@ -110,6 +112,26 @@ fun HomeScreen(
             navControllerHome.navigate(NavigationPath.PRE_ACCESS.name) {
                 popUpTo(NavigationPath.HOME.name) { inclusive = true }
             }
+        }
+    }
+
+    //Logout and Move to the PreAccessScreen
+    LaunchedEffect(ebForceLogout.value) {
+        val forceExit = when (val event = ebForceLogout.value) {
+            is AppEvent.ForceLogout -> event.forceExit
+            else -> null
+        }
+
+        forceExit?.let {
+            if (forceExit.code == ERR_404) {
+                viewMMain.clearLogout()
+                navControllerHome.navigate(NavigationPath.PRE_ACCESS.name) {
+                    popUpTo(NavigationPath.HOME.name) { inclusive = true }
+                }
+            } else {
+                //move to GoLive tab -> step #1 and clear all saved data
+            }
+
         }
     }
 
@@ -182,13 +204,4 @@ fun isTopBarVisible(backStack: NavBackStackEntry?): Boolean {
     } ?: run {
         return true
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewHome() {
-    /*HomeScreen(
-        navControllerHome = NavHostController(LocalContext.current),
-        viewMMain = MainViewModel(dataStore = AppDataStoreManager(LocalContext.current), vidDb = getDatabase(LocalContext.current).privateVideoDao())
-    )*/
 }
