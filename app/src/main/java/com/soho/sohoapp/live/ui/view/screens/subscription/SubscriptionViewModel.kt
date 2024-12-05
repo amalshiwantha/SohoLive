@@ -33,7 +33,9 @@ class SubscriptionViewModel(
         apiRepo.getCurrentPlan(authToken).onEach { apiState ->
             when (apiState) {
                 is ApiState.Data -> {
-                    println("mySubs :  ActPlan :: ${apiState.data}")
+                    val activePlan = apiState.data?.data
+                    mState.value =
+                        mState.value.copy(isCalledActivePlan = true, activePlanRes = activePlan)
                     getSubsPlans(authToken)
                 }
 

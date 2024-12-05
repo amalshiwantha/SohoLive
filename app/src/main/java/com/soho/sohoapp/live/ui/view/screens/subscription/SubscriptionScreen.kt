@@ -69,9 +69,18 @@ fun SubscriptionScreen(
         }
     }
 
+    //Update ActivePlan status
+    LaunchedEffect(mState.isCalledActivePlan) {
+        if (mState.isCalledActivePlan) {
+            mState.activePlanRes?.let {
+                mGState.apply { activePlan.value = it }
+            }
+        }
+    }
+
     //Main Content
     if (netUtil.isNetworkAvailable()) {
-        MainContent(mState, onBackClick = {
+        MainContent(mState, mGState, onBackClick = {
             navController.popBackStack()
         })
     } else {
@@ -91,7 +100,11 @@ private fun NoNetView(onRetryClick: () -> Unit) {
 }
 
 @Composable
-private fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
+private fun MainContent(
+    mState: SubscriptionState,
+    mGState: GlobalState,
+    onBackClick: () -> Unit
+) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -127,13 +140,13 @@ private fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
             }) {
-            PlanContent(mState)
+            PlanContent(mState, mGState)
         }
     }
 }
 
 @Composable
-private fun PlanContent(mState: SubscriptionState) {
+private fun PlanContent(mState: SubscriptionState, mGState: GlobalState) {
     if (mState.isLoading) {
         CenterMessageProgress(message = mState.loadingMessage)
     } else {
@@ -143,14 +156,14 @@ private fun PlanContent(mState: SubscriptionState) {
                 .padding(16.dp)
         ) {
             items(mState.planListRes) { plan ->
-                SubsPlanCard(plan)
+                SubsPlanCard(plan, mGState)
             }
         }
     }
 }
 
 @Composable
-private fun SubsPlanCard(plan: SubscriptionCategory) {
+private fun SubsPlanCard(plan: SubscriptionCategory, mGState: GlobalState) {
     val isSingleCast = isSingleCast(plan.title)
 
     Card(
@@ -181,7 +194,10 @@ private fun SubsPlanCard(plan: SubscriptionCategory) {
             SpacerUp(size = 24.dp)
 
             //Cast Plans List
-            plan.plans.forEach { CastTermCard(it, false) }
+            plan.plans.forEach {
+                val isSelected = it.id == mGState.activePlan.value?.id
+                CastTermCard(it, isSelected)
+            }
             SpacerUp(size = 24.dp)
 
             //Info View
@@ -336,13 +352,13 @@ private fun isSingleCast(title: String): Boolean {
 @Preview
 @Composable
 private fun ScreenSubsPlanCard() {
-    SubsPlanCard(subscriptionCategory)
+    SubsPlanCard(subscriptionCategory, GlobalState())
 }
 
 @Preview
 @Composable
 private fun ScreenMain() {
-    MainContent(mState = SubscriptionState(), onBackClick = {})
+    MainContent(mState = SubscriptionState(), mGState = GlobalState(), onBackClick = {})
 }
 
 @Preview

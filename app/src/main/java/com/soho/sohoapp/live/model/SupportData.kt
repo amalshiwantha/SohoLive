@@ -19,6 +19,7 @@ import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.DataVidRes
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.PlanData
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VideoItem
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -169,10 +170,12 @@ data class GlobalState(
     var privateVideoId: MutableState<Long> = mutableLongStateOf(0),
     var isEditVideoData: MutableState<Boolean> = mutableStateOf(false),
     var uploadStatus: MutableState<String?> = mutableStateOf(null),
-    var isOpenPvtVidLib: MutableState<Boolean> = mutableStateOf(false)
+    var isOpenPvtVidLib: MutableState<Boolean> = mutableStateOf(false),
+    var activePlan: MutableState<PlanData?> = mutableStateOf(null),
 ) {
     @Transient
     private val _uploadProgress = MutableStateFlow(0)
+
     @Transient
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
