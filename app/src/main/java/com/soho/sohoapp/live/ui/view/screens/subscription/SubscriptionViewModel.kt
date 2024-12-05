@@ -23,14 +23,29 @@ class SubscriptionViewModel(
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let { prof ->
-                    getSubsPlans(prof.authenticationToken)
+                    getActivePlan(prof.authenticationToken)
                 }
             }
         }
     }
 
-    private fun getSubsPlans(authToken: String) {
+    private fun getActivePlan(authToken: String) {
+        apiRepo.getCurrentPlan(authToken).onEach { apiState ->
+            when (apiState) {
+                is ApiState.Data -> {
+                    println("mySubs :  ActPlan :: ${apiState.data}")
+                    getSubsPlans(authToken)
+                }
 
+                is ApiState.Alert -> {}
+                is ApiState.Loading -> {
+                    mState.value = mState.value.copy(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getSubsPlans(authToken: String) {
         apiRepo.getSubscriptionPlans(authToken).onEach { apiState ->
 
             when (apiState) {

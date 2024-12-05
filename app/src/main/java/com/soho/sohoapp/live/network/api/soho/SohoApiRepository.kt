@@ -15,6 +15,7 @@ import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.MuxUploadResponse
+import com.soho.sohoapp.live.network.response.PlanResponse
 import com.soho.sohoapp.live.network.response.SubsPlansResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
@@ -286,6 +287,23 @@ class SohoApiRepository(private val service: SohoApiServices) {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
                 val apiResponse = service.subsPlans(authToken = authToken)
+                emit(ApiState.Data(data = apiResponse))
+            } catch (e: Exception) {
+                e.message?.let {
+                    emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
+                        message = it
+                    })))
+                }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
+
+    fun getCurrentPlan(authToken: String): Flow<ApiState<PlanResponse>> =
+        flow {
+            try {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+                val apiResponse = service.activePlan(authToken = authToken)
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
                 e.message?.let {
