@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -15,11 +18,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.PlanTerms
+import com.soho.sohoapp.live.model.SubscriptionCategory
+import com.soho.sohoapp.live.model.SubscriptionPlan
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_10sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.view.screens.golive.NoInternetScreen
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
@@ -88,6 +95,7 @@ fun MainContent(mState: SubscriptionState, onBackClick: () -> Unit) {
             SpacerUp(size = 64.dp)
         }
 
+        //Content
         Column(modifier = Modifier
             .fillMaxWidth()
             .constrainAs(content) {
@@ -112,13 +120,36 @@ fun PlanContent(mState: SubscriptionState) {
             //Loading View
             CenterMessageProgress(message = mState.loadingMessage)
         } else {
-            Text700_10sp(title = "My Data Plan")
+            mState.planListRes.forEach {
+                SubsPlanCard(it)
+            }
+        }
+    }
+}
+
+@Composable
+fun SubsPlanCard(planInfo: SubscriptionCategory) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text700_10sp(title = planInfo.title)
         }
     }
 }
 
 
 //Preview
+
+@Preview
+@Composable
+private fun ScreenSubsPlanCard() {
+    SubsPlanCard(subscriptionCategory)
+}
 
 @Preview
 @Composable
@@ -131,3 +162,66 @@ private fun ScreenMain() {
 private fun ScreenNoNet() {
     NoNetView {}
 }
+
+
+//sample data
+val subscriptionCategory = SubscriptionCategory(
+    title = "Title",
+    subTitle = "Subtitle example",
+    features = listOf(
+        "Feature 1: Cast to multiple destinations",
+        "Feature 2: 90 Days In-App Storage",
+        "Feature 3: Livecast available on listing for 90 days",
+        "Feature 4: Agency and Agent Branding"
+    ),
+    plans = listOf(
+        SubscriptionPlan(
+            id = 13,
+            interval = "year",
+            name = "Multicast 15",
+            price = "192.0",
+            terms = PlanTerms(
+                viewingMinutes = "1500",
+                streamingMinutes = "15",
+                inAppStorageDays = "30",
+                simulcastingEnabled = true,
+                listingAvailableDays = "90",
+                overageRateDollarsPerMinute = "0.6"
+            ),
+            planType = "soho_live",
+            bestValue = false
+        ),
+        SubscriptionPlan(
+            id = 14,
+            interval = "year",
+            name = "Multicast 60",
+            price = "384.0",
+            terms = PlanTerms(
+                viewingMinutes = "6000",
+                streamingMinutes = "60",
+                inAppStorageDays = "30",
+                simulcastingEnabled = true,
+                listingAvailableDays = "90",
+                overageRateDollarsPerMinute = "0.5"
+            ),
+            planType = "soho_live",
+            bestValue = true
+        ),
+        SubscriptionPlan(
+            id = 15,
+            interval = "year",
+            name = "Multicast 120",
+            price = "672.0",
+            terms = PlanTerms(
+                viewingMinutes = "12000",
+                streamingMinutes = "120",
+                inAppStorageDays = "30",
+                simulcastingEnabled = true,
+                listingAvailableDays = "90",
+                overageRateDollarsPerMinute = "0.4"
+            ),
+            planType = "soho_live",
+            bestValue = false
+        )
+    )
+)
