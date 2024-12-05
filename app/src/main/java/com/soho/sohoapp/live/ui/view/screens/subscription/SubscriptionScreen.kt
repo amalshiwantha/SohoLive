@@ -24,6 +24,8 @@ fun SubscriptionScreen(
     vmSubs: SubscriptionViewModel = koinInject(),
     netUtil: NetworkUtils = koinInject(),
 ) {
+    val mState = vmSubs.mState.value
+
     //load main subs plans
     LaunchedEffect(key1 = "LoadPlans") {
         if (netUtil.isNetworkAvailable()) {
@@ -33,7 +35,7 @@ fun SubscriptionScreen(
 
     //Main Content
     if (netUtil.isNetworkAvailable()) {
-        MainContent()
+        MainContent(mState.isLoading)
     } else {
         NoInternetScreen(onRetryClick = {
             vmSubs.loadPlans()
@@ -42,11 +44,14 @@ fun SubscriptionScreen(
 }
 
 @Composable
-fun MainContent() {
+fun MainContent(isLoading: Boolean) {
     Box(modifier = Modifier.fillMaxSize()) {
-        CenterMessageProgress(message = "Loading...")
-        Column(modifier = Modifier.align(Alignment.Center)) {
-            TextWhite12(title = "This Is Subscription", txtColor = AppGreen)
+        if (isLoading) {
+            CenterMessageProgress(message = "Loading...")
+        } else {
+            Column(modifier = Modifier.align(Alignment.Center)) {
+                TextWhite12(title = "This Is Subscription", txtColor = AppGreen)
+            }
         }
     }
 }
@@ -54,5 +59,5 @@ fun MainContent() {
 @Preview
 @Composable
 private fun Screen() {
-    MainContent()
+    MainContent(false)
 }

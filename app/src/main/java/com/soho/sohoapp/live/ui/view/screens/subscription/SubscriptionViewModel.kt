@@ -1,10 +1,13 @@
 package com.soho.sohoapp.live.ui.view.screens.subscription
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -13,6 +16,8 @@ class SubscriptionViewModel(
     private val apiRepo: SohoApiRepository,
     private val dataStore: AppDataStoreManager
 ) : ViewModel() {
+
+    val mState: MutableState<SubscriptionState> = mutableStateOf(SubscriptionState())
 
     fun loadPlans() {
         viewModelScope.launch {
@@ -39,8 +44,8 @@ class SubscriptionViewModel(
 
                 is ApiState.Alert -> {}
                 is ApiState.Loading -> {
-                    //liveState.value = liveState.value.copy(loadingState = apiState.progressBarState)
-                    println("mySubs :  Loading :: ${apiState.progressBarState}")
+                    mState.value =
+                        mState.value.copy(isLoading = apiState.progressBarState == ProgressBarState.Loading)
                 }
             }
         }.launchIn(viewModelScope)
