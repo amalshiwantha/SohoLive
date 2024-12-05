@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.subscription
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -34,13 +36,16 @@ import com.soho.sohoapp.live.model.SubscriptionPlan
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.SelectedOrange
 import com.soho.sohoapp.live.ui.view.screens.golive.NoInternetScreen
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
@@ -170,7 +175,69 @@ fun SubsPlanCard(plan: SubscriptionCategory) {
 
             //Features
             FeaturesList(plan.features)
+            SpacerUp(size = 24.dp)
+
+            //Cast Plans List
+            plan.plans.forEach { CastTermCard(it, false) }
+            SpacerUp(size = 24.dp)
         }
+    }
+}
+
+@Composable
+private fun CastTermCard(subPlan: SubscriptionPlan, isSelected: Boolean) {
+    val isSelectedBg = if (isSelected) SelectedOrange else ItemCardBg
+
+    OutlinedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp)
+            .border(
+                width = 1.dp,
+                color = AppWhite,
+                shape = MaterialTheme.shapes.small
+            ),
+        shape = MaterialTheme.shapes.small,
+        colors = CardDefaults.cardColors(containerColor = isSelectedBg)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text700_14sp(step = subPlan.name)
+
+            CastTerms(subPlan.terms)
+
+            if (!isSelected) {
+                Text400_12sp(
+                    label = "Please visit our website for more details.",
+                    txtColor = HintGray
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CastTerms(terms: PlanTerms) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        TermsInfo(terms.streamingMinutes, "streaming mins")
+        TermsInfo(terms.viewingMinutes, "viewing mins")
+    }
+}
+
+@Composable
+private fun TermsInfo(streamMin: String, title: String) {
+    Column(horizontalAlignment = CenterHorizontally) {
+        Text950_20sp(title = streamMin)
+        Text700_14sp(step = title, isBold = false)
     }
 }
 
