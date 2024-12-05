@@ -50,6 +50,7 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.SelectedOrange
 import com.soho.sohoapp.live.ui.view.screens.golive.NoInternetScreen
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.formatNumber
 import org.koin.compose.koinInject
 
 @Composable
@@ -243,9 +244,9 @@ private fun CastTerms(terms: PlanTerms) {
 }
 
 @Composable
-private fun TermsInfo(streamMin: String, title: String) {
+private fun TermsInfo(minValue: String, title: String) {
     Column(horizontalAlignment = CenterHorizontally) {
-        Text950_20sp(title = streamMin)
+        Text950_20sp(title = minValue.toInt().formatNumber())
         Text700_14sp(step = title, isBold = false)
     }
 }

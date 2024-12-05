@@ -5,6 +5,13 @@ import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.network.response.Document
 import java.util.Locale
 
+import java.text.DecimalFormat
+
+fun Int.formatNumber(): String {
+    val formatter = DecimalFormat("#,###")
+    return formatter.format(this)
+}
+
 fun Document.toAgentProperty(): AgentProperty {
     return AgentProperty(
         propertyId = this.propertyId,
