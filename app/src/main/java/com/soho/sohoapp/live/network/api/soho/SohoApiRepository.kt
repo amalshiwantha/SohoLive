@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.network.api.soho
 import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.model.VidLibRequest
@@ -304,6 +305,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
             try {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
                 val apiResponse = service.activePlan(authToken = authToken)
+                MainStateHolder.mState.activePlan.value = apiResponse.data
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
                 e.message?.let {

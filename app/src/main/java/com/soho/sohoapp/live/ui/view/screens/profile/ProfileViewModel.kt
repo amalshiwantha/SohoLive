@@ -9,14 +9,19 @@ import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.SocialMediaProfile
+import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.getAppVersion
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
+    private val apiRepo: SohoApiRepository,
     private val dataStore: AppDataStoreManager
 ) : ViewModel() {
 
@@ -63,9 +68,25 @@ class ProfileViewModel(
                         profileImage = it.imageUrl,
                         appVersion = getAppVersion()
                     )
+
+                    getActivePlan(profile.authenticationToken)
                 }
             }
         }
+    }
+
+    fun getActivePlan(authToken: String) {
+        apiRepo.getCurrentPlan(authToken).onEach { apiState ->
+            when (apiState) {
+                is ApiState.Data -> {
+                    val activePlan = apiState.data?.data
+                    MainStateHolder.mState.activePlan.value = activePlan
+                }
+
+                is ApiState.Alert -> {}
+                is ApiState.Loading -> {}
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun showLogoutConfirm() {

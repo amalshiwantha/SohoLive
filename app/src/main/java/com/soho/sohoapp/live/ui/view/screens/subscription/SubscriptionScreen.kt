@@ -33,6 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.PlanTerms
 import com.soho.sohoapp.live.model.SubscriptionCategory
 import com.soho.sohoapp.live.model.SubscriptionPlan
@@ -75,7 +76,7 @@ fun SubscriptionScreen(
     LaunchedEffect(mState.isCalledActivePlan) {
         if (mState.isCalledActivePlan) {
             mState.activePlanRes?.let {
-                mGState.apply { activePlan.value = it }
+                MainStateHolder.mState.activePlan.value = it
             }
         }
     }
@@ -197,7 +198,7 @@ private fun SubsPlanCard(plan: SubscriptionCategory, mGState: GlobalState) {
 
             //Cast Plans List
             plan.plans.forEach {
-                if (it.id == mGState.activePlan.value?.id) {
+                if (it.id == MainStateHolder.mState.activePlan.value?.id) {
                     CastTermCardSelected(it)
                 } else {
                     CastTermCard(it)

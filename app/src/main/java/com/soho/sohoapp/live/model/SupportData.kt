@@ -53,6 +53,7 @@ data class MainState(
     var stepId: MutableState<Int> = mutableIntStateOf(0),
     var isPublic: MutableState<Boolean> = mutableStateOf(false),
     var isTemplateWithBrand: MutableState<Boolean> = mutableStateOf(true),
+    var activePlan: MutableState<PlanData?> = mutableStateOf(null),
 
     //Step #1
     var goLiveApiRes: DataGoLive? = null,
@@ -71,6 +72,7 @@ data class MainState(
         sPropList?.value = emptyList()
         sAgencyList?.value = emptyList()
         agentEmail = null
+        activePlan.value = null
     }
 }
 
@@ -170,8 +172,7 @@ data class GlobalState(
     var privateVideoId: MutableState<Long> = mutableLongStateOf(0),
     var isEditVideoData: MutableState<Boolean> = mutableStateOf(false),
     var uploadStatus: MutableState<String?> = mutableStateOf(null),
-    var isOpenPvtVidLib: MutableState<Boolean> = mutableStateOf(false),
-    var activePlan: MutableState<PlanData?> = mutableStateOf(null),
+    var isOpenPvtVidLib: MutableState<Boolean> = mutableStateOf(false)
 ) {
     @Transient
     private val _uploadProgress = MutableStateFlow(0)

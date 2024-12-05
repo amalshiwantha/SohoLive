@@ -38,6 +38,8 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.response.PlanData
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
@@ -65,7 +67,6 @@ fun ProfileScreen(
     navController: NavHostController,
     mGState: GlobalState,
 ) {
-    val activePlan = mGState.activePlan.value
     val sProfile = vmProfile.mState.value
     var isShowAlert by remember { mutableStateOf(false) }
 
@@ -94,15 +95,14 @@ fun ProfileScreen(
             })
     }
 
-    MainContent(vmProfile, sProfile, navController, activePlan)
+    MainContent(vmProfile, sProfile, navController)
 }
 
 @Composable
 private fun MainContent(
     vmProfile: ProfileViewModel,
     sProfile: ProfileState,
-    navCont: NavHostController,
-    activePlan: PlanData?
+    navCont: NavHostController
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -131,7 +131,7 @@ private fun MainContent(
             .padding(16.dp)) {
 
             Column {
-                activePlan?.let {
+                MainStateHolder.mState.activePlan.value?.let {
                     CurrentPlanCard(onPlanClick = {
                         navCont.navigate(NavigationPath.SUBSCRIPTION.name)
                     }, it)
@@ -309,14 +309,4 @@ fun LogoutView(onLogout: () -> Unit) {
 private fun openWebView(title: String, url: String, navCont: NavHostController) {
     val encodeUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
     navCont.navigate("${NavigationPath.WEB_VIEW.name}/$title/$encodeUrl")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewProfile() {
-    ProfileScreen(
-        vmProfile = ProfileViewModel(dataStore = AppDataStoreManager(LocalContext.current)),
-        navController = NavHostController(LocalContext.current),
-        mGState = GlobalState()
-    )
 }
