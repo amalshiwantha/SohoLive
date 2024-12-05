@@ -42,6 +42,7 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
@@ -180,6 +181,13 @@ fun SubsPlanCard(plan: SubscriptionCategory) {
             //Cast Plans List
             plan.plans.forEach { CastTermCard(it, false) }
             SpacerUp(size = 24.dp)
+
+            //Info View
+            Text400_12sp(
+                label = "Unfortunately, you can't modify your plan or view pricing in the app. We know it's not ideal.",
+                txtColor = HintGray
+            )
+            SpacerUp(size = 16.dp)
         }
     }
 }
