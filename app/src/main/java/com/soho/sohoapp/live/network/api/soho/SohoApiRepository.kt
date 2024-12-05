@@ -306,7 +306,13 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
                 val apiResponse = service.activePlan(authToken = authToken)
-                MainStateHolder.mState.activePlan.value = apiResponse.data
+
+                val isActivated = !apiResponse.responseType.equals("error")
+                if (isActivated) {
+                    MainStateHolder.mState.activePlan.value = apiResponse.data
+                } else {
+                    MainStateHolder.mState.activePlan.value = null
+                }
 
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
