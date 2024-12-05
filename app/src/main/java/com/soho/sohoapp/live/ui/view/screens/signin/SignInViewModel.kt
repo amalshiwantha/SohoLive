@@ -93,7 +93,10 @@ class SignInViewModel(
                                 }
 
                                 else -> {
-
+                                    mStateLogin.value = mStateLogin.value.copy(errorStates = mStateLogin.value.errorStates.toMutableMap().apply {
+                                        put(FieldType.LOGIN_EMAIL, "")
+                                        put(FieldType.LOGIN_PW, "Account not found or subscription expired. Please try a different email or sign up at soho.com.au/agents/livecast")
+                                    })
                                 }
                             }
                         }
