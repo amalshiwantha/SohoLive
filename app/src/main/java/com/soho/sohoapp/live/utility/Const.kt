@@ -10,5 +10,6 @@ class Const {
         const val ERR_500 = 500
         const val ERR_403 = 403
         const val ERR_404 = 404
+        const val ERR_VAL = "error"
     }
 }

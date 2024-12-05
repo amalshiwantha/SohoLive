@@ -14,6 +14,7 @@ import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Data
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_500
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
 import com.soho.sohoapp.live.utility.formValidation
 import com.soho.sohoapp.live.utility.toErrorCode
 import kotlinx.coroutines.flow.launchIn
@@ -70,11 +71,33 @@ class SignInViewModel(
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        val isSuccessLogin = !result.responseType.equals("error")
+                        val isSuccessLogin = !result.responseType.equals(ERR_VAL)
 
                         if (isSuccessLogin) {
-                            setAsLoggedState(result.data)
-                            mStateLogin.value = mStateLogin.value.copy(isLoginSuccess = true)
+
+                            //call get activePlan
+                            result.data?.authenticationToken?.let { authToken ->
+
+                                apiRepo.getCurrentPlan(authToken).onEach { apiState ->
+                                    when (apiState) {
+                                        is ApiState.Data -> {
+                                            apiState.data?.let { activeRes ->
+                                                val isActivated =
+                                                    !activeRes.responseType.equals(ERR_VAL)
+
+                                                if (isActivated) {
+                                                    setAsLoggedState(result.data)
+                                                    mStateLogin.value =
+                                                        mStateLogin.value.copy(isLoginSuccess = true)
+                                                }
+                                            }
+                                        }
+
+                                        else -> {}
+                                    }
+                                }.launchIn(viewModelScope)
+                            }
+
                         } else {
                             val errCode = result.response?.toErrorCode() ?: ERR_500
 
@@ -93,10 +116,15 @@ class SignInViewModel(
                                 }
 
                                 else -> {
-                                    mStateLogin.value = mStateLogin.value.copy(errorStates = mStateLogin.value.errorStates.toMutableMap().apply {
-                                        put(FieldType.LOGIN_EMAIL, "")
-                                        put(FieldType.LOGIN_PW, "Account not found or subscription expired. Please try a different email or sign up at soho.com.au/agents/livecast")
-                                    })
+                                    mStateLogin.value = mStateLogin.value.copy(
+                                        errorStates = mStateLogin.value.errorStates.toMutableMap()
+                                            .apply {
+                                                put(FieldType.LOGIN_EMAIL, "")
+                                                put(
+                                                    FieldType.LOGIN_PW,
+                                                    "Account not found or subscription expired. Please try a different email or sign up at soho.com.au/agents/livecast"
+                                                )
+                                            })
                                 }
                             }
                         }
