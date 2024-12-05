@@ -21,8 +21,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.model.ForceExit
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.UploadData
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.BottomNavigationBar
 import com.soho.sohoapp.live.ui.components.HandleBackPress
@@ -57,6 +60,33 @@ fun HomeScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.ForceLogout(null))
     val msUploadProgress by viewMMain.uploadProgress.collectAsState()
     val msUploadLevel by viewMMain.stateUploadLevel.collectAsState()
+    var forceExitAlert by remember { mutableStateOf<ForceExit?>(null) }
+    var isShowExitAlert by remember { mutableStateOf(false) }
+
+    //show alert for ForceExit
+    LaunchedEffect(forceExitAlert) {
+        forceExitAlert?.let {
+            isShowExitAlert = true
+        }
+
+    }
+    if (isShowExitAlert) {
+        forceExitAlert?.let { alert ->
+            AppAlertDialog(
+                alert = AlertConfig.SIGN_IN_ERROR.apply {
+                    title = alert.title
+                    message = alert.message
+                },
+                onConfirm = {},
+                onDismiss = {
+                    isShowExitAlert = false
+                    viewMMain.clearLogout()
+                    navControllerHome.navigate(NavigationPath.PRE_ACCESS.name) {
+                        popUpTo(NavigationPath.HOME.name) { inclusive = true }
+                    }
+                })
+        }
+    }
 
     //Delete old video files
     LaunchedEffect("delete old files") {
@@ -124,10 +154,7 @@ fun HomeScreen(
 
         forceExit?.let {
             if (forceExit.code == ERR_404) {
-                viewMMain.clearLogout()
-                navControllerHome.navigate(NavigationPath.PRE_ACCESS.name) {
-                    popUpTo(NavigationPath.HOME.name) { inclusive = true }
-                }
+                forceExitAlert = forceExit
             } else {
                 //move to GoLive tab -> step #1 and clear all saved data
             }
