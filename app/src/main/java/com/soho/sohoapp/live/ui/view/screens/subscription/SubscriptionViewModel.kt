@@ -8,6 +8,11 @@ import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
+import com.soho.sohoapp.live.utility.getForceExitMessage
+import com.soho.sohoapp.live.utility.toErrorCode
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -23,22 +28,33 @@ class SubscriptionViewModel(
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let { prof ->
-                    getActivePlan(prof.authenticationToken)
+
+                    //Check ActivePlan and call getSubsPlans
+                    apiRepo.getCurrentPlan(prof.authenticationToken)
+                        .onEach { apiState ->
+                            when (apiState) {
+                                is ApiState.Data -> {
+                                    apiState.data?.let { activeRes ->
+                                        if (!activeRes.responseType.equals(ERR_VAL)) {
+                                            //call getSubsPlans
+                                            getSubsPlans(prof.authenticationToken)
+                                        } else {
+                                            //ForceLogout Now
+                                            val forceExit =
+                                                getForceExitMessage(activeRes.response?.toErrorCode())
+                                            AppEventBus.sendEvent(AppEvent.ForceLogout(forceExit))
+                                        }
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }.launchIn(viewModelScope)
+
+
                 }
             }
         }
-    }
-
-    private fun getActivePlan(authToken: String) {
-        apiRepo.getCurrentPlan(authToken).onEach { apiState ->
-            when (apiState) {
-                is ApiState.Data -> {
-                    getSubsPlans(authToken)
-                }
-
-                else -> {}
-            }
-        }.launchIn(viewModelScope)
     }
 
     private fun getSubsPlans(authToken: String) {
