@@ -6,5 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SubsPlansResponse(
-    @SerialName("data") val data: List<SubscriptionCategory>
+    @SerialName("data") val data: List<SubscriptionCategory>,
+    @SerialName("response_type") val responseType: String? = null,
+    @SerialName("response") val response: String? = null,
 )

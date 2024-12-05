@@ -5,7 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlanResponse(
-    @SerialName("data") val data: PlanData
+    @SerialName("data") val data: PlanData,
+    @SerialName("response_type") val responseType: String? = null,
+    @SerialName("response") val response: String? = null,
 )
 
 @Serializable
