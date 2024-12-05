@@ -11,6 +11,11 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
+import com.soho.sohoapp.live.utility.getForceExitMessage
+import com.soho.sohoapp.live.utility.toErrorCode
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -51,7 +56,27 @@ class VideoLibraryViewModel(
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let {
-                    callVideoLibrary(it.authenticationToken, request)
+                    //Check ActivePlan and call callVideoLibrary
+                    apiRepo.getCurrentPlan(it.authenticationToken)
+                        .onEach { apiState ->
+                            when (apiState) {
+                                is ApiState.Data -> {
+                                    apiState.data?.let { activeRes ->
+                                        if (!activeRes.responseType.equals(ERR_VAL)) {
+                                            //call callVideoLibrary
+                                            callVideoLibrary(it.authenticationToken, request)
+                                        } else {
+                                            //ForceLogout Now
+                                            val forceExit = getForceExitMessage(activeRes.response?.toErrorCode())
+                                            AppEventBus.sendEvent(AppEvent.ForceLogout(forceExit))
+                                        }
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }.launchIn(viewModelScope)
+
                 }
             }
         }
