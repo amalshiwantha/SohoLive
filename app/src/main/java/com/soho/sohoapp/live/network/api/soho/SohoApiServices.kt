@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.MuxUploadResponse
+import com.soho.sohoapp.live.network.response.SubsPlansResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -32,6 +33,7 @@ interface SohoApiServices {
         const val ROLLBACK_STREAM = "live_stream/{live_stream_id}"
         const val TEST_UPLOAD = "dev/upload.php"
         const val MUX_UPLOAD = "/video/upload"
+        const val SUBS_PLANS = "/plans/mobile"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
@@ -54,4 +56,5 @@ interface SohoApiServices {
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
     suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String
     suspend fun uploadMux(authToken: String, videoInfo: VideoInfo): MuxUploadResponse
+    suspend fun subsPlans(authToken: String): SubsPlansResponse
 }

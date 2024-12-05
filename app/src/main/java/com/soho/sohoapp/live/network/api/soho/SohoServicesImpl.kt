@@ -13,6 +13,7 @@ import com.soho.sohoapp.live.network.response.LiveEndRequest
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveResponse
 import com.soho.sohoapp.live.network.response.MuxUploadResponse
+import com.soho.sohoapp.live.network.response.SubsPlansResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
@@ -212,6 +213,17 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
             setBody(videoInfo)
+        }.body()
+    }
+
+    override suspend fun subsPlans(authToken: String): SubsPlansResponse {
+        return httpClient.get {
+            url {
+                takeFrom(BuildConfig.BASE_URL)
+                encodedPath += SohoApiServices.SUBS_PLANS
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
         }.body()
     }
 }

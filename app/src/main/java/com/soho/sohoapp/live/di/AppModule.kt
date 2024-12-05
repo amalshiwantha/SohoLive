@@ -64,5 +64,5 @@ val appModule = module {
     viewModel { VidEditDetailsViewModel(get()) }
     viewModel { VideoRecorderViewModel(get()) }
     viewModel { ReviewViewModel(get(), get(), get()) }
-    viewModel { SubscriptionViewModel(get()) }
+    viewModel { SubscriptionViewModel(get(),get()) }
 }

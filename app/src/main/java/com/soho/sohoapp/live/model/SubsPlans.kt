@@ -4,11 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Subscription(
-    @SerialName("data") val data: List<SubscriptionCategory>
-)
-
-@Serializable
 data class SubscriptionCategory(
     @SerialName("title") val title: String,
     @SerialName("sub_title") val subTitle: String,
