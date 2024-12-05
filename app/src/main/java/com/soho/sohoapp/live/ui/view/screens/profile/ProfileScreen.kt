@@ -69,6 +69,12 @@ fun ProfileScreen(
     val sProfile = vmProfile.mState.value
     var isShowAlert by remember { mutableStateOf(false) }
 
+
+    //Load Main Data
+    LaunchedEffect("load_profile") {
+        vmProfile.loadProfileData()
+    }
+
     //Display alert
     LaunchedEffect(sProfile) {
         isShowAlert = sProfile.alertState is AlertState.Display

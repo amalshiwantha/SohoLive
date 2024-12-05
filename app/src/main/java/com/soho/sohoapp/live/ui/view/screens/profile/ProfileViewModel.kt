@@ -54,7 +54,7 @@ class ProfileViewModel(
         }
     }
 
-    init {
+    fun loadProfileData() {
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let {
