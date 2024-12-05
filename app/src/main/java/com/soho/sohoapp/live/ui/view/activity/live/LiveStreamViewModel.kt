@@ -8,6 +8,11 @@ import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
+import com.soho.sohoapp.live.utility.getForceExitMessage
+import com.soho.sohoapp.live.utility.toErrorCode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +44,29 @@ class LiveStreamViewModel(
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let {
-                    onEndLiveStream(it.authenticationToken, streamId)
+
+                    //Check ActivePlan and call onEndLiveStream
+                    apiRepo.getCurrentPlan(it.authenticationToken)
+                        .onEach { apiState ->
+                            when (apiState) {
+                                is ApiState.Data -> {
+                                    apiState.data?.let { activeRes ->
+                                        if (!activeRes.responseType.equals(ERR_VAL)) {
+                                            //call EndLiveStream
+                                            onEndLiveStream(it.authenticationToken, streamId)
+                                        } else {
+                                            //ForceLogout Now
+                                            val forceExit = getForceExitMessage(activeRes.response?.toErrorCode())
+                                            AppEventBus.sendEvent(AppEvent.ForceLogout(forceExit))
+                                        }
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }.launchIn(viewModelScope)
+
+
                 } ?: run {
                     _msAlert.value =
                         AlertData(isShow = true, title = "Error", message = "User not logged")
