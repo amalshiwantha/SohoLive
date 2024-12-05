@@ -16,6 +16,7 @@ import com.soho.sohoapp.live.ui.view.screens.review.ReviewViewModel
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.splash.SplashViewModel
+import com.soho.sohoapp.live.ui.view.screens.subscription.SubscriptionViewModel
 import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsViewModel
 import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryViewModel
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageViewModel
@@ -63,4 +64,5 @@ val appModule = module {
     viewModel { VidEditDetailsViewModel(get()) }
     viewModel { VideoRecorderViewModel(get()) }
     viewModel { ReviewViewModel(get(), get(), get()) }
+    viewModel { SubscriptionViewModel(get()) }
 }

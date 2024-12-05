@@ -32,6 +32,7 @@ import com.soho.sohoapp.live.ui.view.screens.pre_rec_library.PreRecordLibraryScr
 import com.soho.sohoapp.live.ui.view.screens.profile.ProfileScreen
 import com.soho.sohoapp.live.ui.view.screens.review.ReviewScreen
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleScreen
+import com.soho.sohoapp.live.ui.view.screens.subscription.SubscriptionScreen
 import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsScreen
 import com.soho.sohoapp.live.ui.view.screens.video_library.VideoLibraryScreen
 import com.soho.sohoapp.live.ui.view.screens.video_manage.VideoManageScreen
@@ -251,6 +252,10 @@ fun BottomNavHost(
 
         composable(route = NavigationPath.VIDEO_EDIT_DETAILS.name) {
             VidEditDetailsScreen(mGState = mGlobalState, navController = navController)
+        }
+
+        composable(route = NavigationPath.SUBSCRIPTION.name) {
+            SubscriptionScreen(mGState = mGlobalState, navController = navController)
         }
     }
 }

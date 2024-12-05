@@ -106,6 +106,12 @@ private fun MainContent(
             .padding(16.dp)) {
 
             Column {
+                Text700_14spLink(name = "Subscription", onClick = {
+                    navCont.navigate(NavigationPath.SUBSCRIPTION.name)
+                })
+
+                SpacerUp(size = 24.dp)
+
                 Text700_14spLink(name = "Terms", onClick = {
                     openWebView(
                         title = "Terms And Conditions",

@@ -22,5 +22,6 @@ enum class NavigationPath {
     PRE_RECODED_LIST,
     PLAYER,
     REVIEW,
-    TEMPLATE
+    TEMPLATE,
+    SUBSCRIPTION
 }
