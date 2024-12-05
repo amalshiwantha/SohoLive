@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,8 +32,10 @@ import com.soho.sohoapp.live.model.PlanTerms
 import com.soho.sohoapp.live.model.SubscriptionCategory
 import com.soho.sohoapp.live.model.SubscriptionPlan
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
+import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
@@ -159,9 +164,43 @@ fun SubsPlanCard(plan: SubscriptionCategory) {
             Text950_20sp(title = plan.title)
             SpacerUp(size = 16.dp)
 
-            //Subtitle
+            //Subtitle with SM icon
             SubtitleCastTo(isSingleCast, plan.subTitle)
+            SpacerUp(size = 16.dp)
+
+            //Features
+            FeaturesList(plan.features)
         }
+    }
+}
+
+@Composable
+private fun FeaturesList(features: List<String>) {
+    Text700_14sp(step = "Features")
+    SpacerUp(size = 16.dp)
+    Column(modifier = Modifier.padding(start = 8.dp)) {
+        features.forEach {
+            BulletPointText(it)
+        }
+    }
+}
+
+@Composable
+private fun BulletPointText(value: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 4.dp)
+    ) {
+        // Bullet Point
+        Box(
+            modifier = Modifier
+                .size(8.dp)
+                .clip(CircleShape)
+                .background(Color.White)
+        )
+        SpacerSide(size = 8.dp)
+        // Text
+        Text400_14sp(info = value)
     }
 }
 
@@ -242,10 +281,10 @@ val subscriptionCategory = SubscriptionCategory(
     title = "Single Cast",
     subTitle = "Live stream to your property inspections to your listing",
     features = listOf(
-        "Feature 1: Cast to multiple destinations",
-        "Feature 2: 90 Days In-App Storage",
-        "Feature 3: Livecast available on listing for 90 days",
-        "Feature 4: Agency and Agent Branding"
+        "Cast to multiple destinations",
+        "90 Days In-App Storage",
+        "Livecast available on listing for 90 days",
+        "Agency and Agent Branding"
     ),
     plans = listOf(
         SubscriptionPlan(
