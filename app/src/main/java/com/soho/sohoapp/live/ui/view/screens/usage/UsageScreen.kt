@@ -40,6 +40,9 @@ import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.subscription.NoNetView
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun UsageScreen(
@@ -137,6 +140,7 @@ private fun UsageCard(usage: CurrentUsage) {
     val totalOverage = usage.overageStreamingMinutes + usage.overageViewingMinutes
     val streamUsage = "${usage.streamingMinutes}/${planData?.streamingMinutes}"
     val viewUsage = "${usage.viewingMinutes}/${planData?.viewingMinutes}"
+    val period = "${getFormatDate(usage.startTime)} - ${getFormatDate(usage.endTime)}"
 
     val isOverage = totalOverage != 0
     val cardBg = if (isOverage) ItemCardBg else AppWhite
@@ -154,7 +158,7 @@ private fun UsageCard(usage: CurrentUsage) {
             //top content
             Column(modifier = Modifier.padding(16.dp)) {
                 //Date Range
-                Text950_16sp(title = "22 July - 21 August", txtColor = txtColor)
+                Text950_16sp(title = period, txtColor = txtColor)
                 SpacerUp(size = 24.dp)
 
                 //Usage for each
@@ -180,6 +184,18 @@ private fun UsageCard(usage: CurrentUsage) {
             TotalOverage("$totalOverage min", txtColor = txtColor, overageBg = overageBg)
         }
 
+    }
+}
+
+fun getFormatDate(dateTime: String?): String {
+    return dateTime?.let {
+        val inputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        inputFormatter.timeZone = java.util.TimeZone.getTimeZone("UTC")
+        val date: Date = inputFormatter.parse(it) ?: return ""
+        val outputFormatter = SimpleDateFormat("d MMMM", Locale.getDefault())
+        outputFormatter.format(date)
+    } ?: run {
+        ""
     }
 }
 
