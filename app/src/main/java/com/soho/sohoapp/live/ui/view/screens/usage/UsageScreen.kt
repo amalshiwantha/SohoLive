@@ -33,6 +33,7 @@ import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.subscription.NoNetView
@@ -137,20 +138,41 @@ private fun UsageCard(usage: CurrentUsage) {
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 24.dp),
+            .fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = cardBg)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            //Date Range
-            Text950_16sp(title = "22 July - 21 August", txtColor = txtColor)
-            SpacerUp(size = 24.dp)
+        Column(modifier = Modifier.fillMaxWidth()) {
+            //top content
+            Column(modifier = Modifier.padding(16.dp)) {
+                //Date Range
+                Text950_16sp(title = "22 July - 21 August", txtColor = txtColor)
+                SpacerUp(size = 24.dp)
 
-            //Usage for each
-            UsageProgress("Streamed", "55/60 mins", progress = 75, txtColor = txtColor)
-            SpacerUp(size = 16.dp)
-            UsageProgress("Viewed", "4,822/6,000 mins", progress = 35, txtColor = txtColor)
+                //Usage for each
+                UsageProgress("Streamed", "55/60 mins", progress = 75, txtColor = txtColor)
+                SpacerUp(size = 16.dp)
+                UsageProgress("Viewed", "4,822/6,000 mins", progress = 35, txtColor = txtColor)
+                SpacerUp(size = 24.dp)
+            }
+
+            //bottom content overage
+            TotalOverage("10 min", txtColor = txtColor)
+        }
+
+    }
+}
+
+@Composable
+fun TotalOverage(overage: String, txtColor: Color) {
+    Column(
+        modifier = Modifier
+            .background(AppWhiteGray)
+            .padding(16.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text400_14sp(info = "Total Overages", modifier = Modifier.weight(1f), color = txtColor)
+            Text700_14sp(step = overage, color = txtColor)
         }
     }
 }
@@ -165,7 +187,6 @@ fun UsageProgress(label: String, usage: String, progress: Int, txtColor: Color) 
         }
         SpacerUp(size = 16.dp)
         UsageProgressBar(progress = progress)
-
     }
 }
 
