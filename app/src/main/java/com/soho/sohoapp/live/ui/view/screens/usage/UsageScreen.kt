@@ -137,10 +137,18 @@ private fun UsageContent(mState: UsageState, mGState: GlobalState) {
 @Composable
 private fun UsageCard(usage: CurrentUsage) {
     val planData = usage.planDetails
+    val maxStream = planData?.streamingMinutes ?: "0"
+    val usedStream = usage.streamingMinutes
+
+    val maxView = planData?.viewingMinutes ?: "0"
+    val usedView = usage.viewingMinutes
+
     val totalOverage = usage.overageStreamingMinutes + usage.overageViewingMinutes
-    val streamUsage = "${usage.streamingMinutes}/${planData?.streamingMinutes}"
-    val viewUsage = "${usage.viewingMinutes}/${planData?.viewingMinutes}"
+    val streamUsage = "$usedStream/$maxStream"
+    val viewUsage = "$usedView/$maxView"
     val period = "${getFormatDate(usage.startTime)} - ${getFormatDate(usage.endTime)}"
+    val progStream = getProgress(usedStream, maxStream.toInt())
+    val progView = getProgress(usedView, maxView.toInt())
 
     val isOverage = totalOverage != 0
     val cardBg = if (isOverage) ItemCardBg else AppWhite
@@ -165,7 +173,7 @@ private fun UsageCard(usage: CurrentUsage) {
                 UsageProgress(
                     "Streamed",
                     "$streamUsage mins",
-                    progress = 75,
+                    progress = progStream,
                     txtColor = txtColor,
                     isOverage
                 )
@@ -173,7 +181,7 @@ private fun UsageCard(usage: CurrentUsage) {
                 UsageProgress(
                     "Viewed",
                     "$viewUsage mins",
-                    progress = 35,
+                    progress = progView,
                     txtColor = txtColor,
                     isOverage
                 )
@@ -257,6 +265,11 @@ fun UsageProgressBar(
                 .background(progPrimary) // Primary
         )
     }
+}
+
+fun getProgress(current: Int, max: Int): Int {
+    if (max == 0) return 0
+    return (current.toFloat() / max.toFloat() * 100).toInt()
 }
 
 @Preview
