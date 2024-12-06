@@ -64,10 +64,12 @@ class UsageViewModel(
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        /*mState.value = mState.value.copy(
-                            planListRes = result.data,
-                            isSuccess = result.data.isNotEmpty()
-                        )*/
+                        result.data?.let { resData ->
+                            mState.value = mState.value.copy(
+                                usageRes = resData.currentUsage,
+                                isSuccess = true
+                            )
+                        }
                     }
                 }
 

@@ -2,6 +2,7 @@ package com.soho.sohoapp.live.ui.view.screens.usage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,20 +12,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.network.response.CurrentUsage
+import com.soho.sohoapp.live.network.response.PlanDetails
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
-import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
-import com.soho.sohoapp.live.ui.components.Text950_20sp
+import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.subscription.NoNetView
 import com.soho.sohoapp.live.utility.NetworkUtils
 import org.koin.compose.koinInject
@@ -39,7 +45,7 @@ fun UsageScreen(
     val mState = usageVm.mState.value
 
     LaunchedEffect("load_usage") {
-        if (netUtil.isNetworkAvailable() && mState.usageRes.isEmpty()) {
+        if (netUtil.isNetworkAvailable() && mState.usageRes == null) {
             usageVm.loadUsage()
         }
     }
@@ -105,38 +111,89 @@ private fun UsageContent(mState: UsageState, mGState: GlobalState) {
     if (mState.isLoading) {
         CenterMessageProgress(message = mState.loadingMessage)
     } else {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
             Text400_14sp(info = "Your usage information will only be shown after a 12 hours delay.")
             SpacerUp(size = 16.dp)
-            UsageCard()
+            mState.usageRes?.let {
+                UsageCard(it)
+            }
         }
     }
 }
 
 @Composable
-private fun UsageCard() {
+private fun UsageCard(usage: CurrentUsage) {
+    val isOverage = false
+    val cardBg = if (isOverage) ItemCardBg else AppWhite
+    val txtColor = if (isOverage) AppWhite else TextDark
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 24.dp),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = ItemCardBg)
+        colors = CardDefaults.cardColors(containerColor = cardBg)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            //Title
-            Text950_20sp(title = "Usage Title")
-            SpacerUp(size = 16.dp)
+            //Date Range
+            Text950_16sp(title = "22 July - 21 August", txtColor = txtColor)
+            SpacerUp(size = 24.dp)
 
-            //Info View
-            Text400_12sp(
-                modifier = Modifier,
-                label = "Unfortunately, you can't modify your plan or view pricing in the app. We know it's not ideal.",
-                txtColor = HintGray, isCenter = true
-            )
-
+            //Usage for each
+            UsageProgress("Streamed", "55/60 mins", txtColor = txtColor)
             SpacerUp(size = 16.dp)
+            UsageProgress("Viewed", "4,822/6,000 mins", txtColor = txtColor)
         }
     }
+}
+
+@Composable
+fun UsageProgress(label: String, usage: String, txtColor: Color) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        //Info
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text400_14sp(info = label, modifier = Modifier.weight(1f), color = txtColor)
+            Text700_14sp(step = usage, color = txtColor)
+        }
+        SpacerUp(size = 16.dp)
+
+        //Usage Progress
+
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewUsageCard() {
+    UsageCard(getSampleUsage())
+}
+
+private fun getSampleUsage(): CurrentUsage {
+    return CurrentUsage(
+        startTime = "2024-12-04T00:00:00.000Z",
+        endTime = "2025-01-03T00:00:00.000Z",
+        planDetails = PlanDetails(
+            name = "Multicast 15",
+            interval = "month",
+            price = "20.0",
+            stripePlanId = "price_1PzsGfKYLTBX2qczWS2hEke2",
+            stripeViewingPlanId = "price_1PuU0VKYLTBX2qczpQx1LFza",
+            stripeStreamingPlanId = "price_1PuU3rKYLTBX2qcziNIKN5mM",
+            planType = "soho_live",
+            viewingMinutes = "1500",
+            streamingMinutes = "15",
+            inAppStorageDays = "30",
+            simulcastingEnabled = true,
+            listingAvailableDays = "90",
+            overageRateDollarsPerMinute = "0.6"
+        ),
+        streamingMinutes = 10,
+        viewingMinutes = 120,
+        overageStreamingMinutes = 5,
+        overageViewingMinutes = 30
+    )
 }
