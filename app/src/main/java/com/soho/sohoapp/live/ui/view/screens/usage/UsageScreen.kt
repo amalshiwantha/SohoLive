@@ -1,17 +1,21 @@
 package com.soho.sohoapp.live.ui.view.screens.usage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -144,15 +148,15 @@ private fun UsageCard(usage: CurrentUsage) {
             SpacerUp(size = 24.dp)
 
             //Usage for each
-            UsageProgress("Streamed", "55/60 mins", txtColor = txtColor)
+            UsageProgress("Streamed", "55/60 mins", progress = 75, txtColor = txtColor)
             SpacerUp(size = 16.dp)
-            UsageProgress("Viewed", "4,822/6,000 mins", txtColor = txtColor)
+            UsageProgress("Viewed", "4,822/6,000 mins", progress = 35, txtColor = txtColor)
         }
     }
 }
 
 @Composable
-fun UsageProgress(label: String, usage: String, txtColor: Color) {
+fun UsageProgress(label: String, usage: String, progress: Int, txtColor: Color) {
     Column(modifier = Modifier.fillMaxWidth()) {
         //Info
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -160,9 +164,31 @@ fun UsageProgress(label: String, usage: String, txtColor: Color) {
             Text700_14sp(step = usage, color = txtColor)
         }
         SpacerUp(size = 16.dp)
+        UsageProgressBar(progress = progress)
 
-        //Usage Progress
+    }
+}
 
+@Composable
+fun UsageProgressBar(
+    progress: Int,
+    maxProgress: Int = 100,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(8.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(Color(0xFFD8D1E4)) // Light Gray
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(progress / maxProgress.toFloat())
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color(0xFF4E215C)) // Purple
+        )
     }
 }
 
