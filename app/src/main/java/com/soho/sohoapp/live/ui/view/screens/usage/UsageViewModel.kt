@@ -24,20 +24,20 @@ class UsageViewModel(
 
     val mState: MutableState<UsageState> = mutableStateOf(UsageState())
 
-    fun loadPlans() {
+    fun loadUsage() {
         viewModelScope.launch {
             dataStore.userProfile.collect { profile ->
                 profile?.let { prof ->
 
-                    //Check ActivePlan and call getSubsPlans
+                    //Check ActivePlan and call getStorageUsage
                     apiRepo.getCurrentPlan(prof.authenticationToken)
                         .onEach { apiState ->
                             when (apiState) {
                                 is ApiState.Data -> {
                                     apiState.data?.let { activeRes ->
                                         if (!activeRes.responseType.equals(ERR_VAL)) {
-                                            //call getSubsPlans
-                                            getSubsPlans(prof.authenticationToken)
+                                            //call getStorageUsage
+                                            getStorageUsage(prof.authenticationToken)
                                         } else {
                                             //ForceLogout Now
                                             val forceExit =
@@ -57,17 +57,17 @@ class UsageViewModel(
         }
     }
 
-    private fun getSubsPlans(authToken: String) {
-        apiRepo.getSubscriptionPlans(authToken).onEach { apiState ->
+    private fun getStorageUsage(authToken: String) {
+        apiRepo.getUsage(authToken).onEach { apiState ->
 
             when (apiState) {
 
                 is ApiState.Data -> {
                     apiState.data?.let { result ->
-                        mState.value = mState.value.copy(
+                        /*mState.value = mState.value.copy(
                             planListRes = result.data,
                             isSuccess = result.data.isNotEmpty()
-                        )
+                        )*/
                     }
                 }
 

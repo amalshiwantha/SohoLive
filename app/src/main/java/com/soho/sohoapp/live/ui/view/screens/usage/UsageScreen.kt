@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -21,6 +22,10 @@ fun UsageScreen(
     netUtil: NetworkUtils = koinInject(),
 ) {
     val mState = usageVm.mState.value
+
+    LaunchedEffect("load_usage") {
+        usageVm.loadUsage()
+    }
 
     Box(
         modifier = Modifier
