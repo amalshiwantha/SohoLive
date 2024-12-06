@@ -23,5 +23,6 @@ enum class NavigationPath {
     PLAYER,
     REVIEW,
     TEMPLATE,
-    SUBSCRIPTION
+    SUBSCRIPTION,
+    USAGE
 }

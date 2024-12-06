@@ -26,20 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.MainStateHolder
-import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.response.PlanData
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
@@ -134,6 +130,8 @@ private fun MainContent(
                 MainStateHolder.mState.activePlan.value?.let {
                     CurrentPlanCard(onPlanClick = {
                         navCont.navigate(NavigationPath.SUBSCRIPTION.name)
+                    }, onUsageClick = {
+                        navCont.navigate(NavigationPath.USAGE.name)
                     }, it)
                 }
 
@@ -187,7 +185,7 @@ private fun MainContent(
 }
 
 @Composable
-fun CurrentPlanCard(onPlanClick: () -> Unit, planData: PlanData) {
+fun CurrentPlanCard(onPlanClick: () -> Unit, onUsageClick: () -> Unit, planData: PlanData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,7 +199,9 @@ fun CurrentPlanCard(onPlanClick: () -> Unit, planData: PlanData) {
             Text950_20sp(title = "${planData.name} (${planData.interval.toCapsFirstLetter()})")
             SpacerUp(size = 24.dp)
 
-            UsageButton(openUsage = {})
+            UsageButton(openUsage = {
+                onUsageClick()
+            })
             SpacerUp(size = 16.dp)
             PlansButton(openPlans = {
                 onPlanClick()
