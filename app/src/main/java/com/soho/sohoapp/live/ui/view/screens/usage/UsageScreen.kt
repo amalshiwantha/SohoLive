@@ -133,10 +133,16 @@ private fun UsageContent(mState: UsageState, mGState: GlobalState) {
 
 @Composable
 private fun UsageCard(usage: CurrentUsage) {
-    val isOverage = false
+    val planData = usage.planDetails
+    val totalOverage = usage.overageStreamingMinutes + usage.overageViewingMinutes
+    val streamUsage = "${usage.streamingMinutes}/${planData?.streamingMinutes}"
+    val viewUsage = "${usage.viewingMinutes}/${planData?.viewingMinutes}"
+
+    val isOverage = totalOverage != 0
     val cardBg = if (isOverage) ItemCardBg else AppWhite
     val txtColor = if (isOverage) AppWhite else TextDark
     val overageBg = if (isOverage) OverageDark else AppWhiteGray
+
 
     Card(
         modifier = Modifier
@@ -154,7 +160,7 @@ private fun UsageCard(usage: CurrentUsage) {
                 //Usage for each
                 UsageProgress(
                     "Streamed",
-                    "55/60 mins",
+                    "$streamUsage mins",
                     progress = 75,
                     txtColor = txtColor,
                     isOverage
@@ -162,7 +168,7 @@ private fun UsageCard(usage: CurrentUsage) {
                 SpacerUp(size = 16.dp)
                 UsageProgress(
                     "Viewed",
-                    "4,822/6,000 mins",
+                    "$viewUsage mins",
                     progress = 35,
                     txtColor = txtColor,
                     isOverage
@@ -171,7 +177,7 @@ private fun UsageCard(usage: CurrentUsage) {
             }
 
             //bottom content overage
-            TotalOverage("10 min", txtColor = txtColor, overageBg = overageBg)
+            TotalOverage("$totalOverage min", txtColor = txtColor, overageBg = overageBg)
         }
 
     }
