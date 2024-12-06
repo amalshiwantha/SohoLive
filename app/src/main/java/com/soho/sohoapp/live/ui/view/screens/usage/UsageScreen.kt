@@ -35,6 +35,7 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
+import com.soho.sohoapp.live.ui.theme.OverageDark
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.subscription.NoNetView
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -135,6 +136,7 @@ private fun UsageCard(usage: CurrentUsage) {
     val isOverage = false
     val cardBg = if (isOverage) ItemCardBg else AppWhite
     val txtColor = if (isOverage) AppWhite else TextDark
+    val overageBg = if (isOverage) OverageDark else AppWhiteGray
 
     Card(
         modifier = Modifier
@@ -150,24 +152,36 @@ private fun UsageCard(usage: CurrentUsage) {
                 SpacerUp(size = 24.dp)
 
                 //Usage for each
-                UsageProgress("Streamed", "55/60 mins", progress = 75, txtColor = txtColor)
+                UsageProgress(
+                    "Streamed",
+                    "55/60 mins",
+                    progress = 75,
+                    txtColor = txtColor,
+                    isOverage
+                )
                 SpacerUp(size = 16.dp)
-                UsageProgress("Viewed", "4,822/6,000 mins", progress = 35, txtColor = txtColor)
+                UsageProgress(
+                    "Viewed",
+                    "4,822/6,000 mins",
+                    progress = 35,
+                    txtColor = txtColor,
+                    isOverage
+                )
                 SpacerUp(size = 24.dp)
             }
 
             //bottom content overage
-            TotalOverage("10 min", txtColor = txtColor)
+            TotalOverage("10 min", txtColor = txtColor, overageBg = overageBg)
         }
 
     }
 }
 
 @Composable
-fun TotalOverage(overage: String, txtColor: Color) {
+fun TotalOverage(overage: String, txtColor: Color, overageBg: Color) {
     Column(
         modifier = Modifier
-            .background(AppWhiteGray)
+            .background(overageBg)
             .padding(16.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -178,7 +192,13 @@ fun TotalOverage(overage: String, txtColor: Color) {
 }
 
 @Composable
-fun UsageProgress(label: String, usage: String, progress: Int, txtColor: Color) {
+fun UsageProgress(
+    label: String,
+    usage: String,
+    progress: Int,
+    txtColor: Color,
+    isOverage: Boolean
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         //Info
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -186,29 +206,33 @@ fun UsageProgress(label: String, usage: String, progress: Int, txtColor: Color) 
             Text700_14sp(step = usage, color = txtColor)
         }
         SpacerUp(size = 16.dp)
-        UsageProgressBar(progress = progress)
+        UsageProgressBar(progress = progress, isOverage = isOverage)
     }
 }
 
 @Composable
 fun UsageProgressBar(
     progress: Int,
+    isOverage: Boolean,
     maxProgress: Int = 100,
     modifier: Modifier = Modifier
 ) {
+    val progPrimary = if (isOverage) Color(0xFFD8D1E4) else Color(0xFF4E215C)
+    val progSecond = if (isOverage) Color(0xFF4E215C) else Color(0xFFD8D1E4)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(8.dp)
             .clip(RoundedCornerShape(4.dp))
-            .background(Color(0xFFD8D1E4)) // Light Gray
+            .background(progSecond) // Secondery
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(progress / maxProgress.toFloat())
                 .height(8.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color(0xFF4E215C)) // Purple
+                .background(progPrimary) // Primary
         )
     }
 }
