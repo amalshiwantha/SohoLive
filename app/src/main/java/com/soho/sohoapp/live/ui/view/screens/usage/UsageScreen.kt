@@ -32,10 +32,12 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.OverageDark
+import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.subscription.NoNetView
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -176,6 +178,7 @@ private fun UsageCard(usage: CurrentUsage) {
                     "$streamUsage mins",
                     progress = progStream,
                     txtColor = txtColor,
+                    txtValueColor = if (isStreamOver) OverageRed else txtColor,
                     isOverage,
                     isStreamOver
                 )
@@ -185,6 +188,7 @@ private fun UsageCard(usage: CurrentUsage) {
                     "$viewUsage mins",
                     progress = progView,
                     txtColor = txtColor,
+                    txtValueColor = if (isStreamOver) OverageRed else txtColor,
                     isOverage,
                     isViewOver
                 )
@@ -230,6 +234,7 @@ fun UsageProgress(
     usage: String,
     progress: Int,
     txtColor: Color,
+    txtValueColor: Color,
     isOverage: Boolean,
     isItemOverage: Boolean,
 ) {
@@ -237,7 +242,7 @@ fun UsageProgress(
         //Info
         Row(modifier = Modifier.fillMaxWidth()) {
             Text400_14sp(info = label, modifier = Modifier.weight(1f), color = txtColor)
-            Text700_14sp(step = usage, color = txtColor)
+            Text700_14sp(step = usage, color = txtValueColor)
         }
         SpacerUp(size = 16.dp)
         UsageProgressBar(progress = progress, isOverage = isOverage, isItemOverage = isItemOverage)
@@ -250,14 +255,13 @@ fun UsageProgressBar(
     isOverage: Boolean,
     isItemOverage: Boolean
 ) {
-    val overageRed = Color(0xFFE13831)
     val progPrimary = if (isItemOverage) {
-        overageRed
+        OverageRed
     } else {
         if (isOverage) Color(0xFFD8D1E4) else Color(0xFF4E215C)
     }
     val progSecond = if (isItemOverage) {
-        overageRed
+        OverageRed
     } else {
         if (isOverage) Color(0xFF4E215C) else Color(0xFFD8D1E4)
     }
