@@ -83,7 +83,7 @@ fun SubscriptionScreen(
 }
 
 @Composable
-private fun NoNetView(onRetryClick: () -> Unit) {
+fun NoNetView(onRetryClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
