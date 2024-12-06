@@ -32,7 +32,6 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
@@ -41,6 +40,7 @@ import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.subscription.NoNetView
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.formatNumber
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -146,8 +146,8 @@ private fun UsageCard(usage: CurrentUsage) {
     val usedView = usage.viewingMinutes
 
     val totalOverage = usage.overageStreamingMinutes + usage.overageViewingMinutes
-    val streamUsage = "$usedStream/$maxStream"
-    val viewUsage = "$usedView/$maxView"
+    val streamUsage = "${usedStream.formatNumber()}/${maxStream.toInt().formatNumber()}"
+    val viewUsage = "${usedView.formatNumber()}/${maxView.toInt().formatNumber()}"
     val period = "${getFormatDate(usage.startTime)} - ${getFormatDate(usage.endTime)}"
     val progStream = getProgress(usedStream, maxStream.toInt())
     val progView = getProgress(usedView, maxView.toInt())
@@ -188,7 +188,7 @@ private fun UsageCard(usage: CurrentUsage) {
                     "$viewUsage mins",
                     progress = progView,
                     txtColor = txtColor,
-                    txtValueColor = if (isStreamOver) OverageRed else txtColor,
+                    txtValueColor = if (isViewOver) OverageRed else txtColor,
                     isOverage,
                     isViewOver
                 )
@@ -196,7 +196,11 @@ private fun UsageCard(usage: CurrentUsage) {
             }
 
             //bottom content overage
-            TotalOverage("$totalOverage min", txtColor = txtColor, overageBg = overageBg)
+            TotalOverage(
+                "${totalOverage.formatNumber()} min",
+                txtColor = txtColor,
+                overageBg = overageBg
+            )
         }
 
     }
@@ -315,7 +319,7 @@ private fun getSampleUsage(): CurrentUsage {
         ),
         streamingMinutes = 10,
         viewingMinutes = 120,
-        overageStreamingMinutes = 10,
+        overageStreamingMinutes = 0,
         overageViewingMinutes = 10
     )
 }
