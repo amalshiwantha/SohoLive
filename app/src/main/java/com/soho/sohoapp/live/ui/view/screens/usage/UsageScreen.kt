@@ -149,12 +149,13 @@ private fun UsageCard(usage: CurrentUsage) {
     val period = "${getFormatDate(usage.startTime)} - ${getFormatDate(usage.endTime)}"
     val progStream = getProgress(usedStream, maxStream.toInt())
     val progView = getProgress(usedView, maxView.toInt())
+    val isStreamOver = usage.overageStreamingMinutes > 0
+    val isViewOver = usage.overageViewingMinutes > 0
 
     val isOverage = totalOverage != 0
     val cardBg = if (isOverage) ItemCardBg else AppWhite
     val txtColor = if (isOverage) AppWhite else TextDark
     val overageBg = if (isOverage) OverageDark else AppWhiteGray
-
 
     Card(
         modifier = Modifier
@@ -175,7 +176,8 @@ private fun UsageCard(usage: CurrentUsage) {
                     "$streamUsage mins",
                     progress = progStream,
                     txtColor = txtColor,
-                    isOverage
+                    isOverage,
+                    isStreamOver
                 )
                 SpacerUp(size = 16.dp)
                 UsageProgress(
@@ -183,7 +185,8 @@ private fun UsageCard(usage: CurrentUsage) {
                     "$viewUsage mins",
                     progress = progView,
                     txtColor = txtColor,
-                    isOverage
+                    isOverage,
+                    isViewOver
                 )
                 SpacerUp(size = 24.dp)
             }
@@ -227,7 +230,8 @@ fun UsageProgress(
     usage: String,
     progress: Int,
     txtColor: Color,
-    isOverage: Boolean
+    isOverage: Boolean,
+    isItemOverage: Boolean,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         //Info
@@ -236,7 +240,7 @@ fun UsageProgress(
             Text700_14sp(step = usage, color = txtColor)
         }
         SpacerUp(size = 16.dp)
-        UsageProgressBar(progress = progress, isOverage = isOverage)
+        UsageProgressBar(progress = progress, isOverage = isOverage, isItemOverage = isItemOverage)
     }
 }
 
@@ -244,11 +248,19 @@ fun UsageProgress(
 fun UsageProgressBar(
     progress: Int,
     isOverage: Boolean,
-    maxProgress: Int = 100,
-    modifier: Modifier = Modifier
+    isItemOverage: Boolean
 ) {
-    val progPrimary = if (isOverage) Color(0xFFD8D1E4) else Color(0xFF4E215C)
-    val progSecond = if (isOverage) Color(0xFF4E215C) else Color(0xFFD8D1E4)
+    val overageRed = Color(0xFFE13831)
+    val progPrimary = if (isItemOverage) {
+        overageRed
+    } else {
+        if (isOverage) Color(0xFFD8D1E4) else Color(0xFF4E215C)
+    }
+    val progSecond = if (isItemOverage) {
+        overageRed
+    } else {
+        if (isOverage) Color(0xFF4E215C) else Color(0xFFD8D1E4)
+    }
 
     Box(
         modifier = Modifier
@@ -259,7 +271,7 @@ fun UsageProgressBar(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(progress / maxProgress.toFloat())
+                .fillMaxWidth(progress / 100.toFloat())
                 .height(8.dp)
                 .clip(RoundedCornerShape(4.dp))
                 .background(progPrimary) // Primary
@@ -291,7 +303,7 @@ private fun getSampleUsage(): CurrentUsage {
             stripeStreamingPlanId = "price_1PuU3rKYLTBX2qcziNIKN5mM",
             planType = "soho_live",
             viewingMinutes = "1500",
-            streamingMinutes = "15",
+            streamingMinutes = "20",
             inAppStorageDays = "30",
             simulcastingEnabled = true,
             listingAvailableDays = "90",
@@ -299,7 +311,7 @@ private fun getSampleUsage(): CurrentUsage {
         ),
         streamingMinutes = 10,
         viewingMinutes = 120,
-        overageStreamingMinutes = 5,
-        overageViewingMinutes = 30
+        overageStreamingMinutes = 10,
+        overageViewingMinutes = 10
     )
 }
