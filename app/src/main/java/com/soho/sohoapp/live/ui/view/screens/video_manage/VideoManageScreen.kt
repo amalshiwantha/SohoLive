@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,12 +47,15 @@ import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
+import com.soho.sohoapp.live.ui.components.DotLinkTextItem
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
+import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text800_12sp
+import com.soho.sohoapp.live.ui.components.Text950_14sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextProgress
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
@@ -60,12 +64,17 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.AppWhiteGray
+import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
+import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
+import com.soho.sohoapp.live.ui.view.screens.subscription.BulletPointText
+import com.soho.sohoapp.live.ui.view.screens.subscription.BulletText
 import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
@@ -181,6 +190,7 @@ private fun MainContent(
             data?.let {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item { InnerContent(it, onPlayClick = { onPlayClick() }) }
+                    item { StorageLeftCard() }
                 }
             } ?: run {
                 NoDataView(modifier = Modifier.align(Alignment.Center))
@@ -203,6 +213,61 @@ private fun MainContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     })
+        }
+    }
+}
+
+@Composable
+fun StorageLeftCard() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        SpacerUp(size = 24.dp)
+        Card(
+            shape = RoundedCornerShape(8.dp),
+            colors = CardDefaults.cardColors(containerColor = DurationDark)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+
+                //Storage Left Days
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text400_14sp(info = "Storage Left")
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text950_14sp(title = "12/30 Days Left", txtColor = OverageRed)
+                }
+
+                //Info Card
+                SpacerUp(size = 16.dp)
+                Card(
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = AppWhiteGray.copy(alpha = 0.2f))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Image(
+                                painter = painterResource(id = R.drawable.light),
+                                contentDescription = ""
+                            )
+                            SpacerSide(size = 8.dp)
+                            Text700_14sp(step = "Ways to keep your videos", color = AppWhite)
+                        }
+
+                        SpacerUp(size = 16.dp)
+
+                        Column(modifier = Modifier.padding(start = 4.dp)) {
+                            BulletText(value = "Download it before it expires")
+                            BulletText(value = "Get a multicast plan for 90 days of storage")
+                            BulletText(value = "Access it on the social channels where you streamed")
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -478,8 +543,9 @@ fun PrivacyOption(
             horizontalArrangement = Arrangement.Center,
         ) {
             //privacy radio button
-            if(isShowSelection){
-                val radioIcon = if (isSelected) R.drawable.radio_active else R.drawable.radio_inactive
+            if (isShowSelection) {
+                val radioIcon =
+                    if (isSelected) R.drawable.radio_active else R.drawable.radio_inactive
                 Image(
                     painter = painterResource(id = radioIcon), contentDescription = null
                 )
@@ -504,7 +570,9 @@ fun PrivacyOption(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Image(
-                            painter = painterResource(id = eyeImgId), contentDescription = "", modifier = Modifier.size(12.dp)
+                            painter = painterResource(id = eyeImgId),
+                            contentDescription = "",
+                            modifier = Modifier.size(12.dp)
                         )
                         SpacerSide(size = 4.dp)
                         Text800_12sp(label = text)
@@ -539,7 +607,7 @@ fun PrivacyOption(
         }
 
         //info
-        val startPadding = if(isShowSelection) 24.dp else 0.dp
+        val startPadding = if (isShowSelection) 24.dp else 0.dp
         SpacerUp(size = 8.dp)
         Text400_14sp(
             info = description, modifier = Modifier.padding(start = startPadding), color = txtColor

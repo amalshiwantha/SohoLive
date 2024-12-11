@@ -340,6 +340,27 @@ fun BulletPointText(value: String) {
 }
 
 @Composable
+fun BulletText(value: String) {
+    Row(
+        verticalAlignment = Alignment.Top,
+        modifier = Modifier.padding(vertical = 4.dp)
+    ) {
+        // Bullet Point
+        Column(modifier = Modifier.padding(top = 8.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(4.dp)
+                    .clip(CircleShape)
+                    .background(Color.White)
+            )
+        }
+        SpacerSide(size = 8.dp)
+        // Text
+        Text400_14sp(info = value)
+    }
+}
+
+@Composable
 private fun SubtitleCastTo(isSingle: Boolean, subTitle: String) {
     Column {
         //SM List icon
