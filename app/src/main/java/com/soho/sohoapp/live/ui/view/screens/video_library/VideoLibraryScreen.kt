@@ -99,7 +99,6 @@ import org.koin.compose.koinInject
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -612,9 +611,12 @@ private fun ListItemView(
             TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
-            StorageLabel(item.startedAt, onStorageClick = {
-                onStorageClick()
-            })
+            val daysStorage = getRemainingDays(item.startedAt)
+            if (daysStorage > 0) {
+                StorageLabel(daysStorage.toString(), onStorageClick = {
+                    onStorageClick()
+                })
+            }
         }
         SpacerUp(size = 16.dp)
 
@@ -687,33 +689,27 @@ fun StorageLabel(displayDate: String, onStorageClick: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = DurationDark)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text800_10sp(label = "${getRemainingDays(displayDate)}D STORAGE", txtColor = OverageRed)
+            Text800_10sp(label = "${displayDate}D STORAGE", txtColor = OverageRed)
         }
     }
 }
 
-fun getRemainingDays(startedAt: String): Long {
+fun getRemainingDays(startedAt: String): Int {
     // Define the date format
     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-    dateFormat.timeZone = java.util.TimeZone.getTimeZone("UTC")
+    dateFormat.timeZone = java.util.TimeZone.getTimeZone("UTC") // Ensure parsing is in UTC
 
     // Parse the `started_at` date
-    val startedDate: Date = dateFormat.parse(startedAt)
-
-    // Calculate expiration date by adding 30 days
-    val calendar = Calendar.getInstance()
-    calendar.time = startedDate
-    calendar.add(Calendar.DAY_OF_YEAR, 30)
-    val expirationDate = calendar.time
+    val startedDate: Date = dateFormat.parse(startedAt)!!
 
     // Get today's date
     val today = Date()
 
-    // Calculate remaining days
-    val diffInMillis = expirationDate.time - today.time
-    val remainingDays = diffInMillis / (1000 * 60 * 60 * 24)
+    // Calculate days since the `startedAt` date
+    val diffInMillis = today.time - startedDate.time
+    val daysSinceStarted = diffInMillis / (1000 * 60 * 60 * 24) // Convert milliseconds to days
 
-    return remainingDays.coerceAtLeast(0)
+    return daysSinceStarted.toInt()
 }
 
 @Composable
