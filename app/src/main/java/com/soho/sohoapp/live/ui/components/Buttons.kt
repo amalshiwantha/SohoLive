@@ -31,10 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BorderGray
+import com.soho.sohoapp.live.ui.theme.OverageRed
 
 @Composable
 fun ButtonOutLinedIcon(
@@ -404,6 +404,13 @@ fun ButtonOutlineWhite(
 fun TextButtonBlue(text: String, modifier: Modifier = Modifier, onBtnClick: () -> Unit) {
     TextButton(onClick = { onBtnClick() }, modifier = modifier) {
         TextBlue14(label = text, modifier = modifier)
+    }
+}
+
+@Composable
+fun ButtonText(modifier: Modifier = Modifier, text: String, txtColor: Color = OverageRed,  onBtnClick: () -> Unit) {
+    TextButton(onClick = { onBtnClick() }, modifier = modifier) {
+        Text800_14sp(label = text, txtColor = txtColor)
     }
 }
 

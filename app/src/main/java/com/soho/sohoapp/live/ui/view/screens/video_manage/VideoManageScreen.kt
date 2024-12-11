@@ -47,7 +47,7 @@ import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
-import com.soho.sohoapp.live.ui.components.DotLinkTextItem
+import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -73,7 +73,6 @@ import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
-import com.soho.sohoapp.live.ui.view.screens.subscription.BulletPointText
 import com.soho.sohoapp.live.ui.view.screens.subscription.BulletText
 import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
 import com.soho.sohoapp.live.utility.getThumbUrl
@@ -136,6 +135,9 @@ fun VideoManageScreen(
         onSaveClick = { updateVideoItem(itemData, vmVidManage) },
         onPlayClick = {
             playVideoUrl = itemData?.downloadLink ?: ""
+        },
+        onDeleteClick = {
+
         })
 }
 
@@ -159,7 +161,8 @@ private fun MainContent(
     isShowProgress: Boolean,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
-    onPlayClick: () -> Unit
+    onPlayClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -191,6 +194,11 @@ private fun MainContent(
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item { InnerContent(it, onPlayClick = { onPlayClick() }) }
                     item { StorageLeftCard() }
+                    item {
+                        DeleteBtnView(onDeleteClick = {
+                            onDeleteClick()
+                        })
+                    }
                 }
             } ?: run {
                 NoDataView(modifier = Modifier.align(Alignment.Center))
@@ -214,6 +222,20 @@ private fun MainContent(
                         end.linkTo(parent.end)
                     })
         }
+    }
+}
+
+@Composable
+fun DeleteBtnView(onDeleteClick: () -> Unit) {
+    SpacerUp(size = 24.dp)
+    Box {
+        ButtonText(
+            text = "Delete Video",
+            onBtnClick = { onDeleteClick() },
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+        )
     }
 }
 
