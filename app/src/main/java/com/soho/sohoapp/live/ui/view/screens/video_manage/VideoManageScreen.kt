@@ -40,6 +40,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -75,6 +76,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
 import com.soho.sohoapp.live.ui.view.screens.subscription.BulletText
 import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
+import com.soho.sohoapp.live.ui.view.screens.video_library.getRemainingDays
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
 import com.soho.sohoapp.live.utility.showToast
@@ -193,7 +195,7 @@ private fun MainContent(
             data?.let {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item { InnerContent(it, onPlayClick = { onPlayClick() }) }
-                    item { StorageLeftCard() }
+                    item { StorageLeftCard(it) }
                     item {
                         DeleteBtnView(onDeleteClick = {
                             onDeleteClick()
@@ -240,52 +242,58 @@ fun DeleteBtnView(onDeleteClick: () -> Unit) {
 }
 
 @Composable
-fun StorageLeftCard() {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        SpacerUp(size = 24.dp)
-        Card(
-            shape = RoundedCornerShape(8.dp),
-            colors = CardDefaults.cardColors(containerColor = DurationDark)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
+fun StorageLeftCard(videoItem: VideoItem) {
+    val activePln = MainStateHolder.mState.activePlan.value
+    activePln?.let { plan ->
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SpacerUp(size = 24.dp)
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(containerColor = DurationDark)
             ) {
-
-                //Storage Left Days
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text400_14sp(info = "Storage Left")
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text950_14sp(title = "12/30 Days Left", txtColor = OverageRed)
-                }
-
-                //Info Card
-                SpacerUp(size = 16.dp)
-                Card(
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = AppWhiteGray.copy(alpha = 0.2f))
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
+
+                    val maxDays = plan.terms.inAppStorageDays
+                    val leftDays = getRemainingDays(videoItem.startedAt)
+
+                    //Storage Left Days
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text400_14sp(info = "Storage Left")
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text950_14sp(title = "$leftDays/$maxDays Days Left", txtColor = OverageRed)
+                    }
+
+                    //Info Card
+                    SpacerUp(size = 16.dp)
+                    Card(
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = AppWhiteGray.copy(alpha = 0.2f))
                     ) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Image(
-                                painter = painterResource(id = R.drawable.light),
-                                contentDescription = ""
-                            )
-                            SpacerSide(size = 8.dp)
-                            Text700_14sp(step = "Ways to keep your videos", color = AppWhite)
-                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.light),
+                                    contentDescription = ""
+                                )
+                                SpacerSide(size = 8.dp)
+                                Text700_14sp(step = "Ways to keep your videos", color = AppWhite)
+                            }
 
-                        SpacerUp(size = 16.dp)
+                            SpacerUp(size = 16.dp)
 
-                        Column(modifier = Modifier.padding(start = 4.dp)) {
-                            BulletText(value = "Download it before it expires")
-                            BulletText(value = "Get a multicast plan for 90 days of storage")
-                            BulletText(value = "Access it on the social channels where you streamed")
+                            Column(modifier = Modifier.padding(start = 4.dp)) {
+                                BulletText(value = "Download it before it expires")
+                                BulletText(value = "Get a multicast plan for 90 days of storage")
+                                BulletText(value = "Access it on the social channels where you streamed")
+                            }
                         }
                     }
                 }
