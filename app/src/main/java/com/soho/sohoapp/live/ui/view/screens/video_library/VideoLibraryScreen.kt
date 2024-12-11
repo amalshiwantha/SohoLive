@@ -69,6 +69,7 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_10sp
+import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
@@ -83,6 +84,7 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.utility.NetworkUtils
@@ -585,7 +587,7 @@ private fun ListItemView(
             TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
-            Text700_12spRight(label = item.getDisplayDate(), txtColor = AppWhite)
+            //Text700_12spRight(label = item.getDisplayDate(), txtColor = AppWhite)
         }
         SpacerUp(size = 16.dp)
 
@@ -669,14 +671,20 @@ fun ActionIconButton(btnIcon: Int, onClickAction: () -> Unit) {
 
 @Composable
 fun TitleDescription(item: VideoItem) {
-    Column {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text700_12spNormal(label = item.getDisplayDate(), txtColor = HintGray)
+
+        Spacer(modifier = Modifier.weight(1f))
         item.title?.let {
             Text700_14spBold(step = it)
-            SpacerUp(size = 8.dp)
         }
+
+        Spacer(modifier = Modifier.weight(1f))
         item.description?.let {
             Text400_12sp(label = it)
         }
+
+
     }
 }
 
