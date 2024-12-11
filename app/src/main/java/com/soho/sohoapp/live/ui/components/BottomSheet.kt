@@ -41,6 +41,7 @@ fun StorageBottomSheet(onDone: () -> Unit) {
 
     val mState = MainStateHolder.mState
     val bottomSheetState = rememberModalBottomSheetState()
+    val inAppStoreDays = mState.activePlan.value?.terms?.inAppStorageDays ?: 0
 
     ModalBottomSheet(
         containerColor = BottomBarBg,
@@ -59,7 +60,7 @@ fun StorageBottomSheet(onDone: () -> Unit) {
             Text400_14sp(info = "All our plans let you store and easily access your videos in the app for a set period.")
             SpacerUp(size = 16.dp)
 
-            StorageCard()
+            StorageCard(inAppStoreDays)
 
             Divider(color = BottomBarUnselect, modifier = Modifier.padding(vertical = 24.dp))
 
@@ -82,7 +83,7 @@ fun StorageBottomSheet(onDone: () -> Unit) {
 }
 
 @Composable
-fun StorageCard() {
+fun StorageCard(inAppStoreDays: Any) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -91,7 +92,7 @@ fun StorageCard() {
         Column(modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp)) {
             Text400_14sp(info = "Your current storage days")
             SpacerUp(size = 8.dp)
-            Text950_20sp(title = "30 Days")
+            Text950_20sp(title = "$inAppStoreDays Days")
         }
     }
 }
