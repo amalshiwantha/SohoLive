@@ -321,7 +321,7 @@ private fun FeaturesList(features: List<String>) {
 }
 
 @Composable
-private fun BulletPointText(value: String) {
+fun BulletPointText(value: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 4.dp)

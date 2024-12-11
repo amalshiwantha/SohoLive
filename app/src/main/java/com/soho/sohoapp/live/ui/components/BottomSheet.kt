@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
@@ -23,9 +27,74 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.BottomBarBg
+import com.soho.sohoapp.live.ui.theme.BottomBarUnselect
 import com.soho.sohoapp.live.ui.theme.BottomSheetDrag
+import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.view.screens.subscription.BulletPointText
 import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StorageBottomSheet(onDone: () -> Unit) {
+
+    val mState = MainStateHolder.mState
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    ModalBottomSheet(
+        containerColor = BottomBarBg,
+        dragHandle = { DragHandle(color = BottomSheetDrag) },
+        onDismissRequest = { onDone() },
+        sheetState = bottomSheetState
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text800_20sp(label = "In-App Storage")
+            SpacerUp(size = 8.dp)
+
+            Text400_14sp(info = "All our plans let you store and easily access your videos in the app for a set period.")
+            SpacerUp(size = 16.dp)
+
+            StorageCard()
+
+            Divider(color = BottomBarUnselect, modifier = Modifier.padding(vertical = 24.dp))
+
+            Text700_14sp(step = "Alternative ways to keep your videos:")
+            SpacerUp(size = 16.dp)
+
+            Column(modifier = Modifier.padding(start = 8.dp)) {
+                BulletPointText("Download it before it expires")
+                BulletPointText("Get a multicast plan for 90 days of storage")
+                BulletPointText("Access it on the social channels where you streamed")
+            }
+
+            SpacerUp(size = 24.dp)
+            ButtonColoured(text = "Done", color = AppGreen, onBtnClick = {
+                onDone()
+            })
+
+        }
+    }
+}
+
+@Composable
+fun StorageCard() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = DurationDark)
+    ) {
+        Column(modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp)) {
+            Text400_14sp(info = "Your current storage days")
+            SpacerUp(size = 8.dp)
+            Text950_20sp(title = "30 Days")
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

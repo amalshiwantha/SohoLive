@@ -67,6 +67,7 @@ import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.StorageBottomSheet
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_10sp
@@ -118,6 +119,7 @@ fun VideoLibraryScreen(
     var isShowProgress by remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     var playVideoUrl by remember { mutableStateOf("") }
+    var isShowStorageModel by remember { mutableStateOf(false) }
 
     //Reload the list once upload done
     LaunchedEffect(mGState.uploadStatus.value) {
@@ -190,6 +192,12 @@ fun VideoLibraryScreen(
         }
     }
 
+    if (isShowStorageModel) {
+        StorageBottomSheet(onDone = {
+            isShowStorageModel = false
+        })
+    }
+
     //display main content with pull to refresh
     SwipeRefresh(
         state = swipeRefreshState,
@@ -207,6 +215,9 @@ fun VideoLibraryScreen(
             },
             onShowPvtVideo = {
                 navController.navigate(NavigationPath.PRE_RECODED_LIST.name)
+            },
+            onStorageClick = {
+                isShowStorageModel = true
             }
         )
     }
@@ -236,7 +247,8 @@ private fun Content(
     onManageClick: (VideoItem) -> Unit,
     onPlayVid: (String) -> Unit,
     onClickReloadVideoList: () -> Unit,
-    onShowPvtVideo: () -> Unit
+    onShowPvtVideo: () -> Unit,
+    onStorageClick: () -> Unit
 ) {
     var downloadStatus by rememberSaveable { mutableStateOf("") }
 
@@ -301,6 +313,9 @@ private fun Content(
                                         downloadFile(it.first, it.second, onDownloadStatus = {
                                             downloadStatus = it
                                         })
+                                    },
+                                    onStorageClick = {
+                                        onStorageClick()
                                     })
                             }
                         }
@@ -578,7 +593,8 @@ private fun ListItemView(
     onClickManage: (VideoItem) -> Unit,
     onShareVideo: (String) -> Unit,
     onPlayVideo: (String) -> Unit,
-    onDownloadVideo: (Pair<String, String>) -> Unit
+    onDownloadVideo: (Pair<String, String>) -> Unit,
+    onStorageClick: () -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
@@ -596,7 +612,9 @@ private fun ListItemView(
             TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
-            StorageLabel(item.startedAt, onStorageClick = {})
+            StorageLabel(item.startedAt, onStorageClick = {
+                onStorageClick()
+            })
         }
         SpacerUp(size = 16.dp)
 
