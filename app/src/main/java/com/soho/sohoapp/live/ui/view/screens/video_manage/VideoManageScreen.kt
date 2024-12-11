@@ -258,7 +258,7 @@ fun StorageLeftCard(videoItem: VideoItem) {
                 ) {
 
                     val maxDays = plan.terms.inAppStorageDays
-                    val leftDays = getRemainingDays(videoItem.startedAt)
+                    val leftDays = maxDays.toInt()-getRemainingDays(videoItem.startedAt)
 
                     //Storage Left Days
                     Row(modifier = Modifier.fillMaxWidth()) {

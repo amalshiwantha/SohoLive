@@ -56,6 +56,7 @@ import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.enums.VideoStatus
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -172,14 +173,11 @@ fun VideoLibraryScreen(
     //show api error as alert
     if (isShowAlert) {
         alertConfig?.let {
-            AppAlertDialog(
-                alert = it,
-                onConfirm = {
-                    vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
-                },
-                onDismiss = {
-                    vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
-                })
+            AppAlertDialog(alert = it, onConfirm = {
+                vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
+            }, onDismiss = {
+                vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
+            })
         }
     }
 
@@ -198,13 +196,12 @@ fun VideoLibraryScreen(
     }
 
     //display main content with pull to refresh
-    SwipeRefresh(
-        state = swipeRefreshState,
-        onRefresh = {
-            vmVidLib.reLoadData()
-        }
-    ) {
-        Content(isShowProgress, states, mGState,
+    SwipeRefresh(state = swipeRefreshState, onRefresh = {
+        vmVidLib.reLoadData()
+    }) {
+        Content(isShowProgress,
+            states,
+            mGState,
             onManageClick = { selectedItem = it },
             onPlayVid = {
                 playVideoUrl = it
@@ -217,8 +214,7 @@ fun VideoLibraryScreen(
             },
             onStorageClick = {
                 isShowStorageModel = true
-            }
-        )
+            })
     }
 
 
@@ -279,8 +275,7 @@ private fun Content(
             CenterMessageProgress(message = state.loadingMessage)
         } else {
             val dataList = mGState.videoLibResState.value?.assets?.filter {
-                ((it.status == VideoStatus.READY.status && it.downloadLink != null)
-                        || it.status == VideoStatus.IN_PROG.status)
+                ((it.status == VideoStatus.READY.status && it.downloadLink != null) || it.status == VideoStatus.IN_PROG.status)
             }
 
             if (dataList.isNullOrEmpty()) {
@@ -345,8 +340,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
             Text700_14sp(step = "Your pre-recorded video is being uploaded")
             SpacerUp(size = 16.dp)
             LinearProgressIndicator(
-                progress = prog.toFloat() / 100,
-                modifier = Modifier.fillMaxWidth()
+                progress = prog.toFloat() / 100, modifier = Modifier.fillMaxWidth()
             )
             SpacerUp(size = 10.dp)
             // Row for progress text and cancel button
@@ -373,8 +367,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
                 // Cancel & Dismiss button
                 when (status) {
                     "uploading" -> {
-                        Text700_10sp(
-                            title = "Cancel Upload",
+                        Text700_10sp(title = "Cancel Upload",
                             color = LinkTxtColor,
                             modifier = Modifier.clickable {
                                 //doCancelUpload
@@ -382,8 +375,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
                     }
 
                     "failed" -> {
-                        Text700_10sp(
-                            title = "Dismiss",
+                        Text700_10sp(title = "Dismiss",
                             color = LinkTxtColor,
                             modifier = Modifier.clickable {
                                 gState.uploadStatus.value = "hide"
@@ -409,8 +401,7 @@ fun InProgItemView() {
             verticalArrangement = Arrangement.Center
         ) {
             TextWhite14Normal(
-                title = "Your latest VOD asset is still being prepared." +
-                        " Please refresh shortly by using the pull-to-refresh"
+                title = "Your latest VOD asset is still being prepared." + " Please refresh shortly by using the pull-to-refresh"
             )
         }
     }
@@ -460,12 +451,10 @@ fun CenteredScreen() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            ButtonColoredIcon(
-                title = "Schedule a livecast",
+            ButtonColoredIcon(title = "Schedule a livecast",
                 btnColor = AppGreen,
                 icon = R.drawable.ic_calender,
-                onBtnClick = { }
-            )
+                onBtnClick = { })
         }
     }
 }
@@ -487,22 +476,18 @@ private fun NoDataScreen(onClick: () -> Unit) {
             )
             SpacerUp(size = 40.dp)
             Text800_14sp(
-                label = stringResource(R.string.no_data_title),
-                txtAlign = TextAlign.Center
+                label = stringResource(R.string.no_data_title), txtAlign = TextAlign.Center
             )
             SpacerUp(size = 8.dp)
             Text400_14sp(
-                info = stringResource(R.string.no_data_msg),
-                txtAlign = TextAlign.Center
+                info = stringResource(R.string.no_data_msg), txtAlign = TextAlign.Center
             )
 
             SpacerUp(size = 40.dp)
-            ButtonColoredIcon(
-                title = "Schedule a livecast",
+            ButtonColoredIcon(title = "Schedule a livecast",
                 btnColor = AppGreen,
                 icon = R.drawable.ic_calender,
-                onBtnClick = { onClick() }
-            )
+                onBtnClick = { onClick() })
         }
     }
 }
@@ -611,7 +596,9 @@ private fun ListItemView(
             TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
-            val daysStorage = getRemainingDays(item.startedAt)
+            val maxDays =
+                MainStateHolder.mState.activePlan.value?.terms?.inAppStorageDays?.toInt() ?: 0
+            val daysStorage = maxDays - getRemainingDays(item.startedAt)
             if (daysStorage > 0) {
                 StorageLabel(daysStorage.toString(), onStorageClick = {
                     onStorageClick()
@@ -638,7 +625,8 @@ private fun ListItemView(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            ButtonOutlineWhiteNormal(text = "Manage",
+            ButtonOutlineWhiteNormal(
+                text = "Manage",
                 modifier = Modifier
                     .weight(1f)
                     .height(40.dp),
