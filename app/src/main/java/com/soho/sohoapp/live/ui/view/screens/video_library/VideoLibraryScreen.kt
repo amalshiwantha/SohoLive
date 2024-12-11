@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -70,9 +71,9 @@ import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_10sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
-import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
+import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TextBadge
 import com.soho.sohoapp.live.ui.components.TextUploadComplete
@@ -87,6 +88,7 @@ import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.LinkTxtColor
+import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
@@ -95,6 +97,10 @@ import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun VideoLibraryScreen(
@@ -340,9 +346,11 @@ fun UploadProgressStatusView(gState: GlobalState) {
                     "uploading" -> {
                         Text700_10sp(title = "$prog%")
                     }
+
                     "completed" -> {
                         TextUploadComplete()
                     }
+
                     "failed" -> {
                         TextUploadErr()
                     }
@@ -358,6 +366,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
                                 //doCancelUpload
                             })
                     }
+
                     "failed" -> {
                         Text700_10sp(
                             title = "Dismiss",
@@ -587,7 +596,7 @@ private fun ListItemView(
             TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
-            //Text700_12spRight(label = item.getDisplayDate(), txtColor = AppWhite)
+            StorageLabel(item.startedAt, onStorageClick = {})
         }
         SpacerUp(size = 16.dp)
 
@@ -649,6 +658,44 @@ private fun ListItemView(
             })
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StorageLabel(displayDate: String, onStorageClick: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        onClick = { onStorageClick() },
+        colors = CardDefaults.cardColors(containerColor = DurationDark)
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text800_10sp(label = "${getRemainingDays(displayDate)}D STORAGE", txtColor = OverageRed)
+        }
+    }
+}
+
+fun getRemainingDays(startedAt: String): Long {
+    // Define the date format
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    dateFormat.timeZone = java.util.TimeZone.getTimeZone("UTC")
+
+    // Parse the `started_at` date
+    val startedDate: Date = dateFormat.parse(startedAt)
+
+    // Calculate expiration date by adding 30 days
+    val calendar = Calendar.getInstance()
+    calendar.time = startedDate
+    calendar.add(Calendar.DAY_OF_YEAR, 30)
+    val expirationDate = calendar.time
+
+    // Get today's date
+    val today = Date()
+
+    // Calculate remaining days
+    val diffInMillis = expirationDate.time - today.time
+    val remainingDays = diffInMillis / (1000 * 60 * 60 * 24)
+
+    return remainingDays.coerceAtLeast(0)
 }
 
 @Composable
