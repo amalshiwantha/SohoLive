@@ -202,7 +202,7 @@ fun GoLiveScreen(
     val assetsState = savedState ?: goLiveVm.assetsState.value
     val stepCount = maxSteps
     var currentStepId by remember { mutableIntStateOf(mState.stepId.value) }
-    val optionList = mutableListOf("Inspection", "Auction", "Other")
+    val optionList = mutableListOf("Inspection", "Auction")
     var isNetConnected by remember { mutableStateOf(true) }
     var isNowSelected by remember { mutableStateOf(assetsState.isNowSelected.value) }
     var isNoSlots by rememberSaveable { mutableStateOf(false) }
