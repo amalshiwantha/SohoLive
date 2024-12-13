@@ -115,6 +115,7 @@ fun PlayerScreen(
 
         //TopActionBar
         TopAppBarActionBack(
+            isShowBack = if (mGState.isEditVideoData.value) true else false,
             rightIcon = R.drawable.ic_trash,
             modifier = Modifier
                 .fillMaxWidth()
