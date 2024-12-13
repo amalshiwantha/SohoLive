@@ -49,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -72,6 +73,7 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text800_12sp
+import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
@@ -279,7 +281,7 @@ fun VideoRecorderScreen(
             )
 
             //Timer Top Right
-            TimerCard(
+            TimerCardLive(
                 timerValue = timerValue,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -414,10 +416,17 @@ fun BrandingOption(isSelected: Boolean, label: String, image: Int, onSelectTempl
 }
 
 @Composable
-fun BrandingOptionLand(isSelected: Boolean, label: String, image: Int, onSelectTemplate: () -> Unit) {
+fun BrandingOptionLand(
+    isSelected: Boolean,
+    label: String,
+    image: Int,
+    onSelectTemplate: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { onSelectTemplate() }.fillMaxWidth()
+        modifier = Modifier
+            .clickable { onSelectTemplate() }
+            .fillMaxWidth()
     ) {
         Box(modifier = Modifier.size(width = 156.dp, height = 120.dp)) {
             //Brand
@@ -594,6 +603,30 @@ private fun recordVideo(
         }
     }
 
+}
+
+@Composable
+fun TimerCardLive(
+    timerValue: String,
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.5f),
+                        Color.White.copy(alpha = 0.5f)
+                    )
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(modifier = Modifier.padding(vertical = 7.dp, horizontal = 8.dp)) {
+            Text800_14sp(label = timerValue, txtColor = Color.Black)
+        }
+    }
 }
 
 @Composable
