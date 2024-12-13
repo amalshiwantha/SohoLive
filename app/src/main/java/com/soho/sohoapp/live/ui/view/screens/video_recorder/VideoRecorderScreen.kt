@@ -391,8 +391,14 @@ fun BrandingOption(isSelected: Boolean, label: String, image: Int, onSelectTempl
                 contentDescription = ""
             )
 
-            //Tick Selection
+            //Tick & Border Selection
             if (isSelected) {
+                Image(
+                    painter = painterResource(id = R.drawable.brand_selection_border),
+                    contentDescription = "",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+
                 Image(
                     painter = painterResource(id = R.drawable.brand_selection_tick),
                     contentDescription = "",
