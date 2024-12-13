@@ -386,7 +386,7 @@ fun PortraitView(
                     Spacer(modifier = Modifier.weight(1f))
 
                     //Stop & Rec Button
-                    StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                    StartStopButtonTemp(isRecording, onBtnClick = {
                         onStartRecClick()
                     })
                 }
@@ -536,7 +536,7 @@ fun LandscapeView(
                 Spacer(modifier = Modifier.weight(1f))
 
                 //Stop & Rec Button
-                StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                StartStopButtonTemp(isRecording, onBtnClick = {
                     onStartRecClick()
                 })
             }

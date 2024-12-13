@@ -323,7 +323,7 @@ fun VideoRecorderScreen(
                         horizontalAlignment = Alignment.End
                     ) {
                         //Stop & Rec Button
-                        StartStopButton(isRecording, isCompletedMinRecTime, onBtnClick = {
+                        StartStopButton(isRecording, onBtnClick = {
                             if (!isLoading) {
                                 startStopRecord(controller, onRecord = {
                                     isRecording = it
@@ -484,19 +484,11 @@ fun RequestNotificationPermission() {
 }
 
 @Composable
-fun StartStopButton(isStart: Boolean, isMinRecTimeDone: Boolean, onBtnClick: () -> Unit) {
+fun StartStopButton(isStart: Boolean, onBtnClick: () -> Unit) {
     val btnTxt = if (isStart) "End" else "Record Now"
     val btnColor = if (isStart) AppWhite else AppRed
     val txtColor = if (isStart) AppRed else AppWhite
     val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
-    var isAllowClick = false
-
-    //if start then check recTime has complete 10sec to stop
-    if (isStart && isMinRecTimeDone) {
-        isAllowClick = true
-    } else if (!isStart) {
-        isAllowClick = true
-    }
 
     ButtonColoredIconWrap(
         title = btnTxt,
@@ -504,9 +496,24 @@ fun StartStopButton(isStart: Boolean, isMinRecTimeDone: Boolean, onBtnClick: () 
         txtColor = txtColor,
         icon = btnIcon
     ) {
-        if (isAllowClick) {
-            onBtnClick()
-        }
+        onBtnClick()
+    }
+}
+
+@Composable
+fun StartStopButtonTemp(isStart: Boolean, onBtnClick: () -> Unit) {
+    val btnTxt = if (isStart) "End" else "Record Now"
+    val btnColor = if (isStart) AppWhite else AppRed
+    val txtColor = if (isStart) AppRed else AppWhite
+    val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
+
+    ButtonColoredIconWrap(
+        title = btnTxt,
+        btnColor = btnColor,
+        txtColor = txtColor,
+        icon = btnIcon
+    ) {
+        onBtnClick()
     }
 }
 
