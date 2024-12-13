@@ -485,10 +485,10 @@ fun RequestNotificationPermission() {
 
 @Composable
 fun StartStopButton(isStart: Boolean, onBtnClick: () -> Unit) {
-    val btnTxt = if (isStart) "End" else "Record Now"
-    val btnColor = if (isStart) AppWhite else AppRed
-    val txtColor = if (isStart) AppRed else AppWhite
-    val btnIcon = if (isStart) R.drawable.liv_cast_stop_red else R.drawable.livecast
+    val btnTxt = "End"
+    val btnColor = AppWhite
+    val txtColor = AppRed
+    val btnIcon = R.drawable.liv_cast_stop_red
 
     ButtonColoredIconWrap(
         title = btnTxt,
