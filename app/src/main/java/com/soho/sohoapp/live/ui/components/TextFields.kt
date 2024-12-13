@@ -51,9 +51,10 @@ fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (Pair<String, Stri
     OutlinedTextField(
         value = txtInput,
         onValueChange = {
-            if (it.length <= maxLength) {
-                txtInput = it
-                onTextChange(Pair(txtInput, "${it.length}/$maxLength"))
+            val truncatedText = if (it.length > maxLength) it.take(maxLength) else it
+            if (txtInput != truncatedText) {
+                txtInput = truncatedText
+                onTextChange(Pair(txtInput, "${truncatedText.length}/$maxLength"))
             }
         },
         placeholder = { TextPlaceHolder(label = fieldConfig.placeholder) },
