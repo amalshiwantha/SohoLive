@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -267,7 +268,7 @@ fun PortraitView(
             //Main Camera
             CameraPreview(
                 controller = controller,
-                camPadding = 100,
+                camPadding = 0.15f,
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
@@ -283,11 +284,19 @@ fun PortraitView(
                 contentDescription = "close_button"
             )
 
+            val configuration = LocalConfiguration.current
+            val screenWidth = configuration.screenWidthDp.dp
+            val screenHeight = configuration.screenHeightDp.dp
+
+            // Calculate dynamic padding based on screen width and height
+            val horizontalPadding = screenWidth * 0.20f
+            val verticalPadding = screenHeight * 0.02f
+
             //Top Left Soho Watermark
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.padding(50.dp)
+                modifier = Modifier.padding(horizontalPadding, verticalPadding, 0.dp, 0.dp)
             )
 
             //Timer Top Right
@@ -297,15 +306,18 @@ fun PortraitView(
                 txtColor = AppWhite,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(50.dp)
+                    .padding(0.dp, verticalPadding, horizontalPadding, 0.dp)
             )
 
             //bottom agent info and property info
+            val targetPaddingDp = screenWidth * (55f / 360f)
+
+
             goLiveData.agentProperty?.let {
                 if (isTemplateWithBrand) {
                     val mod = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(35.dp)
+                        .padding(horizontal = targetPaddingDp, vertical = 0.dp)
                         .fillMaxWidth()
                     AgentPropertyInfo(agProp = it, boxMod = mod)
                 }
@@ -420,7 +432,8 @@ fun LandscapeView(
             Box {
                 CameraPreview(
                     controller = controller,
-                    camPadding = 150,
+                    camPadding = 0.15f,
+                    isLandscape = true,
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.Center)
