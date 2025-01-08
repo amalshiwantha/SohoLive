@@ -461,11 +461,19 @@ fun LandscapeView(
                 }
             }
 
+            val configuration = LocalConfiguration.current
+            val screenWidth = configuration.screenWidthDp.dp
+            val screenHeight = configuration.screenHeightDp.dp
+
+            // Calculate dynamic padding based on screen width and height
+            val horizontalPadding = screenWidth * 0.02f
+            val verticalPadding = screenHeight * 0.20f
+
             //sohoLogo
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.padding(70.dp)
+                modifier = Modifier.padding(horizontalPadding, verticalPadding, 0.dp, 0.dp)
             )
 
             //Timer
@@ -475,16 +483,17 @@ fun LandscapeView(
                 txtColor = AppWhite,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(70.dp)
+                    .padding(0.dp, verticalPadding, horizontalPadding, 0.dp)
             )
 
             //bottom agent info and property info
+            val targetPaddingDp = screenHeight * (55f / 360f)
             goLiveData.agentProperty?.let {
                 if (isTemplateWithBrand) {
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .padding(55.dp)
+                        .padding(horizontal = 0.dp, vertical = targetPaddingDp)
                     AgentPropertyInfo(agProp = it, boxMod = mod)
                 }
             }
