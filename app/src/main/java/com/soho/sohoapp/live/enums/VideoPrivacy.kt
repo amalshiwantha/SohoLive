@@ -15,8 +15,8 @@ enum class VideoPrivacy(val bgColor: Color, val label: String) {
     companion object {
         fun fromId(value: Boolean): VideoPrivacy {
             return when (value) {
-                true -> PUBLIC
-                false -> UNLISTED
+                true -> UNLISTED
+                false -> PUBLIC
             }
         }
 
