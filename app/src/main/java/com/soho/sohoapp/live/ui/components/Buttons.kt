@@ -377,7 +377,7 @@ fun ButtonOutlineWhiteNormal(
     OutlinedButton(
         onClick = { onBtnClick() },
         modifier = modifier.height(48.dp),
-        border = BorderStroke(2.dp, Color.White),
+        border = BorderStroke(1.dp, Color.White),
         shape = RoundedCornerShape(16.dp),
     ) {
         TextWhite14Normal(title = text)
