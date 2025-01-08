@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.ui.view.screens.video_recorder
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -64,6 +65,7 @@ import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.rotateScreen
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
@@ -268,7 +270,7 @@ fun PortraitView(
             //Main Camera
             CameraPreview(
                 controller = controller,
-                camPadding = 0.15f,
+                camPadding = getDisplaySize(),
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
@@ -407,6 +409,17 @@ fun PortraitView(
     }
 }
 
+fun getDisplaySize(): Pair<Int, Int> {
+    val cameraPadding = 0.15f //15%
+    val displayMet = Resources.getSystem().displayMetrics
+    val screenW = displayMet.widthPixels
+    val screenH = displayMet.heightPixels
+    val dynamicWPad = (screenW * cameraPadding).toInt()
+    val dynamicHPad = (screenH * cameraPadding).toInt()
+
+    return Pair(dynamicWPad, dynamicHPad)
+}
+
 @Composable
 fun LandscapeView(
     controller: LifecycleCameraController,
@@ -429,15 +442,23 @@ fun LandscapeView(
                 .background(Color.Black)
         ) {
             //camera
+            val showCameraPreview = remember { mutableStateOf(false) }
+            LaunchedEffect("cam_preview") {
+                delay(500)
+                showCameraPreview.value = true
+            }
+
             Box {
-                CameraPreview(
-                    controller = controller,
-                    camPadding = 0.15f,
-                    isLandscape = true,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center)
-                )
+                if (showCameraPreview.value) {
+                    CameraPreview(
+                        controller = controller,
+                        camPadding = getDisplaySize(),
+                        isLandscape = true,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .align(Alignment.Center)
+                    )
+                }
             }
 
             //sohoLogo
