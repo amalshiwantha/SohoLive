@@ -197,7 +197,7 @@ fun MainContent(
             NoDataScreen()
         } else {
             //delete info
-            Text400_14sp(info = "Drafts will be permanently deleted after 7 days. After that, you won’t be able to access them.")
+            Text400_14sp(info = "Drafts will be permanently deleted after 30 days. After that, you won’t be able to access them.")
             SpacerUp(size = 16.dp)
 
             //Main List
