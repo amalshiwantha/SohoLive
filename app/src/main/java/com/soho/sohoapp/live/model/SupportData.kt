@@ -19,6 +19,7 @@ import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.DataVidRes
 import com.soho.sohoapp.live.network.response.Document
+import com.soho.sohoapp.live.network.response.Listing
 import com.soho.sohoapp.live.network.response.PlanData
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VideoItem
@@ -120,7 +121,12 @@ data class VideoAnalytics(
 }
 
 @Serializable
-data class PropertyItem(val id: Int, val propInfo: Document, var isChecked: Boolean = false)
+data class PropertyItem(
+    val id: Int,
+    val propInfo: Document,
+    var listing: Listing? = null,
+    var isChecked: Boolean = false
+)
 
 @Serializable
 data class AgencyItem(

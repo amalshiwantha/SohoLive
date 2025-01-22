@@ -126,7 +126,6 @@ import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text400_14spSingleLine
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
-import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text700_14spRegular
 import com.soho.sohoapp.live.ui.components.Text800_20sp
@@ -220,7 +219,7 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.OpenWebView(null))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
-    var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), false)) }
+    var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), null,false)) }
     var isShowOrientationModel by remember { mutableStateOf(false) }
 
     /*get active plan status*/
@@ -407,7 +406,7 @@ fun GoLiveScreen(
             }
 
             //this is for reset rSelPropItem value to accept new save value
-            rSelPropItem = PropertyItem(0, Document(), false)
+            rSelPropItem = PropertyItem(0, Document(),null,false)
         }
     }
 
@@ -1048,7 +1047,7 @@ fun PropertyItemRow(
                 SpacerUp(size = 10.dp)
                 AmenitiesView(property, textColor)
 
-                UnlistedPublicView(property)
+                UnlistedPublicView(item)
             }
         }
     }
@@ -1065,9 +1064,12 @@ fun PropertyItemRow(
 }
 
 @Composable
-fun UnlistedPublicView(prop: Document) {
-    if(true){
-        SpacerUp(size = 16.dp)
+fun UnlistedPublicView(propItem: PropertyItem) {
+    propItem.listing?.let {
+        if (it.listed > 0 || it.unlisted > 0) {
+            SpacerUp(size = 16.dp)
+            Text700_14sp(step = "Listed ${it.listed}", color = AppWhite)
+        }
     }
 }
 
@@ -1967,10 +1969,12 @@ private fun PropertyListing(
 
     listings?.forEach { propertyItem ->
 
-        PropertyItemRow(item = propertyItem,
+        val mainPropList = mState.goLiveApiRes?.listings
+        val listingData = mainPropList?.find { it.id == propertyItem.id }
+
+        PropertyItemRow(item = propertyItem.apply { listing = listingData },
             isSelected = propertyItem == selectedProperty,
             onSelect = { selectedItem ->
-
                 selectedProperty = if (selectedProperty == selectedItem) {
                     null
                 } else {
@@ -2386,7 +2390,10 @@ private fun ProfileNameCheckBox(
         ) {
 
             if (profile.reviewCount != 0f && profile.reviewCount != null) {
-                Image(painter = painterResource(id = R.drawable.ic_star_rating), contentDescription = "")
+                Image(
+                    painter = painterResource(id = R.drawable.ic_star_rating),
+                    contentDescription = ""
+                )
                 SpacerSide(size = 4.dp)
                 TextStarRating(rate = profile.maxStars.toString())
             }
