@@ -15,13 +15,13 @@ enum class StepInfo(
     ),
     STEP_2(
         counter = "Step 2 of $maxSteps",
-        title = "Select profile to go promote",
+        title = "Select profile to promote",
         info = "The selected profile’s photo, name, and star rating (if available) will be displayed on the video."
     ),
     STEP_3(
         counter = "Step 3 of $maxSteps",
         title = "Give your audience more information on your video",
-        info = "Provide details that will allow us to better inform prospective buyers and renters what your video is about."
+        info = "Please provide details that help prospective buyers and renters understand the purpose of your video."
     ),
     STEP_4(
         counter = "Step 4 of $maxSteps",

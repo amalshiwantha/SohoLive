@@ -31,7 +31,7 @@
     <string name="email_notvalid">Email is not valid</string>
     <string name="password_empty">Password cannot be empty</string>
     <string name="scheduled_livestreams">Scheduled Livestreams</string>
-    <string name="create_livestream">Create Livestream</string>
+    <string name="create_livestream">Create Video or Livecast</string>
     <string name="video_library">Video Library</string>
     <string name="manage_profile">Manage Profile</string>
     <string name="placeholder_search">Search for an address</string>
