@@ -906,6 +906,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                 //Learn more button for FB
                 if (smName == SocialMediaInfo.FACEBOOK.name) {
+                    SpacerUp(size = 16.dp)
                     ButtonOutlineWhiteNormal(
                         text = "Learn more",
                         onBtnClick = { onFBLearnMore() },
@@ -967,7 +968,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
             SpacerSide(size = 4.dp)
             Text400_14sp(info = item)
         }
-        SpacerUp(size = 16.dp)
     }
 
     @Composable
