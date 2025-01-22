@@ -151,18 +151,18 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                         )
 
                         // Gradient overlay at the bottom of the image
-                        Box(
+                        /*Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.BottomCenter)
                                 .height(120.dp)
                                 .background(onBoardGradientBg)
-                        )
+                        )*/
                     }
 
 
 
-                    SpacerUp(size = 10.dp)
+                    SpacerUp(size = 32.dp)
 
                     // Description text
                     Text950_20spCenter(
