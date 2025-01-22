@@ -128,6 +128,7 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
+import com.soho.sohoapp.live.ui.components.Text700_14spRegular
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
@@ -1237,7 +1238,7 @@ private fun Content4(
     mGoLiveSubmit.apply { purpose = defaultSelection }
     configPurpose.input = defaultSelection
 
-    Text700_14sp(step = "What is this livestream for?")
+    Text700_14spRegular(step = "What is this livestream for?")
     DropDownWhatForLiveStream(
         options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
             mGoLiveSubmit.apply { purpose = it }
@@ -1249,7 +1250,7 @@ private fun Content4(
 
     //title
     SpacerUp(size = 24.dp)
-    Text700_14sp(step = "Stream title")
+    Text700_14spRegular(step = "Stream title")
     TextFieldOutlined(tfConfig = configTitle, onTextChange = {
         mGoLiveSubmit.apply { title = it }
     })
@@ -1260,8 +1261,8 @@ private fun Content4(
     //description
     SpacerUp(size = 24.dp)
     Row {
-        Text700_14sp(step = "Description", modifier = Modifier.weight(1f))
-        Text700_14sp(step = txtCounter, isBold = false)
+        Text700_14spRegular(step = "Description", modifier = Modifier.weight(1f))
+        Text700_14spRegular(step = txtCounter)
     }
     TextAreaWhite(fieldConfig = configDesc, onTextChange = {
         mGoLiveSubmit.apply { description = it.first }
@@ -1820,7 +1821,7 @@ fun PreRecordContent() {
         Text400_14sp(info = "Once recording is completed, your video will be saved as private video. You can choose to publish it later.")
 
         SpacerUp(size = 24.dp)
-        Text700_14sp(step = "Video status will be:")
+        Text700_14spRegular(step = "Video status will be:")
 
         SpacerUp(size = 16.dp)
         Card(
@@ -1849,7 +1850,7 @@ fun PreRecordContent() {
             SpacerUp(size = 24.dp)
         }
 
-        Text700_14sp(step = "After recording, you can update the status to:")
+        Text700_14spRegular(step = "After recording, you can update the status to:")
         SpacerUp(size = 16.dp)
 
         Card(
