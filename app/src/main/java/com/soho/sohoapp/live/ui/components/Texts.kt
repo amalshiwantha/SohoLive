@@ -73,7 +73,7 @@ fun TextWhite14(modifier: Modifier = Modifier, title: String, txtColor: Color = 
         text = title,
         fontSize = 14.sp,
         lineHeight = 19.6.sp,
-        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         fontWeight = FontWeight(800),
         color = txtColor,
         textAlign = TextAlign.Left,

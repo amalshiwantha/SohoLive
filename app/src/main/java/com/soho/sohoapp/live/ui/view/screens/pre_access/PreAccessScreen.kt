@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,8 +46,10 @@ import com.google.accompanist.pager.rememberPagerState
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.OnboardingData
 import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonOutlineWhite
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20spCenter
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -204,6 +207,8 @@ fun BottomBtnIndicator(
     navController: NavHostController,
     pagerState: PagerState
 ) {
+    var isShowSignup = remember { true }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -219,6 +224,8 @@ fun BottomBtnIndicator(
                 .padding(vertical = 16.dp)
         ) {
             onboardingItems.forEachIndexed { index, _ ->
+                isShowSignup = pagerState.currentPage == 0
+
                 val isSelected = pagerState.currentPage == index
                 val itemWidth = if (isSelected) 24.dp else 16.dp
                 val itemColor = if (isSelected) Color.White else Color.Gray
@@ -242,20 +249,16 @@ fun BottomBtnIndicator(
             color = AppGreen,
             onBtnClick = {
                 navController.navigate(NavigationPath.SIGNIN.name)
-
-                /*navController.navigate(
-                    "${NavigationPath.PLAYER.name}/${
-                        Uri.encode(
-                            "/storage/emulated/0/Movies/SohoPreRecord/SohoLive_20241028_094508.mp4"
-                        )
-                    }"
-                )*/
             })
 
-        /*ButtonOutlineWhite(
-            text = stringResource(R.string.sign_up),
-            modifier = Modifier.fillMaxWidth(),
-            onBtnClick = { navController.navigate(NavigationPath.SIGNUP.name) })*/
+        //No account login buttons
+        if (isShowSignup) {
+            Text800_14sp(label = "No Account Yet? ")
+            ButtonOutlineWhite(
+                text = "Visit soho.com.au/agents/livecast",
+                modifier = Modifier.fillMaxWidth(),
+                onBtnClick = { navController.navigate(NavigationPath.SIGNUP.name) })
+        }
     }
 }
 
