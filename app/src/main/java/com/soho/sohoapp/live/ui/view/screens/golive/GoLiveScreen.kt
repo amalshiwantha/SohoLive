@@ -1047,6 +1047,8 @@ fun PropertyItemRow(
 
                 SpacerUp(size = 10.dp)
                 AmenitiesView(property, textColor)
+
+                UnlistedPublicView(property)
             }
         }
     }
@@ -1060,6 +1062,13 @@ fun PropertyItemRow(
         Text700_14sp(step = propertyItem.propInfo.title ?: "", modifier = Modifier.weight(1f))
         Text400_10sp(label = propertyItem.propInfo.fullAddress())
     }*/
+}
+
+@Composable
+fun UnlistedPublicView(prop: Document) {
+    if(true){
+        SpacerUp(size = 16.dp)
+    }
 }
 
 

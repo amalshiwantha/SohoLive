@@ -67,7 +67,8 @@ data class DataGoLive(
 data class Listing(
     @SerialName("id") val id: Int,
     @SerialName("agent_profile_ids") val agentProfileIds: List<Int?>,
-    //@SerialName("live_streams_ids") val liveStreamsIds: List<Int>
+    @SerialName("unlisted") val unlisted: Int,
+    @SerialName("listed") val listed: Int,
 )
 
 @Serializable
