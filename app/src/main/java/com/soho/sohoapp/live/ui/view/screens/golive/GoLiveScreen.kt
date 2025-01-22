@@ -128,6 +128,8 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text700_14spRegular
+import com.soho.sohoapp.live.ui.components.Text800_10sp
+import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
@@ -215,11 +217,10 @@ fun GoLiveScreen(
         AppEventBus.events.collectAsState(initial = AppEvent.SMProfile(SocialMediaProfile()))
     val eventStateLiveEnd =
         AppEventBus.events.collectAsState(initial = AppEvent.LiveEndStatus(CastEnd.NONE))
-    val eventStateWebView =
-        AppEventBus.events.collectAsState(initial = AppEvent.OpenWebView(null))
+    val eventStateWebView = AppEventBus.events.collectAsState(initial = AppEvent.OpenWebView(null))
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
-    var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), null,false)) }
+    var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), null, false)) }
     var isShowOrientationModel by remember { mutableStateOf(false) }
 
     /*get active plan status*/
@@ -250,13 +251,9 @@ fun GoLiveScreen(
             isShowOrientationModel = false
 
             if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
-                callApi(mGoLiveSubmit,
-                    mFieldsError,
-                    netUtil,
-                    goLiveVm,
-                    onErrorsUpdate = {
-                        mFieldsError = it
-                    })
+                callApi(mGoLiveSubmit, mFieldsError, netUtil, goLiveVm, onErrorsUpdate = {
+                    mFieldsError = it
+                })
             } else {
                 //Open Pre-Recorder Screen
                 navController.navigate(NavigationPath.TEMPLATE.name)
@@ -406,7 +403,7 @@ fun GoLiveScreen(
             }
 
             //this is for reset rSelPropItem value to accept new save value
-            rSelPropItem = PropertyItem(0, Document(),null,false)
+            rSelPropItem = PropertyItem(0, Document(), null, false)
         }
     }
 
@@ -790,8 +787,7 @@ fun isAllowGoNext(
             }*/
         }
 
-        3 -> {
-            /*mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+        3 -> {/*mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
             val errorList = mGoLiveSubmit.errors
             onValidateRes.invoke(mGoLiveSubmit)
             errorList.isEmpty()*/
@@ -1030,7 +1026,8 @@ fun PropertyItemRow(
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(isSelected,
+                TypeAndCheckBox(
+                    isSelected,
                     true,
                     property,
                     txtColor = textColor,
@@ -1066,9 +1063,52 @@ fun PropertyItemRow(
 @Composable
 fun UnlistedPublicView(propItem: PropertyItem) {
     propItem.listing?.let {
-        if (it.listed > 0 || it.unlisted > 0) {
+        val listedCount = it.listed
+        val unlistedCount = it.unlisted
+        if (listedCount > 0 || unlistedCount > 0) {
             SpacerUp(size = 16.dp)
-            Text700_14sp(step = "Listed ${it.listed}", color = AppWhite)
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                if (unlistedCount > 0) {
+                    ListedLabel("$unlistedCount UNLISTED")
+                    SpacerSide(size = 8.dp)
+                }
+
+                if (listedCount > 0) {
+                    ListedLabel("$listedCount PUBLIC", isPublic = true)
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+fun ListedLabel(text: String, isPublic: Boolean = false) {
+    val bgColor = if (isPublic) Color(0xFF05867F) else Color(0xFFB8B7BB)
+    val icon = if (isPublic) R.drawable.ic_eye_vec else R.drawable.ic_hide_eye
+    Box(
+        modifier = Modifier
+            .background(
+                color = bgColor,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = "",
+                modifier = Modifier.size(12.dp)
+            )
+            SpacerSide(size = 4.dp)
+            Text800_10sp(label = text, txtColor = AppWhite)
         }
     }
 }
@@ -1743,8 +1783,7 @@ private fun SocialMediaListing(
     * if want to hide SM add in to here
     * */
     val visibleSMList = SocialMediaInfo.entries.filter {
-        it.name != SocialMediaInfo.NONE.name &&
-                it.name != SocialMediaInfo.LINKEDIN.name
+        it.name != SocialMediaInfo.NONE.name && it.name != SocialMediaInfo.LINKEDIN.name
     }
 
     /*load all of SM list*/
@@ -1777,8 +1816,7 @@ private fun SocialMediaListing(
 
     if (selectedFormat.value == LiveFormat.PRE.name) {
         PreRecordContent()
-    } else {
-        /*finally display SM list with checkBox or connect button*/
+    } else {/*finally display SM list with checkBox or connect button*/
         smList.forEach { item ->
             SocialMediaItemContent(item,
                 isSohoPublic,
@@ -1853,8 +1891,7 @@ fun PreRecordContent() {
         }
 
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
         ) {
             SpacerUp(size = 24.dp)
             Image(painter = painterResource(id = R.drawable.down_arrow), contentDescription = "")
@@ -1911,8 +1948,7 @@ fun PreRecordContent() {
 @Composable
 fun InfoCard(title: String? = null, message: String) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = CardGray),
     ) {
@@ -1937,9 +1973,7 @@ fun InfoCard(title: String? = null, message: String) {
                 }
 
                 Text700_14sp(
-                    step = message,
-                    color = TextDark,
-                    isBold = false
+                    step = message, color = TextDark, isBold = false
                 )
             }
         }
@@ -1960,9 +1994,7 @@ private fun AgentListing(
 
 @Composable
 private fun PropertyListing(
-    mGState: GlobalState,
-    listings: List<PropertyItem>?,
-    onItemClicked: (PropertyItem) -> Unit = {}
+    mGState: GlobalState, listings: List<PropertyItem>?, onItemClicked: (PropertyItem) -> Unit = {}
 ) {
     val savedProperty = mGState.propertyItemState.value
     var selectedProperty by remember { mutableStateOf(savedProperty) }
@@ -2336,8 +2368,8 @@ fun TypeAndCheckBox(
 
         if (isClickable) {
             Box(
-                modifier = Modifier
-                    .clickable { onCheckedChange(!isChecked) }, contentAlignment = Alignment.Center
+                modifier = Modifier.clickable { onCheckedChange(!isChecked) },
+                contentAlignment = Alignment.Center
             ) {
                 //CheckBox BG
                 Image(
