@@ -44,7 +44,6 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text950_20spCenter
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.components.onBoardGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -142,24 +141,35 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                 contentAlignment = Alignment.TopCenter
             ) {
                 Column {
-                    //center image with bottom Gradient
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Image(
-                            painter = painterResource(id = onboardingItems[page].imageRes),
-                            contentDescription = null,
-                            modifier = Modifier.aspectRatio(1f)
-                        )
 
-                        // Gradient overlay at the bottom of the image
-                        /*Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.BottomCenter)
-                                .height(120.dp)
-                                .background(onBoardGradientBg)
-                        )*/
+                    if (page == 1) {
+                        //center animated image
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Image(
+                                painter = painterResource(id = onboardingItems[page].imageRes),
+                                contentDescription = null,
+                                modifier = Modifier.aspectRatio(2f)
+                            )
+                        }
+                    } else {
+                        //center image
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Image(
+                                painter = painterResource(id = onboardingItems[page].imageRes),
+                                contentDescription = null,
+                                modifier = Modifier.aspectRatio(1f)
+                            )
+
+                            // Gradient overlay at the bottom of the image
+                            /*Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.BottomCenter)
+                                    .height(120.dp)
+                                    .background(onBoardGradientBg)
+                            )*/
+                        }
                     }
-
 
 
                     SpacerUp(size = 32.dp)
