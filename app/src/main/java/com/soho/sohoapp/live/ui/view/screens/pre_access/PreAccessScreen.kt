@@ -55,6 +55,14 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.utility.AppEvent
+import com.soho.sohoapp.live.utility.AppEventBus
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
+const val SIGNUP_TITLE = "Soho LiveCast"
 
 val onboardingItems = listOf(
     OnboardingData(
@@ -257,7 +265,11 @@ fun BottomBtnIndicator(
             ButtonOutlineWhite(
                 text = "Visit soho.com.au/agents/livecast",
                 modifier = Modifier.fillMaxWidth(),
-                onBtnClick = { navController.navigate(NavigationPath.SIGNUP.name) })
+                onBtnClick = {
+                    val webUrl = "https://soho.com.au/articles/how-to-bring-self-care-into-home-design-this-holiday"
+                    val encodeUrl = URLEncoder.encode(webUrl, StandardCharsets.UTF_8.toString())
+                    navController.navigate("${NavigationPath.WEB_VIEW_MAIN.name}/$SIGNUP_TITLE/$encodeUrl")
+                })
         }
     }
 }

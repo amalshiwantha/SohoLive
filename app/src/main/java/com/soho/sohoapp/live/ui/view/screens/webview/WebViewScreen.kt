@@ -21,6 +21,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.ui.components.AppTopBarCustom
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.view.screens.pre_access.SIGNUP_TITLE
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -38,11 +39,13 @@ fun WebViewScreen(navController: NavHostController, title: String, url: String) 
         // Action bar
         AppTopBarCustom(
             title = title,
-            modifier = Modifier.constrainAs(topAppBar) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
+            modifier = Modifier
+                .constrainAs(topAppBar) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .padding(top = if (title == SIGNUP_TITLE) 48.dp else 0.dp),
             onBackClick = { navController.popBackStack() }
         )
 
