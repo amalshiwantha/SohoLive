@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +35,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
@@ -143,12 +148,16 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                 Column {
 
                     if (page == 1) {
+                        val composition by rememberLottieComposition(
+                            LottieCompositionSpec.Asset("rec_live.lottie")
+                        )
+
                         //center animated image
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            Image(
-                                painter = painterResource(id = onboardingItems[page].imageRes),
-                                contentDescription = null,
-                                modifier = Modifier.aspectRatio(2f)
+                            LottieAnimation(
+                                composition = composition,
+                                iterations = LottieConstants.IterateForever,
+                                modifier = Modifier.aspectRatio(1f)
                             )
                         }
                     } else {
