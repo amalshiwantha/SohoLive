@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.ui.view.screens.pre_access
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -52,15 +51,21 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 
 val onboardingItems = listOf(
     OnboardingData(
-        R.drawable.on_board_1,
-        "Livecast your property inspections for prospects to watch at their own convenience"
+        R.drawable.on_board_4,
+        "Apply your agent and agency branding on every video"
     ),
     OnboardingData(
         R.drawable.on_board_2,
-        "Simultaneously cast to your listing and social platforms"
+        "Record or livestream property inspections for prospects to view at their convenience"
     ),
-    OnboardingData(R.drawable.on_board_3, "Create unlisted videos for private viewing"),
-    OnboardingData(R.drawable.on_board_4, "Apply your agent and agency branding on every video")
+    OnboardingData(
+        R.drawable.on_board_3,
+        "Publish your videos publicly for everyone to watch or as unlisted for private sharing"
+    ),
+    OnboardingData(
+        R.drawable.on_board_network,
+        "Simultaneously share your video to your Soho listing and connected social platforms"
+    )
 )
 
 @Composable
