@@ -2003,7 +2003,7 @@ private fun ProfileHideItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text700_14spBold(step = "Do not show profile", txtColor = textColor)
+            Text700_14sp(step = "Do not show profile", color = textColor, isBold = true)
             Spacer(modifier = Modifier.weight(1f))
             Box(
                 modifier = Modifier.padding(horizontal = 8.dp), contentAlignment = Alignment.Center
@@ -2367,7 +2367,7 @@ private fun ProfileNameCheckBox(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        profile.name?.let { Text700_14spBold(step = it, txtColor = textColor) }
+        profile.name?.let { Text700_14sp(step = it, color = textColor, isBold = true) }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -2376,7 +2376,7 @@ private fun ProfileNameCheckBox(
         ) {
 
             if (profile.reviewCount != 0f && profile.reviewCount != null) {
-                Image(painter = painterResource(id = R.drawable.ic_star), contentDescription = "")
+                Image(painter = painterResource(id = R.drawable.ic_star_rating), contentDescription = "")
                 SpacerSide(size = 4.dp)
                 TextStarRating(rate = profile.maxStars.toString())
             }
