@@ -77,6 +77,7 @@ import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
+import com.soho.sohoapp.live.ui.view.screens.golive.RequestNotificationPermission
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.rotateScreen
 import kotlinx.coroutines.delay
@@ -449,37 +450,6 @@ fun BrandingOptionLand(
         SpacerSide(size = 8.dp)
         val txtColor = if (isSelected) Color.White else Color(0xFF99979C)
         Text700_12sp(label = label, txtColor = txtColor)
-    }
-}
-
-@Composable
-fun RequestNotificationPermission() {
-    val context = LocalContext.current
-
-    val notificationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (!isGranted) {
-            Toast.makeText(
-                context,
-                "Notification not allowed. So upload progress will not show.",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    // Check if permission is needed
-    LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
-            val permission = Manifest.permission.POST_NOTIFICATIONS
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    permission
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                notificationPermissionLauncher.launch(permission)
-            }
-        }
     }
 }
 

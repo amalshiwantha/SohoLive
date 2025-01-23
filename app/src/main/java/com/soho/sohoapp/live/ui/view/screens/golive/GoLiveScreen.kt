@@ -1,7 +1,13 @@
 package com.soho.sohoapp.live.ui.view.screens.golive
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Size
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -67,6 +73,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -222,6 +229,9 @@ fun GoLiveScreen(
     var recentLoggedSM by remember { mutableStateOf(mutableListOf<String>()) }
     var rSelPropItem by remember { mutableStateOf(PropertyItem(0, Document(), null, false)) }
     var isShowOrientationModel by remember { mutableStateOf(false) }
+
+    //Check Notification Permission
+    RequestNotificationPermission()
 
     /*get active plan status*/
     LaunchedEffect("active_plan") {
@@ -2535,5 +2545,36 @@ private fun PreviewGoLiveScreen() {
             onClickedBack = {},
             onClickedFinalise = {},
             onClickedLive = {})
+    }
+}
+
+@Composable
+fun RequestNotificationPermission() {
+    val context = LocalContext.current
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            Toast.makeText(
+                context,
+                "Notification not allowed. So upload progress will not show.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    // Check if permission is needed
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                notificationPermissionLauncher.launch(permission)
+            }
+        }
     }
 }

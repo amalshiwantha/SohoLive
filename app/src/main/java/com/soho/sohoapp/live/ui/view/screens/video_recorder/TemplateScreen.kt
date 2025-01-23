@@ -63,6 +63,7 @@ import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.view.screens.golive.RequestNotificationPermission
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.rotateScreen
 import kotlinx.coroutines.delay
