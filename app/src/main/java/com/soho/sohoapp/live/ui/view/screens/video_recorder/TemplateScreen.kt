@@ -370,7 +370,7 @@ fun PortraitView(
                     BrandingOption(
                         isSelected = !isTemplateWithBrand,
                         label = "No Branding",
-                        image = R.drawable.template_with_brand,
+                        image = R.drawable.template_no_brand,
                         onSelectTemplate = {
                             onSelection(!isTemplateWithBrand)
                         }
