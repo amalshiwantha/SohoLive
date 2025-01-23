@@ -474,7 +474,7 @@ fun LandscapeView(
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.padding(horizontalPadding, verticalPadding, 0.dp, 0.dp)
+                modifier = Modifier.padding(horizontalPadding * 4f, verticalPadding, 0.dp, 0.dp)
             )
 
             //Timer
@@ -494,7 +494,12 @@ fun LandscapeView(
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .padding(horizontal = 0.dp, vertical = targetPaddingDp)
+                        .padding(
+                            start = horizontalPadding * 3.3f,
+                            end = 0.dp,
+                            top = targetPaddingDp,
+                            bottom = targetPaddingDp
+                        )
                     AgentPropertyInfo(agProp = it, boxMod = mod)
                 }
             }

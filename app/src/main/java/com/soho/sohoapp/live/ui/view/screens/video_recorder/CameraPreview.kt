@@ -23,7 +23,7 @@ fun CameraPreview(
 
                 if (camPadding.first != 0 && camPadding.second != 0) {
                     if (isLandscape) {
-                        this.setPadding(0, camPadding.second, 0, camPadding.second)
+                        this.setPadding(camPadding.second, camPadding.second, 0, camPadding.second)
                     } else {
                         this.setPadding(camPadding.first, 0, camPadding.first, 0)
                     }
