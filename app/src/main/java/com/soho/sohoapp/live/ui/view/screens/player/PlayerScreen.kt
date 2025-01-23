@@ -47,6 +47,8 @@ import com.soho.sohoapp.live.ui.components.InitialProfileImage
 import com.soho.sohoapp.live.ui.components.PreRecVidSuccessView
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text700_12sp
+import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
@@ -273,7 +275,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
 
         //Agent Info
         agProp.agent?.let { agent ->
-            val profImgSize = 40.dp
+            val profImgSize = 32.dp
             Row(
                 modifier = Modifier
                     .background(agent.agencyBgColor)
@@ -309,7 +311,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
                     SpacerSide(size = 8.dp)
 
                     //name
-                    Text700_14sp(step = agent.full_name, color = TextDark)
+                    Text700_12sp(label = agent.full_name, txtColor = TextDark)
                 }
 
                 //agency logo
