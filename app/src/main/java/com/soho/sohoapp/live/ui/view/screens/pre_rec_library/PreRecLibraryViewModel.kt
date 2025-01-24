@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class PreRecLibraryViewModel(
     private val vidDb: PrivateVideoDao
@@ -32,6 +33,7 @@ class PreRecLibraryViewModel(
 
             //Remove 30 days old records
             vidDb.deleteOldVideos()
+            deleteOldRecordedVideos()
 
             //get all db saved data
             val dbSaveData = vidDb.getAllVideos()
@@ -59,6 +61,26 @@ class PreRecLibraryViewModel(
 
             mState.value = mState.value.copy(videoList = mutableStateOf(displayList))
             mState.value = mState.value.copy(isLoading = mutableStateOf(false))
+        }
+    }
+
+    private fun deleteOldRecordedVideos() {
+        val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+        val customDir = File(movieDir, PvtRecFolder)
+
+        if (customDir.exists()) {
+            val thirtyDaysInMillis = TimeUnit.DAYS.toMillis(30)
+            val currentTime = System.currentTimeMillis()
+
+            customDir.listFiles()?.filter {
+                it.extension == "mp4" && (currentTime - it.lastModified()) > thirtyDaysInMillis
+            }?.forEach { oldFile ->
+                if (oldFile.delete()) {
+                    println("Deleted old video: ${oldFile.name}")
+                } else {
+                    println("Failed to delete: ${oldFile.name}")
+                }
+            }
         }
     }
 
