@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +36,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -50,6 +53,7 @@ import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
+import com.soho.sohoapp.live.ui.components.Text400_12spMore
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
@@ -58,6 +62,7 @@ import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
@@ -225,7 +230,7 @@ private fun PvtVidItemView(
     ) {
 
         //image title and info
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(104.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(105.dp)) {
             ThumbCenterPlay(item, onClick = {
                 onPlayVideo(item)
             })
@@ -262,7 +267,7 @@ private fun PvtVidItemView(
 
                 if(!item.description.isNullOrEmpty()){
                     SpacerUp(size = 8.dp)
-                    Text400_12sp(label = item.description.orEmpty())
+                    Text400_12spMore(label = item.description.orEmpty())
                 }
             }
         }

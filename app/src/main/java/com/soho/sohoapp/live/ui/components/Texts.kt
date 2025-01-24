@@ -643,6 +643,29 @@ fun Text400_12sp(
 }
 
 @Composable
+fun Text400_12spMore(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtColor: Color = AppWhite,
+    isCenter: Boolean = false
+) {
+    val txtAlign = if (isCenter) TextAlign.Center else TextAlign.Left
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 12.sp,
+        lineHeight = 16.8.sp,
+        maxLines = 2,
+        letterSpacing = 0.14.sp,
+        overflow = TextOverflow.Ellipsis,
+        color = txtColor,
+        textAlign = txtAlign,
+        fontWeight = FontWeight(400),
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+    )
+}
+
+@Composable
 fun Text400_12spCenter(
     modifier: Modifier = Modifier,
     label: String,
