@@ -30,6 +30,9 @@ class PreRecLibraryViewModel(
         viewModelScope.launch {
             val displayList: MutableList<PrivateVideo> = mutableListOf()
 
+            //Remove 30 days old records
+            vidDb.deleteOldVideos()
+
             //get all db saved data
             val dbSaveData = vidDb.getAllVideos()
 

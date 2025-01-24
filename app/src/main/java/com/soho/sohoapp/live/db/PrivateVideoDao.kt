@@ -28,4 +28,7 @@ interface PrivateVideoDao {
 
     @Query("DELETE FROM private_videos WHERE filePath = :filePath")
     suspend fun deleteVideoByPath(filePath: String): Int
+
+    @Query("DELETE FROM private_videos WHERE date(createdDate) < date('now', '-30 days')")
+    suspend fun deleteOldVideos(): Int
 }
