@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,11 +33,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppRed
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BorderGray
 import com.soho.sohoapp.live.ui.theme.OverageRed
+
+@Composable
+fun ButtonOutLinedIcon(
+    modifier: Modifier = Modifier,
+    icon: Int,
+    onBtnClick: () -> Unit
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        border = BorderStroke(1.dp, BorderGray),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Row(
+            modifier = modifier.clickable { onBtnClick() },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = "null",
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
+}
 
 @Composable
 fun ButtonOutLinedIcon(
@@ -411,7 +438,12 @@ fun TextButtonBlue(text: String, modifier: Modifier = Modifier, onBtnClick: () -
 }
 
 @Composable
-fun ButtonText(modifier: Modifier = Modifier, text: String, txtColor: Color = OverageRed,  onBtnClick: () -> Unit) {
+fun ButtonText(
+    modifier: Modifier = Modifier,
+    text: String,
+    txtColor: Color = OverageRed,
+    onBtnClick: () -> Unit
+) {
     TextButton(onClick = { onBtnClick() }, modifier = modifier) {
         Text800_14sp(label = text, txtColor = txtColor)
     }

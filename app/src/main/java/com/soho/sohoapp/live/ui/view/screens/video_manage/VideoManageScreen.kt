@@ -54,6 +54,7 @@ import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
+import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
@@ -224,23 +225,44 @@ private fun MainContent(
         }
 
         //Bottom Button
-        data?.let {
-            ButtonColouredProgress(text = "Save Changes",
-                isLoading = isShowProgress,
-                isTxtBold = true,
-                color = AppGreen,
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .constrainAs(button) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        ) {
+            //Share Button
+            ButtonOutLinedIcon(icon = R.drawable.ic_share_white, modifier = Modifier.size(48.dp),
                 onBtnClick = {
-                    onSaveClick()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .constrainAs(button) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    })
+                    data?.shareableLink?.let {
+                        shareIntent(it)
+                    }
+                })
+
+            SpacerSide(size = 8.dp)
+
+            //Save Button
+            data?.let {
+                ButtonColouredProgress(
+                    text = "Save Changes",
+                    isLoading = isShowProgress,
+                    isTxtBold = true,
+                    color = AppGreen,
+                    onBtnClick = {
+                        onSaveClick()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
         }
+
     }
 }
 
