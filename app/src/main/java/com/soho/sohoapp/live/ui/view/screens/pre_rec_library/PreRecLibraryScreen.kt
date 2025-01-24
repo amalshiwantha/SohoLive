@@ -53,7 +53,7 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
-import com.soho.sohoapp.live.ui.components.Text700_12sp
+import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
@@ -61,6 +61,7 @@ import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
@@ -68,6 +69,8 @@ import com.soho.sohoapp.live.utility.showToast
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun PreRecordLibraryScreen(
@@ -241,7 +244,11 @@ private fun PvtVidItemView(
 
             //Title and Description
             Column {
-                Text700_12sp(label = item.createdDate)
+                Text700_12spNormal(
+                    label = formattedDateDisplay(item.createdDate),
+                    txtColor = HintGray
+                )
+                SpacerUp(size = 8.dp)
                 Text700_14spBold(step = item.title)
                 SpacerUp(size = 8.dp)
                 item.description?.let {
@@ -272,6 +279,23 @@ private fun PvtVidItemView(
                 onDeleteVideo(item.filePath)
             })
         }
+    }
+}
+
+
+fun formattedDateDisplay(inputDateTime: String): String {
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    val outputDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+    val outputTimeFormat = SimpleDateFormat("h:mm", Locale.getDefault())
+
+    try {
+        val date = inputFormat.parse(inputDateTime)
+        val formattedDate = outputDateFormat.format(date ?: "")
+        val formattedTime = outputTimeFormat.format(date ?: "")
+
+        return "$formattedDate • $formattedTime"
+    } catch (e: Exception) {
+        return inputDateTime
     }
 }
 
