@@ -230,13 +230,12 @@ private fun Content(
     onClickReloadVideoList: () -> Unit,
     onShowPvtVideo: () -> Unit
 ) {
-    var downloadStatus by rememberSaveable { mutableStateOf("") }
+    var downloadStatus by remember { mutableStateOf("") }
 
     //Show download status
     LaunchedEffect(downloadStatus) {
         if (downloadStatus.isNotEmpty()) {
             showToast(downloadStatus)
-            downloadStatus = ""
         }
     }
 
@@ -338,9 +337,11 @@ fun UploadProgressStatusView(gState: GlobalState) {
                     "uploading" -> {
                         Text700_10sp(title = "$prog%")
                     }
+
                     "completed" -> {
                         TextUploadComplete()
                     }
+
                     "failed" -> {
                         TextUploadErr()
                     }
@@ -356,6 +357,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
                                 //doCancelUpload
                             })
                     }
+
                     "failed" -> {
                         Text700_10sp(
                             title = "Dismiss",

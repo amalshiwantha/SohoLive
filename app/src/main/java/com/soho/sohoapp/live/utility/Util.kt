@@ -300,7 +300,7 @@ fun downloadFile(url: String, title: String, onDownloadStatus: (String) -> Unit)
         while (true) {
             val status = getDownloadStatus(downloadId)
             statusMsg = when (status) {
-                DownloadManager.STATUS_RUNNING -> "Downloading"
+                DownloadManager.STATUS_RUNNING -> "Downloading..."
                 DownloadManager.STATUS_SUCCESSFUL -> "Download Completed"
                 DownloadManager.STATUS_FAILED -> "Download Failed"
                 else -> "Connecting..."
