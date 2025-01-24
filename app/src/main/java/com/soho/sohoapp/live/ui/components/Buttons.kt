@@ -143,7 +143,7 @@ fun ButtonColoured(
         if (isBackButton) {
             TextWhite14Left(title = text)
         } else {
-            TextWhite14(title = text, txtColor = txtColor)
+            TextWhite14(title = text, txtColor = txtColor, isBold = true)
         }
     }
 }
