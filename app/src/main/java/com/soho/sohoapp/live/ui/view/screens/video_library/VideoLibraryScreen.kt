@@ -85,6 +85,7 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.OverageRed
@@ -301,12 +302,31 @@ private fun Content(
                                     })
                             }
                         }
-
+                    }
+                    item {
+                        NoMoreVideoView()
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun NoMoreVideoView() {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        SpacerUp(size = 24.dp)
+        Image(painter = painterResource(id = R.drawable.vertical_line), contentDescription = "")
+        SpacerSide(size = 8.dp)
+        Text400_12sp(label = "No more videos to show", txtColor = HintGray)
+        SpacerSide(size = 8.dp)
+        Image(painter = painterResource(id = R.drawable.vertical_line), contentDescription = "")
+    }
+
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")
