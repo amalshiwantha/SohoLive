@@ -56,6 +56,7 @@ import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.ButtonText
+import com.soho.sohoapp.live.ui.components.ConfirmAlert
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -110,6 +111,17 @@ fun VideoManageScreen(
     var isShowAlert by remember { mutableStateOf(false) }
     var alertConfig by remember { mutableStateOf<AlertConfig?>(null) }
     var playVideoUrl by remember { mutableStateOf("") }
+    var isShowConfirmAlert by remember { mutableStateOf(false) }
+
+    //confirmation to delete time slot
+    if (isShowConfirmAlert) {
+        ConfirmAlert(
+            title = "Confirm Delete",
+            message = "Are you sure you want to delete this video item?",
+            isShowDialog = isShowConfirmAlert,
+            onDismiss = { isShowConfirmAlert = it }, onConfirm = {}
+        )
+    }
 
     //open video player
     LaunchedEffect(playVideoUrl) {
@@ -152,7 +164,7 @@ fun VideoManageScreen(
             playVideoUrl = itemData?.downloadLink ?: ""
         },
         onDeleteClick = {
-
+            isShowConfirmAlert = true
         })
 }
 

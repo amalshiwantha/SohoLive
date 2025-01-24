@@ -23,6 +23,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,6 +52,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMedia
 import com.soho.sohoapp.live.enums.SocialMediaInfo
+import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.model.SmBtn
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -559,6 +561,36 @@ fun AppAlertDialog(
             }
         },
         modifier = Modifier
+    )
+}
+
+@Composable
+fun ConfirmAlert(
+    title : String,
+    message : String,
+    isShowDialog: Boolean,
+    onDismiss: (Boolean) -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { onDismiss(!isShowDialog) },
+        title = { Text(text = title) },
+        text = { Text(text = message) },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm()
+                    onDismiss(!isShowDialog)
+                }
+            ) {
+                Text("Yes")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onDismiss(!isShowDialog) }) {
+                Text("No")
+            }
+        }
     )
 }
 
