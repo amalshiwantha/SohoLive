@@ -312,7 +312,7 @@ private fun TermsInfo(minValue: String, title: String) {
 @Composable
 private fun FeaturesList(features: List<String>) {
     Text700_14sp(step = "Features")
-    SpacerUp(size = 16.dp)
+    SpacerUp(size = 12.dp)
     Column(modifier = Modifier.padding(start = 8.dp)) {
         features.forEach {
             BulletPointText(it)
@@ -383,10 +383,6 @@ private fun SubtitleCastTo(isSingle: Boolean, subTitle: String) {
                 )
                 Image(
                     painter = painterResource(id = R.drawable.cast_sm_yt),
-                    contentDescription = "fb_logo"
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.cast_sm_li),
                     contentDescription = "fb_logo"
                 )
             }
