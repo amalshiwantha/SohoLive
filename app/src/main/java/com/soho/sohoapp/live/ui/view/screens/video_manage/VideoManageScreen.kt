@@ -53,6 +53,7 @@ import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
+import com.soho.sohoapp.live.ui.components.InitialProfileImage
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -73,6 +74,7 @@ import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
+import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
@@ -354,9 +356,8 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                         painter = painterResource(id = R.drawable.watermark_logo),
                         contentDescription = "",
                     )
-                    Text700_12spNormal(
+                    Text800_12sp(
                         label = vidItem.getDisplayDuration(),
-                        txtColor = AppWhite,
                         modifier = Modifier
                             .background(
                                 Color.Black.copy(alpha = 0.8f), shape = RoundedCornerShape(8.dp)
@@ -372,14 +373,102 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                     .weight(1f),
                     contentAlignment = Alignment.Center) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_play_gallery),
+                        painter = painterResource(id = R.drawable.ic_play_video),
                         contentDescription = "Play",
                         modifier = Modifier.size(48.dp)
                     )
                 }
 
-                // Bottom Row: Property Details
-                Row(
+                // Bottom Row: Property & Agent
+                Column {
+                    //Property and Ameths Info
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.1f),
+                                    Color.Black.copy(alpha = 0.6f),
+                                    Color.Black
+                                )
+                            )
+                        )
+                        .padding(8.dp)) {
+                        Text700_12sp(
+                            label = vidItem.property?.fullAddress().orEmpty(), txtColor = AppWhite
+                        )
+                        SpacerUp(size = 2.dp)
+                        propInfo?.let {
+                            AmenitiesView(it, AppWhite, isCompact = true)
+                        }
+                    }
+
+                    //Agent Info
+                    vidItem.getAgent()?.let { agent->
+                        val profImgSize = 32.dp
+                        Row(
+                            modifier = Modifier
+                                .background(agent.agencyBgColor)
+                                .fillMaxWidth()
+                        ) {
+                            //profile image and name
+                            Row(
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .weight(1f),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                //profile image
+                                agent.avatar_url?.let {
+                                    val urlPainter = rememberAsyncImagePainter(
+                                        model = it,
+                                        placeholder = painterResource(id = R.drawable.profile_placeholder),
+                                        error = painterResource(id = R.drawable.profile_placeholder)
+                                    )
+
+                                    Image(
+                                        painter = urlPainter,
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(profImgSize)
+                                            .clip(CircleShape)
+                                    )
+                                } ?: kotlin.run {
+                                    InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                                }
+
+                                SpacerSide(size = 8.dp)
+
+                                //name
+                                Text700_12sp(label = agent.full_name, txtColor = TextDark)
+                            }
+
+                            //agency logo
+                            agent.banner_image?.let {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(end = 8.dp)
+                                ) {
+                                    val urlPainter = rememberAsyncImagePainter(model = it)
+
+                                    Image(
+                                        painter = urlPainter,
+                                        contentDescription = null,
+                                        contentScale = ContentScale.FillWidth,
+                                        modifier = Modifier.size(width = profImgSize * 2, height = profImgSize)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    //end agent info
+                }
+
+
+                /*Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -414,16 +503,8 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                             .background(agentColor)
                     )
                     SpacerSide(size = 8.dp)
-                    Column {
-                        Text700_12sp(
-                            label = vidItem.property?.fullAddress().orEmpty(), txtColor = AppWhite
-                        )
-                        SpacerUp(size = 2.dp)
-                        propInfo?.let {
-                            AmenitiesView(it, AppWhite, isCompact = true)
-                        }
-                    }
-                }
+
+                }*/
             }
         }
     }

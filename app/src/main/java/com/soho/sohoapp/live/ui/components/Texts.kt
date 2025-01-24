@@ -737,7 +737,8 @@ fun Text800_12sp(
     modifier: Modifier = Modifier,
     label: String,
     txtAlign: TextAlign = TextAlign.Left,
-    isBold: Boolean = true
+    isBold: Boolean = true,
+    txtColor : Color = AppWhite
 ) {
     Text(
         modifier = modifier,
@@ -746,7 +747,7 @@ fun Text800_12sp(
         lineHeight = 16.8.sp,
         letterSpacing = 0.14.sp,
         textAlign = txtAlign,
-        color = Color(0xFFFFFFFF),
+        color = txtColor,
         fontWeight = FontWeight(800),
         fontFamily = if (isBold) FontFamily(Font(R.font.axiforma)) else FontFamily(Font(R.font.axiforma_regular)),
     )
