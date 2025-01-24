@@ -151,6 +151,7 @@ private fun PlanContent(mState: SubscriptionState, mGState: GlobalState) {
         ) {
             items(mState.planListRes) { plan ->
                 SubsPlanCard(plan, mGState)
+                SpacerUp(size = 40.dp)
             }
         }
     }
