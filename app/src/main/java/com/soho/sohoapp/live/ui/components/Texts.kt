@@ -219,6 +219,20 @@ fun Text950_16sp(modifier: Modifier = Modifier, title: String) {
     )
 }
 
+@Composable
+fun Text950_14sp(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
+    Text(
+        modifier = modifier,
+        text = title,
+        fontSize = 14.sp,
+        lineHeight = 19.6.sp,
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontWeight = FontWeight(950),
+        color = txtColor,
+        letterSpacing = 0.17.sp
+    )
+}
+
 /*@Composable
 fun Text700_12sp(
     modifier: Modifier = Modifier,

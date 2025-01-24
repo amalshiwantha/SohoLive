@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +44,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.network.common.AlertState
@@ -52,16 +54,17 @@ import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
+import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
-import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text800_12sp
+import com.soho.sohoapp.live.ui.components.Text950_14sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
 import com.soho.sohoapp.live.ui.components.TextFieldOutlined
@@ -72,14 +75,19 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
+import com.soho.sohoapp.live.ui.theme.AppWhiteGray
+import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
+import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
 import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
+import com.soho.sohoapp.live.ui.view.screens.subscription.BulletText
 import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
+import com.soho.sohoapp.live.ui.view.screens.video_library.getRemainingDays
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
 import com.soho.sohoapp.live.utility.shareIntent
@@ -141,6 +149,9 @@ fun VideoManageScreen(
         onSaveClick = { updateVideoItem(itemData, vmVidManage) },
         onPlayClick = {
             playVideoUrl = itemData?.downloadLink ?: ""
+        },
+        onDeleteClick = {
+
         })
 }
 
@@ -164,7 +175,8 @@ private fun MainContent(
     isShowProgress: Boolean,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
-    onPlayClick: () -> Unit
+    onPlayClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -197,6 +209,14 @@ private fun MainContent(
                     item {
                         InnerContent(it, onPlayClick = { onPlayClick() })
                     }
+                    item {
+                        StorageLeftCard(videoItem = it)
+                    }
+                    item {
+                        DeleteBtnView(onDeleteClick = {
+                            onDeleteClick()
+                        })
+                    }
                 }
             } ?: run {
                 NoDataView(modifier = Modifier.align(Alignment.Center))
@@ -219,6 +239,81 @@ private fun MainContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     })
+        }
+    }
+}
+
+@Composable
+fun DeleteBtnView(onDeleteClick: () -> Unit) {
+    SpacerUp(size = 24.dp)
+    Box {
+        ButtonText(
+            text = "Delete Video",
+            onBtnClick = { onDeleteClick() },
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun StorageLeftCard(videoItem: VideoItem) {
+    val activePln = MainStateHolder.mState.activePlan.value
+    activePln?.let { plan ->
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SpacerUp(size = 24.dp)
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(containerColor = DurationDark)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+
+                    val maxDays = plan.terms.inAppStorageDays
+                    val leftDays = maxDays.toInt() - getRemainingDays(videoItem.startedAt)
+
+                    //Storage Left Days
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text400_14sp(info = "Storage Left")
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text950_14sp(title = "$leftDays/$maxDays Days Left", txtColor = OverageRed)
+                    }
+
+                    //Info Card
+                    SpacerUp(size = 16.dp)
+                    Card(
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = AppWhiteGray.copy(alpha = 0.2f))
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.light),
+                                    contentDescription = ""
+                                )
+                                SpacerSide(size = 8.dp)
+                                Text700_14sp(step = "Ways to keep your videos", color = AppWhite)
+                            }
+
+                            SpacerUp(size = 16.dp)
+
+                            Column(modifier = Modifier.padding(start = 4.dp)) {
+                                BulletText(value = "Download it before it expires")
+                                BulletText(value = "Get a multicast plan for 90 days of storage")
+                                BulletText(value = "Access it on the social channels where you streamed")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -382,19 +477,21 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                 // Bottom Row: Property & Agent
                 Column {
                     //Property and Ameths Info
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.1f),
-                                    Color.Black.copy(alpha = 0.6f),
-                                    Color.Black
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.1f),
+                                        Color.Black.copy(alpha = 0.6f),
+                                        Color.Black
+                                    )
                                 )
                             )
-                        )
-                        .padding(8.dp)) {
+                            .padding(8.dp)
+                    ) {
                         Text700_12sp(
                             label = vidItem.property?.fullAddress().orEmpty(), txtColor = AppWhite
                         )
@@ -405,7 +502,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                     }
 
                     //Agent Info
-                    vidItem.getAgent()?.let { agent->
+                    vidItem.getAgent()?.let { agent ->
                         val profImgSize = 32.dp
                         Row(
                             modifier = Modifier
@@ -436,7 +533,11 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                                             .clip(CircleShape)
                                     )
                                 } ?: kotlin.run {
-                                    InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                                    InitialProfileImage(
+                                        agent.full_name,
+                                        profImgSize,
+                                        isSmall = true
+                                    )
                                 }
 
                                 SpacerSide(size = 8.dp)
@@ -458,7 +559,10 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                                         painter = urlPainter,
                                         contentDescription = null,
                                         contentScale = ContentScale.FillWidth,
-                                        modifier = Modifier.size(width = profImgSize * 2, height = profImgSize)
+                                        modifier = Modifier.size(
+                                            width = profImgSize * 2,
+                                            height = profImgSize
+                                        )
                                     )
                                 }
                             }
