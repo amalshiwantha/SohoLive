@@ -245,7 +245,7 @@ private fun MainContent(
 
 @Composable
 fun DeleteBtnView(onDeleteClick: () -> Unit) {
-    SpacerUp(size = 24.dp)
+    SpacerUp(size = 16.dp)
     Box {
         ButtonText(
             text = "Delete Video",
@@ -278,7 +278,7 @@ fun StorageLeftCard(videoItem: VideoItem) {
 
                     //Storage Left Days
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        Text400_14sp(info = "Storage Left")
+                        Text700_14sp(step = "Storage Left")
                         Spacer(modifier = Modifier.weight(1f))
                         Text950_14sp(title = "$leftDays/$maxDays Days Left", txtColor = OverageRed)
                     }
