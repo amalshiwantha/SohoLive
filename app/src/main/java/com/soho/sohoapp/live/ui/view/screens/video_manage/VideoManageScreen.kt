@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -40,6 +42,7 @@ import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.PropertyItem
+import com.soho.sohoapp.live.model.TextFiledConfig
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Document
@@ -47,13 +50,17 @@ import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
+import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
+import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text950_16sp
+import com.soho.sohoapp.live.ui.components.TextAreaWhite
+import com.soho.sohoapp.live.ui.components.TextFieldOutlined
 import com.soho.sohoapp.live.ui.components.TextProgress
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushLiveGradientBg
@@ -229,14 +236,71 @@ private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
 
         //property
         itemInfo.property?.let {
+            //Property info
             SpacerUp(size = 40.dp)
             PropertyView(it)
 
-            //video
-            SpacerUp(size = 24.dp) //this 40 but PropertyView as bottom 16Dp
+            //Update Info
+            SpacerUp(size = 8.dp) //PropertyView has 16 bottom
+            Text950_16sp(title = "Update Video Details")
+            SpacerUp(size = 8.dp)
+            UpdateForm(itemInfo)
+
+            //watch video
+            SpacerUp(size = 24.dp)
             VideoView(itemInfo, onPlayClick = { onPlayClick() })
         }
     }
+}
+
+@Composable
+fun UpdateForm(item: VideoItem) {
+    val optionList = mutableListOf("Inspection", "Auction")
+    var txtCounter by rememberSaveable { mutableStateOf("0/3000") }
+
+    val configPurpose = TextFiledConfig(
+        input = item.streamType.replaceFirstChar { it.uppercaseChar() },
+        placeholder = "Enter Purpose"
+    )
+
+    val configTitle = TextFiledConfig(
+        input = item.title.orEmpty(),
+        placeholder = "Address or title for your livecast",
+    )
+
+    val configDesc = TextFiledConfig(
+        input = item.description.orEmpty(),
+        placeholder = "Let viewers know more about what you are streaming. E.g. Property description, address, etc.",
+        imeAction = ImeAction.Done
+    )
+
+    //save default value
+    configPurpose.input = item.streamType.replaceFirstChar { it.uppercaseChar() }
+
+    Text700_14sp(step = "What is this livestream for?", isBold = false)
+    DropDownWhatForLiveStream(
+        options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
+            item.streamType = it.lowercase()
+        }, fieldConfig = configPurpose
+    )
+
+    //title
+    SpacerUp(size = 8.dp)
+    Text700_14sp(step = "Stream title", isBold = false)
+    TextFieldOutlined(tfConfig = configTitle, onTextChange = {
+        item.title = it
+    })
+
+    //description
+    SpacerUp(size = 8.dp)
+    Row {
+        Text700_14sp(step = "Description", modifier = Modifier.weight(1f), isBold = false)
+        Text700_14sp(step = txtCounter, isBold = false)
+    }
+    TextAreaWhite(fieldConfig = configDesc, onTextChange = {
+        item.description = it.first
+        txtCounter = it.second
+    })
 }
 
 @Composable

@@ -25,9 +25,9 @@ data class DataVidRes(
 @Serializable
 data class VideoItem(
     @SerialName("id") val id: Int,
-    @SerialName("title") val title: String?,
-    @SerialName("description") val description: String?,
-    @SerialName("stream_type") val streamType: String,
+    @SerialName("title") var title: String?,
+    @SerialName("description") var description: String?,
+    @SerialName("stream_type") var streamType: String,
     @SerialName("duration") val duration: Int?,
     @SerialName("started_at") val startedAt: String,
     @SerialName("playback_ids") val playbackIds: List<String>,
