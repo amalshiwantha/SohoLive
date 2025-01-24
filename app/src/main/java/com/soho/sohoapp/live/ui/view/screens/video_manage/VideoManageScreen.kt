@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -412,7 +413,7 @@ fun UpdateForm(item: VideoItem) {
     //save default value
     configPurpose.input = item.streamType.replaceFirstChar { it.uppercaseChar() }
 
-    Text700_14sp(step = "What is this livestream for?", isBold = false)
+    Text700_14sp(step = stringResource(R.string.what_livecast), isBold = false)
     DropDownWhatForLiveStream(
         options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
             item.streamType = it.lowercase()

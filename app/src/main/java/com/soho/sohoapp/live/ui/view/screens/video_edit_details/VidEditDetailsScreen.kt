@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -148,7 +149,7 @@ fun EditForm(itemData: PrivateVideo) {
     //save default value
     configPurpose.input = itemData.castFor
 
-    Text700_14sp(step = "What is this livestream for?", isBold = false)
+    Text700_14sp(step = stringResource(R.string.what_livecast), isBold = true)
     DropDownWhatForLiveStream(
         options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
             itemData.castFor = it
@@ -157,7 +158,7 @@ fun EditForm(itemData: PrivateVideo) {
 
     //title
     SpacerUp(size = 8.dp)
-    Text700_14sp(step = "Stream title", isBold = false)
+    Text700_14sp(step = "Stream title", isBold = true)
     TextFieldOutlined(tfConfig = configTitle, onTextChange = {
         itemData.title = it
     })
@@ -165,7 +166,7 @@ fun EditForm(itemData: PrivateVideo) {
     //description
     SpacerUp(size = 8.dp)
     Row {
-        Text700_14sp(step = "Description", modifier = Modifier.weight(1f), isBold = false)
+        Text700_14sp(step = "Description", modifier = Modifier.weight(1f), isBold = true)
         Text700_14sp(step = txtCounter, isBold = false)
     }
     TextAreaWhite(fieldConfig = configDesc, onTextChange = {

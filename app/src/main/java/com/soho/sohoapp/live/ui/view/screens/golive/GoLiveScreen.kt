@@ -1299,7 +1299,7 @@ private fun Content4(
     mGoLiveSubmit.apply { purpose = defaultSelection }
     configPurpose.input = defaultSelection
 
-    Text700_14spRegular(step = "What is this livestream for?")
+    Text700_14spRegular(step = stringResource(R.string.what_livecast))
     DropDownWhatForLiveStream(
         options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
             mGoLiveSubmit.apply { purpose = it }
