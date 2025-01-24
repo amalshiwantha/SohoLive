@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -54,6 +56,7 @@ import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
@@ -319,7 +322,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp), modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(220.dp)
     ) {
         Box {
             // Background Image
@@ -340,29 +343,23 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
 
             // Overlay content
             Column(modifier = Modifier.fillMaxSize()) {
-                // Top Row: Time and Date
+                //Watermark and Duration
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.watermark_logo),
+                        contentDescription = "",
+                    )
                     Text700_12spNormal(
                         label = vidItem.getDisplayDuration(),
                         txtColor = AppWhite,
                         modifier = Modifier
                             .background(
-                                Color.Black.copy(alpha = 0.6f), shape = RoundedCornerShape(8.dp)
-                            )
-                            .padding(8.dp)
-                    )
-
-                    Text700_12spNormal(
-                        label = vidItem.getDisplayDate(),
-                        txtColor = AppWhite,
-                        modifier = Modifier
-                            .background(
-                                Color.Black.copy(alpha = 0.6f), shape = RoundedCornerShape(8.dp)
+                                Color.Black.copy(alpha = 0.8f), shape = RoundedCornerShape(8.dp)
                             )
                             .padding(8.dp)
                     )
@@ -382,7 +379,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                 }
 
                 // Bottom Row: Property Details
-                /*Row(
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -426,7 +423,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                             AmenitiesView(it, AppWhite, isCompact = true)
                         }
                     }
-                }*/
+                }
             }
         }
     }
