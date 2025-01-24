@@ -53,6 +53,7 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
@@ -232,7 +233,7 @@ private fun PvtVidItemView(
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
         //image title and info
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(88.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(104.dp)) {
             ThumbCenterPlay(item, onClick = {
                 onPlayVideo(item)
             })
@@ -240,6 +241,7 @@ private fun PvtVidItemView(
 
             //Title and Description
             Column {
+                Text700_12sp(label = item.createdDate)
                 Text700_14spBold(step = item.title)
                 SpacerUp(size = 8.dp)
                 item.description?.let {
@@ -276,7 +278,7 @@ private fun PvtVidItemView(
 @Composable
 fun ThumbCenterPlay(item: PrivateVideo, onClick: () -> Unit) {
     Box(modifier = Modifier
-        .size(88.dp)
+        .size(104.dp)
         .fillMaxHeight()
         .clickable { onClick() }
         .clip(RoundedCornerShape(12.dp))) {
