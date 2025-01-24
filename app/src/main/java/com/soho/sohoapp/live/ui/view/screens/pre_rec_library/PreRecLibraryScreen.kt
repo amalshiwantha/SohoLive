@@ -90,24 +90,21 @@ fun PreRecordLibraryScreen(
 
     //show confirmation to delete video
     if (isShowAlert) {
-        AppAlertDialog(
-            alert = AlertConfig.DELETE_ALERT.apply {
-                isConfirm = true
-            },
-            onConfirm = {
-                actionFile?.let {
-                    deleteFileFromUri(it).also { isDeleted ->
-                        if (isDeleted) {
-                            showToast("Private Video Deleted")
-                        }
+        AppAlertDialog(alert = AlertConfig.DELETE_ALERT.apply {
+            isConfirm = true
+        }, onConfirm = {
+            actionFile?.let {
+                deleteFileFromUri(it).also { isDeleted ->
+                    if (isDeleted) {
+                        showToast("Private Video Deleted")
                     }
                 }
-                vmPreRecLib.loadPvtVideo()
-                isShowAlert = false
-            },
-            onDismiss = {
-                isShowAlert = false
-            })
+            }
+            vmPreRecLib.loadPvtVideo()
+            isShowAlert = false
+        }, onDismiss = {
+            isShowAlert = false
+        })
     }
 
     //Main Content
@@ -126,14 +123,12 @@ fun PreRecordLibraryScreen(
         }) {
             SpacerUp(size = 8.dp)
 
-            TopAppBarCustomClose(
-                title = "Private Videos",
+            TopAppBarCustomClose(title = "Private Videos",
                 rightIcon = R.drawable.ic_close_circle,
                 modifier = Modifier,
                 onCloseClick = {
                     navController.popBackStack()
-                }
-            )
+                })
 
             SpacerUp(size = 64.dp)
         }
@@ -151,17 +146,14 @@ fun PreRecordLibraryScreen(
             if (states.isLoading.value) {
                 CenterMessageProgress(message = "Loading Private Video...")
             } else {
-                MainContent(videoList = states.videoList.value,
-                    onPlay = { pvtItem ->
-                        openPlayEditor(navController, pvtItem, mGState)
-                    },
-                    onDelete = {
-                        actionFile = it
-                        isShowAlert = true
-                    },
-                    onEditPublish = { pvtItem ->
-                        openPlayEditor(navController, pvtItem, mGState)
-                    })
+                MainContent(videoList = states.videoList.value, onPlay = { pvtItem ->
+                    openPlayEditor(navController, pvtItem, mGState)
+                }, onDelete = {
+                    actionFile = it
+                    isShowAlert = true
+                }, onEditPublish = { pvtItem ->
+                    openPlayEditor(navController, pvtItem, mGState)
+                })
             }
         }
     }
@@ -174,8 +166,7 @@ fun openPlayEditor(navController: NavHostController, pvtItem: PrivateVideo, mGSt
 
     pvtItem.agentProperty?.let {
         navigateToPlayerScreen(
-            navController,
-            Uri.encode(
+            navController, Uri.encode(
                 pvtItem.filePath
             ), it
         )
@@ -207,17 +198,13 @@ fun MainContent(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(videoList) { pvtVid ->
-                    PvtVidItemView(
-                        pvtVid,
-                        onPlayVideo = {
-                            onPlay(it)
-                        },
-                        onDeleteVideo = {
-                            onDelete(Uri.parse(it))
-                        },
-                        onClickManage = {
-                            onEditPublish(it)
-                        })
+                    PvtVidItemView(pvtVid, onPlayVideo = {
+                        onPlay(it)
+                    }, onDeleteVideo = {
+                        onDelete(Uri.parse(it))
+                    }, onClickManage = {
+                        onEditPublish(it)
+                    })
                 }
             }
         }
@@ -231,7 +218,11 @@ private fun PvtVidItemView(
     onDeleteVideo: (String) -> Unit,
     onPlayVideo: (PrivateVideo) -> Unit
 ) {
-    Column(modifier = Modifier.padding(bottom = 24.dp)) {
+    Column(
+        modifier = Modifier.padding(bottom = 24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         //image title and info
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(104.dp)) {
@@ -241,15 +232,19 @@ private fun PvtVidItemView(
             SpacerSide(size = 16.dp)
 
             //Title and Description
-            Column {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                //DateTime & Duration
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     //Date time
                     Text700_12spNormal(
-                        label = formattedDateDisplay(item.createdDate),
-                        txtColor = HintGray
+                        label = formattedDateDisplay(item.createdDate), txtColor = HintGray
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -257,17 +252,17 @@ private fun PvtVidItemView(
                     //Duration label
                     if (item.dayLabel != "0D") {
                         Text700_12sp(
-                            label = item.dayLabel,
-                            txtColor = logoutRed
+                            label = item.dayLabel, txtColor = logoutRed
                         )
                     }
                 }
 
                 SpacerUp(size = 8.dp)
                 Text700_14spBold(step = item.title)
-                SpacerUp(size = 8.dp)
-                item.description?.let {
-                    Text400_12sp(label = it)
+
+                if(!item.description.isNullOrEmpty()){
+                    SpacerUp(size = 8.dp)
+                    Text400_12sp(label = item.description.orEmpty())
                 }
             }
         }
@@ -371,8 +366,7 @@ private fun NoDataScreen() {
             )
             SpacerUp(size = 40.dp)
             Text800_14sp(
-                label = "No private videos available",
-                txtAlign = TextAlign.Center
+                label = "No private videos available", txtAlign = TextAlign.Center
             )
             SpacerUp(size = 8.dp)
             Text400_14sp(
@@ -384,9 +378,7 @@ private fun NoDataScreen() {
 }
 
 fun navigateToPlayerScreen(
-    navController: NavController,
-    videoUri: String,
-    agentProperty: AgentProperty
+    navController: NavController, videoUri: String, agentProperty: AgentProperty
 ) {
     val agentPropertyJson = Json.encodeToString(agentProperty)
     val encodedAgentProperty = Uri.encode(agentPropertyJson)
