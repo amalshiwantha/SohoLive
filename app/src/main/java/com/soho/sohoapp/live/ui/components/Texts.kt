@@ -74,13 +74,18 @@ fun TextWhite14Normal(modifier: Modifier = Modifier, title: String, txtColor: Co
 }
 
 @Composable
-fun TextWhite14(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
+fun TextWhite14(
+    modifier: Modifier = Modifier,
+    title: String,
+    txtColor: Color = AppWhite,
+    isBold: Boolean = false
+) {
     Text(
         modifier = modifier,
         text = title,
         fontSize = 14.sp,
         lineHeight = 19.6.sp,
-        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        fontFamily = FontFamily(Font(if (isBold) R.font.axiforma else R.font.axiforma_regular)),
         fontWeight = FontWeight(800),
         color = txtColor,
         textAlign = TextAlign.Left,
@@ -752,7 +757,7 @@ fun Text800_12sp(
     label: String,
     txtAlign: TextAlign = TextAlign.Left,
     isBold: Boolean = true,
-    txtColor : Color = AppWhite
+    txtColor: Color = AppWhite
 ) {
     Text(
         modifier = modifier,

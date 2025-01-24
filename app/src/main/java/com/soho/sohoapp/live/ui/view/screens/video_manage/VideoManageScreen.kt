@@ -227,6 +227,7 @@ private fun MainContent(
         data?.let {
             ButtonColouredProgress(text = "Save Changes",
                 isLoading = isShowProgress,
+                isTxtBold = true,
                 color = AppGreen,
                 onBtnClick = {
                     onSaveClick()

@@ -128,8 +128,10 @@ fun ButtonColouredProgress(
     color: Color,
     isLoading: Boolean = false,
     isBackButton: Boolean = false,
+    isTxtBold: Boolean = false,
     onBtnClick: () -> Unit
 ) {
+
     Button(
         modifier = modifier
             .fillMaxWidth()
@@ -153,7 +155,7 @@ fun ButtonColouredProgress(
             if (isBackButton) {
                 TextWhite14Left(title = text)
             } else {
-                TextWhite14(title = text)
+                TextWhite14(title = text, isBold = isTxtBold)
             }
         }
     }
