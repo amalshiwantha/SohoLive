@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,15 +51,15 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
-import com.soho.sohoapp.live.ui.components.Text800_10sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
-import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
@@ -244,10 +242,27 @@ private fun PvtVidItemView(
 
             //Title and Description
             Column {
-                Text700_12spNormal(
-                    label = formattedDateDisplay(item.createdDate),
-                    txtColor = HintGray
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    //Date time
+                    Text700_12spNormal(
+                        label = formattedDateDisplay(item.createdDate),
+                        txtColor = HintGray
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    //Duration label
+                    if (item.dayLabel != "0D") {
+                        Text700_12sp(
+                            label = item.dayLabel,
+                            txtColor = logoutRed
+                        )
+                    }
+                }
+
                 SpacerUp(size = 8.dp)
                 Text700_14spBold(step = item.title)
                 SpacerUp(size = 8.dp)
@@ -337,23 +352,6 @@ fun ThumbCenterPlay(item: PrivateVideo, onClick: () -> Unit) {
                 .align(Alignment.Center)
                 .background(Color.Black.copy(alpha = 0.6f), shape = CircleShape)
         )
-
-        // day Label
-        if (item.dayLabel != "0D") {
-            Card(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(2.dp),
-                shape = MaterialTheme.shapes.small,
-                colors = CardDefaults.cardColors(containerColor = DurationDark)
-            ) {
-                Text800_10sp(
-                    label = item.dayLabel,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                )
-            }
-        }
-
     }
 }
 
