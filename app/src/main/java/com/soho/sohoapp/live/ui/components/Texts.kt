@@ -210,7 +210,7 @@ fun Text950_16sp(modifier: Modifier = Modifier, title: String) {
     Text(
         modifier = modifier,
         text = title,
-        fontSize = 20.sp,
+        fontSize = 16.sp,
         lineHeight = 25.6.sp,
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(950),

@@ -45,6 +45,7 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VideoItem
+import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -180,7 +181,9 @@ private fun MainContent(
             .padding(16.dp)) {
             data?.let {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    item { InnerContent(it, onPlayClick = { onPlayClick() }) }
+                    item {
+                        InnerContent(it, onPlayClick = { onPlayClick() })
+                    }
                 }
             } ?: run {
                 NoDataView(modifier = Modifier.align(Alignment.Center))
@@ -211,6 +214,8 @@ private fun MainContent(
 private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
     Column {
         //privacy
+        Text950_16sp(title = "Visibility Settings")
+        SpacerUp(size = 8.dp)
         PrivacySettings(itemInfo.unlisted, onChangePrivacy = {
             itemInfo.unlisted = VideoPrivacy.toBool(it)
         })
@@ -403,7 +408,7 @@ fun PrivacySettings(
         ) {
             PrivacyOption(text = pvt,
                 isWhiteTheme = isWhiteTheme,
-                description = "Video will be hidden from public view or you can share it as a private video",
+                description = "Your video won’t be publicly visible on your listing. Anyone with the direct share link can still view it.",
                 eyeImgId = R.drawable.ic_hide_eye,
                 isSelected = selectedOption == pvt,
                 txtColor = txtColor,
@@ -416,7 +421,7 @@ fun PrivacySettings(
 
             PrivacyOption(isWhiteTheme = isWhiteTheme,
                 text = pub,
-                description = "Video will be visible on your property listing",
+                description = "Your video will be publicly visible on your property listing.",
                 eyeImgId = R.drawable.ic_view_eye,
                 isSelected = selectedOption == pub,
                 txtColor = txtColor,
@@ -429,6 +434,16 @@ fun PrivacySettings(
             if (isWhiteTheme) {
                 SpacerUp(size = 16.dp)
                 VisibleInfoView()
+            } else {
+                SpacerUp(size = 16.dp)
+                ButtonColoredIcon(
+                    title = "Share Video Link",
+                    btnColor = AppGreen,
+                    icon = R.drawable.ic_share_white,
+                    onBtnClick = {
+
+                    }
+                )
             }
         }
     }
@@ -478,8 +493,9 @@ fun PrivacyOption(
             horizontalArrangement = Arrangement.Center,
         ) {
             //privacy radio button
-            if(isShowSelection){
-                val radioIcon = if (isSelected) R.drawable.radio_active else R.drawable.radio_inactive
+            if (isShowSelection) {
+                val radioIcon =
+                    if (isSelected) R.drawable.radio_active else R.drawable.radio_inactive
                 Image(
                     painter = painterResource(id = radioIcon), contentDescription = null
                 )
@@ -504,7 +520,9 @@ fun PrivacyOption(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Image(
-                            painter = painterResource(id = eyeImgId), contentDescription = "", modifier = Modifier.size(12.dp)
+                            painter = painterResource(id = eyeImgId),
+                            contentDescription = "",
+                            modifier = Modifier.size(12.dp)
                         )
                         SpacerSide(size = 4.dp)
                         Text800_12sp(label = text)
@@ -539,7 +557,7 @@ fun PrivacyOption(
         }
 
         //info
-        val startPadding = if(isShowSelection) 24.dp else 0.dp
+        val startPadding = if (isShowSelection) 24.dp else 0.dp
         SpacerUp(size = 8.dp)
         Text400_14sp(
             info = description, modifier = Modifier.padding(start = startPadding), color = txtColor
