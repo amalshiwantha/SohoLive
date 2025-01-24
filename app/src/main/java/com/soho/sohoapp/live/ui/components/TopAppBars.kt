@@ -96,7 +96,7 @@ fun TopAppBarActionBack(
                 )
             }
         } else {
-            Spacer(modifier = Modifier.width(48.dp)) // Match the size of the back button for alignment
+            //Spacer(modifier = Modifier.width(48.dp)) // Match the size of the back button for alignment
         }
 
         // Title in the center
