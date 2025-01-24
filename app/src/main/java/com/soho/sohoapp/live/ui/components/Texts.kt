@@ -13,17 +13,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -643,25 +650,48 @@ fun Text400_12sp(
 }
 
 @Composable
-fun Text400_12spMore(
-    modifier: Modifier = Modifier,
-    label: String,
-    txtColor: Color = AppWhite,
-    isCenter: Boolean = false
-) {
-    val txtAlign = if (isCenter) TextAlign.Center else TextAlign.Left
+fun EllipsisWithMoreText(description: String) {
+    var isTextOverflowing by remember { mutableStateOf(false) }
+    var visibleText by remember { mutableStateOf(description) }
+
     Text(
-        modifier = modifier,
-        text = label,
+        text = buildAnnotatedString {
+            append(visibleText)
+            pushStringAnnotation(
+                tag = "MORE",
+                annotation = "more_clickable"
+            )
+            withStyle(style = SpanStyle(color = AppWhite)) {
+                append("...")
+            }
+            withStyle(style = SpanStyle(color = LinkTxtColor, fontWeight = FontWeight.Bold)) {
+                append(" More")
+            }
+            pop()
+        },
+
+        overflow = TextOverflow.Ellipsis,
         fontSize = 12.sp,
         lineHeight = 16.8.sp,
         maxLines = 2,
         letterSpacing = 0.14.sp,
-        overflow = TextOverflow.Ellipsis,
-        color = txtColor,
-        textAlign = txtAlign,
+        color = AppWhite,
+        textAlign = TextAlign.Left,
         fontWeight = FontWeight(400),
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        onTextLayout = { textLayoutResult ->
+            val trimCount = textLayoutResult.getLineEnd(1) - 10
+
+            if (textLayoutResult.hasVisualOverflow) {
+                isTextOverflowing = true
+                visibleText = description.take(trimCount)
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                println("More clicked")
+            }
     )
 }
 

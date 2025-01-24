@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,9 +35,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -50,10 +47,10 @@ import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
+import com.soho.sohoapp.live.ui.components.EllipsisWithMoreText
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_12sp
-import com.soho.sohoapp.live.ui.components.Text400_12spMore
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
@@ -64,6 +61,7 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
@@ -265,9 +263,9 @@ private fun PvtVidItemView(
                 SpacerUp(size = 8.dp)
                 Text700_14spBold(step = item.title)
 
-                if(!item.description.isNullOrEmpty()){
+                if (!item.description.isNullOrEmpty()) {
                     SpacerUp(size = 8.dp)
-                    Text400_12spMore(label = item.description.orEmpty())
+                    EllipsisWithMoreText(description = item.description.orEmpty())
                 }
             }
         }
