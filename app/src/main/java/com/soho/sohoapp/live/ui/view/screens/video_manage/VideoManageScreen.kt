@@ -70,6 +70,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
 import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
+import com.soho.sohoapp.live.utility.shareIntent
 import com.soho.sohoapp.live.utility.showToast
 import org.koin.compose.koinInject
 import java.net.URLEncoder
@@ -216,9 +217,15 @@ private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
         //privacy
         Text950_16sp(title = "Visibility Settings")
         SpacerUp(size = 8.dp)
-        PrivacySettings(itemInfo.unlisted, onChangePrivacy = {
-            itemInfo.unlisted = VideoPrivacy.toBool(it)
-        })
+        PrivacySettings(itemInfo.unlisted,
+            onChangePrivacy = {
+                itemInfo.unlisted = VideoPrivacy.toBool(it)
+            },
+            onShare = {
+                itemInfo.shareableLink?.let {
+                    shareIntent(it)
+                }
+            })
 
         //property
         itemInfo.property?.let {
@@ -388,6 +395,7 @@ fun PrivacySettings(
     visibility: Boolean,
     isWhiteTheme: Boolean = false,
     onChangePrivacy: (String) -> Unit,
+    onShare: () -> Unit = {},
 ) {
 
     val privacyItem = VideoPrivacy.fromId(visibility)
@@ -440,9 +448,7 @@ fun PrivacySettings(
                     title = "Share Video Link",
                     btnColor = AppGreen,
                     icon = R.drawable.ic_share_white,
-                    onBtnClick = {
-
-                    }
+                    onBtnClick = { onShare() }
                 )
             }
         }
