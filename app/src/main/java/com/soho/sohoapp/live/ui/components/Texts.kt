@@ -676,17 +676,20 @@ fun EllipsisWithMoreText(description: String) {
     Text(
         text = buildAnnotatedString {
             append(visibleText)
-            pushStringAnnotation(
-                tag = "MORE",
-                annotation = "more_clickable"
-            )
-            withStyle(style = SpanStyle(color = AppWhite)) {
-                append("...")
+
+            if(isTextOverflowing){
+                pushStringAnnotation(
+                    tag = "MORE",
+                    annotation = "more_clickable"
+                )
+                withStyle(style = SpanStyle(color = AppWhite)) {
+                    append("...")
+                }
+                withStyle(style = SpanStyle(color = LinkTxtColor, fontWeight = FontWeight.Bold)) {
+                    append(" More")
+                }
+                pop()
             }
-            withStyle(style = SpanStyle(color = LinkTxtColor, fontWeight = FontWeight.Bold)) {
-                append(" More")
-            }
-            pop()
         },
 
         overflow = TextOverflow.Ellipsis,
@@ -699,11 +702,13 @@ fun EllipsisWithMoreText(description: String) {
         fontWeight = FontWeight(400),
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         onTextLayout = { textLayoutResult ->
-            val trimCount = textLayoutResult.getLineEnd(1) - 10
+            if(textLayoutResult.lineCount == 2){
+                val trimCount = textLayoutResult.getLineEnd(1) - 10
 
-            if (textLayoutResult.hasVisualOverflow) {
-                isTextOverflowing = true
-                visibleText = description.take(trimCount)
+                if (textLayoutResult.hasVisualOverflow) {
+                    isTextOverflowing = true
+                    visibleText = description.take(trimCount)
+                }
             }
         },
         modifier = Modifier
