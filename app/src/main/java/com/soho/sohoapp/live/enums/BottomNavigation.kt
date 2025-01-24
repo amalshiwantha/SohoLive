@@ -12,7 +12,7 @@ data class BottomNavigationItem(
     fun navigationItems(): List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(
-                label = "Go Live",
+                label = "Record/Go Live",
                 iconOn = R.drawable.ic_bottom_live,
                 iconOff = R.drawable.ic_bottom_live_off,
                 route = NavigationPath.GO_LIVE.name
