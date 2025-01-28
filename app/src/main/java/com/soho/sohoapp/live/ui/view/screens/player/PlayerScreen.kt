@@ -48,13 +48,13 @@ import com.soho.sohoapp.live.ui.components.PreRecVidSuccessView
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
-import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
@@ -329,6 +329,14 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
                             contentScale = ContentScale.FillWidth,
                             modifier = Modifier.size(width = profImgSize * 2, height = profImgSize)
                         )
+                    }
+                } ?: kotlin.run {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 8.dp)
+                    ) {
+                        Text700_14sp(step = "AB", color = AppPrimaryDark)
                     }
                 }
             }
