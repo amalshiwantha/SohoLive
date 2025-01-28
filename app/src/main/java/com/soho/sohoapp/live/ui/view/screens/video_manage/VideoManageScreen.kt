@@ -61,13 +61,10 @@ import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.ConfirmAlert
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
-import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
-import com.soho.sohoapp.live.ui.components.Text700_14sp
-import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text800_12sp
@@ -88,7 +85,6 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
@@ -422,7 +418,7 @@ fun StorageLeftCard(videoItem: VideoItem) {
                 ) {
 
                     val maxDays = plan.terms.inAppStorageDays
-                    val leftDays = maxDays.toInt()-getRemainingDays(videoItem.startedAt)
+                    val leftDays = getRemainingDays(videoItem.startedAt, maxDays.toInt())
 
                     //Storage Left Days
                     Row(modifier = Modifier.fillMaxWidth()) {

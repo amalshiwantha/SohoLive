@@ -100,8 +100,10 @@ import org.koin.compose.koinInject
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun VideoLibraryScreen(
@@ -623,8 +625,8 @@ private fun ListItemView(
             Spacer(modifier = Modifier.weight(1f))
             val maxDays =
                 MainStateHolder.mState.activePlan.value?.terms?.inAppStorageDays?.toInt() ?: 0
-            val daysStorage = maxDays - getRemainingDays(item.startedAt)
-            StorageLabel(daysStorage.toString(), onStorageClick = {
+            val daysStorage = getRemainingDays(item.createdAt, maxDays)
+            StorageLabel(daysStorage, onStorageClick = {
                 onStorageClick()
             })
         }
@@ -693,7 +695,7 @@ private fun ListItemView(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StorageLabel(displayDate: String, onStorageClick: () -> Unit) {
+fun StorageLabel(displayDate: Int, onStorageClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
         onClick = { onStorageClick() },
@@ -705,22 +707,32 @@ fun StorageLabel(displayDate: String, onStorageClick: () -> Unit) {
     }
 }
 
-fun getRemainingDays(startedAt: String): Int {
-    // Define the date format
+fun getRemainingDays(createdAt: String, maxDays: Int): Int {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-    dateFormat.timeZone = java.util.TimeZone.getTimeZone("UTC") // Ensure parsing is in UTC
+    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
-    // Parse the `started_at` date
-    val startedDate: Date = dateFormat.parse(startedAt)!!
+    // Parse the created date
+    val videoCreatedDate: Date = dateFormat.parse(createdAt) ?: return 0
 
-    // Get today's date
-    val today = Date()
+    // Get the current date
+    val currentDate = Calendar.getInstance()
 
-    // Calculate days since the `startedAt` date
-    val diffInMillis = today.time - startedDate.time
-    val daysSinceStarted = diffInMillis / (1000 * 60 * 60 * 24) // Convert milliseconds to days
+    // Get the created date in Calendar
+    val createdCalendar = Calendar.getInstance().apply {
+        time = videoCreatedDate
+    }
 
-    return daysSinceStarted.toInt()
+    // Calculate the difference in milliseconds
+    val differenceInMillis = currentDate.timeInMillis - createdCalendar.timeInMillis
+
+    // Convert milliseconds to days
+    val diffDays = (differenceInMillis / (1000 * 60 * 60 * 24)).toInt()
+
+    return if (diffDays >= maxDays) {
+        0
+    } else {
+        maxDays - diffDays
+    }
 }
 
 @Composable

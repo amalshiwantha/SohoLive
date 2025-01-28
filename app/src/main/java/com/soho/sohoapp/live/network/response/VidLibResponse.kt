@@ -30,6 +30,7 @@ data class VideoItem(
     @SerialName("stream_type") var streamType: String,
     @SerialName("duration") val duration: Int?,
     @SerialName("started_at") val startedAt: String,
+    @SerialName("created_at") val createdAt: String,
     @SerialName("playback_ids") val playbackIds: List<String>,
     @SerialName("unlisted") var unlisted: Boolean,
     @SerialName("property_listing_id") val propertyListingId: Int,
