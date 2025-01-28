@@ -75,6 +75,7 @@ data class MainState(
         sAgencyList?.value = emptyList()
         agentEmail = null
         activePlan.value = null
+        selectedAgentId = 0
     }
 }
 

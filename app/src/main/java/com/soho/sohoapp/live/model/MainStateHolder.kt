@@ -13,6 +13,7 @@ object MainStateHolder {
         mState.apply {
             liveOrientation.value = Orientation.PORT.name
             stepId.value = 0
+            selectedAgentId = 0
         }
     }
 }
