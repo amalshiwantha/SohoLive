@@ -324,16 +324,19 @@ private fun FeaturesList(features: List<String>) {
 @Composable
 fun BulletPointText(value: String) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
         modifier = Modifier.padding(vertical = 4.dp)
     ) {
         // Bullet Point
-        Box(
-            modifier = Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(Color.White)
-        )
+        Column(modifier = Modifier.padding(top = 8.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(Color.White)
+            )
+        }
+
         SpacerSide(size = 8.dp)
         // Text
         Text400_14sp(info = value)
