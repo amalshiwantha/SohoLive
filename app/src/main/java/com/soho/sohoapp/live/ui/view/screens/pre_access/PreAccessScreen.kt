@@ -266,8 +266,9 @@ fun BottomBtnIndicator(
                 text = "Visit soho.com.au/agents/livecast",
                 modifier = Modifier.fillMaxWidth(),
                 onBtnClick = {
-                    val webUrl = "https://soho.com.au/articles/how-to-bring-self-care-into-home-design-this-holiday"
+                    val webUrl = "https://soho.com.au/agents/livecast"
                     val encodeUrl = URLEncoder.encode(webUrl, StandardCharsets.UTF_8.toString())
+                    println("encodeUrl $encodeUrl")
                     navController.navigate("${NavigationPath.WEB_VIEW_MAIN.name}/$SIGNUP_TITLE/$encodeUrl")
                 })
         }

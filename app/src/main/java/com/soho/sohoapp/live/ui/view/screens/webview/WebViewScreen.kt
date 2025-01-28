@@ -85,6 +85,7 @@ fun WebViewScreen(navController: NavHostController, title: String, url: String) 
                                 }
                             }
                             settings.javaScriptEnabled = true
+                            settings.domStorageEnabled = true
                             loadUrl(url)
                         }
                     },
