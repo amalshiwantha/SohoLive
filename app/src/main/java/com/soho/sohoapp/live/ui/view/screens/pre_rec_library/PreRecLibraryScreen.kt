@@ -261,7 +261,7 @@ private fun PvtVidItemView(
                 }
 
                 SpacerUp(size = 8.dp)
-                Text700_14spBold(step = item.title)
+                Text700_14spBold(step = item.title, modifier = Modifier.fillMaxWidth())
 
                 if (!item.description.isNullOrEmpty()) {
                     SpacerUp(size = 8.dp)
