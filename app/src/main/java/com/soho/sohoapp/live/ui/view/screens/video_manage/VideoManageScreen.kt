@@ -160,7 +160,7 @@ fun VideoManageScreen(
     MainContent(data = itemData,
         isShowProgress = isShowProgress,
         onBackClick = { navController.popBackStack() },
-        onSaveClick = { updateVideoItem(itemData, vmVidManage) },
+        onSaveClick = { updateVideoItem(it, vmVidManage) },
         onPlayClick = {
             playVideoUrl = itemData?.downloadLink ?: ""
         },
@@ -188,7 +188,7 @@ private fun MainContent(
     data: VideoItem?,
     isShowProgress: Boolean,
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit,
+    onSaveClick: (VideoItem) -> Unit,
     onPlayClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -272,7 +272,7 @@ private fun MainContent(
                     isTxtBold = true,
                     color = AppGreen,
                     onBtnClick = {
-                        onSaveClick()
+                        onSaveClick(it)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
