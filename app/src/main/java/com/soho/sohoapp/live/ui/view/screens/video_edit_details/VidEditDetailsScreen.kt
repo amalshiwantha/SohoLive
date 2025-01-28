@@ -127,7 +127,7 @@ fun VidEditDetailsScreen(
 
 @Composable
 fun EditForm(itemData: PrivateVideo) {
-    val optionList = mutableListOf("Inspection", "Auction", "Other")
+    val optionList = mutableListOf("Inspection", "Auction")
     var txtCounter by rememberSaveable { mutableStateOf("0/3000") }
 
     val configPurpose = TextFiledConfig(

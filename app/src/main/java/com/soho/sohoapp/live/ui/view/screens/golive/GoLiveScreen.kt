@@ -1294,10 +1294,15 @@ private fun Content4(
     //what for livestream
 
     //save default value
-    val propType = mGoLiveSubmit.propertyType
-    val defaultSelection = getStateSelection(optionList, propType)
-    mGoLiveSubmit.apply { purpose = defaultSelection }
-    configPurpose.input = defaultSelection
+
+    mGoLiveSubmit.purpose?.let {
+        configPurpose.input = it
+    } ?: run {
+        val propType = mGoLiveSubmit.propertyType
+        val defaultSelection = getStateSelection(optionList, propType)
+        mGoLiveSubmit.apply { purpose = defaultSelection }
+        configPurpose.input = defaultSelection
+    }
 
     Text700_14spRegular(step = stringResource(R.string.what_livecast))
     DropDownWhatForLiveStream(
