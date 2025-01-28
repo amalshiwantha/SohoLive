@@ -1185,6 +1185,7 @@ fun StepContents(
                     })
 
                     AgentListing(mainAgencyList, onAgentItemClicked = { selected ->
+                        mState.selectedAgentId = selected.agentProfile.id
                         onAgentItemClicked.invoke(selected)
                     })
                 }

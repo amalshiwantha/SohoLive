@@ -62,6 +62,7 @@ data class MainState(
     var sPropList: MutableState<List<PropertyItem>>? = null,
     var sAgencyList: MutableState<List<AgencyItem>>? = null,
     var agentEmail: String? = null,
+    var selectedAgentId: Int = 0,
 ) {
     fun reset() {
         liveOrientation.value = Orientation.PORT.name

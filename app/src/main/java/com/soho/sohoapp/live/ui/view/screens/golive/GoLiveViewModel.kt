@@ -316,9 +316,23 @@ class GoLiveViewModel(
                 ids.contains(agentProfile.id)
             }
             val agentLst = getAgentList(filteredAgentProfiles, selectedAgent)
+            val selectedId = mState.selectedAgentId
+
+            //add pervious property selected agent to the current list
+            val updatedAgentItem = agentLst.find { it.id == selectedId }?.apply {
+                isChecked = true
+            }
+
+            updatedAgentItem?.let { newItem ->
+                agentLst.remove(agentLst.find { it.id == selectedId })
+                agentLst.add(newItem)
+            }
+
+            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+
 
             //get last selection. if having then need to update agencyListState with selectionTRUE
-            val currentlySelectedItems = assetsState.value.agencyListState?.value
+            /*val currentlySelectedItems = assetsState.value.agencyListState?.value
                 ?.filter { it.isChecked }
                 ?.associateBy { it.id }
 
@@ -326,9 +340,7 @@ class GoLiveViewModel(
                 val isChecked = currentlySelectedItems?.get(newItem.id)?.isChecked ?: false
                 newItem.copy(isChecked = isChecked)
             }
-            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(updatedAgentLst))
-
-            //assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(updatedAgentLst))*/
 
         } ?: kotlin.run {
             assetsState.value =
