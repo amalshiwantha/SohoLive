@@ -52,7 +52,7 @@ data class MainState(
     var liveFormat: MutableState<String> = mutableStateOf(LiveFormat.PRE.name),
     var liveOrientation: MutableState<String> = mutableStateOf(Orientation.PORT.name),
     var stepId: MutableState<Int> = mutableIntStateOf(0),
-    var isPublic: MutableState<Boolean> = mutableStateOf(false),
+    var isPublic: MutableState<Boolean> = mutableStateOf(true),
     var isTemplateWithBrand: MutableState<Boolean> = mutableStateOf(true),
     var activePlan: MutableState<PlanData?> = mutableStateOf(null),
 
@@ -153,7 +153,7 @@ data class GoLiveSubmit(
     @SerialName("agent_profile_id") var agentId: Int? = null,
     @SerialName("simulcast_targets") var targets: MutableList<GoLivePlatform> = mutableListOf(),
     @SerialName("schedules_at") var schedulesAt: MutableList<ScheduleDateTime> = mutableListOf(),
-    @SerialName("unlisted") var isSohoPublic: Boolean = false,
+    @SerialName("unlisted") var isSohoPublic: Boolean = true,
     @SerialName("orientation") var orientation: String = "portrait",
     var platformToken: MutableList<PlatformToken> = mutableListOf(),
     var scheduleSlots: MutableList<ScheduleSlots> = mutableListOf(),

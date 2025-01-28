@@ -136,7 +136,6 @@ import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text700_14spRegular
 import com.soho.sohoapp.live.ui.components.Text800_10sp
-import com.soho.sohoapp.live.ui.components.Text800_12sp
 import com.soho.sohoapp.live.ui.components.Text800_20sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TextAreaWhite
@@ -149,6 +148,7 @@ import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.components.brushPlanBtnGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.AppWhiteGray
 import com.soho.sohoapp.live.ui.theme.BorderGray
@@ -168,7 +168,6 @@ import com.soho.sohoapp.live.ui.view.screens.schedule.DateTimePicker
 import com.soho.sohoapp.live.ui.view.screens.schedule.ScheduleItemView
 import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
-import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacySettings
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
@@ -1226,7 +1225,7 @@ fun StepContents(
                 },
                 onSohoItemChecked = {
                     mGoLiveSubmit.isSohoPublic = it
-                    MainStateHolder.mState.isPublic.value = it
+                    mState.isPublic.value = it
                 })
             SpacerUp(size = 70.dp)
         }
@@ -2099,6 +2098,8 @@ private fun SocialMediaItemContent(
     onSohoItemChecked: (Boolean) -> Unit
 ) {
 
+    val isPublic = remember { mutableStateOf(isSohoPublic) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -2112,23 +2113,55 @@ private fun SocialMediaItemContent(
             //logo
             Column {
                 val imgSize = getImageWidth(info.icon)
-                Image(
-                    painter = painterResource(id = info.icon),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = if (imgSize.width == 0) {
-                        Modifier
-                    } else {
-                        Modifier.size(imgSize.width.dp, imgSize.height.dp)
-                    }
-                )
 
                 if (info == SocialMediaInfo.SOHO) {
-                    SpacerUp(size = 16.dp)
-                    PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = info.icon),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = if (imgSize.width == 0) {
+                                Modifier
+                            } else {
+                                Modifier.size(imgSize.width.dp, imgSize.height.dp)
+                            }
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        SwitchCompo(
+                            isPublic.value,
+                            modifier = Modifier.height(35.dp),
+                            onCheckedChange = {
+                                isPublic.value = it
+                                onSohoItemChecked.invoke(it)
+                            })
+                    }
+                } else {
+                    Image(
+                        painter = painterResource(id = info.icon),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = if (imgSize.width == 0) {
+                            Modifier
+                        } else {
+                            Modifier.size(imgSize.width.dp, imgSize.height.dp)
+                        }
+                    )
+                }
+
+                if (info == SocialMediaInfo.SOHO) {
+                    Text400_14sp(
+                        info = "Livecast will be shown publicly on property listing",
+                        color = AppPrimaryDark,
+                        modifier = Modifier.padding(end = 80.dp)
+                    )
+                    /*PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
                         val isPublic = it == VideoPrivacy.PUBLIC.label
                         onSohoItemChecked.invoke(isPublic)
-                    })
+                    })*/
                 }
             }
 
