@@ -317,7 +317,19 @@ class GoLiveViewModel(
             }
             val agentLst = getAgentList(filteredAgentProfiles, selectedAgent)
 
-            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+            //get last selection. if having then need to update agencyListState with selectionTRUE
+            val currentlySelectedItems = assetsState.value.agencyListState?.value
+                ?.filter { it.isChecked }
+                ?.associateBy { it.id }
+
+            val updatedAgentLst = agentLst.map { newItem ->
+                val isChecked = currentlySelectedItems?.get(newItem.id)?.isChecked ?: false
+                newItem.copy(isChecked = isChecked)
+            }
+            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(updatedAgentLst))
+
+            //assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+
         } ?: kotlin.run {
             assetsState.value =
                 assetsState.value.copy(agencyListState = mutableStateOf(emptyList()))
