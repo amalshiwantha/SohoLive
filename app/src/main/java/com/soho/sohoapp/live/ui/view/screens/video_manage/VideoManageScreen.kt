@@ -192,6 +192,8 @@ private fun MainContent(
     onPlayClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    var visibleData by remember { mutableStateOf(data) }
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -218,10 +220,12 @@ private fun MainContent(
                 height = Dimension.fillToConstraints
             }
             .padding(16.dp)) {
-            data?.let {
+            visibleData?.let {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item {
-                        InnerContent(it, onPlayClick = { onPlayClick() })
+                        InnerContent(it, onDataUpdate = {
+                            visibleData = it
+                        }, onPlayClick = { onPlayClick() })
                     }
                     item {
                         StorageLeftCard(videoItem = it)
@@ -253,7 +257,7 @@ private fun MainContent(
             //Share Button
             ButtonOutLinedIcon(icon = R.drawable.ic_share_white, modifier = Modifier.size(48.dp),
                 onBtnClick = {
-                    data?.shareableLink?.let {
+                    visibleData?.shareableLink?.let {
                         shareIntent(it)
                     }
                 })
@@ -261,7 +265,7 @@ private fun MainContent(
             SpacerSide(size = 8.dp)
 
             //Save Button
-            data?.let {
+            visibleData?.let {
                 ButtonColouredProgress(
                     text = "Save Changes",
                     isLoading = isShowProgress,
@@ -355,7 +359,11 @@ fun StorageLeftCard(videoItem: VideoItem) {
 }
 
 @Composable
-private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
+private fun InnerContent(
+    itemInfo: VideoItem,
+    onDataUpdate: (VideoItem) -> Unit,
+    onPlayClick: () -> Unit
+) {
     Column {
         //privacy
         Text950_16sp(title = "Visibility Settings")
@@ -363,6 +371,7 @@ private fun InnerContent(itemInfo: VideoItem, onPlayClick: () -> Unit) {
         PrivacySettings(itemInfo.unlisted,
             onChangePrivacy = {
                 itemInfo.unlisted = VideoPrivacy.toBool(it)
+                onDataUpdate(itemInfo)
             },
             onShare = {
                 itemInfo.shareableLink?.let {

@@ -31,8 +31,8 @@ enum class VideoPrivacy(val bgColor: Color, val label: String) {
 
         fun toBool(value: String): Boolean {
             return when (value) {
-                PUBLIC.label -> true
-                UNLISTED.label -> false
+                PUBLIC.label -> false
+                UNLISTED.label -> true
                 else -> false
             }
         }
