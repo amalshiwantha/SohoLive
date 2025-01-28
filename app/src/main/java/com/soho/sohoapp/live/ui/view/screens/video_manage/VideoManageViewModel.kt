@@ -11,6 +11,7 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
+import com.soho.sohoapp.live.network.response.VideoDeleteReq
 import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -33,7 +34,26 @@ class VideoManageViewModel(
                 updateVideoPrivacy(event.request)
             }
 
+            is VidLibEvent.CallDeleteVideo -> {
+                deleteVideo(event.request)
+            }
+
             else -> {}
+        }
+    }
+
+    private fun deleteVideo(delReq: VideoDeleteReq) {
+        mState.value = mState.value.copy(
+            loadingState = ProgressBarState.Loading,
+            loadingMessage = "Video is Deleting..."
+        )
+
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    callVideoDelete(it.authenticationToken, delReq)
+                }
+            }
         }
     }
 
@@ -74,6 +94,41 @@ class VideoManageViewModel(
                             mState.value =
                                 mState.value.copy(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
                                     title = "Privacy Change Problem"
+                                    message = errorMsg.orEmpty()
+                                }))
+                        }
+                    }
+                }
+
+                is ApiState.Loading -> {
+                    mState.value = mState.value.copy(loadingState = apiState.progressBarState)
+                }
+
+                is ApiState.Alert -> {
+                    mState.value = mState.value.copy(alertState = apiState.alertState)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun callVideoDelete(authToken: String, delReq: VideoDeleteReq) {
+        apiRepo.deleteVideo(authToken, delReq).onEach { apiState ->
+
+            when (apiState) {
+
+                is ApiState.Data -> {
+
+                    apiState.data?.let { result ->
+
+                        val isSuccess = !result.responseType.equals("error")
+                        val errorMsg = result.response
+
+                        if (isSuccess) {
+                            mState.value = mState.value.copy(isSuccessDelete = true)
+                        } else {
+                            mState.value =
+                                mState.value.copy(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
+                                    title = "Video Delete Problem"
                                     message = errorMsg.orEmpty()
                                 }))
                         }

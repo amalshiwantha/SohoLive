@@ -19,6 +19,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
+import com.soho.sohoapp.live.network.response.VideoDeleteReq
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.onUpload
@@ -142,6 +143,24 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
             setBody(privacyReq)
+        }.body()
+    }
+
+    override suspend fun videoDelete(
+        authToken: String,
+        deleteReq: VideoDeleteReq
+    ): VidPrivacyResponse {
+        return httpClient.delete {
+            url {
+                takeFrom(BuildConfig.BASE_URL)
+                encodedPath += SohoApiServices.VIDEO_DELETE.replace(
+                    "{propertyId}",
+                    deleteReq.id.toString()
+                )
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+            setBody(deleteReq)
         }.body()
     }
 

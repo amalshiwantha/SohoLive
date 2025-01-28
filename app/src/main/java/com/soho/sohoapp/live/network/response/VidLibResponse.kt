@@ -87,6 +87,12 @@ data class MetaVidRes(
     @SerialName("per_page") val perPage: Int
 )
 
+//Video Delete Req
+@Serializable
+data class VideoDeleteReq(
+    @SerialName("id") val id: Int
+)
+
 //Video Manage Req & Res
 @Serializable
 data class VidPrivacyRequest(

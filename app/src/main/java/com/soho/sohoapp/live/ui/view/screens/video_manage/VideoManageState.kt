@@ -9,6 +9,7 @@ import com.soho.sohoapp.live.network.response.VidPrivacy
 
 data class VideoManageState(
     val isSuccess: Boolean = false,
+    val isSuccessDelete: Boolean = false,
     val lastSavedId: Long = 0,
     val loadingState: ProgressBarState = ProgressBarState.Idle,
     val loadingMessage: String = "Video Library Loading...",

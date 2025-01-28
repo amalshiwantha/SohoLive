@@ -52,6 +52,7 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.Document
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
+import com.soho.sohoapp.live.network.response.VideoDeleteReq
 import com.soho.sohoapp.live.network.response.VideoItem
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
@@ -120,7 +121,9 @@ fun VideoManageScreen(
             title = "Confirm Delete",
             message = "Are you sure you want to delete this video item?",
             isShowDialog = isShowConfirmAlert,
-            onDismiss = { isShowConfirmAlert = it }, onConfirm = {}
+            onDismiss = { isShowConfirmAlert = it }, onConfirm = {
+                itemData?.id?.let { callDeleteApi(it, vmVidManage) }
+            }
         )
     }
 
@@ -145,6 +148,14 @@ fun VideoManageScreen(
                     description = it.description
                 }
             }
+            navController.popBackStack()
+        }
+    }
+
+    //success delete
+    LaunchedEffect(states.isSuccessDelete) {
+        if (states.isSuccessDelete) {
+            showToast("Video Deleted!")
             navController.popBackStack()
         }
     }
@@ -174,6 +185,12 @@ fun VideoManageScreen(
         onDeleteClick = {
             isShowConfirmAlert = true
         })
+}
+
+private fun callDeleteApi(itemId: Int, vmVidManage: VideoManageViewModel) {
+    vmVidManage.onTriggerEvent(
+        VidLibEvent.CallDeleteVideo(VideoDeleteReq(id = itemId))
+    )
 }
 
 private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageViewModel) {

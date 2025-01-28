@@ -17,6 +17,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
+import com.soho.sohoapp.live.network.response.VideoDeleteReq
 import java.io.File
 
 
@@ -30,6 +31,7 @@ interface SohoApiServices {
         const val TS_PROPERTY = "collections/property_listings/documents/search"
         const val VIDEO_LIBRARY = "asset"
         const val VIDEO_PRIVACY_UPDATE = "asset/{propertyId}"
+        const val VIDEO_DELETE = "asset/{propertyId}/soft_delete"
         const val END_STREAM = "live_stream/{live_stream_id}/complete"
         const val ROLLBACK_STREAM = "live_stream/{live_stream_id}"
         const val TEST_UPLOAD = "dev/upload.php"
@@ -54,6 +56,7 @@ interface SohoApiServices {
         privacyReq: VidPrivacyRequest
     ): VidPrivacyResponse
 
+    suspend fun videoDelete(authToken: String, deleteReq: VideoDeleteReq): VidPrivacyResponse
     suspend fun endStream(authToken: String, streamId: String): LiveResponse
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
     suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String

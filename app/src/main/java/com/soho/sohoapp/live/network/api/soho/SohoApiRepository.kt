@@ -22,6 +22,7 @@ import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
+import com.soho.sohoapp.live.network.response.VideoDeleteReq
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
@@ -82,6 +83,27 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 val apiResponse = service.videoPrivacyUpdate(
                     authToken = authToken,
                     privacyReq = privacyReq
+                )
+                emit(ApiState.Data(data = apiResponse))
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                e.message?.let { emit(ApiState.Alert(alertState = getAlertState(it))) }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
+
+    fun deleteVideo(
+        authToken: String,
+        deleteReq: VideoDeleteReq
+    ): Flow<ApiState<VidPrivacyResponse>> =
+        flow {
+            try {
+
+                val apiResponse = service.videoDelete(
+                    authToken = authToken,
+                    deleteReq = deleteReq
                 )
                 emit(ApiState.Data(data = apiResponse))
 
