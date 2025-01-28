@@ -239,6 +239,13 @@ private fun Content(
 ) {
     var downloadStatus by remember { mutableStateOf("") }
 
+    //if video delete then reload the list
+    LaunchedEffect(mGState.isDeletedVideo.value) {
+        if (mGState.isDeletedVideo.value) {
+            onClickReloadVideoList()
+        }
+    }
+
     //Show download status
     LaunchedEffect(downloadStatus) {
         if (downloadStatus.isNotEmpty()) {

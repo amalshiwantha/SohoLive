@@ -178,7 +178,8 @@ data class GlobalState(
     var privateVideoId: MutableState<Long> = mutableLongStateOf(0),
     var isEditVideoData: MutableState<Boolean> = mutableStateOf(false),
     var uploadStatus: MutableState<String?> = mutableStateOf(null),
-    var isOpenPvtVidLib: MutableState<Boolean> = mutableStateOf(false)
+    var isOpenPvtVidLib: MutableState<Boolean> = mutableStateOf(false),
+    var isDeletedVideo: MutableState<Boolean> = mutableStateOf(false)
 ) {
     @Transient
     private val _uploadProgress = MutableStateFlow(0)

@@ -155,7 +155,8 @@ fun VideoManageScreen(
     //success delete
     LaunchedEffect(states.isSuccessDelete) {
         if (states.isSuccessDelete) {
-            showToast("Video Deleted!")
+            mGState.isDeletedVideo.value = true
+            showToast("Video Deleted! Reloading...")
             navController.popBackStack()
         }
     }
