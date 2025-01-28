@@ -336,7 +336,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
                             .align(Alignment.CenterVertically)
                             .padding(end = 8.dp)
                     ) {
-                        Text700_14sp(step = agent.agencyName, color = AppPrimaryDark)
+                        Text700_14sp(step = agent.agencyName, color = agent.agencyNameTextColor)
                     }
                 }
             }

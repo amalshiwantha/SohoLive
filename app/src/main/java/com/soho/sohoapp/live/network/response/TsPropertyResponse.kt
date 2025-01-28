@@ -4,6 +4,8 @@ import android.graphics.Color.parseColor
 import androidx.compose.ui.graphics.Color
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.PropertyState
+import com.soho.sohoapp.live.ui.theme.AppPrimaryDark
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -232,6 +234,17 @@ data class Agent(
 
     val agencyName: String
         get() = getAgencyInitials(agency_name)
+
+    val agencyNameTextColor: Color
+        get() = if (isWhite(agencyBgColor)) {
+            AppPrimaryDark
+        } else {
+            AppWhite
+        }
+
+    private fun isWhite(color: Color): Boolean {
+        return color.red == 1f && color.green == 1f && color.blue == 1f
+    }
 }
 
 fun getAgencyInitials(agencyName: String?): String {
