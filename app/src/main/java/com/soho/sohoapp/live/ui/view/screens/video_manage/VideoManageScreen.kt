@@ -61,10 +61,13 @@ import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.ConfirmAlert
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
+import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
+import com.soho.sohoapp.live.ui.components.Text700_14sp
+import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spProperty
 import com.soho.sohoapp.live.ui.components.Text800_12sp
@@ -85,6 +88,7 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
 import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.TextDark
+import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.ui.theme.infoGray
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesView
@@ -326,7 +330,7 @@ fun DeleteBtnView(onDeleteClick: () -> Unit) {
     }
 }
 
-@Composable
+/*@Composable
 fun StorageLeftCard(videoItem: VideoItem) {
     val activePln = MainStateHolder.mState.activePlan.value
     activePln?.let { plan ->
@@ -348,6 +352,81 @@ fun StorageLeftCard(videoItem: VideoItem) {
                     //Storage Left Days
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text700_14sp(step = "Storage Left")
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text950_14sp(title = "$leftDays/$maxDays Days Left", txtColor = OverageRed)
+                    }
+
+                    //Info Card
+                    SpacerUp(size = 16.dp)
+                    Card(
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = AppWhiteGray.copy(alpha = 0.2f))
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.light),
+                                    contentDescription = ""
+                                )
+                                SpacerSide(size = 8.dp)
+                                Text700_14sp(step = "Ways to keep your videos", color = AppWhite)
+                            }
+
+                            SpacerUp(size = 16.dp)
+
+                            Column(modifier = Modifier.padding(start = 4.dp)) {
+                                BulletText(value = "Download it before it expires")
+                                BulletText(value = "Get a multicast plan for 90 days of storage")
+                                BulletText(value = "Access it on the social channels where you streamed")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DeleteBtnView(onDeleteClick: () -> Unit) {
+    SpacerUp(size = 24.dp)
+    Box {
+        ButtonText(
+            text = "Delete Video",
+            onBtnClick = { onDeleteClick() },
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+        )
+    }
+}*/
+
+@Composable
+fun StorageLeftCard(videoItem: VideoItem) {
+    val activePln = MainStateHolder.mState.activePlan.value
+    activePln?.let { plan ->
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SpacerUp(size = 24.dp)
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(containerColor = DurationDark)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+
+                    val maxDays = plan.terms.inAppStorageDays
+                    val leftDays = maxDays.toInt()-getRemainingDays(videoItem.startedAt)
+
+                    //Storage Left Days
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text400_14sp(info = "Storage Left")
                         Spacer(modifier = Modifier.weight(1f))
                         Text950_14sp(title = "$leftDays/$maxDays Days Left", txtColor = OverageRed)
                     }

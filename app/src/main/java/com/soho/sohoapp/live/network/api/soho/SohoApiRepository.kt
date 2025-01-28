@@ -19,6 +19,7 @@ import com.soho.sohoapp.live.network.response.MuxUploadResponse
 import com.soho.sohoapp.live.network.response.PlanResponse
 import com.soho.sohoapp.live.network.response.SubsPlansResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.network.response.UsageResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
@@ -347,6 +348,24 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
             }
         }
+
+    fun getUsage(authToken: String): Flow<ApiState<UsageResponse>> =
+        flow {
+            try {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
+                val apiResponse = service.storageUsage(authToken = authToken)
+                emit(ApiState.Data(data = apiResponse))
+            } catch (e: Exception) {
+                e.message?.let {
+                    emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
+                        message = it
+                    })))
+                }
+            } finally {
+                emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+            }
+        }
+
 
 
     //ERROR

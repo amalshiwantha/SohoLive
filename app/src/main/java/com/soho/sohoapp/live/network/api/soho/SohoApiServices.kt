@@ -14,6 +14,7 @@ import com.soho.sohoapp.live.network.response.MuxUploadResponse
 import com.soho.sohoapp.live.network.response.PlanResponse
 import com.soho.sohoapp.live.network.response.SubsPlansResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.network.response.UsageResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
@@ -38,6 +39,7 @@ interface SohoApiServices {
         const val MUX_UPLOAD = "/video/upload"
         const val SUBS_PLANS = "plans/mobile"
         const val ACTIVE_PLAN = "plans/active"
+        const val USAGE = "usage"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
@@ -63,4 +65,5 @@ interface SohoApiServices {
     suspend fun uploadMux(authToken: String, videoInfo: VideoInfo): MuxUploadResponse
     suspend fun subsPlans(authToken: String): SubsPlansResponse
     suspend fun activePlan(authToken: String): PlanResponse
+    suspend fun storageUsage(authToken: String): UsageResponse
 }

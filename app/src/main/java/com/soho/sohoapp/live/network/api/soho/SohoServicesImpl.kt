@@ -16,6 +16,7 @@ import com.soho.sohoapp.live.network.response.MuxUploadResponse
 import com.soho.sohoapp.live.network.response.PlanResponse
 import com.soho.sohoapp.live.network.response.SubsPlansResponse
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
+import com.soho.sohoapp.live.network.response.UsageResponse
 import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
@@ -252,6 +253,17 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             url {
                 takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.ACTIVE_PLAN
+            }
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+        }.body()
+    }
+
+    override suspend fun storageUsage(authToken: String): UsageResponse {
+        return httpClient.get {
+            url {
+                takeFrom(BuildConfig.BASE_URL)
+                encodedPath += SohoApiServices.USAGE
             }
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)

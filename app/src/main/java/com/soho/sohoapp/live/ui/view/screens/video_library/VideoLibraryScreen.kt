@@ -56,6 +56,7 @@ import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.enums.VideoStatus
 import com.soho.sohoapp.live.model.GlobalState
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -67,10 +68,11 @@ import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.StorageBottomSheet
 import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_10sp
-import com.soho.sohoapp.live.ui.components.Text700_12spRight
+import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_10sp
@@ -117,6 +119,7 @@ fun VideoLibraryScreen(
     var isShowProgress by remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     var playVideoUrl by remember { mutableStateOf("") }
+    var isShowStorageModel by remember { mutableStateOf(false) }
 
     //Reload the list once upload done
     LaunchedEffect(mGState.uploadStatus.value) {
@@ -170,14 +173,11 @@ fun VideoLibraryScreen(
     //show api error as alert
     if (isShowAlert) {
         alertConfig?.let {
-            AppAlertDialog(
-                alert = it,
-                onConfirm = {
-                    vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
-                },
-                onDismiss = {
-                    vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
-                })
+            AppAlertDialog(alert = it, onConfirm = {
+                vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
+            }, onDismiss = {
+                vmVidLib.onTriggerEvent(VidLibEvent.DismissAlert)
+            })
         }
     }
 
@@ -189,14 +189,19 @@ fun VideoLibraryScreen(
         }
     }
 
+    if (isShowStorageModel) {
+        StorageBottomSheet(onDone = {
+            isShowStorageModel = false
+        })
+    }
+
     //display main content with pull to refresh
-    SwipeRefresh(
-        state = swipeRefreshState,
-        onRefresh = {
-            vmVidLib.reLoadData()
-        }
-    ) {
-        Content(isShowProgress, states, mGState,
+    SwipeRefresh(state = swipeRefreshState, onRefresh = {
+        vmVidLib.reLoadData()
+    }) {
+        Content(isShowProgress,
+            states,
+            mGState,
             onManageClick = { selectedItem = it },
             onPlayVid = {
                 playVideoUrl = it
@@ -206,8 +211,10 @@ fun VideoLibraryScreen(
             },
             onShowPvtVideo = {
                 navController.navigate(NavigationPath.PRE_RECODED_LIST.name)
-            }
-        )
+            },
+            onStorageClick = {
+                isShowStorageModel = true
+            })
     }
 
 
@@ -235,7 +242,8 @@ private fun Content(
     onManageClick: (VideoItem) -> Unit,
     onPlayVid: (String) -> Unit,
     onClickReloadVideoList: () -> Unit,
-    onShowPvtVideo: () -> Unit
+    onShowPvtVideo: () -> Unit,
+    onStorageClick: () -> Unit
 ) {
     var downloadStatus by remember { mutableStateOf("") }
 
@@ -273,8 +281,7 @@ private fun Content(
             CenterMessageProgress(message = state.loadingMessage)
         } else {
             val dataList = mGState.videoLibResState.value?.assets?.filter {
-                ((it.status == VideoStatus.READY.status && it.downloadLink != null)
-                        || it.status == VideoStatus.IN_PROG.status)
+                ((it.status == VideoStatus.READY.status && it.downloadLink != null) || it.status == VideoStatus.IN_PROG.status)
             }
 
             if (dataList.isNullOrEmpty()) {
@@ -306,6 +313,9 @@ private fun Content(
                                         downloadFile(it.first, it.second, onDownloadStatus = {
                                             downloadStatus = it
                                         })
+                                    },
+                                    onStorageClick = {
+                                        onStorageClick()
                                     })
                             }
                         }
@@ -355,8 +365,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
             Text700_14sp(step = "Your pre-recorded video is being uploaded")
             SpacerUp(size = 16.dp)
             LinearProgressIndicator(
-                progress = prog.toFloat() / 100,
-                modifier = Modifier.fillMaxWidth()
+                progress = prog.toFloat() / 100, modifier = Modifier.fillMaxWidth()
             )
             SpacerUp(size = 10.dp)
             // Row for progress text and cancel button
@@ -383,8 +392,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
                 // Cancel & Dismiss button
                 when (status) {
                     "uploading" -> {
-                        Text700_10sp(
-                            title = "Cancel Upload",
+                        Text700_10sp(title = "Cancel Upload",
                             color = LinkTxtColor,
                             modifier = Modifier.clickable {
                                 //doCancelUpload
@@ -392,8 +400,7 @@ fun UploadProgressStatusView(gState: GlobalState) {
                     }
 
                     "failed" -> {
-                        Text700_10sp(
-                            title = "Dismiss",
+                        Text700_10sp(title = "Dismiss",
                             color = LinkTxtColor,
                             modifier = Modifier.clickable {
                                 gState.uploadStatus.value = "hide"
@@ -419,8 +426,7 @@ fun InProgItemView() {
             verticalArrangement = Arrangement.Center
         ) {
             TextWhite14Normal(
-                title = "Your latest VOD asset is still being prepared." +
-                        " Please refresh shortly by using the pull-to-refresh"
+                title = "Your latest VOD asset is still being prepared." + " Please refresh shortly by using the pull-to-refresh"
             )
         }
     }
@@ -470,12 +476,10 @@ fun CenteredScreen() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            ButtonColoredIcon(
-                title = "Schedule a livecast",
+            ButtonColoredIcon(title = "Schedule a livecast",
                 btnColor = AppGreen,
                 icon = R.drawable.ic_calender,
-                onBtnClick = { }
-            )
+                onBtnClick = { })
         }
     }
 }
@@ -497,22 +501,18 @@ private fun NoDataScreen(onClick: () -> Unit) {
             )
             SpacerUp(size = 40.dp)
             Text800_14sp(
-                label = stringResource(R.string.no_data_title),
-                txtAlign = TextAlign.Center
+                label = stringResource(R.string.no_data_title), txtAlign = TextAlign.Center
             )
             SpacerUp(size = 8.dp)
             Text400_14sp(
-                info = stringResource(R.string.no_data_msg),
-                txtAlign = TextAlign.Center
+                info = stringResource(R.string.no_data_msg), txtAlign = TextAlign.Center
             )
 
             SpacerUp(size = 40.dp)
-            ButtonColoredIcon(
-                title = "Schedule a livecast",
+            ButtonColoredIcon(title = "Schedule a livecast",
                 btnColor = AppGreen,
                 icon = R.drawable.ic_calender,
-                onBtnClick = { onClick() }
-            )
+                onBtnClick = { onClick() })
         }
     }
 }
@@ -602,7 +602,8 @@ private fun ListItemView(
     onClickManage: (VideoItem) -> Unit,
     onShareVideo: (String) -> Unit,
     onPlayVideo: (String) -> Unit,
-    onDownloadVideo: (Pair<String, String>) -> Unit
+    onDownloadVideo: (Pair<String, String>) -> Unit,
+    onStorageClick: () -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
 
@@ -620,7 +621,12 @@ private fun ListItemView(
             TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
-            Text700_12spRight(label = item.getDisplayDate(), txtColor = AppWhite)
+            val maxDays =
+                MainStateHolder.mState.activePlan.value?.terms?.inAppStorageDays?.toInt() ?: 0
+            val daysStorage = maxDays - getRemainingDays(item.startedAt)
+            StorageLabel(daysStorage.toString(), onStorageClick = {
+                onStorageClick()
+            })
         }
         SpacerUp(size = 16.dp)
 
@@ -642,7 +648,8 @@ private fun ListItemView(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            ButtonOutlineWhiteNormal(text = "Manage",
+            ButtonOutlineWhiteNormal(
+                text = "Manage",
                 modifier = Modifier
                     .weight(1f)
                     .height(40.dp),
@@ -736,14 +743,20 @@ fun ActionIconButton(btnIcon: Int, onClickAction: () -> Unit) {
 
 @Composable
 fun TitleDescription(item: VideoItem) {
-    Column {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text700_12spNormal(label = item.getDisplayDate(), txtColor = HintGray)
+
+        Spacer(modifier = Modifier.weight(1f))
         item.title?.let {
             Text700_14spBold(step = it)
-            SpacerUp(size = 8.dp)
         }
+
+        Spacer(modifier = Modifier.weight(1f))
         item.description?.let {
             Text400_12sp(label = it)
         }
+
+
     }
 }
 
