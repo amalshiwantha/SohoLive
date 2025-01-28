@@ -220,7 +220,8 @@ data class Agent(
     val agent_bg_colour: String = "#FFFFFF",
     var banner_image: String?,
     val rating_count: Float?,
-    val reviews_count: Float?
+    val reviews_count: Float?,
+    var agency_name: String? = null
 ) {
     val agencyBgColor: Color
         get() = try {
@@ -228,6 +229,25 @@ data class Agent(
         } catch (e: Exception) {
             Color(parseColor("#FFFFFF"))
         }
+
+    val agencyName: String
+        get() = getAgencyInitials(agency_name)
+}
+
+fun getAgencyInitials(agencyName: String?): String {
+    return agencyName?.let {
+        val words = agencyName.trim().split(" ")
+        when {
+            words.size == 1 -> words[0].first().uppercase()
+            words.isNotEmpty() -> {
+                val firstInitial = words.first().first().uppercase()
+                val lastInitial = words.last().first().uppercase()
+                "$firstInitial$lastInitial"
+            }
+
+            else -> ""
+        }
+    } ?: run { "" }
 }
 
 @Serializable

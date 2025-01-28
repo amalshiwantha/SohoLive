@@ -24,15 +24,18 @@ fun Int.formatNumber(): String {
 }
 
 fun Document.toAgentProperty(): AgentProperty {
+    val myDoc = this
     return AgentProperty(
-        propertyId = this.propertyId,
-        address = this.fullAddress(),
-        bedrooms = this.bedroomCount,
-        bathrooms = this.bathroomCount,
-        parking = this.carspotCount,
-        areaSize = this.areaSize(),
-        agent = if (this.getAgents().isNotEmpty()) this.getAgents()[0] else null
-    )
+        propertyId = myDoc.propertyId,
+        address = myDoc.fullAddress(),
+        bedrooms = myDoc.bedroomCount,
+        bathrooms = myDoc.bathroomCount,
+        parking = myDoc.carspotCount,
+        areaSize = myDoc.areaSize(),
+        agent = if (myDoc.getAgents().isNotEmpty()) myDoc.getAgents()[0] else null
+    ).apply {
+        this.agent?.agency_name = myDoc.agencyName
+    }
 }
 
 fun String.hexToColor(): Color {
