@@ -136,7 +136,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
                 takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.VIDEO_PRIVACY_UPDATE.replace(
                     "{propertyId}",
-                    privacyReq.videoId.toString()
+                    privacyReq.id.toString()
                 )
             }
             contentType(ContentType.Application.Json)

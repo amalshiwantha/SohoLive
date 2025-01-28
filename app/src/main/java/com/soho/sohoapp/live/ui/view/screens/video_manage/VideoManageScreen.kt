@@ -174,7 +174,11 @@ private fun updateVideoItem(copyVidItem: VideoItem?, vmVidManage: VideoManageVie
         vmVidManage.onTriggerEvent(
             VidLibEvent.CallUpdateVideo(
                 VidPrivacyRequest(
-                    status = it.unlisted, videoId = it.id
+                    id = it.id,
+                    status = it.unlisted,
+                    streamType = it.streamType.lowercase(),
+                    title = it.title.orEmpty(),
+                    description = it.description.orEmpty()
                 )
             )
         )
@@ -389,7 +393,9 @@ private fun InnerContent(
             SpacerUp(size = 8.dp) //PropertyView has 16 bottom
             Text950_16sp(title = "Update Video Details")
             SpacerUp(size = 8.dp)
-            UpdateForm(itemInfo)
+            UpdateForm(itemInfo, onInfoUpdate = { updated ->
+                onDataUpdate(updated)
+            })
 
             //watch video
             SpacerUp(size = 24.dp)
@@ -399,7 +405,7 @@ private fun InnerContent(
 }
 
 @Composable
-fun UpdateForm(item: VideoItem) {
+fun UpdateForm(item: VideoItem, onInfoUpdate: (VideoItem) -> Unit) {
     val optionList = mutableListOf("Inspection", "Auction")
     var txtCounter by rememberSaveable { mutableStateOf("0/3000") }
 
@@ -426,6 +432,7 @@ fun UpdateForm(item: VideoItem) {
     DropDownWhatForLiveStream(
         options = optionList, placeHolder = "Select an option", onValueChangedEvent = {
             item.streamType = it.lowercase()
+            onInfoUpdate(item)
         }, fieldConfig = configPurpose
     )
 
@@ -434,6 +441,7 @@ fun UpdateForm(item: VideoItem) {
     Text700_14sp(step = "Stream title", isBold = false)
     TextFieldOutlined(tfConfig = configTitle, onTextChange = {
         item.title = it
+        onInfoUpdate(item)
     })
 
     //description
@@ -445,6 +453,7 @@ fun UpdateForm(item: VideoItem) {
     TextAreaWhite(fieldConfig = configDesc, onTextChange = {
         item.description = it.first
         txtCounter = it.second
+        onInfoUpdate(item)
     })
 }
 

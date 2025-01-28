@@ -90,8 +90,11 @@ data class MetaVidRes(
 //Video Manage Req & Res
 @Serializable
 data class VidPrivacyRequest(
+    @SerialName("id") val id: Int,
     @SerialName("unlisted") val status: Boolean,
-    @SerialName("video_id") val videoId: Int
+    @SerialName("stream_type") val streamType: String,
+    @SerialName("title") val title: String,
+    @SerialName("description") val description: String,
 )
 
 @Serializable
