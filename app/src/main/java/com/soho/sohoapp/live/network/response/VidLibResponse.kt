@@ -107,5 +107,8 @@ data class VidPrivacyResponse(
 @Serializable
 data class VidPrivacy(
     @SerialName("id") val id: Int,
-    @SerialName("unlisted") val unlisted: Boolean
+    @SerialName("unlisted") val unlisted: Boolean,
+    @SerialName("title") val title: String,
+    @SerialName("description") val description: String,
+    @SerialName("stream_type") val streamType: String,
 )

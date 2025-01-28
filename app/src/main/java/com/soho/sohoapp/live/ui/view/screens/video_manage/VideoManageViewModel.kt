@@ -68,7 +68,7 @@ class VideoManageViewModel(
 
                         if (isSuccess) {
                             mState.value =
-                                mState.value.copy(updatedPrivacy = mutableStateOf(responsePrivacy.unlisted))
+                                mState.value.copy(updatedPrivacy = mutableStateOf(responsePrivacy))
                             mState.value = mState.value.copy(isSuccess = true)
                         } else {
                             mState.value =

@@ -136,8 +136,15 @@ fun VideoManageScreen(
     //save updated itemData to the mLiveData videoItemState
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
-            showToast("Privacy updated")
-            mGState.videoItemState.value?.unlisted = states.updatedPrivacy.value
+            showToast("Video Data Updated")
+            states.updatedPrivacy.value?.let {
+                mGState.videoItemState.value?.apply {
+                    unlisted = it.unlisted
+                    streamType = it.streamType
+                    title = it.title
+                    description = it.description
+                }
+            }
             navController.popBackStack()
         }
     }
