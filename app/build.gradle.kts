@@ -20,8 +20,8 @@ android {
         applicationId = "com.soho.sohoapp.live"
         minSdk = 24
         targetSdk = 34
-        versionCode = 19
-        versionName = "1.0.1.10"
+        versionCode = 20
+        versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
