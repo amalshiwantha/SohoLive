@@ -86,6 +86,7 @@ import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.CustomCoverOption
 import com.soho.sohoapp.live.enums.FormFields
+import com.soho.sohoapp.live.enums.ListedLabel
 import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.PropertyState
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -1077,28 +1078,37 @@ fun UnlistedPublicView(propItem: PropertyItem) {
         if (listedCount > 0 || unlistedCount > 0) {
             SpacerUp(size = 16.dp)
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                if (unlistedCount > 0) {
-                    ListedLabel("$unlistedCount UNLISTED")
-                    SpacerSide(size = 8.dp)
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (unlistedCount > 0) {
+                        ListingLabel(ListedLabel.PRIVATE,unlistedCount)
+                        SpacerSide(size = 8.dp)
+                    }
+
+                    if (unlistedCount > 0) {
+                        ListingLabel(ListedLabel.UNLISTED,unlistedCount)
+                    }
                 }
 
                 if (listedCount > 0) {
-                    ListedLabel("$listedCount PUBLIC", isPublic = true)
+                    SpacerUp(size = 8.dp)
+                    ListingLabel(ListedLabel.PUBLIC,listedCount)
                 }
-
             }
         }
     }
 }
 
 @Composable
-fun ListedLabel(text: String, isPublic: Boolean = false) {
-    val bgColor = if (isPublic) Color(0xFF05867F) else Color(0xFFB8B7BB)
-    val icon = if (isPublic) R.drawable.ic_eye_vec else R.drawable.ic_hide_eye
+fun ListingLabel(label : ListedLabel, count : Int) {
+
+    val bgColor = label.bgColor
+    val icon = label.icon
+    val txt = label.title.uppercase()
+
     Box(
         modifier = Modifier
             .background(
@@ -1117,7 +1127,7 @@ fun ListedLabel(text: String, isPublic: Boolean = false) {
                 modifier = Modifier.size(12.dp)
             )
             SpacerSide(size = 4.dp)
-            Text800_10sp(label = text, txtColor = AppWhite)
+            Text800_10sp(label = "$count $txt", txtColor = AppWhite)
         }
     }
 }
@@ -1156,7 +1166,7 @@ fun StepContents(
                 val filteredList = remember(searchQuery) {
                     propertyList.filter {
                         it.propInfo.fullAddress().contains(searchQuery, ignoreCase = true)
-                    } ?: emptyList()
+                    }
                 }
 
                 if (propList.isEmpty()) {
