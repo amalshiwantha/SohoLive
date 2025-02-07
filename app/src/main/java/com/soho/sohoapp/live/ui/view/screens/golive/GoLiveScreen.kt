@@ -1054,7 +1054,7 @@ fun PropertyItemRow(
                 SpacerUp(size = 10.dp)
                 AmenitiesView(property, textColor)
 
-                UnlistedPublicView(item,pvtVidCount)
+                UnlistedPublicView(item, pvtVidCount)
             }
         }
     }
@@ -1091,9 +1091,16 @@ fun UnlistedPublicView(propItem: PropertyItem, pvtVidCount: Int) {
                     if (unlistedCount > 0) {
                         ListingLabel(ListedLabel.UNLISTED, unlistedCount)
                     }
+
+                    if ((pvtVidCount == 0 || unlistedCount == 0) && listedCount > 0) {
+                        if (pvtVidCount > 0 || unlistedCount > 0) {
+                            SpacerSide(size = 8.dp)
+                        }
+                        ListingLabel(ListedLabel.PUBLIC, listedCount)
+                    }
                 }
 
-                if (listedCount > 0) {
+                if ((pvtVidCount > 0 && unlistedCount > 0) && listedCount > 0) {
                     SpacerUp(size = 8.dp)
                     ListingLabel(ListedLabel.PUBLIC, listedCount)
                 }

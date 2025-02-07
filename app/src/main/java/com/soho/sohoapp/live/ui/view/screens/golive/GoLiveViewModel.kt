@@ -464,7 +464,6 @@ class GoLiveViewModel(
                                 pvtVidList.add(PrivateVideo(propId, count))
                             }
                             mState.msPvtVidCount = pvtVidList
-                            println("myDataCOun loaded "+pvtVidList)
 
                             //save in global
                             mState.goLiveApiRes = listingData.data
