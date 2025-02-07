@@ -328,7 +328,9 @@ class GoLiveViewModel(
                 agentLst.add(newItem)
             }
 
-            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(agentLst))
+            val sortedAgentList = agentLst.sortedByDescending { it.isChecked }
+
+            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(sortedAgentList))
 
 
             //get last selection. if having then need to update agencyListState with selectionTRUE
