@@ -31,4 +31,7 @@ interface PrivateVideoDao {
 
     @Query("DELETE FROM private_videos WHERE date(createdDate) < date('now', '-30 days')")
     suspend fun deleteOldVideos(): Int
+
+    @Query("SELECT COUNT(*) FROM private_videos WHERE propertyId = :propId")
+    suspend fun getVideoCountByPropertyId(propId: Int): Int
 }

@@ -32,6 +32,7 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
         viewModelScope.launch {
             val pvtVid = PrivateVideo(
                 filePath = file.path.orEmpty(),
+                propertyId = goLiveData.propertyId,
                 createdDate = createdAt,
                 castFor = goLiveData.purpose.orEmpty(),
                 title = goLiveData.title.orEmpty(),

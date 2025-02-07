@@ -61,6 +61,7 @@ data class MainState(
     var propertyTsRes: TsPropertyResponse? = null,
     var sPropList: MutableState<List<PropertyItem>>? = null,
     var sAgencyList: MutableState<List<AgencyItem>>? = null,
+    var msPvtVidCount: MutableState<List<PrivateVideo>>? = null,
     var agentEmail: String? = null,
     var selectedAgentId: Int = 0,
 ) {
@@ -73,6 +74,7 @@ data class MainState(
         propertyTsRes = null
         sPropList?.value = emptyList()
         sAgencyList?.value = emptyList()
+        msPvtVidCount?.value = emptyList()
         agentEmail = null
         activePlan.value = null
         selectedAgentId = 0
@@ -272,4 +274,9 @@ data class CategoryInfo(
     val imageUrl: String,
     val accessToken: String,
     val isSelect: Boolean = false
+)
+
+@Serializable
+data class PrivateVideo(
+    val propertyId: Int, val count: Int
 )

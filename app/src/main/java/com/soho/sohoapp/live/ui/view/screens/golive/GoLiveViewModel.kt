@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.AgencyItem
@@ -34,7 +35,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class GoLiveViewModel(
-    private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager,
+    private val apiRepo: SohoApiRepository,
+    private val dataStore: AppDataStoreManager,
+    private val vidDb: PrivateVideoDao
 ) : ViewModel() {
 
     val mState = MainStateHolder.mState
@@ -330,7 +333,8 @@ class GoLiveViewModel(
 
             val sortedAgentList = agentLst.sortedByDescending { it.isChecked }
 
-            assetsState.value = assetsState.value.copy(agencyListState = mutableStateOf(sortedAgentList))
+            assetsState.value =
+                assetsState.value.copy(agencyListState = mutableStateOf(sortedAgentList))
 
 
             //get last selection. if having then need to update agencyListState with selectionTRUE
@@ -451,6 +455,12 @@ class GoLiveViewModel(
                                 )
                             }
 
+                            //get video id and count private videos
+                            listingData.data?.listings?.forEach {
+                                val propId = it.id
+                                getPrivateVideoCount(propId)
+                            }
+
                             //save in global
                             mState.goLiveApiRes = listingData.data
                             mState.propertyTsRes = tsData
@@ -486,6 +496,14 @@ class GoLiveViewModel(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    //Private Video Count
+    private fun getPrivateVideoCount(propertyId: Int) {
+        viewModelScope.launch {
+            val count = vidDb.getVideoCountByPropertyId(propertyId)
+            println("propVidCount :$propertyId = $count")
+        }
     }
 
     fun loadConnectedSMList() {

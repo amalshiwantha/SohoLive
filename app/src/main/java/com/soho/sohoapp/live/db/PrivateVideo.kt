@@ -15,6 +15,7 @@ import kotlin.math.abs
 @Entity(tableName = "private_videos")
 data class PrivateVideo(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val propertyId: Int = 0,
     val filePath: String,
     val createdDate: String,
     var castFor: String,
