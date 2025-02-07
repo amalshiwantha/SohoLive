@@ -61,7 +61,7 @@ data class MainState(
     var propertyTsRes: TsPropertyResponse? = null,
     var sPropList: MutableState<List<PropertyItem>>? = null,
     var sAgencyList: MutableState<List<AgencyItem>>? = null,
-    var msPvtVidCount: MutableState<List<PrivateVideo>>? = null,
+    var msPvtVidCount: MutableList<PrivateVideo>? = null,
     var agentEmail: String? = null,
     var selectedAgentId: Int = 0,
 ) {
@@ -74,7 +74,7 @@ data class MainState(
         propertyTsRes = null
         sPropList?.value = emptyList()
         sAgencyList?.value = emptyList()
-        msPvtVidCount?.value = emptyList()
+        msPvtVidCount = mutableListOf()
         agentEmail = null
         activePlan.value = null
         selectedAgentId = 0

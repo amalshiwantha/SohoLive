@@ -999,7 +999,7 @@ fun TopContent(stepCount: Int, currentStepId: Int) {
 
 @Composable
 fun PropertyItemRow(
-    item: PropertyItem, isSelected: Boolean, onSelect: (PropertyItem) -> Unit
+    item: PropertyItem, pvtVidCount: Int, isSelected: Boolean, onSelect: (PropertyItem) -> Unit
 ) {
     val cardBgColor = if (isSelected) AppWhite else ItemCardBg
     val textColor = if (isSelected) ItemCardBg else AppWhite
@@ -1054,7 +1054,7 @@ fun PropertyItemRow(
                 SpacerUp(size = 10.dp)
                 AmenitiesView(property, textColor)
 
-                UnlistedPublicView(item)
+                UnlistedPublicView(item,pvtVidCount)
             }
         }
     }
@@ -1071,7 +1071,7 @@ fun PropertyItemRow(
 }
 
 @Composable
-fun UnlistedPublicView(propItem: PropertyItem) {
+fun UnlistedPublicView(propItem: PropertyItem, pvtVidCount: Int) {
     propItem.listing?.let {
         val listedCount = it.listed
         val unlistedCount = it.unlisted
@@ -1083,19 +1083,19 @@ fun UnlistedPublicView(propItem: PropertyItem) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    if (unlistedCount > 0) {
-                        ListingLabel(ListedLabel.PRIVATE,unlistedCount)
+                    if (pvtVidCount > 0) {
+                        ListingLabel(ListedLabel.PRIVATE, pvtVidCount)
                         SpacerSide(size = 8.dp)
                     }
 
                     if (unlistedCount > 0) {
-                        ListingLabel(ListedLabel.UNLISTED,unlistedCount)
+                        ListingLabel(ListedLabel.UNLISTED, unlistedCount)
                     }
                 }
 
                 if (listedCount > 0) {
                     SpacerUp(size = 8.dp)
-                    ListingLabel(ListedLabel.PUBLIC,listedCount)
+                    ListingLabel(ListedLabel.PUBLIC, listedCount)
                 }
             }
         }
@@ -1103,7 +1103,7 @@ fun UnlistedPublicView(propItem: PropertyItem) {
 }
 
 @Composable
-fun ListingLabel(label : ListedLabel, count : Int) {
+fun ListingLabel(label: ListedLabel, count: Int) {
 
     val bgColor = label.bgColor
     val icon = label.icon
@@ -2030,10 +2030,14 @@ private fun PropertyListing(
 
     listings?.forEach { propertyItem ->
 
+        val pvtVidCountLst = mState.msPvtVidCount
         val mainPropList = mState.goLiveApiRes?.listings
         val listingData = mainPropList?.find { it.id == propertyItem.id }
 
+        val pvtVid = pvtVidCountLst?.find { it.propertyId == propertyItem.id }
+
         PropertyItemRow(item = propertyItem.apply { listing = listingData },
+            pvtVidCount = pvtVid?.count ?: 0,
             isSelected = propertyItem == selectedProperty,
             onSelect = { selectedItem ->
                 selectedProperty = if (selectedProperty == selectedItem) {

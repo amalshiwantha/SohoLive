@@ -15,6 +15,7 @@ import com.soho.sohoapp.live.model.AgencyItem
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.model.PrivateVideo
 import com.soho.sohoapp.live.model.PropertyItem
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
@@ -456,10 +457,14 @@ class GoLiveViewModel(
                             }
 
                             //get video id and count private videos
+                            val pvtVidList: MutableList<PrivateVideo> = mutableListOf()
                             listingData.data?.listings?.forEach {
                                 val propId = it.id
-                                getPrivateVideoCount(propId)
+                                val count = vidDb.getVideoCountByPropertyId(propId)
+                                pvtVidList.add(PrivateVideo(propId, count))
                             }
+                            mState.msPvtVidCount = pvtVidList
+                            println("myDataCOun loaded "+pvtVidList)
 
                             //save in global
                             mState.goLiveApiRes = listingData.data
@@ -496,14 +501,6 @@ class GoLiveViewModel(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    //Private Video Count
-    private fun getPrivateVideoCount(propertyId: Int) {
-        viewModelScope.launch {
-            val count = vidDb.getVideoCountByPropertyId(propertyId)
-            println("propVidCount :$propertyId = $count")
-        }
     }
 
     fun loadConnectedSMList() {
