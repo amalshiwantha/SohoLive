@@ -263,12 +263,11 @@ fun BottomBtnIndicator(
         if (isShowSignup) {
             Text800_14sp(label = "No Account Yet? ")
             ButtonOutlineWhite(
-                text = "Visit soho.com.au/agents/livecast",
+                text = "Visit Soho Livecast",
                 modifier = Modifier.fillMaxWidth(),
                 onBtnClick = {
                     val webUrl = "https://soho.com.au/agents/livecast"
                     val encodeUrl = URLEncoder.encode(webUrl, StandardCharsets.UTF_8.toString())
-                    println("encodeUrl $encodeUrl")
                     navController.navigate("${NavigationPath.WEB_VIEW_MAIN.name}/$SIGNUP_TITLE/$encodeUrl")
                 })
         }
