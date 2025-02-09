@@ -623,10 +623,8 @@ private fun ListItemView(
             TextBadge(text = item.getDisplayDuration(), bgColor = DurationDark)
 
             Spacer(modifier = Modifier.weight(1f))
-            val maxDays =
-                MainStateHolder.mState.activePlan.value?.terms?.inAppStorageDays?.toInt() ?: 0
-            val daysStorage = getRemainingDays(item.createdAt, maxDays)
-            StorageLabel(daysStorage, onStorageClick = {
+
+            StorageLabel(item.getRemainingDays(), onStorageClick = {
                 onStorageClick()
             })
         }

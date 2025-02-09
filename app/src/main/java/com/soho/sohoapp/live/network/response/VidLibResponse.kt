@@ -1,6 +1,8 @@
 package com.soho.sohoapp.live.network.response
 
 import android.annotation.SuppressLint
+import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.ui.view.screens.video_library.getRemainingDays
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
@@ -40,8 +42,14 @@ data class VideoItem(
     @SerialName("download_link") val downloadLink: String?,
     @SerialName("soho_link") val sohoLink: String,
     @SerialName("status") val status: String,
-    var property: Document? = null,
+    var property: Document? = null
 ) {
+    fun getRemainingDays(): Int {
+        val maxDays =
+            MainStateHolder.mState.activePlan.value?.terms?.inAppStorageDays?.toInt() ?: 0
+        return getRemainingDays(createdAt, maxDays)
+    }
+
     fun getAgent(): Agent? {
         val agentProfile = property?.getAgents()?.find {
             it.id == agentProfileId
