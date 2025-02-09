@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -50,15 +51,16 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
-import com.soho.sohoapp.live.ui.components.Text700_14spProperty
+import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
-import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesViewSmall
+import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesIcon
 import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsViewModel
+import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 import java.io.File
@@ -256,7 +258,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 agProp.address?.let {
-                    Text700_14spProperty(step = it, color = AppWhite, isSingleLine = true)
+                    Text800_14sp(label = it, txtColor = AppWhite)
                 }
                 SpacerUp(size = 8.dp)
                 AmenitiesViewSmall(agProp, AppWhite)
@@ -333,6 +335,35 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun AmenitiesViewSmall(ag: AgentProperty, textColor: Color) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        ag.bedrooms.visibleValue()?.let {
+            Text800_14sp(label = it, txtColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor, isCompact = false)
+        }
+
+        ag.bathrooms.visibleValue()?.let {
+            Text800_14sp(label = it, txtColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor, isCompact = false)
+        }
+
+        ag.parking.visibleValue()?.let {
+            Text800_14sp(label = it, txtColor = textColor)
+            AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor, isCompact = false)
+        }
+
+        ag.areaSize?.let {
+            Text800_14sp(label = it.first, txtColor = textColor)
+            AmenitiesIcon(icon = it.second, iconColor = textColor, isCompact = false)
         }
     }
 }

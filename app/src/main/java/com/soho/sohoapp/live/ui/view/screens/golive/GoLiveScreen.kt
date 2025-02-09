@@ -2351,52 +2351,7 @@ fun AmenitiesView(doc: Document, textColor: Color, isCompact: Boolean = false) {
 }
 
 @Composable
-fun AmenitiesViewSmall(ag: AgentProperty, textColor: Color, isCompact: Boolean = false) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-
-        ag.bedrooms.visibleValue()?.let {
-            if (isCompact) {
-                Text400_10sp(label = it, txtColor = textColor)
-            } else {
-                Text400_12sp(label = it, txtColor = textColor)
-            }
-            AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor, isCompact)
-        }
-
-        ag.bathrooms.visibleValue()?.let {
-            if (isCompact) {
-                Text400_10sp(label = it, txtColor = textColor)
-            } else {
-                Text400_12sp(label = it, txtColor = textColor)
-            }
-            AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor, isCompact)
-        }
-
-        ag.parking.visibleValue()?.let {
-            if (isCompact) {
-                Text400_10sp(label = it, txtColor = textColor)
-            } else {
-                Text400_12sp(label = it, txtColor = textColor)
-            }
-            AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor, isCompact)
-        }
-
-        ag.areaSize?.let {
-            if (isCompact) {
-                Text400_10sp(label = it.first, txtColor = textColor)
-            } else {
-                Text400_12sp(label = it.first, txtColor = textColor)
-            }
-            AmenitiesIcon(icon = it.second, iconColor = textColor, isCompact)
-        }
-    }
-}
-
-@Composable
-private fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite, isCompact: Boolean) {
+fun AmenitiesIcon(icon: Int, iconColor: Color = AppWhite, isCompact: Boolean) {
     val iconSize = if (isCompact) 12.dp else 14.dp
     Image(
         painter = painterResource(id = icon),
