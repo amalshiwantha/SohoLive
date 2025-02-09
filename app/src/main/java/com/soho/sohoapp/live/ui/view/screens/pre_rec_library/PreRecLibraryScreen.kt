@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.pre_rec_library
 
+import android.media.MediaPlayer
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,7 +51,6 @@ import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.EllipsisWithMoreText
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
-import com.soho.sohoapp.live.ui.components.Text400_12sp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
@@ -59,9 +59,7 @@ import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
-import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
-import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
@@ -214,6 +212,28 @@ fun MainContent(
     }
 }
 
+fun getVideoDuration(filePath: String): Int {
+    val mediaPlayer = MediaPlayer()
+
+    try {
+        // Set the data source to the video file
+        mediaPlayer.setDataSource(filePath)
+        mediaPlayer.prepare() // Prepare the media player (this can throw exceptions)
+        return mediaPlayer.duration // Duration in milliseconds
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return 0 // Return 0 if there's an error
+    } finally {
+        mediaPlayer.release() // Release the media player
+    }
+}
+
+fun formatDuration(milliseconds: Int): String {
+    val minutes = (milliseconds / 1000) / 60
+    val seconds = (milliseconds / 1000) % 60
+    return String.format("%02d:%02d", minutes, seconds)
+}
+
 @Composable
 private fun PvtVidItemView(
     item: PrivateVideo,
@@ -245,9 +265,14 @@ private fun PvtVidItemView(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val vidFilePath = item.filePath
+                    val rawDuration = getVideoDuration(vidFilePath)
+                    val duration = formatDuration(rawDuration)
+
                     //Date time
                     Text700_12spNormal(
-                        label = formattedDateDisplay(item.createdDate), txtColor = HintGray
+                        label = formattedDateDisplay(item.createdDate, duration),
+                        txtColor = HintGray
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -296,17 +321,15 @@ private fun PvtVidItemView(
 }
 
 
-fun formattedDateDisplay(inputDateTime: String): String {
+fun formattedDateDisplay(inputDateTime: String, duration: String): String {
     val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     val outputDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-    val outputTimeFormat = SimpleDateFormat("h:mm", Locale.getDefault())
 
     try {
         val date = inputFormat.parse(inputDateTime)
         val formattedDate = outputDateFormat.format(date ?: "")
-        val formattedTime = outputTimeFormat.format(date ?: "")
 
-        return "$formattedDate • $formattedTime"
+        return "$formattedDate • $duration"
     } catch (e: Exception) {
         return inputDateTime
     }
