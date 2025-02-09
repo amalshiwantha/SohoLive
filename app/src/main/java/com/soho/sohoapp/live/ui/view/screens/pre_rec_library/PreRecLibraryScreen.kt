@@ -130,12 +130,11 @@ fun PreRecordLibraryScreen(
                 onCloseClick = {
                     navController.popBackStack()
                 })
-
-            SpacerUp(size = 60.dp)
         }
 
         //ListContent
         Column(modifier = Modifier
+            .padding(top = 36.dp, bottom = 0.dp)
             .fillMaxWidth()
             .constrainAs(content) {
                 top.linkTo(actionBar.bottom)
