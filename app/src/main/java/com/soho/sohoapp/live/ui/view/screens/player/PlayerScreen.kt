@@ -258,7 +258,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 agProp.address?.let {
-                    Text800_14sp(label = it, txtColor = AppWhite)
+                    Text800_14sp(label = it, txtColor = AppWhite, isSingleLine = true)
                 }
                 SpacerUp(size = 8.dp)
                 AmenitiesViewSmall(agProp, AppWhite)

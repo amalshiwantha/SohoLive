@@ -782,7 +782,8 @@ fun Text800_14sp(
     modifier: Modifier = Modifier,
     label: String,
     txtColor: Color = AppWhite,
-    txtAlign: TextAlign = TextAlign.Left
+    txtAlign: TextAlign = TextAlign.Left,
+    isSingleLine : Boolean = false
 ) {
     Text(
         modifier = modifier,
@@ -790,6 +791,7 @@ fun Text800_14sp(
         fontSize = 14.sp,
         lineHeight = 19.6.sp,
         letterSpacing = 0.17.sp,
+        maxLines = if (isSingleLine) 1 else 2,
         color = txtColor,
         fontWeight = FontWeight(800),
         fontFamily = FontFamily(Font(R.font.axiforma)),
