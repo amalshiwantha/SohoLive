@@ -13,6 +13,15 @@ import com.soho.sohoapp.live.ui.theme.PlanBtnGradientStart
 import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientEnd
 import com.soho.sohoapp.live.ui.theme.SetDateBtnGradientStart
 
+val PlayerPropInfoGradient = Brush.verticalGradient(
+    colors = listOf(
+        Color.Transparent,
+        Color.Black.copy(alpha = 0.1f),
+        Color.Black.copy(alpha = 0.6f),
+        Color.Black
+    )
+)
+
 val onBoardGradientBg = Brush.verticalGradient(
     colors = listOf(
         Color.Transparent, // Transparent color at the top

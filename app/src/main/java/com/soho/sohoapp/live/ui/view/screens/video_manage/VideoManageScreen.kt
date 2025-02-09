@@ -29,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -61,6 +60,7 @@ import com.soho.sohoapp.live.ui.components.ButtonText
 import com.soho.sohoapp.live.ui.components.ConfirmAlert
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
+import com.soho.sohoapp.live.ui.components.PlayerPropInfoGradient
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
@@ -634,16 +634,7 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color.Black.copy(alpha = 0.1f),
-                                        Color.Black.copy(alpha = 0.6f),
-                                        Color.Black
-                                    )
-                                )
-                            )
+                            .background(brush = PlayerPropInfoGradient)
                             .padding(8.dp)
                     ) {
                         Text700_12sp(

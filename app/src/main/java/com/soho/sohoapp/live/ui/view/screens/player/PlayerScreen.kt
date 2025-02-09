@@ -44,6 +44,7 @@ import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.ButtonOutlineWhiteNormal
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
+import com.soho.sohoapp.live.ui.components.PlayerPropInfoGradient
 import com.soho.sohoapp.live.ui.components.PreRecVidSuccessView
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -80,8 +81,7 @@ fun PlayerScreen(
     var isShowPlayer by remember { mutableStateOf(true) }
     val thumbnail: Bitmap? = remember(fileUri) {
         createVideoThumbnail(
-            fileUri.path ?: "",
-            MediaStore.Images.Thumbnails.MINI_KIND
+            fileUri.path ?: "", MediaStore.Images.Thumbnails.MINI_KIND
         )
     }
 
@@ -92,18 +92,15 @@ fun PlayerScreen(
 
     //show confirmation to delete video
     if (isShowAlert) {
-        AppAlertDialog(
-            alert = AlertConfig.DELETE_ALERT.apply {
-                isConfirm = true
-            },
-            onConfirm = {
-                deleteFileFromUri(fileUri)
-                navController.popBackStack()
-                isShowAlert = false
-            },
-            onDismiss = {
-                isShowAlert = false
-            })
+        AppAlertDialog(alert = AlertConfig.DELETE_ALERT.apply {
+            isConfirm = true
+        }, onConfirm = {
+            deleteFileFromUri(fileUri)
+            navController.popBackStack()
+            isShowAlert = false
+        }, onDismiss = {
+            isShowAlert = false
+        })
     }
 
     //Main Content
@@ -115,8 +112,7 @@ fun PlayerScreen(
         val (actionBar, content, bottomButton) = createRefs()
 
         //TopActionBar
-        TopAppBarActionBack(
-            isShowBack = if (mGState.isEditVideoData.value) true else false,
+        TopAppBarActionBack(isShowBack = if (mGState.isEditVideoData.value) true else false,
             rightIcon = R.drawable.ic_trash,
             modifier = Modifier
                 .fillMaxWidth()
@@ -132,25 +128,22 @@ fun PlayerScreen(
             onActionClick = { isShowAlert = true })
 
         //Center Player
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .constrainAs(content) {
-                    top.linkTo(actionBar.bottom)
-                    bottom.linkTo(bottomButton.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    height = Dimension.fillToConstraints
-                }
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-        ) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .constrainAs(content) {
+                top.linkTo(actionBar.bottom)
+                bottom.linkTo(bottomButton.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                height = Dimension.fillToConstraints
+            }
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
             Box(modifier = Modifier.fillMaxSize()) {
                 //Player
                 if (isShowPlayer) {
-                    AndroidView(
-                        modifier = Modifier
-                            .padding(bottom = 16.dp)
-                            .fillMaxSize(),
+                    AndroidView(modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxSize(),
                         factory = { ctx ->
                             VideoView(ctx).apply {
                                 //set mediaController
@@ -171,8 +164,7 @@ fun PlayerScreen(
                             } else {
                                 videoView.pause()
                             }
-                        }
-                    )
+                        })
                 }
 
                 //Video Thumbnail
@@ -190,23 +182,20 @@ fun PlayerScreen(
 
                 // Play IconButton in the center
                 if (!isPlaying) {
-                    Image(
-                        modifier = Modifier
-                            .clickable {
-                                isPlaying = true
-                            }
-                            .align(Alignment.Center)
-                            .size(56.dp),
+                    Image(modifier = Modifier
+                        .clickable {
+                            isPlaying = true
+                        }
+                        .align(Alignment.Center)
+                        .size(56.dp),
                         painter = painterResource(id = R.drawable.ic_play),
-                        contentDescription = "Play"
-                    )
+                        contentDescription = "Play")
                 }
 
                 //If record done then show a message
                 if (!mGState.isEditVideoData.value) {
                     if (showSuccessMessage) {
-                        PreRecVidSuccessView(
-                            modifier = Modifier.align(Alignment.Center),
+                        PreRecVidSuccessView(modifier = Modifier.align(Alignment.Center),
                             onDismiss = {
                                 showSuccessMessage = false
                             })
@@ -245,12 +234,11 @@ fun PlayerScreen(
         }
 
         //Bottom Button
-        BottomButton(modifier = Modifier
-            .constrainAs(bottomButton) {
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }, onNextClick = { onNextClick() }, onEditClick = {
+        BottomButton(modifier = Modifier.constrainAs(bottomButton) {
+            bottom.linkTo(parent.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }, onNextClick = { onNextClick() }, onEditClick = {
             navController.navigate(NavigationPath.VIDEO_EDIT_DETAILS.name)
         })
     }
@@ -262,14 +250,18 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
 
         //Property Info
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(brush = PlayerPropInfoGradient)
         ) {
-            agProp.address?.let {
-                Text700_14spProperty(step = it, color = AppWhite, isSingleLine = true)
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                agProp.address?.let {
+                    Text700_14spProperty(step = it, color = AppWhite, isSingleLine = true)
+                }
+                SpacerUp(size = 8.dp)
+                AmenitiesViewSmall(agProp, AppWhite)
+                SpacerUp(size = 16.dp)
             }
-            SpacerUp(size = 8.dp)
-            AmenitiesViewSmall(agProp, AppWhite)
-            SpacerUp(size = 16.dp)
         }
 
         //Agent Info
@@ -336,8 +328,7 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
                             .padding(end = 8.dp)
                     ) {
                         Text700_12spRight(
-                            label = agent.agencyName,
-                            txtColor = agent.agencyNameTextColor
+                            label = agent.agencyName, txtColor = agent.agencyNameTextColor
                         )
                     }
                 }
@@ -435,11 +426,9 @@ fun BottomButton(modifier: Modifier, onNextClick: () -> Unit, onEditClick: () ->
         verticalAlignment = Alignment.CenterVertically
     ) {
         ButtonOutlineWhiteNormal(
-            text = "Edit Details",
-            onBtnClick = {
+            text = "Edit Details", onBtnClick = {
                 onEditClick()
-            },
-            modifier = Modifier.weight(1f)
+            }, modifier = Modifier.weight(1f)
         )
         SpacerSide(size = 16.dp)
         ButtonColoured(
@@ -467,7 +456,6 @@ fun deleteFileFromUri(fileUri: Uri? = null, vidFile: File? = null): Boolean {
 
 fun getVideoThumbnail(videoUri: Uri): Bitmap? {
     return createVideoThumbnail(
-        File(videoUri.path).toString(),
-        MediaStore.Images.Thumbnails.MINI_KIND
+        File(videoUri.path).toString(), MediaStore.Images.Thumbnails.MINI_KIND
     )
 }
