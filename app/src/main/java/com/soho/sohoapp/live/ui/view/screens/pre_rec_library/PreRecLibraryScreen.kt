@@ -131,7 +131,7 @@ fun PreRecordLibraryScreen(
                     navController.popBackStack()
                 })
 
-            SpacerUp(size = 64.dp)
+            SpacerUp(size = 60.dp)
         }
 
         //ListContent
@@ -184,7 +184,7 @@ fun MainContent(
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             .fillMaxSize()
     ) {
         if (videoList.isEmpty()) {
