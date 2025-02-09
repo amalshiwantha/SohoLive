@@ -98,14 +98,12 @@ private fun MainContent(
                 modifier = Modifier,
                 onCloseClick = { onBackClick() }
             )
-
-            SpacerUp(size = 64.dp)
         }
 
         //Content
         Column(modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 24.dp)
+            .padding(bottom = 24.dp, top = 16.dp)
             .constrainAs(content) {
                 top.linkTo(actionBar.bottom)
                 start.linkTo(parent.start)
