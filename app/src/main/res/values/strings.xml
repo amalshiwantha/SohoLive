@@ -56,9 +56,9 @@
     <string name="no_data_msg">You can watch and manage your past livecasts here. Remember to download it before it’s deleted!</string>
     <string name="no_data_title">Watch all your past livecasts</string>
     <string name="go_live">Go Live</string>
-    <string name="livecast_start">livecast starting in...</string>
-    <string name="livecast_end">Ending livecast in...</string>
-    <string name="livecast_ended">livecast ended</string>
+    <string name="livecast_start">Livecast Starting in...</string>
+    <string name="livecast_end">Ending Livecast in...</string>
+    <string name="livecast_ended">Livecast Ended</string>
     <string name="your_shareable_links">Your shareable links</string>
     <string name="apply_agent_agency_branding"><![CDATA[Apply Agent & Agency Branding]]></string>
     <string name="what_livecast">What is this livecast for?</string>
