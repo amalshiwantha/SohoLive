@@ -282,9 +282,11 @@ private fun Content(
         if (isShowProgress) {
             CenterMessageProgress(message = state.loadingMessage)
         } else {
-            val dataList = mGState.videoLibResState.value?.assets?.filter {
+            val dataListRaw = mGState.videoLibResState.value?.assets?.filter {
                 ((it.status == VideoStatus.READY.status && it.downloadLink != null) || it.status == VideoStatus.IN_PROG.status)
             }
+
+            val dataList = dataListRaw?.filter { it.getRemainingDays() != 0 }
 
             if (dataList.isNullOrEmpty()) {
                 if (mGState.uploadStatus.value != "uploading") {
