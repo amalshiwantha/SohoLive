@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -39,6 +42,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.AlertConfig
@@ -76,6 +80,33 @@ fun PlayerScreen(
     vmVidEdit: VidEditDetailsViewModel = koinInject(),
     onNextClick: () -> Unit = {}
 ) {
+
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = false
+
+    // Store the previous system UI colors
+    val previousStatusBarColor = remember { systemUiController.statusBarDarkContentEnabled }
+    val previousNavigationBarColor = remember { systemUiController.navigationBarDarkContentEnabled }
+
+    // Set the system UI colors to black when the screen is composed
+    DisposableEffect(Unit) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Black,
+            darkIcons = useDarkIcons
+        )
+
+        // Restore the previous system UI colors when the screen is disposed
+        onDispose {
+            systemUiController.setSystemBarsColor(
+                color = Color.Transparent,
+                darkIcons = previousStatusBarColor
+            )
+            systemUiController.setNavigationBarColor(
+                color = Color.Transparent,
+                darkIcons = previousNavigationBarColor
+            )
+        }
+    }
 
     val states = vmVidEdit.mState.value
     val pvtVidId = mGState.privateVideoId.value
@@ -118,7 +149,7 @@ fun PlayerScreen(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .background(brushMainGradientBg)
+            .background(Color.Black)
     ) {
         val (actionBar, content, bottomButton) = createRefs()
 
