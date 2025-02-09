@@ -18,11 +18,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -58,8 +55,7 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
 import com.soho.sohoapp.live.ui.components.Text800_14sp
-import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
-import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.components.TopAppBarBackAction
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
@@ -154,7 +150,7 @@ fun PlayerScreen(
         val (actionBar, content, bottomButton) = createRefs()
 
         //TopActionBar
-        TopAppBarActionBack(isShowBack = if (mGState.isEditVideoData.value) true else false,
+        /*TopAppBarActionBack(isShowBack = if (mGState.isEditVideoData.value) true else false,
             rightIcon = R.drawable.ic_trash,
             modifier = Modifier
                 .fillMaxWidth()
@@ -167,7 +163,25 @@ fun PlayerScreen(
                 isShowPlayer = false
                 navController.popBackStack()
             },
-            onActionClick = { isShowAlert = true })
+            onActionClick = { isShowAlert = true })*/
+        TopAppBarBackAction(
+            leftIcon = R.drawable.back_bg_round,
+            rightIcon = R.drawable.ic_trash,
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(actionBar) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            onBackClick = {
+                isShowPlayer = false
+                navController.popBackStack()
+            },
+            onActionClick = {
+                isShowAlert = true
+            }
+        )
 
         //Center Player
         Column(modifier = Modifier

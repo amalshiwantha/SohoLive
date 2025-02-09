@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -80,8 +81,7 @@ fun TopAppBarActionBack(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -102,8 +102,6 @@ fun TopAppBarActionBack(
                     )
                 }
             }
-        } else {
-            //Spacer(modifier = Modifier.width(48.dp)) // Match the size of the back button for alignment
         }
 
         // Title in the center
@@ -113,6 +111,8 @@ fun TopAppBarActionBack(
                     .weight(1f)
                     .padding(horizontal = 16.dp)
             )
+        } ?: kotlin.run {
+            Spacer(modifier = Modifier.weight(1f))
         }
 
         // Optional right action button
@@ -137,7 +137,7 @@ fun TopAppBarCustomClose(
 ) {
     Row(
         modifier = modifier
-            .padding(horizontal = 16.dp)
+            .padding(start = 16.dp, end = 8.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -148,6 +148,41 @@ fun TopAppBarCustomClose(
                 painter = painterResource(id = rightIcon),
                 tint = AppWhite,
                 contentDescription = "Back"
+            )
+        }
+    }
+}
+
+@Composable
+fun TopAppBarBackAction(
+    leftIcon: Int,
+    rightIcon: Int,
+    modifier: Modifier,
+    onBackClick: () -> Unit = {},
+    onActionClick: () -> Unit = {}
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+
+        IconButton(onClick = { onBackClick() }) {
+            Icon(
+                painter = painterResource(id = leftIcon),
+                tint = AppWhite,
+                contentDescription = "Back"
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        IconButton(onClick = { onActionClick() }) {
+            Icon(
+                painter = painterResource(id = rightIcon),
+                tint = AppWhite,
+                contentDescription = "Action"
             )
         }
     }

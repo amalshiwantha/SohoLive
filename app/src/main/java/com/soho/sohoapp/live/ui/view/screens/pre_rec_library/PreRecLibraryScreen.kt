@@ -56,6 +56,7 @@ import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spNormal
 import com.soho.sohoapp.live.ui.components.Text700_14spBold
 import com.soho.sohoapp.live.ui.components.Text800_14sp
+import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -124,10 +125,20 @@ fun PreRecordLibraryScreen(
         }) {
             SpacerUp(size = 8.dp)
 
-            TopAppBarCustomClose(title = "Private Videos",
+            /*TopAppBarCustomClose(title = "Private Videos",
                 rightIcon = R.drawable.ic_close_circle,
                 modifier = Modifier,
                 onCloseClick = {
+                    navController.popBackStack()
+                })*/
+
+            TopAppBarActionBack(
+                title = "Private Videos",
+                isShowBack = false,
+                rightIcon = R.drawable.ic_close_circle,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onActionClick = {
                     navController.popBackStack()
                 })
         }
