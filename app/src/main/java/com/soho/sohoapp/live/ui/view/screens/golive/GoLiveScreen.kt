@@ -504,10 +504,12 @@ fun GoLiveScreen(
                                             title = selectedProperty.propInfo.fullAddress()
                                             propertyType =
                                                 selectedProperty.propInfo.getPropertyState()
+                                            purpose = getStateSelection(optionList, propertyType)
                                         } else {
                                             propertyId = 0
                                             title = null
                                             propertyType = null
+                                            purpose = getStateSelection(optionList, PropertyState.RENT.value)
                                         }
                                     }
 
@@ -1213,7 +1215,7 @@ fun StepContents(
 
         // step #3
         2 -> {
-            Content4(
+            Content4(mGState,
                 optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
             )
         }
@@ -1281,6 +1283,7 @@ fun DisplayNoData(message: String) {
 
 @Composable
 private fun Content4(
+    mGState: GlobalState,
     optionList: MutableList<String>,
     mGoLiveSubmit: GoLiveSubmit,
     mFieldsError: MutableMap<FormFields, String>
@@ -1311,11 +1314,6 @@ private fun Content4(
     //what for livestream
     mGoLiveSubmit.purpose?.let {
         configPurpose.input = it
-    } ?: run {
-        val propType = mGoLiveSubmit.propertyType
-        val defaultSelection = getStateSelection(optionList, propType)
-        mGoLiveSubmit.apply { purpose = defaultSelection }
-        configPurpose.input = defaultSelection
     }
 
     Text700_14spRegular(step = stringResource(R.string.what_livecast))
