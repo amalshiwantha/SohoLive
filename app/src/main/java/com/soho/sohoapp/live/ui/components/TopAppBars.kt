@@ -3,11 +3,9 @@ package com.soho.sohoapp.live.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.ArrowBackIosNew
@@ -75,6 +73,7 @@ fun TopAppBarActionBack(
     title: String? = null,
     rightIcon: Int? = null,
     isShowBack: Boolean = true,
+    isShowBackBg: Boolean = false,
     modifier: Modifier = Modifier,
     onActionClick: () -> Unit = {},
     onBackClick: () -> Unit = {}
@@ -87,13 +86,21 @@ fun TopAppBarActionBack(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Back Button on the left
-        if(isShowBack){
+        if (isShowBack) {
             IconButton(onClick = { onBackClick() }) {
-                Icon(
-                    imageVector = Icons.Sharp.ArrowBackIosNew,
-                    tint = AppWhite,
-                    contentDescription = "Back"
-                )
+                if (isShowBackBg) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.back_bg_round),
+                        tint = AppWhite,
+                        contentDescription = "Back"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Sharp.ArrowBackIosNew,
+                        tint = AppWhite,
+                        contentDescription = "Back"
+                    )
+                }
             }
         } else {
             //Spacer(modifier = Modifier.width(48.dp)) // Match the size of the back button for alignment
@@ -101,9 +108,11 @@ fun TopAppBarActionBack(
 
         // Title in the center
         title?.let {
-            TextTopBarTitle(title = it, modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp))
+            TextTopBarTitle(
+                title = it, modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp)
+            )
         }
 
         // Optional right action button

@@ -116,7 +116,9 @@ fun ReviewScreen(
                 },
             onBackClick = {
                 navController.popBackStack()
-            })
+            },
+            isShowBackBg = true
+        )
 
         //Center Content
         LazyColumn(modifier = Modifier
