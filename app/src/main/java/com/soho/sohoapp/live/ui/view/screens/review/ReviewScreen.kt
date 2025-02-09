@@ -115,9 +115,7 @@ fun ReviewScreen(
                     end.linkTo(parent.end)
                 },
             onBackClick = {
-                doNavigate(mGState, navController, onDoneClick = {
-                    onDoneClick()
-                })
+                navController.popBackStack()
             })
 
         //Center Content
