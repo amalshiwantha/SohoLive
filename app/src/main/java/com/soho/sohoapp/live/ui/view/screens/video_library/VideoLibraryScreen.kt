@@ -755,20 +755,26 @@ fun ActionIconButton(btnIcon: Int, onClickAction: () -> Unit) {
 
 @Composable
 fun TitleDescription(item: VideoItem) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text700_12spNormal(label = item.getDisplayDate(), txtColor = HintGray)
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text700_12spNormal(
+            label = item.getDisplayDate(),
+            txtColor = HintGray,
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        Spacer(modifier = Modifier.weight(1f))
         item.title?.let {
-            Text700_14spBold(step = it)
+            SpacerUp(size = 8.dp)
+            Text700_14spBold(step = it, modifier = Modifier.fillMaxWidth(), isSingleLine = true)
         }
 
-        Spacer(modifier = Modifier.weight(1f))
         item.description?.let {
-            Text400_12sp(label = it)
+            SpacerUp(size = 8.dp)
+            Text400_12sp(label = it, modifier = Modifier.fillMaxWidth())
         }
-
-
     }
 }
 

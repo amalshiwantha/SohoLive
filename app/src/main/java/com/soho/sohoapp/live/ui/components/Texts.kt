@@ -498,7 +498,12 @@ fun TextProgress(
 }
 
 @Composable
-fun Text700_14spBold(modifier: Modifier = Modifier, step: String, txtColor: Color = AppWhite) {
+fun Text700_14spBold(
+    modifier: Modifier = Modifier,
+    step: String,
+    txtColor: Color = AppWhite,
+    isSingleLine: Boolean = false
+) {
     Text(
         modifier = modifier,
         text = step,
@@ -507,6 +512,7 @@ fun Text700_14spBold(modifier: Modifier = Modifier, step: String, txtColor: Colo
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         fontWeight = FontWeight(700),
         color = txtColor,
+        maxLines = if (isSingleLine) 1 else 2,
         letterSpacing = 0.17.sp
     )
 }
@@ -677,7 +683,7 @@ fun EllipsisWithMoreText(description: String) {
         text = buildAnnotatedString {
             append(visibleText)
 
-            if(isTextOverflowing){
+            if (isTextOverflowing) {
                 pushStringAnnotation(
                     tag = "MORE",
                     annotation = "more_clickable"
@@ -702,7 +708,7 @@ fun EllipsisWithMoreText(description: String) {
         fontWeight = FontWeight(400),
         fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         onTextLayout = { textLayoutResult ->
-            if(textLayoutResult.lineCount == 2){
+            if (textLayoutResult.lineCount == 2) {
                 val trimCount = textLayoutResult.getLineEnd(1) - 10
 
                 if (textLayoutResult.hasVisualOverflow) {
@@ -783,7 +789,7 @@ fun Text800_14sp(
     label: String,
     txtColor: Color = AppWhite,
     txtAlign: TextAlign = TextAlign.Left,
-    isSingleLine : Boolean = false
+    isSingleLine: Boolean = false
 ) {
     Text(
         modifier = modifier,
