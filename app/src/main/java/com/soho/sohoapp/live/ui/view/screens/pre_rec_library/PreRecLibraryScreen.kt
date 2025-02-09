@@ -312,7 +312,6 @@ private fun PvtVidItemView(
             SpacerSide(size = 8.dp)
 
             //Delete and Download btns
-            SpacerSide(size = 8.dp)
             ActionIconButton(R.drawable.ic_trash, onClickAction = {
                 onDeleteVideo(item.filePath)
             })
