@@ -244,6 +244,14 @@ fun BottomNavHost(
                         resetSteps(mGoLiveSubmit, mState)
                         MainStateHolder.resetLive()
                     }
+                },
+                onBackListing = {
+                    //center screen clear and move to new destination
+                    navController.navigate(NavigationPath.PRE_RECODED_LIST.name) {
+                        popUpTo(NavigationPath.PRE_RECODED_LIST.name) {
+                            inclusive = true
+                        }
+                    }
                 })
         }
 

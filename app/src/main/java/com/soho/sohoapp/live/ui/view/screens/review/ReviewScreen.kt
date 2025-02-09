@@ -50,7 +50,8 @@ fun ReviewScreen(
     mGoLiveSubmit: GoLiveSubmit,
     vmReview: ReviewViewModel = koinInject(),
     navController: NavHostController,
-    onDoneClick: () -> Unit = {}
+    onDoneClick: () -> Unit = {},
+    onBackListing: () -> Unit = {}
 ) {
     val states = vmReview.mState.value
     val pvtVidId = mGState.privateVideoId.value
@@ -59,7 +60,9 @@ fun ReviewScreen(
     //if privacy changed as private then back to pre rec library
     LaunchedEffect(states.isDone) {
         if (states.isDone) {
-            doNavigate(mGState, navController, onDoneClick = {
+            doNavigate(mGState, onBackListing = {
+                onBackListing()
+            }, onDoneClick = {
                 onDoneClick()
             })
         }
@@ -77,7 +80,9 @@ fun ReviewScreen(
                 )
             )
 
-            doNavigate(mGState, navController, onDoneClick = {
+            doNavigate(mGState, onBackListing = {
+                onBackListing()
+            }, onDoneClick = {
                 onDoneClick()
             })
         }
@@ -234,9 +239,13 @@ fun ReviewScreen(
     }
 }
 
-fun doNavigate(mGState: GlobalState, navController: NavHostController, onDoneClick: () -> Unit) {
+fun doNavigate(
+    mGState: GlobalState,
+    onDoneClick: () -> Unit,
+    onBackListing: () -> Unit
+) {
     if (mGState.isEditVideoData.value) {
-        navController.popBackStack()
+        onBackListing()
     } else {
         mGState.privateVideoId.value = -1
         onDoneClick()
