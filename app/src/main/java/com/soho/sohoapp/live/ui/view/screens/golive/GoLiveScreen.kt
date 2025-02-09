@@ -1309,9 +1309,6 @@ private fun Content4(
     )
 
     //what for livestream
-
-    //save default value
-
     mGoLiveSubmit.purpose?.let {
         configPurpose.input = it
     } ?: run {
@@ -1387,7 +1384,7 @@ fun getStateSelection(optionList: MutableList<String>, propType: String?): Strin
     return propType?.let {
         return when (it) {
             PropertyState.RENT.value -> optionList[0]
-            PropertyState.SALE.value -> optionList[1]
+            PropertyState.SALE.value -> optionList[0]
             PropertyState.AUCTION.value -> optionList[1]
             else -> optionList.last()
         }
