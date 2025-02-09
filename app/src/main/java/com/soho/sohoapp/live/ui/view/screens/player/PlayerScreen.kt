@@ -19,10 +19,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,7 +79,7 @@ fun PlayerScreen(
 
     val states = vmVidEdit.mState.value
     val pvtVidId = mGState.privateVideoId.value
-    var showSuccessMessage by remember { mutableStateOf(true) }
+    var showSuccessMessage by rememberSaveable { mutableStateOf(true) }
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
     var isShowPlayer by remember { mutableStateOf(true) }
@@ -85,6 +87,13 @@ fun PlayerScreen(
         createVideoThumbnail(
             fileUri.path ?: "", MediaStore.Images.Thumbnails.MINI_KIND
         )
+    }
+
+    // Reset showSuccessMessage when navigating away or on screen change
+    DisposableEffect(Unit) {
+        onDispose {
+            showSuccessMessage = false
+        }
     }
 
     //get latest item
