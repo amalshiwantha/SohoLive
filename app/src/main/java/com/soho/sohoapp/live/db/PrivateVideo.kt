@@ -60,6 +60,7 @@ fun getDayLabel(createdDate: String): String {
     // Calculate the difference in days
     val diffInMillis = abs(current.time - created.time)
     val diffInDays = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
+    val moreDays = 30 - diffInDays
 
-    return "${diffInDays}D"
+    return "${moreDays}D"
 }
