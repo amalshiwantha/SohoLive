@@ -260,7 +260,13 @@ fun BottomNavHost(
         }
 
         composable(route = NavigationPath.VIDEO_EDIT_DETAILS.name) {
-            VidEditDetailsScreen(mGState = mGlobalState, navController = navController)
+            VidEditDetailsScreen(mGState = mGlobalState, navController = navController, onBackListing = {
+                navController.navigate(NavigationPath.PRE_RECODED_LIST.name) {
+                    popUpTo(NavigationPath.PRE_RECODED_LIST.name) {
+                        inclusive = true
+                    }
+                }
+            })
         }
 
         composable(route = NavigationPath.SUBSCRIPTION.name) {

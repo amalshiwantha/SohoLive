@@ -41,6 +41,7 @@ fun VidEditDetailsScreen(
     mGState: GlobalState,
     navController: NavHostController,
     vmVidEdit: VidEditDetailsViewModel = koinInject(),
+    onBackListing: () -> Unit = {}
 ) {
     val states = vmVidEdit.mState.value
     val pvtVidId = mGState.privateVideoId.value
@@ -53,7 +54,7 @@ fun VidEditDetailsScreen(
     //if success update then close the screen
     LaunchedEffect(states.isSuccess) {
         if (states.isSuccess) {
-            navController.popBackStack()
+            onBackListing()
         }
     }
 
