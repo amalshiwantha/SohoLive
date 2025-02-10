@@ -19,10 +19,8 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
         tools:ignore="ScopedStorage" />
-    <!-- Required for accessing files outside Scoped Storage on Android 11+ -->
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+
+    <!-- for upload video-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
 
@@ -87,7 +85,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Mention the service name here -->
+        <!-- Along with FOREGROUND_SERVICE_DATA_SYNC -->
         <service
             android:name=".utility.UploadService"
             android:exported="false"
