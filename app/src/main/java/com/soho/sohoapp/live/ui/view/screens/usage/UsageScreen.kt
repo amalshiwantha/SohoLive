@@ -141,26 +141,77 @@ private fun UsageContent(mState: UsageState, mGState: GlobalState) {
 fun HistoryUsage(historyUsage: List<HistoryUsage>?) {
     historyUsage?.let {
         it.forEach { data ->
+            SpacerUp(size = 16.dp)
             UsageHistoryCard(data)
         }
     }
 }
 
 @Composable
-fun UsageHistoryCard(data: HistoryUsage) {
+fun UsageHistoryCard(usage: HistoryUsage) {
+    val planData = usage.planDetails
+    val maxStream = planData?.streamingMinutes ?: "0"
+    val usedStream = usage.streamingMinutes
+
+    val maxView = planData?.viewingMinutes ?: "0"
+    val usedView = usage.viewingMinutes
+
+    val totalOverage = usage.overageStreamingMinutes + usage.overageViewingMinutes
+    val streamUsage = "${usedStream.formatNumber()}/${maxStream.toInt().formatNumber()}"
+    val viewUsage = "${usedView.formatNumber()}/${maxView.toInt().formatNumber()}"
+    val period = "${getFormatDate(usage.startTime)} - ${getFormatDate(usage.endTime)}"
+    val progStream = getProgress(usedStream, maxStream.toInt())
+    val progView = getProgress(usedView, maxView.toInt())
+    val isStreamOver = usage.overageStreamingMinutes > 0
+    val isViewOver = usage.overageViewingMinutes > 0
+
+    val isOverage = true
+    val cardBg = if (isOverage) ItemCardBg else AppWhite
+    val txtColor = if (isOverage) AppWhite else TextDark
+    val overageBg = if (isOverage) OverageDark else AppWhiteGray
+
     Card(
         modifier = Modifier
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = AppWhite)
+        colors = CardDefaults.cardColors(containerColor = cardBg)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             //top content
             Column(modifier = Modifier.padding(16.dp)) {
                 //Date Range
-                Text950_16sp(title = data.endTime.orEmpty(), txtColor = Color.DarkGray)
+                Text950_16sp(title = period, txtColor = txtColor)
+                SpacerUp(size = 24.dp)
+
+                //Usage for each
+                UsageProgress(
+                    "Streamed",
+                    "$streamUsage mins",
+                    progress = progStream,
+                    txtColor = txtColor,
+                    txtValueColor = if (isStreamOver) OverageRed else txtColor,
+                    isOverage,
+                    isStreamOver
+                )
+                SpacerUp(size = 16.dp)
+                UsageProgress(
+                    "Viewed",
+                    "$viewUsage mins",
+                    progress = progView,
+                    txtColor = txtColor,
+                    txtValueColor = if (isViewOver) OverageRed else txtColor,
+                    isOverage,
+                    isViewOver
+                )
                 SpacerUp(size = 24.dp)
             }
+
+            //bottom content overage
+            TotalOverage(
+                "${totalOverage.formatNumber()} min",
+                txtColor = txtColor,
+                overageBg = overageBg
+            )
         }
     }
 }
