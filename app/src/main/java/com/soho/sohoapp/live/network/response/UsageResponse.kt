@@ -13,10 +13,22 @@ data class UsageResponse(
 @Serializable
 data class UsageData(
     @SerialName("current_usage") val currentUsage: CurrentUsage? = null,
+    @SerialName("history") val historyUsage: List<HistoryUsage>? = null
 )
 
 @Serializable
 data class CurrentUsage(
+    @SerialName("start_time") val startTime: String? = null,
+    @SerialName("end_time") val endTime: String? = null,
+    @SerialName("plan_details") val planDetails: PlanDetails? = null,
+    @SerialName("streaming_minutes") val streamingMinutes: Int = 0,
+    @SerialName("viewing_minutes") val viewingMinutes: Int = 0,
+    @SerialName("overage_streaming_minutes") val overageStreamingMinutes: Int = 0,
+    @SerialName("overage_viewing_minutes") val overageViewingMinutes: Int = 0
+)
+
+@Serializable
+data class HistoryUsage(
     @SerialName("start_time") val startTime: String? = null,
     @SerialName("end_time") val endTime: String? = null,
     @SerialName("plan_details") val planDetails: PlanDetails? = null,

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,6 +25,7 @@ import androidx.navigation.NavController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.network.response.CurrentUsage
+import com.soho.sohoapp.live.network.response.HistoryUsage
 import com.soho.sohoapp.live.network.response.PlanDetails
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -120,17 +122,55 @@ private fun UsageContent(mState: UsageState, mGState: GlobalState) {
     if (mState.isLoading) {
         CenterMessageProgress(message = mState.loadingMessage)
     } else {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Text400_14sp(info = "Your usage information will only be shown after a 12 hours delay.")
-            SpacerUp(size = 16.dp)
-            mState.usageRes?.let {
-                UsageCard(it)
+            item {
+                CurrentLevel(mState)
+            }
+            item {
+                HistoryUsage(mState.usageHistoryRes)
             }
         }
+    }
+}
+
+@Composable
+fun HistoryUsage(historyUsage: List<HistoryUsage>?) {
+    historyUsage?.let {
+        it.forEach { data ->
+            UsageHistoryCard(data)
+        }
+    }
+}
+
+@Composable
+fun UsageHistoryCard(data: HistoryUsage) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = AppWhite)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            //top content
+            Column(modifier = Modifier.padding(16.dp)) {
+                //Date Range
+                Text950_16sp(title = data.endTime.orEmpty(), txtColor = Color.DarkGray)
+                SpacerUp(size = 24.dp)
+            }
+        }
+    }
+}
+
+@Composable
+fun CurrentLevel(mState: UsageState) {
+    Text400_14sp(info = "Your usage information will only be shown after a 12 hours delay.")
+    SpacerUp(size = 16.dp)
+    mState.usageRes?.let {
+        UsageCard(it)
     }
 }
 

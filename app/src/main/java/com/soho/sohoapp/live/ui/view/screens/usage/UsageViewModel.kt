@@ -18,8 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class UsageViewModel(
-    private val apiRepo: SohoApiRepository,
-    private val dataStore: AppDataStoreManager
+    private val apiRepo: SohoApiRepository, private val dataStore: AppDataStoreManager
 ) : ViewModel() {
 
     val mState: MutableState<UsageState> = mutableStateOf(UsageState())
@@ -30,8 +29,7 @@ class UsageViewModel(
                 profile?.let { prof ->
 
                     //Check ActivePlan and call getStorageUsage
-                    apiRepo.getCurrentPlan(prof.authenticationToken)
-                        .onEach { apiState ->
+                    apiRepo.getCurrentPlan(prof.authenticationToken).onEach { apiState ->
                             when (apiState) {
                                 is ApiState.Data -> {
                                     apiState.data?.let { activeRes ->
@@ -67,6 +65,7 @@ class UsageViewModel(
                         result.data?.let { resData ->
                             mState.value = mState.value.copy(
                                 usageRes = resData.currentUsage,
+                                usageHistoryRes = resData.historyUsage,
                                 isSuccess = true
                             )
                         }
