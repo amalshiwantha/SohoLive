@@ -118,7 +118,7 @@ dependencies {
     //preference
     implementation(libs.androidx.datastore)
 
-    //RootEncoder
+    //RootEncoder - LiveStream
     implementation(libs.rootencoder)
 
     //DI
@@ -154,7 +154,7 @@ dependencies {
     implementation("com.facebook.android:facebook-android-sdk:14.1.1")
 
     //LinkedIn SDK
-    implementation("com.github.Sumudu-Sahan:LinkedInManager:1.01.00")
+    //implementation("com.github.Sumudu-Sahan:LinkedInManager:1.01.00")
 
     //Google
     implementation("com.google.android.gms:play-services-auth:20.4.1")
@@ -183,7 +183,7 @@ dependencies {
     implementation("androidx.camera:camera-video:1.3.4")
     implementation("androidx.camera:camera-extensions:1.3.4")
 
-    //Watermark
+    //ffmpeg Watermark
     implementation("com.arthenica:ffmpeg-kit-full:4.5.LTS")
 
     //Room Db

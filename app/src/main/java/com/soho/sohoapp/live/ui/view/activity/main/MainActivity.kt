@@ -109,13 +109,13 @@ import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.FB_MORE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
-import com.ssw.linkedinmanager.dto.LinkedInAccessToken
+/*import com.ssw.linkedinmanager.dto.LinkedInAccessToken
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile
 import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
-import com.ssw.linkedinmanager.ui.LinkedInRequestManager
+import com.ssw.linkedinmanager.ui.LinkedInRequestManager*/
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -123,7 +123,7 @@ import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MainActivity : ComponentActivity(), LinkedInManagerResponse {
+class MainActivity : ComponentActivity() {
 
     companion object {
         var maxSteps = 4
@@ -274,7 +274,7 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
 
                         SocialMediaInfo.LINKEDIN -> {
                             LaunchedEffect(key1 = "linkedInLogin") {
-                                linkedInLogin()
+                                //linkedInLogin()
                             }
 
                             /*val smProfile = SMProfile(
@@ -983,91 +983,6 @@ class MainActivity : ComponentActivity(), LinkedInManagerResponse {
     /*
     * All of social media connection action will fire on Here, called from step #3 GoLive Screen to here
     * */
-
-    //Google
-
-    //LinkedIn
-    private fun linkedInLogin() {
-        val linkedInRequestManager = LinkedInRequestManager(
-            this,
-            this,
-            "8670uh4gz1gbbp",
-            "9xaiOv3ibWwsqCXi",
-            "https://www.linkedin.com/developers/tools/oauth/redirect",
-            true
-        )
-
-        linkedInRequestManager.isLoggedIn(object : LinkedInUserLoginValidationResponse {
-            override fun activeLogin() {
-                println("myLinkedin activeLogin")
-            }
-
-            override fun tokenExpired() {
-                println("myLinkedin tokenExpired")
-            }
-
-            override fun notLogged() {
-                println("myLinkedin notLogged")
-            }
-        })
-
-        linkedInRequestManager.getLoggedRequestedMode(object : LinkedInUserLoginDetailsResponse {
-            override fun loggedMode(mode: Int) {
-                println("myLinkedin getLoggedRequestedMode $mode")
-                when (mode) {
-                    LinkedInRequestManager.MODE_LITE_PROFILE_ONLY -> {}
-                    LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY -> {}
-                    LinkedInRequestManager.MODE_BOTH_OPTIONS -> {}
-                }
-            }
-
-            override fun tokenExpired() {
-                println("myLinkedin tokenExpired")
-            }
-
-            override fun notLogged() {
-                println("myLinkedin notLogged")
-            }
-        })
-
-        linkedInRequestManager.showAuthenticateView(LinkedInRequestManager.MODE_BOTH_OPTIONS)
-    }
-
-    override fun onGetAccessTokenFailed() {
-        println("myLinkedin onGetAccessTokenFailed")
-    }
-
-    override fun onGetAccessTokenSuccess(linkedInAccessToken: LinkedInAccessToken?) {
-        val linkedinAccessToken = linkedInAccessToken?.access_token
-        println("myLinkedin linkedinAccessToken $linkedinAccessToken")
-    }
-
-    override fun onGetCodeFailed() {
-        println("myLinkedin onGetCodeFailed")
-    }
-
-    override fun onGetCodeSuccess(code: String?) {
-        println("myLinkedin onGetCodeSuccess $code")
-    }
-
-    override fun onGetProfileDataFailed() {
-        println("myLinkedin onGetProfileDataFailed ")
-    }
-
-    override fun onGetProfileDataSuccess(linkedInUserProfile: LinkedInUserProfile?) {
-        println("myLinkedin onGetProfileDataSuccess $linkedInUserProfile")
-    }
-
-    override fun onGetEmailAddressFailed() {
-        println("myLinkedin onGetEmailAddressFailed")
-    }
-
-    override fun onGetEmailAddressSuccess(linkedInEmailAddress: LinkedInEmailAddress?) {
-        val inkedinEml = linkedInEmailAddress?.emailAddress
-        println("myLinkedin onGetEmailAddressSuccess $inkedinEml")
-    }
-    //LinkedIn End
-
     @Preview
     @Composable
     private fun PreviewBottomSheetSMConnect() {
