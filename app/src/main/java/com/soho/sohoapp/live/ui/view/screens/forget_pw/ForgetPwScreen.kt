@@ -13,30 +13,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
+import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerUp
-import com.soho.sohoapp.live.ui.components.TextFieldWhite
+import com.soho.sohoapp.live.ui.components.TextError
+import com.soho.sohoapp.live.ui.components.TextFieldWhiteEmail
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
-import com.soho.sohoapp.live.ui.components.TextSubtitleWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
+import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
+import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
+import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
+import com.soho.sohoapp.live.ui.view.screens.signin.isErrorOnFiled
+import org.koin.compose.koinInject
 
 @Composable
 fun ForgetPwScreen(
     modifier: Modifier = Modifier,
+    vmSignIn: SignInViewModel = koinInject(),
     navController: NavHostController
 ) {
+    val stateVm = vmSignIn.mStateLogin.value
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -68,11 +76,11 @@ fun ForgetPwScreen(
                         .verticalScroll(scrollState),
                     verticalArrangement = Arrangement.Top
                 ) {
-                    LoginForm()
+                    FPwForm(stateVm)
                 }
 
                 SpacerUp(24.dp)
-                BottomLoginBtn(modifier, navController)
+                BottomSendLinkBtn(modifier, navController)
             }
         }
     }
@@ -80,29 +88,35 @@ fun ForgetPwScreen(
 
 
 @Composable
-private fun LoginForm() {
-    Column {
+private fun FPwForm(stateVm: SignInState) {
+    val requestData = stateVm.request
+    val errorState = stateVm.errorStates
 
-        TextSubtitleWhite14(label = stringResource(R.string.forgot_pw_msg))
-
-        SpacerUp(24.dp)
+    Column(modifier = Modifier.fillMaxSize()) {
 
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerUp(8.dp)
-        /*TextFieldWhite(
+        TextFieldWhiteEmail(modifier = Modifier.testTag("emailField"),
             fieldConfig = FieldConfig.NEXT.apply {
+                isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL)
                 placeholder = stringResource(R.string.email)
                 keyboardType = KeyboardType.Email
-                imeAction = ImeAction.Done
-            },
-            onTextChange = {})*/
+            }, onTextChange = {
+                requestData.apply { email = it }
+                //viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+            })
 
-        SpacerUp(24.dp)
+        //error email visibility
+        errorState[FieldType.LOGIN_EMAIL]?.let {
+            if(it.isNotEmpty()){
+                TextError(errorMsg = it)
+            }
+        }
     }
 }
 
 @Composable
-private fun BottomLoginBtn(modifier: Modifier, navController: NavHostController) {
+private fun BottomSendLinkBtn(modifier: Modifier, navController: NavHostController) {
     Column(
         modifier = modifier
             .fillMaxWidth()

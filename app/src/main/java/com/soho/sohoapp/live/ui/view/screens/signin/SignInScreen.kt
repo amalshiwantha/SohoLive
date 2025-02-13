@@ -38,6 +38,7 @@ import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.TextButtonBlue
 import com.soho.sohoapp.live.ui.components.TextError
 import com.soho.sohoapp.live.ui.components.TextFieldWhiteEmail
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
@@ -54,7 +55,7 @@ fun SignInScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     vmSignIn: SignInViewModel = koinInject(),
-    netUtil: NetworkUtils = koinInject()
+    netUtil: NetworkUtils = koinInject(),
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -103,7 +104,9 @@ fun SignInScreen(
                 ) {
 
                     //Display login form
-                    LoginForm(vmSignIn, stateVm)
+                    LoginForm(vmSignIn, stateVm, onForgetPwClick = {
+                        navController.navigate(NavigationPath.FORGET_PW.name)
+                    })
 
                     //Display progress bar
                     LaunchedEffect(stateVm.loadingState) {
@@ -144,7 +147,11 @@ fun SignInScreen(
 }
 
 @Composable
-private fun LoginForm(viewModel: SignInViewModel, loginState: SignInState) {
+private fun LoginForm(
+    viewModel: SignInViewModel,
+    loginState: SignInState,
+    onForgetPwClick: () -> Unit
+) {
 
     Column {
         val requestData = loginState.request
@@ -164,7 +171,7 @@ private fun LoginForm(viewModel: SignInViewModel, loginState: SignInState) {
 
         //error email visibility
         errorState[FieldType.LOGIN_EMAIL]?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 TextError(errorMsg = it)
             }
         }
@@ -187,13 +194,13 @@ private fun LoginForm(viewModel: SignInViewModel, loginState: SignInState) {
 
         SpacerUp(24.dp)
 
-        /*TextButtonBlue(text = stringResource(R.string.forgot_password),
+        TextButtonBlue(text = stringResource(R.string.forgot_password),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterHorizontally),
             onBtnClick = {
                 onForgetPwClick()
-            })*/
+            })
     }
 }
 
