@@ -1,8 +1,8 @@
 package com.soho.sohoapp.live.ui.view.screens.forget_pw
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -72,25 +72,29 @@ fun ForgetPwSentScreen(
 
                 SpacerUp(24.dp)
                 BtnOpenEmailBtn(modifier, onSendClick = {
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse("mailto:") // This will open Gmail or any email client
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Add this flag to avoid the exception
-                    }
-
-                    // Try to open Gmail directly by checking the package name
-                    val packageManager = context.packageManager
-                    val gmailIntent = packageManager.getLaunchIntentForPackage("com.google.android.gm")
-
-                    if (gmailIntent != null) {
-                        // If Gmail is installed, launch it
-                        context.startActivity(gmailIntent)
-                    } else {
-                        // Fallback to opening the Play Store page if Gmail is not installed
-                        val playStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.gm"))
-                        playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Add the flag here
-                        context.startActivity(playStoreIntent)
-                    }
                     navController.popBackStack()
+
+                    val gmailPackageName = "com.google.android.gm"
+                    val intent = context.packageManager.getLaunchIntentForPackage(gmailPackageName)
+
+                    if (intent != null) {
+                        // Gmail app is installed, start it
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(intent)
+                    } else {
+                        // Gmail app is not installed, open Play Store
+                        val playStoreIntent = Intent(Intent.ACTION_VIEW).apply {
+                            data = Uri.parse("market://details?id=$gmailPackageName")
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        if (playStoreIntent.resolveActivity(context.packageManager) != null) {
+                            context.startActivity(playStoreIntent)
+                        } else {
+                            Toast.makeText(context, "Gmail app not found", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+
                 })
             }
         }
