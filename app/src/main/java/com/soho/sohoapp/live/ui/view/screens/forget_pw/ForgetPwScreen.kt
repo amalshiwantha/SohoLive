@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +48,15 @@ fun ForgetPwScreen(
     val stateVm = vmSignIn.mStateLogin.value
     val scrollState = rememberScrollState()
 
+    //if successfully sent the ForgetPwLink then open next success screen
+    LaunchedEffect(key1 = stateVm.isForgetPwLinkSent) {
+        if (stateVm.isForgetPwLinkSent) {
+            navController.navigate(NavigationPath.FORGET_PW_SENT.name) {
+                popUpTo(NavigationPath.FORGET_PW.name) { inclusive = true }
+            }
+        }
+    }
+
     Scaffold(
         containerColor = BgGradientPurpleLight,
         modifier = modifier.fillMaxSize(),
@@ -80,7 +90,9 @@ fun ForgetPwScreen(
                 }
 
                 SpacerUp(24.dp)
-                BottomSendLinkBtn(modifier, navController)
+                BtnOpenEmailBtn(modifier, onSendClick = {
+                    vmSignIn.onTriggerEvent(SignInEvent.OnForgetPWRequest(stateVm.request))
+                })
             }
         }
     }
@@ -108,7 +120,7 @@ private fun FPwForm(stateVm: SignInState) {
 
         //error email visibility
         errorState[FieldType.LOGIN_EMAIL]?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 TextError(errorMsg = it)
             }
         }
@@ -116,7 +128,7 @@ private fun FPwForm(stateVm: SignInState) {
 }
 
 @Composable
-private fun BottomSendLinkBtn(modifier: Modifier, navController: NavHostController) {
+private fun BtnOpenEmailBtn(modifier: Modifier, onSendClick: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -126,12 +138,7 @@ private fun BottomSendLinkBtn(modifier: Modifier, navController: NavHostControll
     ) {
         ButtonColoured(text = stringResource(R.string.forget_pw_link),
             color = AppGreen,
-            onBtnClick = {
-                navController.navigate(NavigationPath.HOME.name) {
-                    popUpTo(NavigationPath.SIGNIN.name) { inclusive = true }
-                    popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
-                }
-            })
+            onBtnClick = { onSendClick() })
     }
 }
 

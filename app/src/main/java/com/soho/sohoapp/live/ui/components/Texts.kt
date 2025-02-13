@@ -182,7 +182,12 @@ fun TextError(modifier: Modifier = Modifier, errorMsg: String) {
 }
 
 @Composable
-fun Text950_20sp(modifier: Modifier = Modifier, title: String, txtColor: Color = AppWhite) {
+fun Text950_20sp(
+    modifier: Modifier = Modifier,
+    title: String,
+    txtColor: Color = AppWhite,
+    isCenter: Boolean = false
+) {
     Text(
         modifier = modifier,
         text = title,
@@ -191,7 +196,8 @@ fun Text950_20sp(modifier: Modifier = Modifier, title: String, txtColor: Color =
         fontFamily = FontFamily(Font(R.font.axiforma)),
         fontWeight = FontWeight(950),
         color = txtColor,
-        letterSpacing = 0.24.sp
+        letterSpacing = 0.24.sp,
+        textAlign = if (isCenter) TextAlign.Center else TextAlign.Left
     )
 }
 

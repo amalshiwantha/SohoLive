@@ -30,14 +30,20 @@ class SignInViewModel(
     fun onTriggerEvent(signInEvent: SignInEvent) {
         when (signInEvent) {
             SignInEvent.CallSignIn -> validateSignIn()
-            is SignInEvent.OnUpdateRequest -> updateRequest(signInEvent.request)
             SignInEvent.DismissAlert -> dismissAlertState()
+            is SignInEvent.OnUpdateRequest -> updateRequest(signInEvent.request)
+            is SignInEvent.OnForgetPWRequest -> forgetPwRequest(signInEvent.request)
         }
     }
 
     private fun dismissAlertState() {
         mStateLogin.value =
             mStateLogin.value.copy(alertState = AlertState.Idle)
+    }
+
+    private fun forgetPwRequest(event: SignInRequest) {
+        println("forgetPwRe : $event")
+        mStateLogin.value = mStateLogin.value.copy(isForgetPwLinkSent = true)
     }
 
     private fun updateRequest(event: SignInRequest) {
