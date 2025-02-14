@@ -226,6 +226,14 @@ fun formValidation(
     state: MutableState<SignInState>, mapList: MutableMap<FieldType, String?>
 ): SignInState {
 
+    /*
+    * At least 8 characters
+	•	At least one uppercase letter (A-Z)
+	•	At least one number (0-9)
+	•	At least one special character (@#$%&_)
+	* */
+    val pwPattern = Regex("^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#\$%&_]).{8,}\$")
+    val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+(\\.[a-z]+)?"
     var newPassword: String? = null
 
     mapList.forEach {
@@ -237,8 +245,6 @@ fun formValidation(
         val errorMessage = when (fieldType) {
 
             FieldType.LOGIN_EMAIL -> {
-                val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+(\\.[a-z]+)?"
-
                 if (inputValue.isNullOrEmpty()) {
                     context.getString(R.string.email_empty)
                 } else {
@@ -257,6 +263,8 @@ fun formValidation(
 
             FieldType.RESET_NPW -> if (inputValue.isNullOrEmpty()) {
                 "New Password cannot be empty"
+            } else if (!pwPattern.matches(inputValue)) {
+                "Password must be at least 8 characters long, contain a number, an uppercase letter, and a special character (@#$%&_)."
             } else {
                 newPassword = inputValue
                 null
@@ -265,7 +273,7 @@ fun formValidation(
             FieldType.RESET_CPW -> if (inputValue.isNullOrEmpty()) {
                 "Confirm Password cannot be empty"
             } else if (inputValue != newPassword) {
-                "Passwords do not match"
+                "Password doesn't match"
             } else {
                 null
             }
