@@ -6,14 +6,14 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [PrivateVideo::class], version = 1, exportSchema = false)
+@Database(entities = [PrivateVideo::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun privateVideoDao(): PrivateVideoDao
 }
 
 
-// Define the migrations
+// Define the migrations with existing data
 /*
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
