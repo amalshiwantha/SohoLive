@@ -115,7 +115,7 @@ class SignInViewModel(
                         if (isSuccessSent) {
                             mStateLogin.value =
                                 mStateLogin.value.copy(isForgetPwLinkSent = true)
-                        }else{
+                        } else {
                             mStateLogin.value =
                                 mStateLogin.value.copy(
                                     alertState = AlertState.Display(
@@ -160,7 +160,15 @@ class SignInViewModel(
                                 mStateLogin.value.copy(isPasswordReset = true)
                         } else {
                             mStateLogin.value =
-                                mStateLogin.value.copy(resetPwError = result.response.messages[0])
+                                mStateLogin.value.copy(
+                                    alertState = AlertState.Display(
+                                        AlertConfig.COMMON_OK.apply {
+                                            result.response.let {
+                                                title = "Reset Password Problem"
+                                                message = it.messages[0]
+                                            }
+                                        })
+                                )
                         }
                     }
                 }

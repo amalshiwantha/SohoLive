@@ -60,15 +60,6 @@ fun ForgetPwScreen(
         }
     }
 
-    //if password reset has error then show an alert
-    LaunchedEffect(key1 = stateVm.resetPwError) {
-        stateVm.resetPwError?.let {
-            navController.navigate(NavigationPath.SIGNIN.name) {
-                popUpTo(NavigationPath.RESET_PASSWORD.name) { inclusive = true }
-            }
-        }
-    }
-
     //if successfully sent the ForgetPwLink then open next success screen
     LaunchedEffect(key1 = stateVm.isForgetPwLinkSent) {
         if (stateVm.isForgetPwLinkSent) {
