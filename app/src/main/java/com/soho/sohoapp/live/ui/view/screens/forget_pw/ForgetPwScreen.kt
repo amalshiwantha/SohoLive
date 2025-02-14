@@ -25,10 +25,12 @@ import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
-import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.TextError
 import com.soho.sohoapp.live.ui.components.TextFieldWhiteEmail
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
@@ -115,7 +117,7 @@ fun ForgetPwScreen(
                 }
 
                 SpacerUp(24.dp)
-                BtnOpenEmailBtn(modifier, onSendClick = {
+                BtnOpenEmailBtn(modifier, progressState = stateVm.loadingState, onSendClick = {
                     vmSignIn.onTriggerEvent(SignInEvent.CallForgetPassword)
                 })
             }
@@ -125,14 +127,18 @@ fun ForgetPwScreen(
 
 
 @Composable
-private fun FPwForm(stateVm: SignInState,onTextChange: (SignInRequest) -> Unit) {
+private fun FPwForm(stateVm: SignInState, onTextChange: (SignInRequest) -> Unit) {
     val requestData = stateVm.request
     val errorState = stateVm.errorStates
 
     Column(modifier = Modifier.fillMaxSize()) {
 
+        Text400_14sp(info = "If you have an existing account, we will send a password reset link to your email")
+        SpacerUp(size = 24.dp)
+
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerUp(8.dp)
+
         TextFieldWhiteEmail(modifier = Modifier.testTag("emailField"),
             fieldConfig = FieldConfig.DONE.apply {
                 isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL)
@@ -153,7 +159,11 @@ private fun FPwForm(stateVm: SignInState,onTextChange: (SignInRequest) -> Unit) 
 }
 
 @Composable
-private fun BtnOpenEmailBtn(modifier: Modifier, onSendClick: () -> Unit) {
+private fun BtnOpenEmailBtn(
+    modifier: Modifier,
+    progressState: ProgressBarState,
+    onSendClick: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -161,9 +171,14 @@ private fun BtnOpenEmailBtn(modifier: Modifier, onSendClick: () -> Unit) {
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        ButtonColoured(text = stringResource(R.string.forget_pw_link),
+        val isLoading = progressState == ProgressBarState.Loading
+        ButtonColouredProgress(
+            text = stringResource(R.string.forget_pw_link),
             color = AppGreen,
-            onBtnClick = { onSendClick() })
+            isLoading = isLoading
+        ) {
+            onSendClick()
+        }
     }
 }
 
