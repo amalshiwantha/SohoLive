@@ -23,7 +23,6 @@
     <!-- for upload video-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
-
     <application
         android:name=".SohoLiveApp"
         android:allowBackup="true"
@@ -37,23 +36,36 @@
         android:theme="@style/Theme.SohoLive"
         tools:targetApi="31">
         <activity
-            android:name=".ui.view.activity.live.LiveStreamActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true"
-            android:theme="@style/Theme.Broadcast" />
-        <activity
             android:name=".ui.view.activity.main.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SohoLive"
             tools:ignore="DiscouragedApi">
+
+            <!-- Deep Link Intent Filter -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="dev-agents.soho.com.au"
+                    android:pathPrefix="/login/reset-password" />
+            </intent-filter>
+
+            <!-- Main App Launcher -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.view.activity.live.LiveStreamActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Broadcast" />
 
         <!-- facebook -->
         <meta-data

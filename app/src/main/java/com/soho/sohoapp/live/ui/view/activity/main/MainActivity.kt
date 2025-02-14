@@ -168,6 +168,7 @@ class MainActivity : ComponentActivity() {
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
+                    deepLinkResetPw(viewMMain)
 
                     /*
                     * show alert message to confirm logout
@@ -294,6 +295,16 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    // Get the deep link data
+    private fun deepLinkResetPw(viewMMain: MainViewModel) {
+        val intentData = intent?.data
+        val loginToken = intentData?.getQueryParameter("login_token")
+        println("myDeepLink $loginToken")
+        loginToken?.let {
+            viewMMain._isOpenResetPw.value = true
         }
     }
 

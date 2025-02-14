@@ -1,6 +1,8 @@
 package com.soho.sohoapp.live.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,6 +22,8 @@ import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 @Composable
 fun AppNavHost(viewMMain: MainViewModel) {
     val navController = rememberNavController()
+
+    val isOpenResetPwScreen by viewMMain.isOpenResetPw.collectAsState()
 
     NavHost(navController = navController, startDestination = NavigationPath.SPLASH.name) {
         composable(route = NavigationPath.SPLASH.name) {
@@ -60,5 +64,9 @@ fun AppNavHost(viewMMain: MainViewModel) {
         composable(route = NavigationPath.RESET_PASSWORD.name) {
             SetPwScreen(navController = navController)
         }
+    }
+
+    if (isOpenResetPwScreen) {
+        navController.navigate(NavigationPath.RESET_PASSWORD.name)
     }
 }

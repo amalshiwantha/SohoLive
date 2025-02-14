@@ -52,11 +52,12 @@ class MainViewModel(
     private val _stateUploadLevel = MutableStateFlow("hide")
     val stateUploadLevel: StateFlow<String> = _stateUploadLevel.asStateFlow()
 
+    val _isOpenResetPw = MutableStateFlow(false)
+    val isOpenResetPw: StateFlow<Boolean> = _isOpenResetPw.asStateFlow()
+
     val uploadNotification = NotificationHelper()
 
     fun uploadNow(data: UploadData) {
-        println("myUpload uploadData $data")
-
         val filePath = data.path ?: return
         val uploadUrl = data.url ?: return
         uploadVideo(File(filePath), uploadUrl)
