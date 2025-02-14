@@ -127,7 +127,7 @@ private fun SetPwForm(stateVm: SignInState) {
         PasswordTextFieldWhite(modifier = Modifier.testTag("passwordField"),
             isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
             onTextChange = {
-                requestData.apply { password = it }
+                requestData.apply { confirm_password = it }
                 //viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
             })
         //error pw visibility

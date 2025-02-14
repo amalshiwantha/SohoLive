@@ -3,4 +3,8 @@ package com.soho.sohoapp.live.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignInRequest(var email: String? = null, var password: String? = null)
+data class SignInRequest(
+    var email: String? = null,
+    var password: String? = null,
+    var confirm_password: String? = null
+)
