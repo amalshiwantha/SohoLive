@@ -2,6 +2,8 @@ package com.soho.sohoapp.live.ui.view.activity.main
 
 import android.content.Intent
 import android.os.Build
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mux.video.upload.api.MuxUpload
@@ -54,6 +56,8 @@ class MainViewModel(
 
     val _isOpenResetPw = MutableStateFlow(false)
     val isOpenResetPw: StateFlow<Boolean> = _isOpenResetPw.asStateFlow()
+
+    var deepLinkToken: MutableState<String?> = mutableStateOf(null)
 
     val uploadNotification = NotificationHelper()
 

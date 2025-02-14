@@ -65,9 +65,7 @@ class SignInViewModel(
             mStateLogin.value = formValidation(mStateLogin, mapList)
 
             if (mStateLogin.value.errorStates.isEmpty()) {
-                callResetPwApi(it.apply {
-                    loginToken = "123345" // need to check deepLink url content
-                })
+                callResetPwApi(it)
             }
         }
     }

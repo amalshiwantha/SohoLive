@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.forget_pw
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -52,11 +53,20 @@ import org.koin.compose.koinInject
 @Composable
 fun SetPwScreen(
     modifier: Modifier = Modifier,
+    resetToken: String? = null,
     vmSignIn: SignInViewModel = koinInject(),
     navController: NavHostController
 ) {
     val state = vmSignIn.mStateLogin.value
     val scrollState = rememberScrollState()
+
+    //Check loginToken from DeepLink
+    LaunchedEffect(resetToken) {
+        state.resetPwRequest.apply {
+            loginToken = resetToken
+        }
+        println("myDeepLink found $resetToken")
+    }
 
     //if successfully sent the ForgetPwLink then open next success screen
     LaunchedEffect(key1 = state.isForgetPwLinkSent) {

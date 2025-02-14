@@ -1,6 +1,8 @@
 package com.soho.sohoapp.live.ui.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
@@ -23,8 +25,18 @@ import com.soho.sohoapp.live.ui.view.screens.webview.WebViewScreen
 fun AppNavHost(viewMMain: MainViewModel) {
     val navController = rememberNavController()
 
+    // Handle deep link intent and navigate
     val isOpenResetPwScreen by viewMMain.isOpenResetPw.collectAsState()
 
+    LaunchedEffect(isOpenResetPwScreen) {
+        if (isOpenResetPwScreen) {
+            viewMMain.deepLinkToken.value?.let {
+                navController.navigate("${NavigationPath.RESET_PASSWORD.name}/${Uri.encode(it)}")
+            }
+        }
+    }
+
+    //Main Navigation
     NavHost(navController = navController, startDestination = NavigationPath.SPLASH.name) {
         composable(route = NavigationPath.SPLASH.name) {
             SplashScreen(navController = navController)
@@ -61,12 +73,14 @@ fun AppNavHost(viewMMain: MainViewModel) {
         composable(route = NavigationPath.FORGET_PW_SENT.name) {
             ForgetPwSentScreen(navController = navController)
         }
-        composable(route = NavigationPath.RESET_PASSWORD.name) {
-            SetPwScreen(navController = navController)
+        composable(
+            route = "${NavigationPath.RESET_PASSWORD.name}/{login_token}",
+            arguments = listOf(navArgument("login_token") {
+                type = NavType.StringType; nullable = true
+            })
+        ) { backStackEntry ->
+            val loginToken = backStackEntry.arguments?.getString("login_token")
+            SetPwScreen(navController = navController, resetToken = loginToken)
         }
-    }
-
-    if (isOpenResetPwScreen) {
-        navController.navigate(NavigationPath.RESET_PASSWORD.name)
     }
 }

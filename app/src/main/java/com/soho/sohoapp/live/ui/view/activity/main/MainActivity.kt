@@ -304,6 +304,7 @@ class MainActivity : ComponentActivity() {
         val loginToken = intentData?.getQueryParameter("login_token")
         println("myDeepLink $loginToken")
         loginToken?.let {
+            viewMMain.deepLinkToken.value = it
             viewMMain._isOpenResetPw.value = true
         }
     }
