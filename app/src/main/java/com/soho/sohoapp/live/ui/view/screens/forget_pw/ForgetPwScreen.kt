@@ -56,7 +56,10 @@ fun ForgetPwScreen(
     //if password reset is done then open the login screen
     LaunchedEffect(key1 = stateVm.isPasswordReset) {
         if (stateVm.isPasswordReset) {
-            navController.popBackStack()
+            navController.navigate(NavigationPath.SIGNIN.name) {
+                popUpTo(NavigationPath.FORGET_PW.name) { inclusive = true }
+                popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }
+            }
         }
     }
 
