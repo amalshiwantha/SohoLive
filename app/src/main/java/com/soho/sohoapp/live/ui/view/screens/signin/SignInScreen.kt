@@ -127,8 +127,7 @@ fun SignInScreen(
                 //Display bottom login button
                 BottomLoginBtn(modifier.testTag("loginButton"), isShowProgress) {
                     if (netUtil.isNetworkAvailable()) {
-                        //vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
-                        throw RuntimeException("Test Crash")
+                        vmSignIn.onTriggerEvent(SignInEvent.CallSignIn)
                     } else {
                         scope.launch {
                             snackBarState.showSnackbar(
