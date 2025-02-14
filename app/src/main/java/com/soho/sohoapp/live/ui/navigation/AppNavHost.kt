@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.forget_pw.ForgetPwScreen
 import com.soho.sohoapp.live.ui.view.screens.forget_pw.ForgetPwSentScreen
+import com.soho.sohoapp.live.ui.view.screens.forget_pw.SetPwScreen
 import com.soho.sohoapp.live.ui.view.screens.home.HomeScreen
 import com.soho.sohoapp.live.ui.view.screens.pre_access.PreAccessScreen
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInScreen
@@ -55,6 +56,9 @@ fun AppNavHost(viewMMain: MainViewModel) {
         }
         composable(route = NavigationPath.FORGET_PW_SENT.name) {
             ForgetPwSentScreen(navController = navController)
+        }
+        composable(route = NavigationPath.RESET_PASSWORD.name) {
+            SetPwScreen(navController = navController)
         }
     }
 }

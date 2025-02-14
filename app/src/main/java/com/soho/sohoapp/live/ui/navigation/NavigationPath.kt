@@ -26,5 +26,6 @@ enum class NavigationPath {
     TEMPLATE,
     SUBSCRIPTION,
     USAGE,
-    FORGET_PW_SENT
+    FORGET_PW_SENT,
+    RESET_PASSWORD
 }
