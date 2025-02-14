@@ -111,7 +111,7 @@ private fun Content() {
         Image(painter = painterResource(id = R.drawable.fpw_sent), contentDescription = "")
         SpacerUp(40.dp)
         Text950_20sp(
-            title = "Click on the link we just emailed you to access your account",
+            title = "Click on the link in the email we just sent to reset your password",
             modifier = Modifier.fillMaxWidth(),
             isCenter = true
         )
