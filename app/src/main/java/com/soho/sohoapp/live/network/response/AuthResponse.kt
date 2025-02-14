@@ -4,6 +4,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class ChangePwResponse(
+    @SerialName("data") val data: String? = null,
+    @SerialName("response_type") val responseType: String,
+    @SerialName("response") val response: Response
+)
+
+@Serializable
+data class Response(
+    @SerialName("messages") val messages: List<String>,
+    @SerialName("email") val email: String? = null
+)
+
+@Serializable
 data class ForgetPwResponse(
     @SerialName("data") val data: String? = null,
     @SerialName("response_type") val responseType: String? = null,

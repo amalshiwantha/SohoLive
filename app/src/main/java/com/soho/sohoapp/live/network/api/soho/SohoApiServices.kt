@@ -2,10 +2,12 @@ package com.soho.sohoapp.live.network.api.soho
 
 import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.ResetPwRequest
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
+import com.soho.sohoapp.live.network.response.ChangePwResponse
 import com.soho.sohoapp.live.network.response.ForgetPwResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
@@ -47,6 +49,7 @@ interface SohoApiServices {
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
     suspend fun forgetPw(signInRequest: SignInRequest): ForgetPwResponse
+    suspend fun changePw(request: ResetPwRequest): ChangePwResponse
     suspend fun propertyListing(authToken: String): GoLiveResponse
     suspend fun tsProperty(tsPropRequest: TsPropertyRequest): TsPropertyResponse
     suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse

@@ -4,6 +4,7 @@ import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.model.ResetPwRequest
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.model.VidLibRequest
@@ -11,6 +12,7 @@ import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ApiState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AuthResponse
+import com.soho.sohoapp.live.network.response.ChangePwResponse
 import com.soho.sohoapp.live.network.response.ForgetPwResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
@@ -221,10 +223,25 @@ class SohoApiRepository(private val service: SohoApiServices) {
         }
     }
 
-
     fun forgetPw(loginReq: SignInRequest): Flow<ApiState<ForgetPwResponse>> = flow {
         try {
             val apiResponse = service.forgetPw(loginReq)
+            emit(ApiState.Data(data = apiResponse))
+
+        } catch (e: Exception) {
+            e.message?.let {
+                emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
+                    message = it
+                })))
+            }
+        } finally {
+            emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
+        }
+    }
+
+    fun resetPw(req: ResetPwRequest): Flow<ApiState<ChangePwResponse>> = flow {
+        try {
+            val apiResponse = service.changePw(req)
             emit(ApiState.Data(data = apiResponse))
 
         } catch (e: Exception) {

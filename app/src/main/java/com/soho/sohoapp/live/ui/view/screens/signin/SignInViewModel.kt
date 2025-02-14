@@ -57,7 +57,6 @@ class SignInViewModel(
     }
 
     private fun resetPwRequest() {
-
         mStateLogin.value.resetPwRequest.let {
             val mapList = mutableMapOf<FieldType, String?>()
             mapList[FieldType.RESET_NPW] = it.newPassword
@@ -66,11 +65,12 @@ class SignInViewModel(
             mStateLogin.value = formValidation(mStateLogin, mapList)
 
             if (mStateLogin.value.errorStates.isEmpty()) {
-                //callForgetPwApi()
+                callResetPwApi(it.apply {
+                    loginToken = "123345" // need to check deepLink url content
+                })
             }
         }
     }
-
 
     private fun resetPwRequest(event: ResetPwRequest) {
         mStateLogin.value = mStateLogin.value.copy(resetPwRequest = event)
@@ -115,6 +115,38 @@ class SignInViewModel(
                         if (isSuccessSent) {
                             mStateLogin.value =
                                 mStateLogin.value.copy(isForgetPwLinkSent = true)
+                        }
+                    }
+                }
+
+                is ApiState.Loading -> {
+                    mStateLogin.value =
+                        mStateLogin.value.copy(loadingState = apiState.progressBarState)
+                }
+
+                is ApiState.Alert -> {
+                    mStateLogin.value = mStateLogin.value.copy(alertState = apiState.alertState)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun callResetPwApi(request: ResetPwRequest) {
+
+        mStateLogin.value = mStateLogin.value.copy(
+            loadingState = ProgressBarState.Loading
+        )
+
+        apiRepo.resetPw(request).onEach { apiState ->
+
+            when (apiState) {
+
+                is ApiState.Data -> {
+                    apiState.data?.let { result ->
+                        val isSuccessSent = result.responseType != ERR_VAL
+                        if (isSuccessSent) {
+                            mStateLogin.value =
+                                mStateLogin.value.copy(isPasswordReset = true)
                         }
                     }
                 }

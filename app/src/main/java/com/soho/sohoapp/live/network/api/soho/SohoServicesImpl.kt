@@ -3,10 +3,12 @@ package com.soho.sohoapp.live.network.api.soho
 import com.soho.sohoapp.live.BuildConfig
 import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.ResetPwRequest
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
+import com.soho.sohoapp.live.network.response.ChangePwResponse
 import com.soho.sohoapp.live.network.response.ForgetPwResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
@@ -63,6 +65,17 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             }
             contentType(ContentType.Application.Json)
             setBody(signInRequest)
+        }.body()
+    }
+
+    override suspend fun changePw(request: ResetPwRequest): ChangePwResponse {
+        return httpClient.post {
+            url {
+                takeFrom(BuildConfig.BASE_URL)
+                encodedPath += SohoApiServices.RESET_PW
+            }
+            contentType(ContentType.Application.Json)
+            setBody(request)
         }.body()
     }
 

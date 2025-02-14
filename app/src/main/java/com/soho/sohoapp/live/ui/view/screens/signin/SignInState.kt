@@ -15,5 +15,6 @@ data class SignInState(
     val errorStates: Map<FieldType, String> = emptyMap(),
     val isSignInSuccessful: Boolean = false,
     val isForgetPwLinkSent: Boolean = false,
+    val isPasswordReset: Boolean = false,
     val signInError: String? = null
 )
