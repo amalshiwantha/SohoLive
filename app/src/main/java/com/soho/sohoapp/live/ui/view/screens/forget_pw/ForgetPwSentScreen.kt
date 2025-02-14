@@ -28,7 +28,6 @@ import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarCustomClose
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 
@@ -73,11 +72,11 @@ fun ForgetPwSentScreen(
 
                 SpacerUp(24.dp)
                 BtnOpenEmailBtn(modifier, onSendClick = {
-                    //navController.popBackStack()
+                    navController.popBackStack()
 
-                    navController.navigate(NavigationPath.RESET_PASSWORD.name)
+                    //navController.navigate(NavigationPath.RESET_PASSWORD.name)
 
-                    /*val gmailPackageName = "com.google.android.gm"
+                    val gmailPackageName = "com.google.android.gm"
                     val intent = context.packageManager.getLaunchIntentForPackage(gmailPackageName)
 
                     if (intent != null) {
@@ -96,7 +95,7 @@ fun ForgetPwSentScreen(
                             Toast.makeText(context, "Gmail app not found", Toast.LENGTH_SHORT)
                                 .show()
                         }
-                    }*/
+                    }
 
                 })
             }
