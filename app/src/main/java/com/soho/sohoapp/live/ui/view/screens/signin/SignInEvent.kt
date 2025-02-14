@@ -10,4 +10,5 @@ sealed class SignInEvent {
     data object CallSignIn : SignInEvent()
     data object DismissAlert : SignInEvent()
     data object CallResetPassword : SignInEvent()
+    data object CallForgetPassword : SignInEvent()
 }

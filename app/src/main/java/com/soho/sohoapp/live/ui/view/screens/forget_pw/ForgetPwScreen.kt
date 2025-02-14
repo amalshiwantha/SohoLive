@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -86,12 +87,14 @@ fun ForgetPwScreen(
                         .verticalScroll(scrollState),
                     verticalArrangement = Arrangement.Top
                 ) {
-                    FPwForm(stateVm)
+                    FPwForm(stateVm, onTextChange = {
+                        vmSignIn.onTriggerEvent(SignInEvent.OnForgetPWRequest(it))
+                    })
                 }
 
                 SpacerUp(24.dp)
                 BtnOpenEmailBtn(modifier, onSendClick = {
-                    vmSignIn.onTriggerEvent(SignInEvent.OnForgetPWRequest(stateVm.request))
+                    vmSignIn.onTriggerEvent(SignInEvent.CallForgetPassword)
                 })
             }
         }
@@ -100,7 +103,7 @@ fun ForgetPwScreen(
 
 
 @Composable
-private fun FPwForm(stateVm: SignInState) {
+private fun FPwForm(stateVm: SignInState,onTextChange: (SignInRequest) -> Unit) {
     val requestData = stateVm.request
     val errorState = stateVm.errorStates
 
@@ -109,13 +112,13 @@ private fun FPwForm(stateVm: SignInState) {
         TextLabelWhite14(label = stringResource(R.string.email))
         SpacerUp(8.dp)
         TextFieldWhiteEmail(modifier = Modifier.testTag("emailField"),
-            fieldConfig = FieldConfig.NEXT.apply {
+            fieldConfig = FieldConfig.DONE.apply {
                 isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL)
                 placeholder = stringResource(R.string.email)
                 keyboardType = KeyboardType.Email
             }, onTextChange = {
                 requestData.apply { email = it }
-                //viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+                onTextChange(requestData)
             })
 
         //error email visibility

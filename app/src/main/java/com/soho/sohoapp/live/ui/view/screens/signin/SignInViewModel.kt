@@ -23,8 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-    private val apiRepo: SohoApiRepository,
-    private val userPref: AppDataStoreManager
+    private val apiRepo: SohoApiRepository, private val userPref: AppDataStoreManager
 ) : ViewModel() {
     val mStateLogin: MutableState<SignInState> = mutableStateOf(SignInState())
 
@@ -33,6 +32,7 @@ class SignInViewModel(
             SignInEvent.CallSignIn -> validateSignIn()
             SignInEvent.DismissAlert -> dismissAlertState()
             SignInEvent.CallResetPassword -> resetPwRequest()
+            SignInEvent.CallForgetPassword -> forgetPwRequest()
             is SignInEvent.OnUpdateRequest -> updateRequest(signInEvent.request)
             is SignInEvent.OnForgetPWRequest -> forgetPwRequest(signInEvent.request)
             is SignInEvent.OnUpdateSetPWRequest -> resetPwRequest(signInEvent.request)
@@ -40,8 +40,20 @@ class SignInViewModel(
     }
 
     private fun dismissAlertState() {
-        mStateLogin.value =
-            mStateLogin.value.copy(alertState = AlertState.Idle)
+        mStateLogin.value = mStateLogin.value.copy(alertState = AlertState.Idle)
+    }
+
+    private fun forgetPwRequest() {
+        mStateLogin.value.request.let {
+            val mapList = mutableMapOf<FieldType, String?>()
+            mapList[FieldType.LOGIN_EMAIL] = it.email
+
+            mStateLogin.value = formValidation(mStateLogin, mapList)
+
+            if (mStateLogin.value.errorStates.isEmpty()) {
+                //callSignInApi(it)
+            }
+        }
     }
 
     private fun resetPwRequest() {
@@ -64,7 +76,7 @@ class SignInViewModel(
     }
 
     private fun forgetPwRequest(event: SignInRequest) {
-        mStateLogin.value = mStateLogin.value.copy(isForgetPwLinkSent = true)
+        mStateLogin.value = mStateLogin.value.copy(request = event)
     }
 
     private fun updateRequest(event: SignInRequest) {
@@ -131,20 +143,17 @@ class SignInViewModel(
                             when (errCode) {
                                 ERR_500 -> {
                                     mStateLogin.value =
-                                        mStateLogin.value.copy(
-                                            alertState = AlertState.Display(
-                                                AlertConfig.SIGN_IN_ERROR.apply {
-                                                    result.response?.let {
-                                                        message = it
-                                                    }
+                                        mStateLogin.value.copy(alertState = AlertState.Display(
+                                            AlertConfig.SIGN_IN_ERROR.apply {
+                                                result.response?.let {
+                                                    message = it
                                                 }
-                                            )
-                                        )
+                                            }))
                                 }
 
                                 else -> {
-                                    mStateLogin.value = mStateLogin.value.copy(
-                                        errorStates = mStateLogin.value.errorStates.toMutableMap()
+                                    mStateLogin.value =
+                                        mStateLogin.value.copy(errorStates = mStateLogin.value.errorStates.toMutableMap()
                                             .apply {
                                                 put(FieldType.LOGIN_EMAIL, "")
                                                 put(
