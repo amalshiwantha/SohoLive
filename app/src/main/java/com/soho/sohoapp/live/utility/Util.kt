@@ -252,6 +252,18 @@ fun formValidation(
                     null
                 }
             }
+
+            FieldType.RESET_NPW -> if (inputValue.isNullOrEmpty()) {
+                "New Password cannot be empty"
+            } else {
+                null
+            }
+
+            FieldType.RESET_CPW -> if (inputValue.isNullOrEmpty()) {
+                "Confirm Password cannot be empty"
+            } else {
+                null
+            }
         }
 
         //update local state

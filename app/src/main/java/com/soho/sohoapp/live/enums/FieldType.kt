@@ -2,5 +2,7 @@ package com.soho.sohoapp.live.enums
 
 enum class FieldType {
     LOGIN_EMAIL,
-    LOGIN_PW
+    LOGIN_PW,
+    RESET_NPW,
+    RESET_CPW
 }

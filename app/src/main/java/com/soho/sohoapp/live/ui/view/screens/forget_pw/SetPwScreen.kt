@@ -26,21 +26,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.model.ResetPwRequest
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text400_14sp
-import com.soho.sohoapp.live.ui.components.Text400_14spSingleLine
 import com.soho.sohoapp.live.ui.components.TextError
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.ui.theme.DurationDark
+import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.isErrorOnFiled
@@ -52,12 +52,12 @@ fun SetPwScreen(
     vmSignIn: SignInViewModel = koinInject(),
     navController: NavHostController
 ) {
-    val stateVm = vmSignIn.mStateLogin.value
+    val state = vmSignIn.mStateLogin.value
     val scrollState = rememberScrollState()
 
     //if successfully sent the ForgetPwLink then open next success screen
-    LaunchedEffect(key1 = stateVm.isForgetPwLinkSent) {
-        if (stateVm.isForgetPwLinkSent) {
+    LaunchedEffect(key1 = state.isForgetPwLinkSent) {
+        if (state.isForgetPwLinkSent) {
             navController.navigate(NavigationPath.FORGET_PW_SENT.name) {
                 popUpTo(NavigationPath.FORGET_PW.name) { inclusive = true }
             }
@@ -88,12 +88,14 @@ fun SetPwScreen(
                         .weight(1f)
                         .verticalScroll(scrollState), verticalArrangement = Arrangement.Top
                 ) {
-                    SetPwForm(stateVm)
+                    SetPwForm(state, onChangeText = {
+                        vmSignIn.onTriggerEvent(SignInEvent.OnUpdateSetPWRequest(it))
+                    })
                 }
 
                 SpacerUp(24.dp)
                 BtnUpdatePw(modifier, onSendClick = {
-                    //vmSignIn.onTriggerEvent(SignInEvent.OnForgetPWRequest(stateVm.request))
+                    vmSignIn.onTriggerEvent(SignInEvent.CallResetPassword)
                 })
             }
         }
@@ -102,32 +104,38 @@ fun SetPwScreen(
 
 
 @Composable
-private fun SetPwForm(stateVm: SignInState) {
-    val requestData = stateVm.request
-    val errorState = stateVm.errorStates
+private fun SetPwForm(state: SignInState, onChangeText: (ResetPwRequest) -> Unit) {
+    val requestData = state.resetPwRequest
+    val errorState = state.errorStates
 
     Column(modifier = Modifier.fillMaxSize()) {
         TextLabelWhite14(label = "New Password")
         SpacerUp(8.dp)
-        PasswordTextFieldWhite(modifier = Modifier.testTag("passwordField"),
-            isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL),
+        PasswordTextFieldWhite(modifier = Modifier.testTag("newPasswordField"),
+            isError = isErrorOnFiled(errorState, FieldType.RESET_NPW),
+            hint = "New Password",
             onTextChange = {
-                requestData.apply { password = it }
-                //viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+                requestData.apply { newPassword = it }
+                onChangeText(requestData)
             })
+        //error npw visibility
+        errorState[FieldType.RESET_NPW]?.let {
+            TextError(errorMsg = it)
+        }
 
         SpacerUp(size = 24.dp)
 
         TextLabelWhite14(label = "Confirm Password")
         SpacerUp(8.dp)
-        PasswordTextFieldWhite(modifier = Modifier.testTag("passwordField"),
-            isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
+        PasswordTextFieldWhite(modifier = Modifier.testTag("confirmPasswordField"),
+            isError = isErrorOnFiled(errorState, FieldType.RESET_CPW),
+            hint = "Confirm Password",
             onTextChange = {
-                requestData.apply { confirm_password = it }
-                //viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
+                requestData.apply { confirmPassword = it }
+                onChangeText(requestData)
             })
-        //error pw visibility
-        errorState[FieldType.LOGIN_PW]?.let {
+        //error cpw visibility
+        errorState[FieldType.RESET_CPW]?.let {
             TextError(errorMsg = it)
         }
 

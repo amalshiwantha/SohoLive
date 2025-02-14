@@ -183,6 +183,7 @@ private fun LoginForm(
         PasswordTextFieldWhite(
             modifier = Modifier.testTag("passwordField"),
             isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
+            hint = stringResource(R.string.password),
             onTextChange = {
                 requestData.apply { password = it }
                 viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))

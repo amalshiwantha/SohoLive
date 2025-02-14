@@ -235,6 +235,7 @@ fun TextFieldOutlined(tfConfig: TextFiledConfig, onTextChange: (String) -> Unit)
 fun PasswordTextFieldWhite(
     modifier: Modifier,
     tempPw: String = "",
+    hint: String,
     isError: Boolean,
     onTextChange: (String) -> Unit
 ) {
@@ -248,7 +249,7 @@ fun PasswordTextFieldWhite(
             onTextChange(password)
         },
         singleLine = true,
-        placeholder = { TextPlaceHolder(label = "Password") },
+        placeholder = { TextPlaceHolder(label = hint) },
         textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,

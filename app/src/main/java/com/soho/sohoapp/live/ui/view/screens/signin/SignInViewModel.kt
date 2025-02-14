@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.FieldType
+import com.soho.sohoapp.live.model.ResetPwRequest
 import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.network.common.AlertState
@@ -31,8 +32,10 @@ class SignInViewModel(
         when (signInEvent) {
             SignInEvent.CallSignIn -> validateSignIn()
             SignInEvent.DismissAlert -> dismissAlertState()
+            SignInEvent.CallResetPassword -> resetPwRequest()
             is SignInEvent.OnUpdateRequest -> updateRequest(signInEvent.request)
             is SignInEvent.OnForgetPWRequest -> forgetPwRequest(signInEvent.request)
+            is SignInEvent.OnUpdateSetPWRequest -> resetPwRequest(signInEvent.request)
         }
     }
 
@@ -41,8 +44,26 @@ class SignInViewModel(
             mStateLogin.value.copy(alertState = AlertState.Idle)
     }
 
+    private fun resetPwRequest() {
+        println("resetPwRequest : ${mStateLogin.value.resetPwRequest}")
+        mStateLogin.value.resetPwRequest.let {
+            val mapList = mutableMapOf<FieldType, String?>()
+            mapList[FieldType.RESET_NPW] = it.newPassword
+            mapList[FieldType.RESET_CPW] = it.confirmPassword
+
+            mStateLogin.value = formValidation(mStateLogin, mapList)
+
+            if (mStateLogin.value.errorStates.isEmpty()) {
+                //callSignInApi(it)
+            }
+        }
+    }
+
+    private fun resetPwRequest(event: ResetPwRequest) {
+        mStateLogin.value = mStateLogin.value.copy(resetPwRequest = event)
+    }
+
     private fun forgetPwRequest(event: SignInRequest) {
-        println("forgetPwRe : $event")
         mStateLogin.value = mStateLogin.value.copy(isForgetPwLinkSent = true)
     }
 
