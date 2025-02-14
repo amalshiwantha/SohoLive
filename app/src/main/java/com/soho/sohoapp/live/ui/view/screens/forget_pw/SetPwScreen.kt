@@ -28,9 +28,10 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.model.ResetPwRequest
 import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
-import com.soho.sohoapp.live.ui.components.ButtonColoured
+import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -107,7 +108,7 @@ fun SetPwScreen(
                 }
 
                 SpacerUp(24.dp)
-                BtnUpdatePw(modifier, onSendClick = {
+                BtnUpdatePw(modifier = modifier, progressState = state.loadingState, onSendClick = {
                     vmSignIn.onTriggerEvent(SignInEvent.CallResetPassword)
                 })
             }
@@ -186,7 +187,11 @@ fun TakeNote() {
 }
 
 @Composable
-private fun BtnUpdatePw(modifier: Modifier, onSendClick: () -> Unit) {
+private fun BtnUpdatePw(
+    modifier: Modifier,
+    progressState: ProgressBarState,
+    onSendClick: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -194,7 +199,15 @@ private fun BtnUpdatePw(modifier: Modifier, onSendClick: () -> Unit) {
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        ButtonColoured(text = "Update Password", color = AppGreen, onBtnClick = { onSendClick() })
+        val isLoading = progressState == ProgressBarState.Loading
+
+        ButtonColouredProgress(
+            text = "Update Password",
+            color = AppGreen,
+            isLoading = isLoading
+        ) {
+            onSendClick()
+        }
     }
 }
 
