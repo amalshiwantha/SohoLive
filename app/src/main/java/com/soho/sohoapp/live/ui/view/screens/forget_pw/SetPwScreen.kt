@@ -110,15 +110,11 @@ private fun SetPwForm(stateVm: SignInState) {
         TextLabelWhite14(label = "New Password")
         SpacerUp(8.dp)
         PasswordTextFieldWhite(modifier = Modifier.testTag("passwordField"),
-            isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
+            isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL),
             onTextChange = {
                 requestData.apply { password = it }
                 //viewModel.onTriggerEvent(SignInEvent.OnUpdateRequest(requestData))
             })
-        //error pw visibility
-        errorState[FieldType.LOGIN_PW]?.let {
-            TextError(errorMsg = it)
-        }
 
         SpacerUp(size = 24.dp)
 
