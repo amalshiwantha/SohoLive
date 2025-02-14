@@ -115,6 +115,17 @@ class SignInViewModel(
                         if (isSuccessSent) {
                             mStateLogin.value =
                                 mStateLogin.value.copy(isForgetPwLinkSent = true)
+                        }else{
+                            mStateLogin.value =
+                                mStateLogin.value.copy(
+                                    alertState = AlertState.Display(
+                                        AlertConfig.COMMON_OK.apply {
+                                            result.response?.let {
+                                                title = "Forget Password Problem"
+                                                message = it
+                                            }
+                                        })
+                                )
                         }
                     }
                 }
@@ -147,6 +158,9 @@ class SignInViewModel(
                         if (isSuccessSent) {
                             mStateLogin.value =
                                 mStateLogin.value.copy(isPasswordReset = true)
+                        } else {
+                            mStateLogin.value =
+                                mStateLogin.value.copy(resetPwError = result.response.messages[0])
                         }
                     }
                 }
@@ -208,12 +222,14 @@ class SignInViewModel(
                             when (errCode) {
                                 ERR_500 -> {
                                     mStateLogin.value =
-                                        mStateLogin.value.copy(alertState = AlertState.Display(
-                                            AlertConfig.SIGN_IN_ERROR.apply {
-                                                result.response?.let {
-                                                    message = it
-                                                }
-                                            }))
+                                        mStateLogin.value.copy(
+                                            alertState = AlertState.Display(
+                                                AlertConfig.SIGN_IN_ERROR.apply {
+                                                    result.response?.let {
+                                                        message = it
+                                                    }
+                                                })
+                                        )
                                 }
 
                                 else -> {

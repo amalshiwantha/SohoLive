@@ -16,5 +16,6 @@ data class SignInState(
     val isSignInSuccessful: Boolean = false,
     val isForgetPwLinkSent: Boolean = false,
     val isPasswordReset: Boolean = false,
+    val resetPwError: String? = null,
     val signInError: String? = null
 )

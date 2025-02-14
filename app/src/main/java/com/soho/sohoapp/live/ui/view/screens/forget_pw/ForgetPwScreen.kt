@@ -24,6 +24,8 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.model.SignInRequest
+import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -49,6 +51,24 @@ fun ForgetPwScreen(
     val stateVm = vmSignIn.mStateLogin.value
     val scrollState = rememberScrollState()
 
+    //if password reset is done then open the login screen
+    LaunchedEffect(key1 = stateVm.isPasswordReset) {
+        if (stateVm.isPasswordReset) {
+            navController.navigate(NavigationPath.SIGNIN.name) {
+                popUpTo(NavigationPath.RESET_PASSWORD.name) { inclusive = true }
+            }
+        }
+    }
+
+    //if password reset has error then show an alert
+    LaunchedEffect(key1 = stateVm.resetPwError) {
+        stateVm.resetPwError?.let {
+            navController.navigate(NavigationPath.SIGNIN.name) {
+                popUpTo(NavigationPath.RESET_PASSWORD.name) { inclusive = true }
+            }
+        }
+    }
+
     //if successfully sent the ForgetPwLink then open next success screen
     LaunchedEffect(key1 = stateVm.isForgetPwLinkSent) {
         if (stateVm.isForgetPwLinkSent) {
@@ -56,6 +76,17 @@ fun ForgetPwScreen(
                 popUpTo(NavigationPath.FORGET_PW.name) { inclusive = true }
             }
         }
+    }
+
+    //Display alert
+    if (stateVm.alertState is AlertState.Display) {
+        val alertConfig = stateVm.alertState.config
+
+        AppAlertDialog(alert = alertConfig, onConfirm = {
+            vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+        }, onDismiss = {
+            vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+        })
     }
 
     Scaffold(
