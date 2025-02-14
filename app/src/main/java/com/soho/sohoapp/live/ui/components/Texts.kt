@@ -175,7 +175,7 @@ fun TextError(modifier: Modifier = Modifier, errorMsg: String) {
         lineHeight = 19.6.sp,
         letterSpacing = 0.17.sp,
         fontSize = 12.sp,
-        fontFamily = FontFamily(Font(R.font.axiforma)),
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
         fontWeight = FontWeight(400),
         modifier = modifier.padding(top = 4.dp)
     )

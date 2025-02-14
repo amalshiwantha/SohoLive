@@ -226,6 +226,8 @@ fun formValidation(
     state: MutableState<SignInState>, mapList: MutableMap<FieldType, String?>
 ): SignInState {
 
+    var newPassword: String? = null
+
     mapList.forEach {
 
         val fieldType = it.key
@@ -256,11 +258,14 @@ fun formValidation(
             FieldType.RESET_NPW -> if (inputValue.isNullOrEmpty()) {
                 "New Password cannot be empty"
             } else {
+                newPassword = inputValue
                 null
             }
 
             FieldType.RESET_CPW -> if (inputValue.isNullOrEmpty()) {
                 "Confirm Password cannot be empty"
+            } else if (inputValue != newPassword) {
+                "Passwords do not match"
             } else {
                 null
             }

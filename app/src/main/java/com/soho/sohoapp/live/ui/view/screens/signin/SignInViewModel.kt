@@ -45,7 +45,7 @@ class SignInViewModel(
     }
 
     private fun resetPwRequest() {
-        println("resetPwRequest : ${mStateLogin.value.resetPwRequest}")
+
         mStateLogin.value.resetPwRequest.let {
             val mapList = mutableMapOf<FieldType, String?>()
             mapList[FieldType.RESET_NPW] = it.newPassword
