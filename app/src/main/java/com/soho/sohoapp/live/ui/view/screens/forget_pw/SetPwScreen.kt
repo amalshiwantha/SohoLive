@@ -15,26 +15,20 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.enums.FieldConfig
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.TextError
-import com.soho.sohoapp.live.ui.components.TextFieldWhiteEmail
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
-import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.isErrorOnFiled
@@ -63,7 +57,7 @@ fun SetPwScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.forget_pw_title),
+                title = "Set your password",
                 onBackClick = { navController.popBackStack() }, onRightClick = {})
         }
     ) { innerPadding ->
@@ -119,7 +113,7 @@ private fun SetPwForm(stateVm: SignInState) {
         errorState[FieldType.LOGIN_PW]?.let {
             TextError(errorMsg = it)
         }
-        
+
         SpacerUp(size = 24.dp)
 
         TextLabelWhite14(label = "Confirm Password")
