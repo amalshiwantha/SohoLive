@@ -40,9 +40,12 @@ interface SohoApiServices {
         const val SUBS_PLANS = "plans/mobile"
         const val ACTIVE_PLAN = "plans/active"
         const val USAGE = "usage"
+        const val FORGET_PW = "sessions/forgot_password"
+        const val RESET_PW = "sessions/change_password"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
+    suspend fun forgetPw(signInRequest: SignInRequest): AuthResponse
     suspend fun propertyListing(authToken: String): GoLiveResponse
     suspend fun tsProperty(tsPropRequest: TsPropertyRequest): TsPropertyResponse
     suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse
