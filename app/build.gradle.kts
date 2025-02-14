@@ -2,12 +2,12 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
+    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinSerialization)
-    id("kotlin-kapt")
-    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
+    id("kotlin-kapt")
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -102,7 +102,6 @@ android {
 }
 
 dependencies {
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.ui)
     implementation(libs.androidx.core.ktx)
@@ -116,6 +115,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.accompanist.systemuicontroller)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
+    implementation(libs.material)
 
     //preference
     implementation(libs.androidx.datastore)
@@ -149,27 +150,19 @@ dependencies {
     //constraintlayout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
-    //cashe images
+    //Cache images
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     //Facebook
     implementation("com.facebook.android:facebook-android-sdk:14.1.1")
 
-    //LinkedIn SDK
-    //implementation("com.github.Sumudu-Sahan:LinkedInManager:1.01.00")
-
-    //Google
+    //Google Auth
     implementation("com.google.android.gms:play-services-auth:20.4.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
 
     //Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.30.0")
-    implementation(libs.androidx.camera.view)
-    implementation(libs.material)
 
-    /*implementation(libs.androidx.appcompat)
-    implementation(libs.material)*/
-
+    //Pull to Refresh
     implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
     //pager
@@ -185,8 +178,11 @@ dependencies {
     implementation("androidx.camera:camera-video:1.3.4")
     implementation("androidx.camera:camera-extensions:1.3.4")
 
+    //Camera View
+    implementation(libs.androidx.camera.view)
+
     //ffmpeg Watermark
-    implementation("com.arthenica:ffmpeg-kit-full:4.5.LTS")
+    //implementation("com.arthenica:ffmpeg-kit-full:4.5.LTS")
 
     //Room Db
     implementation("androidx.room:room-runtime:2.6.1")
