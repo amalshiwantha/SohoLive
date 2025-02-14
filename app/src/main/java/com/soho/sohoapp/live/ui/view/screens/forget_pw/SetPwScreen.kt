@@ -27,6 +27,8 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.model.ResetPwRequest
+import com.soho.sohoapp.live.network.common.AlertState
+import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
@@ -62,6 +64,17 @@ fun SetPwScreen(
                 popUpTo(NavigationPath.FORGET_PW.name) { inclusive = true }
             }
         }
+    }
+
+    //Display alert
+    if (state.alertState is AlertState.Display) {
+        val alertConfig = state.alertState.config
+
+        AppAlertDialog(alert = alertConfig, onConfirm = {
+            vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+        }, onDismiss = {
+            vmSignIn.onTriggerEvent(SignInEvent.DismissAlert)
+        })
     }
 
     Scaffold(containerColor = BgGradientPurpleLight, modifier = modifier.fillMaxSize(), topBar = {
