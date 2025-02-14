@@ -7,6 +7,7 @@ import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
+import com.soho.sohoapp.live.network.response.ForgetPwResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.LiveEndRequest
@@ -48,6 +49,17 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
             url {
                 takeFrom(BuildConfig.BASE_URL)
                 encodedPath += SohoApiServices.LOGIN
+            }
+            contentType(ContentType.Application.Json)
+            setBody(signInRequest)
+        }.body()
+    }
+
+    override suspend fun forgetPw(signInRequest: SignInRequest): ForgetPwResponse {
+        return httpClient.post {
+            url {
+                takeFrom(BuildConfig.BASE_URL)
+                encodedPath += SohoApiServices.FORGET_PW
             }
             contentType(ContentType.Application.Json)
             setBody(signInRequest)

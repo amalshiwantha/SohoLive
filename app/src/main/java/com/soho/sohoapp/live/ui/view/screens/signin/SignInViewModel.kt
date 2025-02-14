@@ -51,7 +51,7 @@ class SignInViewModel(
             mStateLogin.value = formValidation(mStateLogin, mapList)
 
             if (mStateLogin.value.errorStates.isEmpty()) {
-                //callSignInApi(it)
+                callForgetPwApi(it)
             }
         }
     }
@@ -66,10 +66,11 @@ class SignInViewModel(
             mStateLogin.value = formValidation(mStateLogin, mapList)
 
             if (mStateLogin.value.errorStates.isEmpty()) {
-                //callSignInApi(it)
+                //callForgetPwApi()
             }
         }
     }
+
 
     private fun resetPwRequest(event: ResetPwRequest) {
         mStateLogin.value = mStateLogin.value.copy(resetPwRequest = event)
@@ -96,6 +97,38 @@ class SignInViewModel(
                 callSignInApi(it)
             }
         }
+    }
+
+    private fun callForgetPwApi(requestParam: SignInRequest) {
+
+        mStateLogin.value = mStateLogin.value.copy(
+            loadingState = ProgressBarState.Loading
+        )
+
+        apiRepo.forgetPw(requestParam).onEach { apiState ->
+
+            when (apiState) {
+
+                is ApiState.Data -> {
+                    apiState.data?.let { result ->
+                        val isSuccessSent = !result.responseType.equals(ERR_VAL)
+                        if (isSuccessSent) {
+                            mStateLogin.value =
+                                mStateLogin.value.copy(isForgetPwLinkSent = true)
+                        }
+                    }
+                }
+
+                is ApiState.Loading -> {
+                    mStateLogin.value =
+                        mStateLogin.value.copy(loadingState = apiState.progressBarState)
+                }
+
+                is ApiState.Alert -> {
+                    mStateLogin.value = mStateLogin.value.copy(alertState = apiState.alertState)
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun callSignInApi(requestParam: SignInRequest) {

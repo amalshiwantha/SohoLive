@@ -6,6 +6,7 @@ import com.soho.sohoapp.live.model.SignInRequest
 import com.soho.sohoapp.live.model.TsPropertyRequest
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.response.AuthResponse
+import com.soho.sohoapp.live.network.response.ForgetPwResponse
 import com.soho.sohoapp.live.network.response.GoLiveResponse
 import com.soho.sohoapp.live.network.response.GoLiveSubmitResponse
 import com.soho.sohoapp.live.network.response.LiveRequest
@@ -26,6 +27,8 @@ interface SohoApiServices {
 
     companion object {
         const val LOGIN = "sessions/login"
+        const val FORGET_PW = "sessions/forgot_password"
+        const val RESET_PW = "sessions/change_password"
         const val PROPERTY_LISTING = "property_listing/data"
         const val PROPERTY_SCHEDULE = "property_listing/{propertyId}/schedules"
         const val GO_LIVE = "live_stream"
@@ -40,12 +43,10 @@ interface SohoApiServices {
         const val SUBS_PLANS = "plans/mobile"
         const val ACTIVE_PLAN = "plans/active"
         const val USAGE = "usage"
-        const val FORGET_PW = "sessions/forgot_password"
-        const val RESET_PW = "sessions/change_password"
     }
 
     suspend fun login(signInRequest: SignInRequest): AuthResponse
-    suspend fun forgetPw(signInRequest: SignInRequest): AuthResponse
+    suspend fun forgetPw(signInRequest: SignInRequest): ForgetPwResponse
     suspend fun propertyListing(authToken: String): GoLiveResponse
     suspend fun tsProperty(tsPropRequest: TsPropertyRequest): TsPropertyResponse
     suspend fun goLive(authToken: String, goLiveData: GoLiveSubmit): GoLiveSubmitResponse
