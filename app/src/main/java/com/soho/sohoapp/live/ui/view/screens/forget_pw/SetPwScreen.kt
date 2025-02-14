@@ -1,13 +1,18 @@
 package com.soho.sohoapp.live.ui.view.screens.forget_pw
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,20 +20,27 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.ui.components.AppTopBar
 import com.soho.sohoapp.live.ui.components.ButtonColoured
 import com.soho.sohoapp.live.ui.components.PasswordTextFieldWhite
+import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
+import com.soho.sohoapp.live.ui.components.Text400_14sp
+import com.soho.sohoapp.live.ui.components.Text400_14spSingleLine
 import com.soho.sohoapp.live.ui.components.TextError
 import com.soho.sohoapp.live.ui.components.TextLabelWhite14
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
+import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
+import com.soho.sohoapp.live.ui.theme.DurationDark
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.isErrorOnFiled
@@ -52,15 +64,11 @@ fun SetPwScreen(
         }
     }
 
-    Scaffold(
-        containerColor = BgGradientPurpleLight,
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            AppTopBar(
-                title = "Set your password",
-                onBackClick = { navController.popBackStack() }, onRightClick = {})
-        }
-    ) { innerPadding ->
+    Scaffold(containerColor = BgGradientPurpleLight, modifier = modifier.fillMaxSize(), topBar = {
+        AppTopBar(title = "Set your password",
+            onBackClick = { navController.popBackStack() },
+            onRightClick = {})
+    }) { innerPadding ->
 
         Column(
             modifier = Modifier
@@ -78,8 +86,7 @@ fun SetPwScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .weight(1f)
-                        .verticalScroll(scrollState),
-                    verticalArrangement = Arrangement.Top
+                        .verticalScroll(scrollState), verticalArrangement = Arrangement.Top
                 ) {
                     SetPwForm(stateVm)
                 }
@@ -102,8 +109,7 @@ private fun SetPwForm(stateVm: SignInState) {
     Column(modifier = Modifier.fillMaxSize()) {
         TextLabelWhite14(label = "New Password")
         SpacerUp(8.dp)
-        PasswordTextFieldWhite(
-            modifier = Modifier.testTag("passwordField"),
+        PasswordTextFieldWhite(modifier = Modifier.testTag("passwordField"),
             isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
             onTextChange = {
                 requestData.apply { password = it }
@@ -118,8 +124,7 @@ private fun SetPwForm(stateVm: SignInState) {
 
         TextLabelWhite14(label = "Confirm Password")
         SpacerUp(8.dp)
-        PasswordTextFieldWhite(
-            modifier = Modifier.testTag("passwordField"),
+        PasswordTextFieldWhite(modifier = Modifier.testTag("passwordField"),
             isError = isErrorOnFiled(errorState, FieldType.LOGIN_PW),
             onTextChange = {
                 requestData.apply { password = it }
@@ -131,6 +136,35 @@ private fun SetPwForm(stateVm: SignInState) {
         }
 
         SpacerUp(size = 24.dp)
+
+        TakeNote()
+    }
+}
+
+@Composable
+fun TakeNote() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = DurationDark)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Image(painter = painterResource(id = R.drawable.ic_light), contentDescription = "")
+                SpacerSide(size = 8.dp)
+                TextLabelWhite14(label = "Take Note")
+            }
+
+            SpacerSide(size = 8.dp)
+            Text400_14sp(
+                info = "This password will also be use to login to other Soho related apps, including the Agent Portal and Soho Livecast.",
+            )
+        }
     }
 }
 
@@ -143,9 +177,7 @@ private fun BtnUpdatePw(modifier: Modifier, onSendClick: () -> Unit) {
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        ButtonColoured(text = "Update Password",
-            color = AppGreen,
-            onBtnClick = { onSendClick() })
+        ButtonColoured(text = "Update Password", color = AppGreen, onBtnClick = { onSendClick() })
     }
 }
 
