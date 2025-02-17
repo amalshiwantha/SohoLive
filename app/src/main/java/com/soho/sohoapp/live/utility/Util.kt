@@ -113,18 +113,19 @@ fun getInitialBg(initials: String): Int {
     }
 }
 
-fun getAppVersion(): String {
+fun getAppVersion(): Pair<String, Int> {
     val packageManager = context.packageManager
     val packageName = context.packageName
+    var pkg: Pair<String, Int>
 
-    val versionName = try {
+    try {
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        packageInfo.versionName
+        pkg = Pair(packageInfo.versionName, packageInfo.versionCode)
     } catch (e: PackageManager.NameNotFoundException) {
-        "Unknown"
+        pkg = Pair("0.0.0", 0)
     }
 
-    return versionName
+    return pkg
 }
 
 /*

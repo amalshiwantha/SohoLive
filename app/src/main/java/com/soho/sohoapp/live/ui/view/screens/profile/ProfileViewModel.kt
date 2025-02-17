@@ -48,7 +48,7 @@ class ProfileViewModel(
                     mState.value = mState.value.copy(
                         profileName = it.name,
                         profileImage = it.imageUrl,
-                        appVersion = getAppVersion()
+                        appVersion = getAppVersion().first
                     )
 
                     getActivePlan(profile.authenticationToken)
