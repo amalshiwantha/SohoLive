@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,14 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.google.firebase.Firebase
-import com.google.firebase.installations.FirebaseInstallations
-import com.google.firebase.remoteconfig.remoteConfig
-import com.google.firebase.remoteconfig.remoteConfigSettings
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.model.RemoteConfigModel
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import kotlinx.coroutines.delay
+import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -40,16 +40,12 @@ fun SplashScreen(
 
     val isSplashVisible = remember { mutableStateOf(true) }
     val isLoggedIn by splashViewModel.isLoggedIn.collectAsState()
-
-
-    FetchRemoteConfig()
+    var configData by remember { mutableStateOf<RemoteConfigModel?>(null) }
 
     LaunchedEffect(Unit) {
-        // Fetch a new Installation ID
-        FirebaseInstallations.getInstance().id.addOnSuccessListener { newId ->
-            println("MyFirebase ID: $newId")
-        }.addOnFailureListener { e ->
-            println("MyFirebase Failed ID: ${e.message}")
+
+        fetchRemoteData { result ->
+            configData = result
         }
 
         delay(1000)
@@ -62,27 +58,29 @@ fun SplashScreen(
     }
 }
 
-@Composable
-fun FetchRemoteConfig() {
-    val remoteConfig = Firebase.remoteConfig
-    val configSettings = remoteConfigSettings {
-        minimumFetchIntervalInSeconds = 3600 // Adjust as needed
-    }
-    remoteConfig.setConfigSettingsAsync(configSettings)
 
-    LaunchedEffect(Unit) {
-        remoteConfig.fetchAndActivate()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val msg = remoteConfig.getString("welcome_message")
-                    Log.d("MyFirebase RC", "Fetch OK $msg")
-                } else {
-                    Log.e("MyFirebase RC", "Fetch failed", task.exception)
+private fun fetchRemoteData(onResult: (RemoteConfigModel?) -> Unit) {
+    val remoteConfig = FirebaseRemoteConfig.getInstance()
+
+    remoteConfig.fetchAndActivate()
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val jsonString = remoteConfig.getString("android_version")
+                Log.d("MyFirebase RC", "Fetched: $jsonString")
+
+                try {
+                    val configData = Json.decodeFromString<RemoteConfigModel>(jsonString)
+                    Log.d("MyFirebase RC", "Fetched: $configData")
+                    onResult(configData)
+                } catch (e: Exception) {
+                    Log.e("MyFirebase RC", "JSON parsing error", e)
+                    onResult(null)
                 }
+            } else {
+                Log.e("MyFirebase RC", "Fetch failed", task.exception)
+                onResult(null)
             }
-    }
-
-
+        }
 }
 
 private fun screenNavigation(isLoggedIn: Boolean, navController: NavHostController) {
