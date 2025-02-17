@@ -191,6 +191,9 @@ dependencies {
 
     //Firebase
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.config)
+
+    implementation("com.google.android.play:integrity:1.4.0")
 
     //lottie
     implementation("com.airbnb.android:lottie-compose:6.2.0")

@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.ui.view.screens.splash
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,13 +21,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.google.firebase.Firebase
+import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.remoteconfig.remoteConfig
+import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @Composable
 fun SplashScreen(
@@ -38,7 +41,17 @@ fun SplashScreen(
     val isSplashVisible = remember { mutableStateOf(true) }
     val isLoggedIn by splashViewModel.isLoggedIn.collectAsState()
 
+
+    FetchRemoteConfig()
+
     LaunchedEffect(Unit) {
+        // Fetch a new Installation ID
+        FirebaseInstallations.getInstance().id.addOnSuccessListener { newId ->
+            println("MyFirebase ID: $newId")
+        }.addOnFailureListener { e ->
+            println("MyFirebase Failed ID: ${e.message}")
+        }
+
         delay(1000)
         isSplashVisible.value = false
         screenNavigation(isLoggedIn, navController)
@@ -47,6 +60,29 @@ fun SplashScreen(
     if (isSplashVisible.value) {
         SplashViewContent(modifier)
     }
+}
+
+@Composable
+fun FetchRemoteConfig() {
+    val remoteConfig = Firebase.remoteConfig
+    val configSettings = remoteConfigSettings {
+        minimumFetchIntervalInSeconds = 3600 // Adjust as needed
+    }
+    remoteConfig.setConfigSettingsAsync(configSettings)
+
+    LaunchedEffect(Unit) {
+        remoteConfig.fetchAndActivate()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val msg = remoteConfig.getString("welcome_message")
+                    Log.d("MyFirebase RC", "Fetch OK $msg")
+                } else {
+                    Log.e("MyFirebase RC", "Fetch failed", task.exception)
+                }
+            }
+    }
+
+
 }
 
 private fun screenNavigation(isLoggedIn: Boolean, navController: NavHostController) {
