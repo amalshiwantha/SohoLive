@@ -57,9 +57,19 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="https"
-                    android:scheme="dev-agents.soho.com.au" />
-                <!--android:pathPrefix="/login/reset-password"-->
+                    android:host="dev-agents.soho.com.au"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="agents.soho.com.au"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
