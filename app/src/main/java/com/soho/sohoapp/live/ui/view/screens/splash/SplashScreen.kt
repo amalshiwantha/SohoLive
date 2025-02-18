@@ -1,5 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.splash
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,10 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.model.RemoteConfigModel
+import com.soho.sohoapp.live.ui.components.UpdateAlertDialog
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
+import com.soho.sohoapp.live.utility.getAppVersion
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
@@ -38,19 +45,62 @@ fun SplashScreen(
     splashViewModel: SplashViewModel = koinViewModel()
 ) {
 
-    val isSplashVisible = remember { mutableStateOf(true) }
     val isLoggedIn by splashViewModel.isLoggedIn.collectAsState()
+    val isSplashVisible = remember { mutableStateOf(true) }
     var configData by remember { mutableStateOf<RemoteConfigModel?>(null) }
+    var showUpdateDialog by remember { mutableStateOf(false) }
+    var isAppOpen by remember { mutableStateOf(false) }
 
+    //Check App Updates
     LaunchedEffect(Unit) {
+
+        delay(1000)
 
         fetchRemoteData { result ->
             configData = result
-        }
 
-        delay(1000)
-        isSplashVisible.value = false
-        screenNavigation(isLoggedIn, navController)
+            configData?.let {
+                if (it.versionCode > getAppVersion().second) {
+                    //has updated
+                    showUpdateDialog = true
+                } else {
+                    //no updates
+                    isAppOpen = true
+                }
+            } ?: kotlin.run {
+                isAppOpen = true
+            }
+        }
+    }
+
+    //If having app update display an alert
+    if (showUpdateDialog) {
+        configData?.let { config ->
+            UpdateAlertDialog(
+                message = config.message,
+                isCritical = config.level == "critical",
+                onUpdate = {
+                    // Redirect to Play Store
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=${context.packageName}")
+                    ).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    context.startActivity(intent)
+                },
+                onCancel = {
+                    showUpdateDialog = false
+                    isAppOpen = true
+                }
+            )
+        }
+    }
+
+    //Start navigation
+    if (isAppOpen) {
+        appOpen(isSplashVisible, isLoggedIn, navController)
+        isAppOpen = false
     }
 
     if (isSplashVisible.value) {
@@ -58,19 +108,23 @@ fun SplashScreen(
     }
 }
 
-
+// Set Remote Config settings to force a fresh fetch
 private fun fetchRemoteData(onResult: (RemoteConfigModel?) -> Unit) {
     val remoteConfig = FirebaseRemoteConfig.getInstance()
+
+    val configSettings = remoteConfigSettings {
+        minimumFetchIntervalInSeconds = 0 // Force immediate fetch
+        fetchTimeoutInSeconds = 5 // Reduce fetch timeout to 5s
+    }
+    remoteConfig.setConfigSettingsAsync(configSettings)
 
     remoteConfig.fetchAndActivate()
         .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val jsonString = remoteConfig.getString("android_version")
-                Log.d("MyFirebase RC", "Fetched: $jsonString")
 
                 try {
                     val configData = Json.decodeFromString<RemoteConfigModel>(jsonString)
-                    Log.d("MyFirebase RC", "Fetched: $configData")
                     onResult(configData)
                 } catch (e: Exception) {
                     Log.e("MyFirebase RC", "JSON parsing error", e)
@@ -118,6 +172,14 @@ private fun SplashViewContent(modifier: Modifier) {
     }
 }
 
+private fun appOpen(
+    isSplashVisible: MutableState<Boolean>,
+    isLoggedIn: Boolean,
+    navController: NavHostController
+) {
+    isSplashVisible.value = false
+    screenNavigation(isLoggedIn, navController)
+}
 
 @Preview(showBackground = true)
 @Composable

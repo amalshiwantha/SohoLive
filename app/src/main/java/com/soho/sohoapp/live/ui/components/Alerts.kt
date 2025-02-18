@@ -47,12 +47,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.SocialMedia
 import com.soho.sohoapp.live.enums.SocialMediaInfo
-import com.soho.sohoapp.live.model.ScheduleSlots
 import com.soho.sohoapp.live.model.SmBtn
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -70,6 +70,36 @@ import com.soho.sohoapp.live.ui.theme.YoutubeRedDark
 import com.soho.sohoapp.live.ui.theme.infoText
 import com.soho.sohoapp.live.ui.view.screens.golive.getImageWidth
 import kotlinx.coroutines.delay
+
+@Composable
+fun UpdateAlertDialog(
+    message: String,
+    isCritical: Boolean,
+    onUpdate: () -> Unit,
+    onCancel: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { if (!isCritical) onCancel() },
+        title = { Text("App Update") },
+        text = { Text(message) },
+        confirmButton = {
+            TextButton(onClick = onUpdate) {
+                Text("Update Now")
+            }
+        },
+        dismissButton = if (!isCritical) {
+            {
+                TextButton(onClick = onCancel) {
+                    Text("Cancel")
+                }
+            }
+        } else null,
+        properties = DialogProperties(
+            dismissOnBackPress = !isCritical,
+            dismissOnClickOutside = !isCritical
+        )
+    )
+}
 
 @Composable
 fun PreRecVidSuccessView(modifier: Modifier, onDismiss: () -> Unit) {
@@ -99,7 +129,9 @@ fun PreRecVidSuccessView(modifier: Modifier, onDismiss: () -> Unit) {
             Text800_12sp(
                 label = "Your video was created successfully " +
                         "and saved privately. You can preview " +
-                        "and edit it before publishing.", isBold = false, txtAlign = TextAlign.Center
+                        "and edit it before publishing.",
+                isBold = false,
+                txtAlign = TextAlign.Center
             )
         }
     }
@@ -566,8 +598,8 @@ fun AppAlertDialog(
 
 @Composable
 fun ConfirmAlert(
-    title : String,
-    message : String,
+    title: String,
+    message: String,
     isShowDialog: Boolean,
     onDismiss: (Boolean) -> Unit,
     onConfirm: () -> Unit
