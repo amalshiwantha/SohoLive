@@ -50,8 +50,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="dev-agents.soho.com.au"
-                    android:pathPrefix="/login/reset-password" />
+                    android:host="dev-agents.soho.com.au" />
             </intent-filter>
 
             <!-- Main App Launcher -->
