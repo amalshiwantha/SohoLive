@@ -24,9 +24,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.soho.sohoapp.live" />
-                  <option name="mobileSdkAppId" value="1:358816752909:android:0722ab3914b583cd65bc44" />
-                  <option name="projectId" value="soholive-android" />
-                  <option name="projectNumber" value="358816752909" />
+                  <option name="mobileSdkAppId" value="1:490952348271:android:0ef33494ca933da764739a" />
+                  <option name="projectId" value="soholive" />
+                  <option name="projectNumber" value="490952348271" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

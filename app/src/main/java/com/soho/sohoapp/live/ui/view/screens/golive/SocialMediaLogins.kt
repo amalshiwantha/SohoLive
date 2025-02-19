@@ -21,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.soho.sohoapp.live.BuildConfig
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.CategoryType
@@ -91,8 +92,8 @@ fun doConnectGoogle(viewMMain: MainViewModel): ManagedActivityResultLauncher<Int
 }
 
 private fun getTokens(authCode: String, viewMMain: MainViewModel, gsa: GoogleSignInAccount) {
-    val clientId = context.getString(R.string.google_client_id)
-    val clientSecret = context.getString(R.string.google_client_secret)
+    val clientId = BuildConfig.GOOGLE_CLIENT_ID
+    val clientSecret = BuildConfig.GOOGLE_CLIENT_SECRET
     val redirectUri = "" // Redirect URI, usually "urn:ietf:wg:oauth:2.0:oob"
     val grantType = "authorization_code"
 

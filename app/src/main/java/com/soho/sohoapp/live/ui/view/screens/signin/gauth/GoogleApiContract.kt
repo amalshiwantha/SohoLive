@@ -9,13 +9,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
+import com.soho.sohoapp.live.BuildConfig
 import com.soho.sohoapp.live.R
 
 class GoogleApiContract : ActivityResultContract<Int, Task<GoogleSignInAccount>?>() {
     override fun createIntent(context: Context, input: Int): Intent {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(R.string.google_client_id))
-            .requestServerAuthCode(context.getString(R.string.google_client_id), true)
+            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
+            .requestServerAuthCode(BuildConfig.GOOGLE_CLIENT_ID, true)
             .requestScopes(Scope("https://www.googleapis.com/auth/youtube"))
             .requestScopes(Scope("https://www.googleapis.com/auth/youtube.readonly"))
             .requestScopes(Scope("https://www.googleapis.com/auth/youtube.force-ssl"))
