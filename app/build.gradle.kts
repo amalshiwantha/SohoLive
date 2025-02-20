@@ -41,8 +41,16 @@ android {
     }
 
     defaultConfig {
-        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"490952348271-ln3e6h2mfo750pr65mpu3cj7e6ikbe9h.apps.googleusercontent.com\"")
-        buildConfigField("String", "GOOGLE_CLIENT_SECRET", "\"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\"")
+        buildConfigField(
+            "String",
+            "GOOGLE_CLIENT_ID",
+            "\"490952348271-ln3e6h2mfo750pr65mpu3cj7e6ikbe9h.apps.googleusercontent.com\""
+        )
+        buildConfigField(
+            "String",
+            "GOOGLE_CLIENT_SECRET",
+            "\"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\""
+        )
     }
 
     flavorDimensions += "appType"
@@ -202,6 +210,9 @@ dependencies {
 
     //lottie
     implementation("com.airbnb.android:lottie-compose:6.2.0")
+
+    //zendesk support
+    implementation(libs.zendesk)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -19,6 +19,9 @@ dependencyResolutionManagement {
         mavenCentral()
         maven(url = "https://jitpack.io")
         maven {
+            url = uri("https://zendesk.jfrog.io/zendesk/repo")
+        }
+        maven {
             url = uri("https://muxinc.jfrog.io/artifactory/default-maven-release-local")
         }
     }
