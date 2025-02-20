@@ -1,5 +1,9 @@
 package com.soho.sohoapp.live.ui.view.screens.profile
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +37,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.MainStateHolder
@@ -54,6 +59,9 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.utility.toCapsFirstLetter
 import org.koin.compose.koinInject
+import zendesk.core.Zendesk
+import zendesk.support.Support
+import zendesk.support.request.RequestActivity
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -153,15 +161,10 @@ private fun MainContent(
                 })
                 SpacerUp(size = 24.dp)
 
-                /*
                 Text700_14spLink(name = "Support", onClick = {
-                    openWebView(
-                        title = "Support",
-                        url = "https://support.soho.com.au/hc/en-us",
-                        navCont = navCont
-                    )
+                    openZendDesk()
                 })
-                SpacerUp(size = 24.dp)*/
+                SpacerUp(size = 24.dp)
 
                 LogoutView(onLogout = {
                     vmProfile.showLogoutConfirm()
@@ -304,6 +307,25 @@ fun LogoutView(onLogout: () -> Unit) {
         SpacerSide(size = 8.dp)
         Text700_14spLink(name = "Logout", color = logoutRed, onClick = { onLogout() })
     }
+}
+
+fun openZendDesk(){
+    Zendesk.INSTANCE.init(
+        context, "https://sohoapp.zendesk.com",
+        "ce788e20d6b619f00a0b4a8da3c59b9acd0196c4baae9efd",
+        "mobile_sdk_client_97b0712d67f13d57d720");
+    Support.INSTANCE.init(Zendesk.INSTANCE)
+
+    val requestActivityIntent = RequestActivity.builder()
+        .withRequestSubject("Testing Support SDK")
+        .withTags("sdk", "android")
+        .intent(context)
+
+    requestActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+    Handler(Looper.getMainLooper()).postDelayed({
+        context.startActivity(requestActivityIntent)
+    }, 500)
 }
 
 private fun openWebView(title: String, url: String, navCont: NavHostController) {

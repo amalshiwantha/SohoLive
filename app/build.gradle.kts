@@ -213,6 +213,7 @@ dependencies {
 
     //zendesk support
     implementation(libs.zendesk)
+    implementation("com.google.android.material:material:1.11.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
