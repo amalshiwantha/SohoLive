@@ -13,7 +13,6 @@ class ZendeskClient private constructor(context: Context) {
 
     companion object {
 
-        //Pass only application context
         @SuppressLint("StaticFieldLeak")
         @Volatile
         private var INSTANCE: ZendeskClient? = null
@@ -31,16 +30,6 @@ class ZendeskClient private constructor(context: Context) {
             initZendeskInstance()
         }
         return Zendesk.INSTANCE
-    }
-
-    fun getSupportInstance(): Support {
-        if (!Support.INSTANCE.isInitialized) {
-            if (!Zendesk.INSTANCE.isInitialized) {
-                initZendeskInstance()
-            }
-            Support.INSTANCE.init(Zendesk.INSTANCE)
-        }
-        return Support.INSTANCE
     }
 
     private fun initZendeskInstance() {

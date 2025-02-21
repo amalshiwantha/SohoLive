@@ -162,8 +162,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
 
-                    val context = LocalContext.current
-                    val activity = context as? Activity
+                    val contextLocal = LocalContext.current
 
                     //val viewMMain: MainViewModel = koinInject()
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
@@ -213,7 +212,7 @@ class MainActivity : ComponentActivity() {
                         if (msOpenSupport) {
                             zendeskClient.getZendeskInstance()
                                 .setUserIdentity(User("amal", "amal@soho.com.au"))
-                            RequestListActivity.builder().show(context)
+                            RequestListActivity.builder().show(contextLocal)
                         }
                     }
 
