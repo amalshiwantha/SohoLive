@@ -48,6 +48,9 @@ class MainViewModel(
     private val _stateOpenLiveCast = MutableStateFlow("")
     val stateOpenLiveCast: StateFlow<String> = _stateOpenLiveCast.asStateFlow()
 
+    private val _stateOpenSupport = MutableStateFlow(false)
+    val stateOpenSupport: StateFlow<Boolean> = _stateOpenSupport.asStateFlow()
+
     private val _uploadProgress = MutableStateFlow(0)
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
@@ -281,5 +284,9 @@ class MainViewModel(
             MainStateHolder.mState.reset()
             dataStore.clearAllData()
         }
+    }
+
+    fun openSupport() {
+        _stateOpenSupport.value = true
     }
 }

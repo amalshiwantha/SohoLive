@@ -61,4 +61,9 @@
         <item quantity="one">We’ve scheduled one livecast</item>
         <item quantity="other">We’ve scheduled %d livecasts</item>
     </plurals>
+
+    <string name="key_zendesk_app_url">https://sohoapp.zendesk.com</string>
+    <string name="key_zendesk_application_id">ce788e20d6b619f00a0b4a8da3c59b9acd0196c4baae9efd</string>
+    <string name="key_zendesk_mobile_sdk_client">mobile_sdk_client_97b0712d67f13d57d720</string>
+
 </resources>

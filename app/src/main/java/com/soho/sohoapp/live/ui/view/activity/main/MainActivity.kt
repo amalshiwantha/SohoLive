@@ -1,5 +1,13 @@
 package com.soho.sohoapp.live.ui.view.activity.main
 
+/*import com.ssw.linkedinmanager.dto.LinkedInAccessToken
+import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
+import com.ssw.linkedinmanager.dto.LinkedInUserProfile
+import com.ssw.linkedinmanager.events.LinkedInManagerResponse
+import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
+import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
+import com.ssw.linkedinmanager.ui.LinkedInRequestManager*/
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -58,6 +66,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,6 +75,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp.Companion.zendeskClient
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.CategoryType
 import com.soho.sohoapp.live.enums.SocialMediaInfo
@@ -74,6 +84,7 @@ import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.Profile
 import com.soho.sohoapp.live.model.SocialMediaProfile
+import com.soho.sohoapp.live.model.User
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
 import com.soho.sohoapp.live.ui.components.ButtonColoured
@@ -109,18 +120,13 @@ import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.FB_MORE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
-/*import com.ssw.linkedinmanager.dto.LinkedInAccessToken
-import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
-import com.ssw.linkedinmanager.dto.LinkedInUserProfile
-import com.ssw.linkedinmanager.events.LinkedInManagerResponse
-import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
-import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
-import com.ssw.linkedinmanager.ui.LinkedInRequestManager*/
+import com.soho.sohoapp.live.utility.setUserIdentity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import zendesk.support.requestlist.RequestListActivity
 
 
 class MainActivity : ComponentActivity() {
@@ -156,9 +162,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
                 ) {
 
+                    val context = LocalContext.current
+                    val activity = context as? Activity
+
                     //val viewMMain: MainViewModel = koinInject()
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     val msOpenLiveCaster by viewMMain.stateOpenLiveCast.collectAsState()
+                    val msOpenSupport by viewMMain.stateOpenSupport.collectAsState()
                     var openSmConnector by remember { mutableStateOf(SocialMediaInfo.NONE) }
                     val openSmConnectorState by rememberUpdatedState(openSmConnector)
                     val stateSMConnected by viewMMain.stateIsSMConnected.collectAsStateWithLifecycle()
@@ -196,6 +206,14 @@ class MainActivity : ComponentActivity() {
                             val orientation = MainStateHolder.mState.liveOrientation.value
                             val isPublic = MainStateHolder.mState.isPublic.value
                             openLiveScreen(msOpenLiveCaster, orientation, isPublic)
+                        }
+                    }
+
+                    LaunchedEffect(msOpenSupport) {
+                        if (msOpenSupport) {
+                            zendeskClient.getZendeskInstance()
+                                .setUserIdentity(User("amal", "amal@soho.com.au"))
+                            RequestListActivity.builder().show(context)
                         }
                     }
 

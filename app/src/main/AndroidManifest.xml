@@ -80,8 +80,13 @@
             android:exported="true"
             android:theme="@style/Theme.Broadcast" />
 
-        <activity android:name="zendesk.support.request.RequestActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name="zendesk.support.requestlist.RequestListActivity"
+            android:theme="@style/ZendeskSupportPageTheme" />
+
+        <activity
+            android:name="zendesk.support.request.RequestActivity"
+            android:theme="@style/ZendeskSupportPageTheme" />
 
         <!-- facebook -->
         <meta-data

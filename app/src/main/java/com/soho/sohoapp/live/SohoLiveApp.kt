@@ -12,6 +12,7 @@ import com.google.firebase.FirebaseApp
 import com.mux.video.upload.MuxUploadSdk
 import com.mux.video.upload.api.MuxUploadManager
 import com.soho.sohoapp.live.di.appModule
+import com.soho.sohoapp.live.utility.ZendeskClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -19,6 +20,7 @@ class SohoLiveApp : Application() {
 
     companion object {
         private lateinit var instance: SohoLiveApp
+        lateinit var zendeskClient: ZendeskClient
 
         val context: Context
             get() = instance.applicationContext
@@ -59,5 +61,7 @@ class SohoLiveApp : Application() {
         MuxUploadManager.resumeAllCachedJobs()
 
         FirebaseApp.initializeApp(context)
+
+        zendeskClient = ZendeskClient.getInstance(context)
     }
 }

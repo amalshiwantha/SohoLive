@@ -1,10 +1,52 @@
 package com.soho.sohoapp.live.utility
 
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.ui.graphics.Color
 import com.soho.sohoapp.live.db.AgentProperty
+import com.soho.sohoapp.live.model.User
 import com.soho.sohoapp.live.network.response.Document
+import zendesk.core.AnonymousIdentity
+import zendesk.core.Zendesk
 import java.text.DecimalFormat
 import java.util.Locale
+
+fun View.keyboardHide() {
+    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun Zendesk.setUserIdentity(user: User?) {
+    val identify = user?.let {
+        AnonymousIdentity.Builder()
+            .withNameIdentifier(user.name)
+            .withEmailIdentifier(user.email).build()
+    } ?: AnonymousIdentity.Builder().build()
+    if(this.isInitialized) {
+        this.setIdentity(identify)
+    } else {
+        throw IllegalStateException("Zendesk must be initialized")
+    }
+}
+
+fun Zendesk.setIdentityZendesk(email: String) {
+    val identity = AnonymousIdentity.Builder().withEmailIdentifier(email).build()
+    if(this.isInitialized) {
+        this.setIdentity(identity)
+    } else {
+        throw IllegalStateException("Zendesk must be initialized")
+    }
+}
+
+fun Zendesk.clearIdentity() {
+    val identity = AnonymousIdentity.Builder().build()
+    if(this.isInitialized) {
+        this.setIdentity(identity)
+    } else {
+        throw IllegalStateException("Zendesk must be initialized")
+    }
+}
 
 fun String.isMulticast(): Boolean {
     return this.contains("Multicast")

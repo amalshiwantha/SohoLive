@@ -88,7 +88,11 @@ fun BottomNavHost(
             )
         }
         composable(route = NavigationPath.PROFILE.name) {
-            ProfileScreen(navController = navController, mGState = mGlobalState)
+            ProfileScreen(
+                viewMMain = mainViewModel,
+                navController = navController,
+                mGState = mGlobalState
+            )
         }
         composable(route = NavigationPath.SET_SCHEDULE.name) {
             ScheduleScreen(
@@ -260,13 +264,16 @@ fun BottomNavHost(
         }
 
         composable(route = NavigationPath.VIDEO_EDIT_DETAILS.name) {
-            VidEditDetailsScreen(mGState = mGlobalState, navController = navController, onBackListing = {
-                navController.navigate(NavigationPath.PRE_RECODED_LIST.name) {
-                    popUpTo(NavigationPath.PRE_RECODED_LIST.name) {
-                        inclusive = true
+            VidEditDetailsScreen(
+                mGState = mGlobalState,
+                navController = navController,
+                onBackListing = {
+                    navController.navigate(NavigationPath.PRE_RECODED_LIST.name) {
+                        popUpTo(NavigationPath.PRE_RECODED_LIST.name) {
+                            inclusive = true
+                        }
                     }
-                }
-            })
+                })
         }
 
         composable(route = NavigationPath.SUBSCRIPTION.name) {

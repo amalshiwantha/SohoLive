@@ -1,6 +1,5 @@
 package com.soho.sohoapp.live.ui.view.screens.profile
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
@@ -57,16 +56,19 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.logoutRed
+import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.utility.toCapsFirstLetter
 import org.koin.compose.koinInject
 import zendesk.core.Zendesk
 import zendesk.support.Support
 import zendesk.support.request.RequestActivity
+import zendesk.support.requestlist.RequestListActivity
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
 fun ProfileScreen(
+    viewMMain: MainViewModel,
     vmProfile: ProfileViewModel = koinInject(),
     navController: NavHostController,
     mGState: GlobalState,
@@ -99,12 +101,13 @@ fun ProfileScreen(
             })
     }
 
-    MainContent(vmProfile, sProfile, navController)
+    MainContent(vmProfile, viewMMain, sProfile, navController)
 }
 
 @Composable
 private fun MainContent(
     vmProfile: ProfileViewModel,
+    vmMain: MainViewModel,
     sProfile: ProfileState,
     navCont: NavHostController
 ) {
@@ -163,6 +166,7 @@ private fun MainContent(
 
                 Text700_14spLink(name = "Support", onClick = {
                     openZendDesk()
+                    //vmMain.openSupport()
                 })
                 SpacerUp(size = 24.dp)
 
@@ -309,23 +313,20 @@ fun LogoutView(onLogout: () -> Unit) {
     }
 }
 
-fun openZendDesk(){
+fun openZendDesk() {
     Zendesk.INSTANCE.init(
         context, "https://sohoapp.zendesk.com",
         "ce788e20d6b619f00a0b4a8da3c59b9acd0196c4baae9efd",
-        "mobile_sdk_client_97b0712d67f13d57d720");
+        "mobile_sdk_client_97b0712d67f13d57d720"
+    );
     Support.INSTANCE.init(Zendesk.INSTANCE)
 
-    val requestActivityIntent = RequestActivity.builder()
-        .withRequestSubject("Testing Support SDK")
-        .withTags("sdk", "android")
+    val requestActivityIntent = RequestListActivity.builder()
         .intent(context)
 
     requestActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-    Handler(Looper.getMainLooper()).postDelayed({
-        context.startActivity(requestActivityIntent)
-    }, 500)
+    context.startActivity(requestActivityIntent)
 }
 
 private fun openWebView(title: String, url: String, navCont: NavHostController) {
