@@ -16,6 +16,7 @@ import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.SocialMediaProfile
 import com.soho.sohoapp.live.model.UploadData
+import com.soho.sohoapp.live.model.User
 import com.soho.sohoapp.live.ui.view.screens.golive.doLogout
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.utility.AppEvent
@@ -61,6 +62,8 @@ class MainViewModel(
     val isOpenResetPw: StateFlow<Boolean> = _isOpenResetPw.asStateFlow()
 
     var deepLinkToken: MutableState<String?> = mutableStateOf(null)
+
+    val msUser: MutableState<User> = mutableStateOf(User())
 
     val uploadNotification = NotificationHelper()
 
@@ -287,10 +290,24 @@ class MainViewModel(
     }
 
     fun openSupport() {
-        _stateOpenSupport.value = true
+        loadProfileData()
     }
 
     fun closeSupport() {
         _stateOpenSupport.value = false
+    }
+
+    private fun loadProfileData() {
+        viewModelScope.launch {
+            dataStore.userProfile.collect { profile ->
+                profile?.let {
+                    msUser.value = msUser.value.copy(
+                        name = it.name,
+                        email = it.email
+                    )
+                    _stateOpenSupport.value = true
+                }
+            }
+        }
     }
 }

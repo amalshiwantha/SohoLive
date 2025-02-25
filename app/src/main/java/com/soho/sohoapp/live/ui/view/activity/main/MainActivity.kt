@@ -7,7 +7,6 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
 import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager*/
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -210,8 +209,9 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(msOpenSupport) {
                         if (msOpenSupport) {
+                            val user = viewMMain.msUser.value
                             zendeskClient.getZendeskInstance()
-                                .setUserIdentity(User("amal", "amal@soho.com.au"))
+                                .setUserIdentity(User(user.name, user.email))
                             RequestListActivity.builder().show(contextLocal)
                             viewMMain.closeSupport()
                         }
