@@ -289,4 +289,8 @@ class MainViewModel(
     fun openSupport() {
         _stateOpenSupport.value = true
     }
+
+    fun closeSupport() {
+        _stateOpenSupport.value = false
+    }
 }

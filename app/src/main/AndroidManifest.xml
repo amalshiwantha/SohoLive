@@ -40,7 +40,6 @@
             android:launchMode="standard"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SohoLive"
             tools:ignore="DiscouragedApi">

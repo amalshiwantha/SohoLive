@@ -213,6 +213,7 @@ class MainActivity : ComponentActivity() {
                             zendeskClient.getZendeskInstance()
                                 .setUserIdentity(User("amal", "amal@soho.com.au"))
                             RequestListActivity.builder().show(contextLocal)
+                            viewMMain.closeSupport()
                         }
                     }
 
