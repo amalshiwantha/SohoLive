@@ -10,4 +10,5 @@
     <color name="app_dark">#32003E</color>
     <color name="red_stop">#E13831</color>
     <color name="shite_stop">#FFF</color>
+    <color name="appColorDark">#2B0235</color>
 </resources>

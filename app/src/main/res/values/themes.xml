@@ -8,12 +8,8 @@
     <style name="Theme.SohoLiveInside" parent="Theme.AppCompat.Light.NoActionBar"/>
 
     <style name="ZendeskSupportPageTheme" parent="ZendeskSdkTheme.Light">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorPrimary">@color/appColorDark</item>
+        <item name="colorPrimaryDark">@color/appColorDark</item>
         <item name="fontFamily">@font/axiforma_regular</item>
-        <item name="android:fontFamily">@font/axiforma_regular</item>
     </style>
-
-    <color name="primary">#430D69</color>
-    <color name="primaryDark">#120431</color>
 </resources>
