@@ -11,7 +11,8 @@ import com.soho.sohoapp.live.enums.Orientation
 enum class Event {
     user_logged_in, password_reset_requested,
     asset_step1_next_clicked, asset_step2_next_clicked,
-    asset_step3_next_clicked, asset_step4_preview_clicked
+    asset_step3_next_clicked, asset_step4_preview_clicked,
+    live_stream_preview_created
 }
 
 /*@Composable
@@ -21,6 +22,27 @@ fun TrackLogin(email: String) {
         recordEvent(Event.user_logged_in, params)
     }
 }*/
+
+fun TrackLiveStreamPreview(
+    property_listing_id: Int,
+    live_cast_for: String,
+    stream_id: String,
+    is_facebook_connected: Boolean,
+    is_youtube_connected: Boolean,
+    is_vertical_orientation: String,
+) {
+    val isVertical = is_vertical_orientation == Orientation.LAND.name
+
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "live_cast_for" to live_cast_for,
+        "stream_id" to stream_id,
+        "is_facebook_connected" to is_facebook_connected,
+        "is_youtube_connected" to is_youtube_connected,
+        "is_vertical_orientation" to isVertical
+    )
+    recordEvent(Event.live_stream_preview_created, params)
+}
 
 fun TrackStep4(
     property_listing_id: Int,

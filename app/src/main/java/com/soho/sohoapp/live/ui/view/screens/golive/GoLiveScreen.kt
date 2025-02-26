@@ -173,6 +173,7 @@ import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.TrackLiveStreamPreview
 import com.soho.sohoapp.live.utility.TrackStep1
 import com.soho.sohoapp.live.utility.TrackStep2
 import com.soho.sohoapp.live.utility.TrackStep3
@@ -270,17 +271,18 @@ fun GoLiveScreen(
             } else {
                 //Open Pre-Recorder Screen
                 navController.navigate(NavigationPath.TEMPLATE.name)
-            }
 
-            TrackStep4(
-                mGoLiveSubmit.propertyId,
-                mGoLiveSubmit.purpose.orEmpty(),
-                mState.liveFormat.value,
-                mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
-                mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
-                mState.liveOrientation.value,
-                4
-            )
+                TrackStep4(
+                    mGoLiveSubmit.propertyId,
+                    mGoLiveSubmit.purpose.orEmpty(),
+                    mState.liveFormat.value,
+                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
+                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
+                    mState.liveOrientation.value,
+                    4
+                )
+
+            }
 
         }, onCancel = {
             isShowOrientationModel = false
@@ -353,6 +355,14 @@ fun GoLiveScreen(
 
             if (isNowSelected) {
                 viewMMain.openLiveCastScreen(jsonStr)
+                TrackLiveStreamPreview(
+                    mGoLiveSubmit.propertyId,
+                    mGoLiveSubmit.purpose.orEmpty(),
+                    requestLive.liveStreamId,
+                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
+                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
+                    mState.liveOrientation.value
+                )
             } else {
                 isShowScheduleOkScreen = true
             }
