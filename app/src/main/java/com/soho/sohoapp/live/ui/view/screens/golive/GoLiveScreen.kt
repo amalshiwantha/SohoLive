@@ -176,6 +176,7 @@ import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.TrackStep1
 import com.soho.sohoapp.live.utility.TrackStep2
 import com.soho.sohoapp.live.utility.TrackStep3
+import com.soho.sohoapp.live.utility.TrackStep4
 import com.soho.sohoapp.live.utility.isMulticast
 import com.soho.sohoapp.live.utility.toAgentProperty
 import com.soho.sohoapp.live.utility.toUppercaseFirst
@@ -512,8 +513,7 @@ fun GoLiveScreen(
                                             title = null
                                             propertyType = null
                                             purpose = getStateSelection(
-                                                optionList,
-                                                PropertyState.RENT.value
+                                                optionList, PropertyState.RENT.value
                                             )
                                         }
                                     }
@@ -613,6 +613,16 @@ fun GoLiveScreen(
                                 TrackStep3(
                                     mGoLiveSubmit.propertyId,
                                     mGoLiveSubmit.purpose.orEmpty(),
+                                    currentStepId
+                                )
+                            } else if (currentStepId == 4) {
+                                TrackStep4(
+                                    mGoLiveSubmit.propertyId,
+                                    mGoLiveSubmit.purpose.orEmpty(),
+                                    mState.liveFormat.value,
+                                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
+                                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
+                                    mState.liveOrientation.value,
                                     currentStepId
                                 )
                             }
@@ -1068,8 +1078,7 @@ fun PropertyItemRow(
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(
-                    isSelected,
+                TypeAndCheckBox(isSelected,
                     true,
                     property,
                     txtColor = textColor,
@@ -1151,8 +1160,7 @@ fun ListingLabel(label: ListedLabel, count: Int) {
     Box(
         modifier = Modifier
             .background(
-                color = bgColor,
-                shape = RoundedCornerShape(8.dp)
+                color = bgColor, shape = RoundedCornerShape(8.dp)
             )
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
@@ -1247,7 +1255,9 @@ fun StepContents(
         2 -> {
             Content4(
                 mGState,
-                optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
+                optionList = optionList,
+                mGoLiveSubmit = mGoLiveSubmit,
+                mFieldsError = mFieldsError
             )
         }
 
@@ -2188,8 +2198,7 @@ private fun SocialMediaItemContent(
                         )
                         Spacer(modifier = Modifier.weight(1f))
 
-                        SwitchCompo(
-                            isPublic.value,
+                        SwitchCompo(isPublic.value,
                             modifier = Modifier.height(35.dp),
                             onCheckedChange = {
                                 isPublic.value = it
@@ -2214,8 +2223,7 @@ private fun SocialMediaItemContent(
                         info = "Livecast will be shown publicly on property listing",
                         color = AppPrimaryDark,
                         modifier = Modifier.padding(end = 80.dp)
-                    )
-                    /*PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
+                    )/*PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
                         val isPublic = it == VideoPrivacy.PUBLIC.label
                         onSohoItemChecked.invoke(isPublic)
                     })*/
@@ -2614,8 +2622,7 @@ fun RequestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             val permission = Manifest.permission.POST_NOTIFICATIONS
             if (ContextCompat.checkSelfPermission(
-                    context,
-                    permission
+                    context, permission
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 notificationPermissionLauncher.launch(permission)

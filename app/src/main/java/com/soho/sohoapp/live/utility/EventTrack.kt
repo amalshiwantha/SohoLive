@@ -5,10 +5,13 @@ import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
+import com.soho.sohoapp.live.enums.LiveFormat
+import com.soho.sohoapp.live.enums.Orientation
 
 enum class Event {
     user_logged_in, password_reset_requested,
-    asset_step1_next_clicked, asset_step2_next_clicked, asset_step3_next_clicked
+    asset_step1_next_clicked, asset_step2_next_clicked,
+    asset_step3_next_clicked, asset_step4_preview_clicked
 }
 
 /*@Composable
@@ -18,6 +21,35 @@ fun TrackLogin(email: String) {
         recordEvent(Event.user_logged_in, params)
     }
 }*/
+
+fun TrackStep4(
+    property_listing_id: Int,
+    live_cast_for: String,
+    video_format: String,
+    is_facebook_connected: Boolean,
+    is_youtube_connected: Boolean,
+    is_vertical_orientation: String,
+    step: Int
+) {
+    val isVertical = is_vertical_orientation == Orientation.LAND.name
+
+    val format = if (video_format == LiveFormat.PRE.name) {
+        "PreRecord"
+    } else {
+        "LiveStream"
+    }
+
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "live_cast_for" to live_cast_for,
+        "video_format" to format,
+        "is_facebook_connected" to is_facebook_connected,
+        "is_youtube_connected" to is_youtube_connected,
+        "is_vertical_orientation" to isVertical,
+        "step" to step,
+    )
+    recordEvent(Event.asset_step4_preview_clicked, params)
+}
 
 fun TrackStep3(
     property_listing_id: Int,
