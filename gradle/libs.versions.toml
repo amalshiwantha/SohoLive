@@ -28,9 +28,10 @@ material = "1.12.0"
 cameraView = "1.4.1"
 media3Exoplayer = "1.5.1"
 media3Ui = "1.5.1"
+firebaseConfig = "22.1.0"
+firebaseAnalytics = "22.2.0"
 firebaseCrashlytics = "19.4.0"
 googleFirebaseCrashlytics = "3.0.3"
-firebaseConfig = "22.1.0"
 zendesk = "5.4.0"
 ksp = "2.0.21-1.0.27"
 
@@ -71,6 +72,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3Ui" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
 zendesk = { group = "com.zendesk", name = "support", version.ref = "zendesk" }

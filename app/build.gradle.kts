@@ -207,6 +207,7 @@ dependencies {
 
     //Firebase
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)
 
     //lottie
