@@ -80,7 +80,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
-import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
@@ -174,6 +173,7 @@ import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.TrackStep1
 import com.soho.sohoapp.live.utility.isMulticast
 import com.soho.sohoapp.live.utility.toAgentProperty
 import com.soho.sohoapp.live.utility.toUppercaseFirst
@@ -509,7 +509,10 @@ fun GoLiveScreen(
                                             propertyId = 0
                                             title = null
                                             propertyType = null
-                                            purpose = getStateSelection(optionList, PropertyState.RENT.value)
+                                            purpose = getStateSelection(
+                                                optionList,
+                                                PropertyState.RENT.value
+                                            )
                                         }
                                     }
 
@@ -586,6 +589,18 @@ fun GoLiveScreen(
                         if (currentStepId < stepCount - 1 && isAllowGo) {
                             currentStepId++
                             mState.stepId.value = currentStepId
+                        }
+
+                        //For event track
+                        if (isAllowGo) {
+                            if (currentStepId == 1) {
+                                TrackStep1(
+                                    mGoLiveSubmit.propertyId,
+                                    mGoLiveSubmit.purpose.orEmpty(),
+                                    mGoLiveSubmit.propertyType.orEmpty(),
+                                    currentStepId
+                                )
+                            }
                         }
                     },
                     onClickedBack = {
@@ -1215,7 +1230,8 @@ fun StepContents(
 
         // step #3
         2 -> {
-            Content4(mGState,
+            Content4(
+                mGState,
                 optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
             )
         }
