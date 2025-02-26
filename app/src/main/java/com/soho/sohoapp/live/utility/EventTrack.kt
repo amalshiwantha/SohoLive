@@ -2,13 +2,11 @@ package com.soho.sohoapp.live.utility
 
 import android.os.Bundle
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 
-enum class Event { user_logged_in }
+enum class Event { user_logged_in, password_reset_requested }
 
 /*@Composable
 fun TrackLogin(email: String) {
@@ -17,6 +15,11 @@ fun TrackLogin(email: String) {
         recordEvent(Event.user_logged_in, params)
     }
 }*/
+
+fun TrackPwResetRequest(email: String) {
+    val params = mapOf("email" to email)
+    recordEvent(Event.password_reset_requested, params)
+}
 
 fun TrackLogin(email: String) {
     val params = mapOf("email" to email)

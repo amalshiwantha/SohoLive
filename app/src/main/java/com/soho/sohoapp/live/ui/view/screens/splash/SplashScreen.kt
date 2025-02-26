@@ -33,7 +33,6 @@ import com.soho.sohoapp.live.model.RemoteConfigModel
 import com.soho.sohoapp.live.ui.components.UpdateAlertDialog
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
-import com.soho.sohoapp.live.utility.TrackSignup
 import com.soho.sohoapp.live.utility.getAppVersion
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
@@ -51,8 +50,6 @@ fun SplashScreen(
     var configData by remember { mutableStateOf<RemoteConfigModel?>(null) }
     var showUpdateDialog by remember { mutableStateOf(false) }
     var isAppOpen by remember { mutableStateOf(false) }
-
-    TrackSignup(1001)
 
     //Check App Updates
     LaunchedEffect(Unit) {

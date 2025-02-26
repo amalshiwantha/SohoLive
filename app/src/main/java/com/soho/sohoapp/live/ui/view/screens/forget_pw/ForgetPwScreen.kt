@@ -42,6 +42,7 @@ import com.soho.sohoapp.live.ui.view.screens.signin.SignInEvent
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInViewModel
 import com.soho.sohoapp.live.ui.view.screens.signin.isErrorOnFiled
+import com.soho.sohoapp.live.utility.TrackPwResetRequest
 import org.koin.compose.koinInject
 
 @Composable
@@ -66,6 +67,7 @@ fun ForgetPwScreen(
     //if successfully sent the ForgetPwLink then open next success screen
     LaunchedEffect(key1 = stateVm.isForgetPwLinkSent) {
         if (stateVm.isForgetPwLinkSent) {
+            stateVm.request.email?.let { TrackPwResetRequest(it) }
             navController.navigate(NavigationPath.FORGET_PW_SENT.name) {
                 popUpTo(NavigationPath.FORGET_PW.name) { inclusive = true }
             }
