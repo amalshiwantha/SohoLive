@@ -8,7 +8,7 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 
 enum class Event {
     user_logged_in, password_reset_requested,
-    asset_step1_next_clicked, asset_step2_next_clicked
+    asset_step1_next_clicked, asset_step2_next_clicked, asset_step3_next_clicked
 }
 
 /*@Composable
@@ -18,6 +18,19 @@ fun TrackLogin(email: String) {
         recordEvent(Event.user_logged_in, params)
     }
 }*/
+
+fun TrackStep3(
+    property_listing_id: Int,
+    live_cast_for: String,
+    step: Int,
+) {
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "live_cast_for" to live_cast_for,
+        "step" to step,
+    )
+    recordEvent(Event.asset_step3_next_clicked, params)
+}
 
 fun TrackStep2(
     property_listing_id: Int,

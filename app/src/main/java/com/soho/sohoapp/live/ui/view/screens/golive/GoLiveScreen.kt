@@ -175,6 +175,7 @@ import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.TrackStep1
 import com.soho.sohoapp.live.utility.TrackStep2
+import com.soho.sohoapp.live.utility.TrackStep3
 import com.soho.sohoapp.live.utility.isMulticast
 import com.soho.sohoapp.live.utility.toAgentProperty
 import com.soho.sohoapp.live.utility.toUppercaseFirst
@@ -601,11 +602,17 @@ fun GoLiveScreen(
                                     mGoLiveSubmit.propertyType.orEmpty(),
                                     currentStepId
                                 )
-                            }else if (currentStepId == 2) {
+                            } else if (currentStepId == 2) {
                                 TrackStep2(
                                     mGoLiveSubmit.propertyId,
                                     !mGoLiveSubmit.isHideAgent,
                                     mGoLiveSubmit.agentId,
+                                    currentStepId
+                                )
+                            } else if (currentStepId == 3) {
+                                TrackStep3(
+                                    mGoLiveSubmit.propertyId,
+                                    mGoLiveSubmit.purpose.orEmpty(),
                                     currentStepId
                                 )
                             }
