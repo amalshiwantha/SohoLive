@@ -6,7 +6,10 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 
-enum class Event { user_logged_in, password_reset_requested, asset_step1_next_clicked }
+enum class Event {
+    user_logged_in, password_reset_requested,
+    asset_step1_next_clicked, asset_step2_next_clicked
+}
 
 /*@Composable
 fun TrackLogin(email: String) {
@@ -15,6 +18,21 @@ fun TrackLogin(email: String) {
         recordEvent(Event.user_logged_in, params)
     }
 }*/
+
+fun TrackStep2(
+    property_listing_id: Int,
+    is_show_profile: Boolean,
+    profile_id: Int?,
+    step: Int,
+) {
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "is_show_profile" to is_show_profile,
+        "profile_id" to profile_id,
+        "step" to step,
+    )
+    recordEvent(Event.asset_step2_next_clicked, params)
+}
 
 fun TrackStep1(
     property_listing_id: Int,
