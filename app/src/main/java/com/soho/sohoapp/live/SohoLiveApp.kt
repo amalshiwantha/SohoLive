@@ -9,6 +9,9 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.mux.video.upload.MuxUploadSdk
 import com.mux.video.upload.api.MuxUploadManager
 import com.soho.sohoapp.live.di.appModule
@@ -21,6 +24,7 @@ class SohoLiveApp : Application() {
     companion object {
         private lateinit var instance: SohoLiveApp
         lateinit var zendeskClient: ZendeskClient
+        lateinit var analytics: FirebaseAnalytics
 
         val context: Context
             get() = instance.applicationContext
@@ -46,6 +50,9 @@ class SohoLiveApp : Application() {
             modules(appModule)
         }
 
+        FirebaseApp.initializeApp(context)
+        analytics = Firebase.analytics
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "download_channel",
@@ -59,8 +66,6 @@ class SohoLiveApp : Application() {
 
         MuxUploadSdk.initialize(appContext = this)
         MuxUploadManager.resumeAllCachedJobs()
-
-        FirebaseApp.initializeApp(context)
 
         zendeskClient = ZendeskClient.getInstance(context)
     }

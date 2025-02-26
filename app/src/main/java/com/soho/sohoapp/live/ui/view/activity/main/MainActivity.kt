@@ -1,12 +1,5 @@
 package com.soho.sohoapp.live.ui.view.activity.main
 
-/*import com.ssw.linkedinmanager.dto.LinkedInAccessToken
-import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
-import com.ssw.linkedinmanager.dto.LinkedInUserProfile
-import com.ssw.linkedinmanager.events.LinkedInManagerResponse
-import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
-import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
-import com.ssw.linkedinmanager.ui.LinkedInRequestManager*/
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
