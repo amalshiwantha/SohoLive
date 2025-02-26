@@ -271,6 +271,17 @@ fun GoLiveScreen(
                 //Open Pre-Recorder Screen
                 navController.navigate(NavigationPath.TEMPLATE.name)
             }
+
+            TrackStep4(
+                mGoLiveSubmit.propertyId,
+                mGoLiveSubmit.purpose.orEmpty(),
+                mState.liveFormat.value,
+                mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
+                mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
+                mState.liveOrientation.value,
+                4
+            )
+
         }, onCancel = {
             isShowOrientationModel = false
         })
@@ -613,16 +624,6 @@ fun GoLiveScreen(
                                 TrackStep3(
                                     mGoLiveSubmit.propertyId,
                                     mGoLiveSubmit.purpose.orEmpty(),
-                                    currentStepId
-                                )
-                            } else if (currentStepId == 4) {
-                                TrackStep4(
-                                    mGoLiveSubmit.propertyId,
-                                    mGoLiveSubmit.purpose.orEmpty(),
-                                    mState.liveFormat.value,
-                                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
-                                    mGoLiveSubmit.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
-                                    mState.liveOrientation.value,
                                     currentStepId
                                 )
                             }
