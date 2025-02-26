@@ -47,6 +47,7 @@ import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleLight
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.TrackLogin
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -67,6 +68,7 @@ fun SignInScreen(
     //if login success then open home screen
     LaunchedEffect(key1 = stateVm.isLoginSuccess) {
         if (stateVm.isLoginSuccess) {
+            TrackLogin("")
             navController.navigate(NavigationPath.HOME.name) {
                 popUpTo(NavigationPath.SIGNIN.name) { inclusive = true }
                 popUpTo(NavigationPath.PRE_ACCESS.name) { inclusive = true }

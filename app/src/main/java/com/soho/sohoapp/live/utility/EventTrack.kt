@@ -8,16 +8,19 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 
-enum class Event { SPLASH }
+enum class Event { user_logged_in }
 
-@Composable
-fun TrackSignup(userId: Int) {
+/*@Composable
+fun TrackLogin(email: String) {
     LaunchedEffect(Unit) {
-        val params = mapOf(
-            "user_id" to userId
-        )
-        recordEvent(Event.SPLASH, params)
+        val params = mapOf("email" to email)
+        recordEvent(Event.user_logged_in, params)
     }
+}*/
+
+fun TrackLogin(email: String) {
+    val params = mapOf("email" to email)
+    recordEvent(Event.user_logged_in, params)
 }
 
 //Event Track
@@ -33,7 +36,7 @@ private fun recordEvent(event: Event, parameters: Map<String, Any?>) {
         }
     }
 
-     FirebaseAnalytics.getInstance(context).logEvent(
+    FirebaseAnalytics.getInstance(context).logEvent(
         event.toString().lowercase(), bundle
     )
 
