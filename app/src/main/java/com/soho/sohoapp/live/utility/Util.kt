@@ -120,7 +120,7 @@ fun getAppVersion(): Pair<String, Int> {
 
     try {
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        pkg = Pair(packageInfo.versionName, packageInfo.versionCode)
+        pkg = Pair(packageInfo.versionName.orEmpty(), packageInfo.versionCode)
     } catch (e: PackageManager.NameNotFoundException) {
         pkg = Pair("0.0.0", 0)
     }
@@ -355,22 +355,4 @@ private fun getDownloadStatus(downloadId: Long): Int {
     }
     cursor.close()
     return DownloadManager.STATUS_FAILED
-}
-
-
-fun printHashKey() {
-    try {
-        val info: PackageInfo = context.packageManager
-            .getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
-        for (signature in info.signatures) {
-            val md: MessageDigest = MessageDigest.getInstance("SHA")
-            md.update(signature.toByteArray())
-            val hashKey: String = String(Base64.encode(md.digest(), 0))
-            Log.d("hashkey", "Hash Key: $hashKey")
-        }
-    } catch (e: NoSuchAlgorithmException) {
-        Log.e("Error", "${e.localizedMessage}")
-    } catch (e: Exception) {
-        Log.e("Exception", "${e.localizedMessage}")
-    }
 }

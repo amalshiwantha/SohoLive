@@ -7,7 +7,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.google.firebase.crashlytics)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -16,7 +17,7 @@ keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     namespace = "com.soho.sohoapp.live"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.soho.sohoapp.live"
@@ -105,7 +106,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.9.25"
     }
     packaging {
         resources {
@@ -128,8 +129,11 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.accompanist.systemuicontroller)
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
     implementation(libs.material)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("androidx.activity:activity-compose:1.10.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.play:integrity:1.4.0")
 
     //preference
     implementation(libs.androidx.datastore)
@@ -138,12 +142,11 @@ dependencies {
     implementation(libs.rootencoder)
 
     //DI
-    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("io.insert-koin:koin-android:3.4.3")
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
-    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.8")
 
     //Kort (Network)
     implementation(libs.ktor.core)
@@ -152,7 +155,7 @@ dependencies {
     implementation(libs.ktor.serialization)
     implementation(libs.ktor.negotiation)
     implementation("io.ktor:ktor-client-cio:2.0.0")
-    implementation("androidx.work:work-runtime-ktx:2.7.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
 
     //mux uploader
     implementation("com.mux.video:upload:0.4.1")
@@ -161,7 +164,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose.v282)
 
     //constraintlayout
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
 
     //Cache images
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -170,7 +173,7 @@ dependencies {
     implementation("com.facebook.android:facebook-android-sdk:14.1.1")
 
     //Google Auth
-    implementation("com.google.android.gms:play-services-auth:20.4.1")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
 
     //Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.30.0")
@@ -186,10 +189,10 @@ dependencies {
     implementation(libs.androidx.media3.ui)
 
     //Camera2
-    implementation("androidx.camera:camera-core:1.3.4")
-    implementation("androidx.camera:camera-lifecycle:1.3.4")
-    implementation("androidx.camera:camera-video:1.3.4")
-    implementation("androidx.camera:camera-extensions:1.3.4")
+    implementation("androidx.camera:camera-core:1.4.1")
+    implementation("androidx.camera:camera-lifecycle:1.4.1")
+    implementation("androidx.camera:camera-video:1.4.1")
+    implementation("androidx.camera:camera-extensions:1.4.1")
 
     //Camera View
     implementation(libs.androidx.camera.view)
@@ -200,20 +203,17 @@ dependencies {
     //Room Db
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
     //Firebase
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.config)
-
-    implementation("com.google.android.play:integrity:1.4.0")
 
     //lottie
     implementation("com.airbnb.android:lottie-compose:6.2.0")
 
     //zendesk support
     implementation(libs.zendesk)
-    implementation("com.google.android.material:material:1.11.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

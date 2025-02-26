@@ -1,20 +1,20 @@
 [versions]
-agp = "8.4.0"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
+agp = "8.4.2"
+kotlin = "2.1.0"
+coreKtx = "1.15.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.0"
-activityCompose = "1.9.0"
-composeBom = "2023.08.00"
-navigationCompose = "2.7.7"
-navigationComposeVersion = "2.8.2"
-ui = "1.6.7"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.0"
+composeBom = "2025.02.00"
+navigationCompose = "2.8.7"
+navigationComposeVersion = "2.8.7"
+ui = "1.7.8"
 rootencoder = "2.4.5"
-activity = "1.9.0"
-constraintlayout = "2.1.4"
-datastore = "1.1.1"
+activity = "1.10.0"
+constraintlayout = "2.2.0"
+datastore = "1.1.2"
 accompanist = "0.28.0"
 ktor = "2.3.7"
 datetime = "0.5.0"
@@ -22,16 +22,17 @@ coroutines = "1.8.1"
 serialization = "1.6.3"
 serializationPlugin = "2.0.0"
 googleGmsGoogleServices = "4.4.2"
-firebaseAuth = "23.0.0"
+firebaseAuth = "23.2.0"
 appcompat = "1.7.0"
 material = "1.12.0"
-cameraView = "1.3.4"
-media3Exoplayer = "1.4.1"
-media3Ui = "1.4.1"
+cameraView = "1.4.1"
+media3Exoplayer = "1.5.1"
+media3Ui = "1.5.1"
 firebaseCrashlytics = "19.4.0"
 googleFirebaseCrashlytics = "3.0.3"
 firebaseConfig = "22.1.0"
 zendesk = "5.4.0"
+ksp = "2.0.21-1.0.27"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -81,6 +82,8 @@ google-gms-google-services = { id = "com.google.gms.google-services", version.re
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializationPlugin" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 
 
