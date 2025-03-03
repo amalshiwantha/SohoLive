@@ -245,6 +245,7 @@ fun VideoRecorderScreen(
             //Main Camera
             CameraPreview(
                 controller = controller,
+                isRecording = true,
                 modifier = Modifier.fillMaxSize()
             )
 

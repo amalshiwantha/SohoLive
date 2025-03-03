@@ -1,5 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
+import androidx.camera.video.Quality
+import androidx.camera.video.QualitySelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
@@ -12,9 +14,17 @@ fun CameraPreview(
     controller: LifecycleCameraController,
     modifier: Modifier = Modifier,
     camPadding: Pair<Int, Int> = Pair(0, 0),
-    isLandscape: Boolean = false
+    isLandscape: Boolean = false,
+    isRecording: Boolean = false
 ) {
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+
+    LaunchedEffect(controller) {
+        if (isRecording) {
+            controller.setVideoCaptureQualitySelector(QualitySelector.from(Quality.HD))
+        }
+    }
+
     AndroidView(
         factory = {
             PreviewView(it).apply {
