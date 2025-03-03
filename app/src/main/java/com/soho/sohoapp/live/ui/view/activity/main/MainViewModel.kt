@@ -52,6 +52,9 @@ class MainViewModel(
     private val _stateOpenSupport = MutableStateFlow(false)
     val stateOpenSupport: StateFlow<Boolean> = _stateOpenSupport.asStateFlow()
 
+    private val _stateAskSupport = MutableStateFlow(false)
+    val stateAskSupport: StateFlow<Boolean> = _stateAskSupport.asStateFlow()
+
     private val _uploadProgress = MutableStateFlow(0)
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
@@ -290,6 +293,7 @@ class MainViewModel(
     }
 
     fun openSupport() {
+        _stateAskSupport.value = true
         loadProfileData()
     }
 
@@ -305,7 +309,11 @@ class MainViewModel(
                         name = it.name,
                         email = it.email
                     )
-                    _stateOpenSupport.value = true
+
+                    if (stateAskSupport.value) {
+                        _stateOpenSupport.value = true
+                        _stateAskSupport.value = false
+                    }
                 }
             }
         }
