@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.datastore.AppDataStoreManager
+import com.soho.sohoapp.live.db.PrivateVideo
+import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
@@ -14,6 +16,8 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_VAL
+import com.soho.sohoapp.live.utility.deleteOldRecordedVideos
+import com.soho.sohoapp.live.utility.getAllRecordedVideos
 import com.soho.sohoapp.live.utility.getForceExitMessage
 import com.soho.sohoapp.live.utility.toErrorCode
 import kotlinx.coroutines.flow.launchIn
@@ -23,10 +27,11 @@ import kotlinx.coroutines.launch
 class VideoLibraryViewModel(
     private val apiRepo: SohoApiRepository,
     private val dataStore: AppDataStoreManager,
+    private val vidDb: PrivateVideoDao
 ) : ViewModel() {
 
     val mState: MutableState<VideoLibraryState> = mutableStateOf(VideoLibraryState())
-    var mReqData : VidLibRequest = VidLibRequest()
+    var mReqData: VidLibRequest = VidLibRequest()
 
     fun onTriggerEvent(event: VidLibEvent) {
         when (event) {
@@ -35,6 +40,7 @@ class VideoLibraryViewModel(
             }
 
             is VidLibEvent.CallLoadVideo -> {
+                getPvtVidList()
                 mReqData = event.request
                 loadVideoList(mReqData)
             }
@@ -44,6 +50,7 @@ class VideoLibraryViewModel(
     }
 
     fun reLoadData() {
+        getPvtVidList()
         loadVideoList(mReqData)
     }
 
@@ -67,7 +74,8 @@ class VideoLibraryViewModel(
                                             callVideoLibrary(it.authenticationToken, request)
                                         } else {
                                             //ForceLogout Now
-                                            val forceExit = getForceExitMessage(activeRes.response?.toErrorCode())
+                                            val forceExit =
+                                                getForceExitMessage(activeRes.response?.toErrorCode())
                                             AppEventBus.sendEvent(AppEvent.ForceLogout(forceExit))
                                         }
                                     }
@@ -116,5 +124,38 @@ class VideoLibraryViewModel(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun getPvtVidList() {
+        viewModelScope.launch {
+            val displayList: MutableList<PrivateVideo> = mutableListOf()
+
+            //Remove 30 days old records
+            vidDb.deleteOldVideos()
+            deleteOldRecordedVideos()
+
+            //get all db saved data
+            val dbSaveData = vidDb.getAllVideos()
+
+            //get all raw video files
+            val rawFiles = getAllRecordedVideos()
+
+            /*
+            * find dbSaved file locally avaliable or not.
+            * if have then add to the displayList
+            * */
+            rawFiles.forEach {
+                val rawFileName = it.name
+                val savedFile = dbSaveData.find { savedData ->
+                    savedData.filePath.endsWith(rawFileName)
+                }
+
+                savedFile?.let { avaliableFile ->
+                    displayList.add(avaliableFile)
+                }
+            }
+
+            mState.value = mState.value.copy(isHasPvtVid = mutableStateOf(displayList.isNotEmpty()))
+        }
     }
 }

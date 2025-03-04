@@ -57,7 +57,7 @@ val appModule = module {
     viewModel { GoLiveViewModel(get(), get(), get()) }
     viewModel { MainViewModel(get(), get()) }
     viewModel { ScheduleViewModel(get(), get()) }
-    viewModel { VideoLibraryViewModel(get(), get()) }
+    viewModel { VideoLibraryViewModel(get(), get(), get()) }
     viewModel { VideoManageViewModel(get(), get()) }
     viewModel { LiveStreamViewModel(get(), get()) }
     viewModel { ProfileViewModel(get(), get()) }

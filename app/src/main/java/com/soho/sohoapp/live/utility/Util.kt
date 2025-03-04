@@ -38,6 +38,7 @@ import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.ForceExit
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_403
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_404
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_500
@@ -49,6 +50,39 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.util.concurrent.TimeUnit
+
+//Delete 30 days old files
+fun deleteOldRecordedVideos() {
+    val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    val customDir = File(movieDir, PvtRecFolder)
+
+    if (customDir.exists()) {
+        val thirtyDaysInMillis = TimeUnit.DAYS.toMillis(30)
+        val currentTime = System.currentTimeMillis()
+
+        customDir.listFiles()?.filter {
+            it.extension == "mp4" && (currentTime - it.lastModified()) > thirtyDaysInMillis
+        }?.forEach { oldFile ->
+            if (oldFile.delete()) {
+                println("Deleted old video: ${oldFile.name}")
+            } else {
+                println("Failed to delete: ${oldFile.name}")
+            }
+        }
+    }
+}
+
+//get all recorded video file
+fun getAllRecordedVideos(): List<File> {
+    val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    val customDir = File(movieDir, PvtRecFolder)
+    return if (customDir.exists()) {
+        customDir.listFiles()?.filter { it.extension == "mp4" } ?: emptyList()
+    } else {
+        emptyList()
+    }
+}
 
 //get image from CacheMemory
 fun getCachedImageFile(context: Context, fileName: String = "image.png"): File? {
