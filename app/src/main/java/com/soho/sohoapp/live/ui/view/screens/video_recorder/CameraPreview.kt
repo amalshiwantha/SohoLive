@@ -19,18 +19,18 @@ fun CameraPreview(
     modifier: Modifier = Modifier,
     camPadding: Pair<Int, Int> = Pair(0, 0),
     isLandscape: Boolean = false,
-    isRecording: Boolean = false
+    isRecordMode: Boolean = false
 ) {
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val aspectRatio = if (isLandscape) 9f / 16f else 16f / 9f
 
     LaunchedEffect(controller) {
-        if (isRecording) {
+        if (isRecordMode) {
             controller.setVideoCaptureQualitySelector(QualitySelector.from(Quality.HD))
         }
     }
 
-    if (isRecording) {
+    if (isRecordMode) {
         Box(
             modifier = modifier
                 .aspectRatio(aspectRatio)

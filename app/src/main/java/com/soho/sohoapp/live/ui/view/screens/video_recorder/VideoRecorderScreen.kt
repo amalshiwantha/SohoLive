@@ -5,11 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -245,10 +243,11 @@ fun VideoRecorderScreen(
             //Main Camera
             CameraPreview(
                 controller = controller,
-                isRecording = true,
+                isRecordMode = true,
                 modifier = Modifier.fillMaxSize()
             )
 
+            //CircularProgress Center
             if (isLoading) {
                 Card(
                     modifier = Modifier
@@ -290,6 +289,7 @@ fun VideoRecorderScreen(
                     .padding(16.dp)
             )
 
+            //BOTTOM
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
