@@ -264,14 +264,16 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
                 append("orientation", videoInfo.orientation ?: "")
 
                 append("template", template.readBytes(), Headers.build {
-                    append(HttpHeaders.ContentDisposition, "form-data; name=\"template\"; filename=\"image.png\"")
+                    append(
+                        HttpHeaders.ContentDisposition,
+                        "form-data; name=\"template\"; filename=\"image.png\""
+                    )
                     append(HttpHeaders.ContentType, ContentType.Image.PNG.toString())
                 })
             }
         ) {
             contentType(ContentType.Application.Json)
             header("Authorization", authToken)
-            setBody(videoInfo)
         }.body()
     }
 
