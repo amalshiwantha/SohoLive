@@ -240,10 +240,13 @@ fun VideoRecorderScreen(
                 .background(BgGradientPurpleDark)
         )
         {
+            val isLandScreen = rotateScreen == Orientation.LAND.name
+
             //Main Camera
             CameraPreview(
                 controller = controller,
                 isRecordMode = true,
+                isLandscape = isLandScreen,
                 modifier = Modifier.fillMaxSize()
             )
 
