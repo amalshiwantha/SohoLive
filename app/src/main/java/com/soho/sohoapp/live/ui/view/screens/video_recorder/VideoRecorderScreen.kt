@@ -281,7 +281,7 @@ fun VideoRecorderScreen(
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.offset(16.dp, 16.dp)
+                modifier = Modifier.offset(16.dp, 72.dp)
             )
 
             //Timer Top Right
@@ -289,7 +289,7 @@ fun VideoRecorderScreen(
                 timerValue = timerValue,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(end = 16.dp, top = 72.dp)
             )
 
             //BOTTOM
