@@ -191,7 +191,12 @@ fun PlayerScreen(
         //set dynamically position
         val configuration = LocalConfiguration.current
         val screenHeight = configuration.screenHeightDp.dp
+        val screenWidth = configuration.screenWidthDp.dp
+
+        //Dynamic % of screen height
         val videoHeight = (screenHeight * 0.3f).value.roundToInt().dp
+        val paddingTop = (screenHeight * if (isLandscape) 0.04f else 0.03f).value.roundToInt().dp
+        val paddingStart = (screenWidth * 0.04f).value.roundToInt().dp
 
         states.privateVideo.value?.let { pvtVid ->
             val orientation = pvtVid.videoInfo?.orientation
@@ -286,7 +291,7 @@ fun PlayerScreen(
                     contentDescription = "watermark",
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 16.dp, top = 24.dp)
+                        .padding(start = paddingStart, top = paddingTop)
                 )
 
                 //Agent & Property Overlay
