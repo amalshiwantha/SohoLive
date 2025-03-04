@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.network.api.soho
 
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
@@ -27,6 +28,7 @@ import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import com.soho.sohoapp.live.network.response.VideoDeleteReq
+import com.soho.sohoapp.live.utility.getRawImageFile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
@@ -322,13 +324,24 @@ class SohoApiRepository(private val service: SohoApiServices) {
     ): Flow<ApiState<MuxUploadResponse>> =
         flow {
             try {
+                val templateFile = getRawImageFile(context, "image.png")
+
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
-                val apiResponse = service.uploadMux(
+
+                val apiResponse = service.uploadPreRecord(
+                    authToken = authToken,
+                    videoInfo = videoInfo.copy().apply {
+                        this.streamType = streamType?.lowercase()
+                    },
+                    template = templateFile
+                )
+
+                /*val apiResponse = service.uploadMux(
                     authToken = authToken,
                     videoInfo = videoInfo.copy().apply {
                         this.streamType = streamType?.lowercase()
                     }
-                )
+                )*/
                 emit(ApiState.Data(data = apiResponse))
             } catch (e: Exception) {
                 e.message?.let {
@@ -400,7 +413,6 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
             }
         }
-
 
 
     //ERROR

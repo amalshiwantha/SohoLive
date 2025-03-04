@@ -70,6 +70,7 @@ interface SohoApiServices {
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
     suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String
     suspend fun uploadMux(authToken: String, videoInfo: VideoInfo): MuxUploadResponse
+    suspend fun uploadPreRecord(authToken: String, videoInfo: VideoInfo, template: File): MuxUploadResponse
     suspend fun subsPlans(authToken: String): SubsPlansResponse
     suspend fun activePlan(authToken: String): PlanResponse
     suspend fun storageUsage(authToken: String): UsageResponse

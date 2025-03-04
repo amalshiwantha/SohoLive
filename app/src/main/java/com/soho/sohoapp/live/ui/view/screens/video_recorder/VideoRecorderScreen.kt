@@ -88,6 +88,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 const val PvtRecFolder = "SohoPreRecord"
+const val PvtTemplateFolder = "SohoTemplate"
 private var recording: Recording? = null
 private var recFile: Uri? = null
 

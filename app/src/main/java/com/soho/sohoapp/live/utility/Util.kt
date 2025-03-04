@@ -42,8 +42,24 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+
+fun getRawImageFile(context: Context, fileName: String): File {
+    val inputStream: InputStream = context.resources.openRawResource(R.raw.image)
+    val file = File(context.cacheDir, fileName)
+
+    inputStream.use { input ->
+        FileOutputStream(file).use { output ->
+            input.copyTo(output)
+        }
+    }
+
+    return file
+}
 
 //Get Force Logout Error message
 fun getForceExitMessage(errCode: Int?): ForceExit {

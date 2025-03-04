@@ -247,6 +247,34 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
         }.bodyAsText()
     }
 
+    override suspend fun uploadPreRecord(
+        authToken: String,
+        videoInfo: VideoInfo,
+        template: File
+    ): MuxUploadResponse {
+        return httpClient.submitFormWithBinaryData(
+            url = "${BuildConfig.BASE_URL}${SohoApiServices.MUX_UPLOAD}",
+            formData = formData {
+                append("stream_type", videoInfo.streamType ?: "")
+                append("property_listing_id", videoInfo.propertyListingId.toString())
+                append("title", videoInfo.title ?: "")
+                append("description", videoInfo.description ?: "")
+                append("agent_profile_id", videoInfo.agentProfileId.toString())
+                append("unlisted", videoInfo.unlisted.toString())
+                append("orientation", videoInfo.orientation ?: "")
+
+                append("template", template.readBytes(), Headers.build {
+                    append(HttpHeaders.ContentDisposition, "form-data; name=\"template\"; filename=\"image.png\"")
+                    append(HttpHeaders.ContentType, ContentType.Image.PNG.toString())
+                })
+            }
+        ) {
+            contentType(ContentType.Application.Json)
+            header("Authorization", authToken)
+            setBody(videoInfo)
+        }.body()
+    }
+
     override suspend fun uploadMux(
         authToken: String,
         videoInfo: VideoInfo
