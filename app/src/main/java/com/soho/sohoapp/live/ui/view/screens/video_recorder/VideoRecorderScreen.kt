@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -84,6 +85,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.roundToInt
 
 const val PvtRecFolder = "SohoPreRecord"
 private var recording: Recording? = null
@@ -277,11 +279,20 @@ fun VideoRecorderScreen(
                 }
             }
 
+            val configuration = LocalConfiguration.current
+            val screenWidth = configuration.screenWidthDp.dp
+            val screenHeight = configuration.screenHeightDp.dp
+
+            //Dynamic % of screen height
+            val paddingTop = (screenHeight * 0.08f).value.roundToInt().dp
+            val paddingEnd = (screenWidth * 0.04f).value.roundToInt().dp
+            val paddingStart = (screenWidth * 0.04f).value.roundToInt().dp
+
             //Top Left Soho Watermark
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.offset(16.dp, 72.dp)
+                modifier = Modifier.offset(paddingStart, paddingTop)
             )
 
             //Timer Top Right
@@ -289,7 +300,7 @@ fun VideoRecorderScreen(
                 timerValue = timerValue,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(end = 16.dp, top = 72.dp)
+                    .padding(end = paddingEnd, top = paddingTop)
             )
 
             //BOTTOM
