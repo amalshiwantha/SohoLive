@@ -193,13 +193,11 @@ fun PlayerScreen(
                 end.linkTo(parent.end)
                 height = Dimension.fillToConstraints
             }
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
+            .padding(24.dp)) {
             Box(modifier = Modifier.fillMaxSize()) {
                 //Player
                 if (isShowPlayer) {
-                    AndroidView(modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxSize(),
+                    AndroidView(modifier = Modifier.fillMaxSize(),
                         factory = { ctx ->
                             VideoView(ctx).apply {
                                 //set mediaController
@@ -229,9 +227,7 @@ fun PlayerScreen(
                         Image(
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Video Thumbnail",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 16.dp)
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }
@@ -268,20 +264,19 @@ fun PlayerScreen(
                     contentDescription = "watermark",
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 32.dp, top = 16.dp)
+                        .padding(start = 16.dp, top = 24.dp)
                 )
 
                 //Agent & Property Overlay
                 states.privateVideo.value?.let { pvtVid ->
                     val isTemplated = pvtVid.videoInfo?.isEnableTemplate ?: false
-                    val orie = pvtVid.videoInfo?.orientation
 
                     if (isTemplated) {
                         agentProperty?.let {
                             val mod = Modifier
                                 .align(Alignment.BottomStart)
                                 .fillMaxWidth()
-                                .padding(horizontal = 24.dp, vertical = 16.dp)
+                                .padding(vertical = 10.dp)
                             AgentPropertyInfo(it, mod)
                         }
                     }

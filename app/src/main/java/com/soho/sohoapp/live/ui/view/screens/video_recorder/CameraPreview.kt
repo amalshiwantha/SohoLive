@@ -1,13 +1,12 @@
 package com.soho.sohoapp.live.ui.view.screens.video_recorder
 
+import android.util.Log
 import androidx.camera.video.Quality
 import androidx.camera.video.QualitySelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -26,7 +25,11 @@ fun CameraPreview(
 
     LaunchedEffect(controller) {
         if (isRecordMode) {
-            controller.setVideoCaptureQualitySelector(QualitySelector.from(Quality.HD))
+            try {
+                controller.setVideoCaptureQualitySelector(QualitySelector.from(Quality.HD))
+            } catch (ex: Exception) {
+                Log.e("QualitySelector", ex.toString())
+            }
         }
     }
 
