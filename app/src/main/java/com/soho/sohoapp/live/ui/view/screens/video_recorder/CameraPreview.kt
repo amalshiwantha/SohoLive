@@ -22,7 +22,7 @@ fun CameraPreview(
     isRecordMode: Boolean = false
 ) {
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    val aspectRatio = if (isLandscape) 9f / 16f else 16f / 9f
+    val aspectRatio = if (isLandscape) 16f / 9f else 9f / 16f
 
     LaunchedEffect(controller) {
         if (isRecordMode) {
@@ -32,32 +32,17 @@ fun CameraPreview(
 
     if (isRecordMode) {
         Box(
-            modifier = modifier
-                .aspectRatio(aspectRatio)
-                .fillMaxWidth()
+            modifier = modifier.aspectRatio(aspectRatio)
         ) {
             AndroidView(
                 factory = {
                     PreviewView(it).apply {
                         this.controller = controller
                         controller.bindToLifecycle(lifecycleOwner)
-                        this.scaleType = PreviewView.ScaleType.FIT_CENTER
-
-                        if (camPadding.first != 0 && camPadding.second != 0) {
-                            if (isLandscape) {
-                                this.setPadding(
-                                    camPadding.second,
-                                    camPadding.second,
-                                    0,
-                                    camPadding.second
-                                )
-                            } else {
-                                this.setPadding(camPadding.first, 0, camPadding.first, 0)
-                            }
-                        }
+                        this.scaleType = PreviewView.ScaleType.FILL_CENTER
                     }
                 },
-                modifier = Modifier.fillMaxSize()
+                modifier = modifier
             )
         }
     } else {
