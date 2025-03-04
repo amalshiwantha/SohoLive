@@ -176,7 +176,7 @@ fun ButtonColouredProgress(
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(24.dp),
-                color = AppRed
+                color = AppWhite
             )
         } else {
             if (isBackButton) {
