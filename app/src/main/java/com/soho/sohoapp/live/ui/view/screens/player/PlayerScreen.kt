@@ -230,7 +230,7 @@ fun PlayerScreen(
             Box(modifier = customModifier) {
                 //Player
                 if (isShowPlayer) {
-                    AndroidView(modifier = Modifier
+                    AndroidView(modifier = Modifier.fillMaxSize()
                         .align(Alignment.Center),
                         factory = { ctx ->
                             VideoView(ctx).apply {
