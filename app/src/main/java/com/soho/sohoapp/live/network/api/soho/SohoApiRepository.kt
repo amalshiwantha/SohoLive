@@ -28,7 +28,7 @@ import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import com.soho.sohoapp.live.network.response.VideoDeleteReq
-import com.soho.sohoapp.live.utility.getRawImageFile
+import com.soho.sohoapp.live.utility.getCachedImageFile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
@@ -324,25 +324,32 @@ class SohoApiRepository(private val service: SohoApiServices) {
     ): Flow<ApiState<MuxUploadResponse>> =
         flow {
             try {
-                val templateFile = getRawImageFile(context, "image.png")
+                val templateFile = getCachedImageFile(context)
 
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
 
-                val apiResponse = service.uploadPreRecord(
-                    authToken = authToken,
-                    videoInfo = videoInfo.copy().apply {
-                        this.streamType = streamType?.lowercase()
-                    },
-                    template = templateFile
-                )
+                templateFile?.let {
+                    val apiResponseTemplate = service.uploadPreRecord(
+                        authToken = authToken,
+                        videoInfo = videoInfo.copy().apply {
+                            this.streamType = streamType?.lowercase()
+                        },
+                        template = it
+                    )
 
-                /*val apiResponse = service.uploadMux(
-                    authToken = authToken,
-                    videoInfo = videoInfo.copy().apply {
-                        this.streamType = streamType?.lowercase()
-                    }
-                )*/
-                emit(ApiState.Data(data = apiResponse))
+                    emit(ApiState.Data(data = apiResponseTemplate))
+
+                } ?: run {
+                    val apiResponse = service.uploadMux(
+                        authToken = authToken,
+                        videoInfo = videoInfo.copy().apply {
+                            this.streamType = streamType?.lowercase()
+                        }
+                    )
+
+                    emit(ApiState.Data(data = apiResponse))
+                }
+
             } catch (e: Exception) {
                 e.message?.let {
                     emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {

@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Base64
@@ -25,6 +26,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -44,20 +47,27 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-fun getRawImageFile(context: Context, fileName: String): File {
-    val inputStream: InputStream = context.resources.openRawResource(R.raw.image)
+//get image from CacheMemory
+fun getCachedImageFile(context: Context, fileName: String = "image.png"): File? {
     val file = File(context.cacheDir, fileName)
+    return if (file.exists()) file else null
+}
 
-    inputStream.use { input ->
-        FileOutputStream(file).use { output ->
-            input.copyTo(output)
-        }
+//Save image in CacheMemory
+fun saveBitmapToCache(
+    context: Context,
+    bitmap: ImageBitmap,
+    fileName: String = "image.png"
+): File {
+    val file = File(context.cacheDir, fileName)
+    val androidBitmap = bitmap.asAndroidBitmap()
+
+    FileOutputStream(file).use { out ->
+        androidBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
     }
-
     return file
 }
 
