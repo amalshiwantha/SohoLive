@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -32,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -66,6 +69,7 @@ import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 import java.io.File
+import kotlin.math.roundToInt
 
 @Composable
 fun PlayerScreen(
@@ -110,6 +114,7 @@ fun PlayerScreen(
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
     var isShowPlayer by remember { mutableStateOf(true) }
+    var isLandscape by remember { mutableStateOf(false) }
     val thumbnail: Bitmap? = remember(fileUri) {
         createVideoThumbnail(
             fileUri.path ?: "", MediaStore.Images.Thumbnails.MINI_KIND
@@ -183,9 +188,25 @@ fun PlayerScreen(
             }
         )
 
+        //set dynamically position
+        val configuration = LocalConfiguration.current
+        val screenHeight = configuration.screenHeightDp.dp
+        val videoHeight = (screenHeight * 0.3f).value.roundToInt().dp
+
+        states.privateVideo.value?.let { pvtVid ->
+            val orientation = pvtVid.videoInfo?.orientation
+            isLandscape = orientation == "landscape"
+        }
+
+        //Change the player size according to the video orintation
+        var customModifier = Modifier.fillMaxSize()
+        if (isLandscape) {
+            customModifier = Modifier.height(videoHeight)
+        }
+
         //Center Player
         Column(modifier = Modifier
-            .fillMaxSize()
+            .wrapContentHeight()
             .constrainAs(content) {
                 top.linkTo(actionBar.bottom)
                 bottom.linkTo(bottomButton.top)
@@ -194,10 +215,11 @@ fun PlayerScreen(
                 height = Dimension.fillToConstraints
             }
             .padding(24.dp)) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = customModifier) {
                 //Player
                 if (isShowPlayer) {
-                    AndroidView(modifier = Modifier.fillMaxSize(),
+                    AndroidView(modifier = Modifier
+                        .align(Alignment.Center),
                         factory = { ctx ->
                             VideoView(ctx).apply {
                                 //set mediaController
