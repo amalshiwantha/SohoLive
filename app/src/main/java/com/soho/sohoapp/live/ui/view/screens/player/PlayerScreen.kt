@@ -57,6 +57,8 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
+import com.soho.sohoapp.live.ui.components.Text700_12sp_reg
+import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.components.TopAppBarBackAction
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
@@ -334,9 +336,9 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 agProp.address?.let {
-                    Text800_14sp(label = it, txtColor = AppWhite, isSingleLine = true)
+                    Text700_12sp(label = it, txtColor = AppWhite, isSingleLine = true)
                 }
-                SpacerUp(size = 8.dp)
+                SpacerUp(size = 4.dp)
                 AmenitiesViewSmall(agProp, AppWhite)
                 SpacerUp(size = 16.dp)
             }
@@ -423,22 +425,22 @@ fun AmenitiesViewSmall(ag: AgentProperty, textColor: Color) {
     ) {
 
         ag.bedrooms.visibleValue()?.let {
-            Text800_14sp(label = it, txtColor = textColor)
+            Text700_12sp_reg(label = it, txtColor = textColor)
             AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor, isCompact = false)
         }
 
         ag.bathrooms.visibleValue()?.let {
-            Text800_14sp(label = it, txtColor = textColor)
+            Text700_12sp_reg(label = it, txtColor = textColor)
             AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor, isCompact = false)
         }
 
         ag.parking.visibleValue()?.let {
-            Text800_14sp(label = it, txtColor = textColor)
+            Text700_12sp_reg(label = it, txtColor = textColor)
             AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor, isCompact = false)
         }
 
         ag.areaSize?.let {
-            Text800_14sp(label = it.first, txtColor = textColor)
+            Text700_12sp_reg(label = it.first, txtColor = textColor)
             AmenitiesIcon(icon = it.second, iconColor = textColor, isCompact = false)
         }
     }
