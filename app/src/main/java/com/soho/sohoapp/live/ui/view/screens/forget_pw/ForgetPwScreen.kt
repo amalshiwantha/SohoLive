@@ -143,7 +143,7 @@ private fun FPwForm(stateVm: SignInState, onTextChange: (SignInRequest) -> Unit)
         TextFieldWhiteEmail(modifier = Modifier.testTag("emailField"),
             fieldConfig = FieldConfig.DONE.apply {
                 isError = isErrorOnFiled(errorState, FieldType.LOGIN_EMAIL)
-                placeholder = stringResource(R.string.email)
+                placeholder = "john@domain.com"
                 keyboardType = KeyboardType.Email
             }, onTextChange = {
                 requestData.apply { email = it }

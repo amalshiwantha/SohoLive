@@ -60,7 +60,7 @@ fun TextAreaWhite(fieldConfig: TextFiledConfig, onTextChange: (Pair<String, Stri
         placeholder = { TextPlaceHolder(label = fieldConfig.placeholder) },
         textStyle = inputStyleSearch(),
         keyboardOptions = KeyboardOptions(
-            imeAction = fieldConfig.imeAction,
+            imeAction = ImeAction.Default,
             keyboardType = fieldConfig.keyboardType,
             capitalization = KeyboardCapitalization.Words
         ),
