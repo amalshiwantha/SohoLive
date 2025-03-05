@@ -25,8 +25,11 @@ import com.soho.sohoapp.live.utility.NotificationHelper
 import com.soho.sohoapp.live.utility.UploadService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -63,6 +66,10 @@ class MainViewModel(
 
     val _isOpenResetPw = MutableStateFlow(false)
     val isOpenResetPw: StateFlow<Boolean> = _isOpenResetPw.asStateFlow()
+
+    val isLoggedFlow: StateFlow<Boolean> = dataStore.userProfile
+        .map { profile -> profile != null }
+        .stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     var deepLinkToken: MutableState<String?> = mutableStateOf(null)
 

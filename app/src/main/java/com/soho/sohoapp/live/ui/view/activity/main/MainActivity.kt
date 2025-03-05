@@ -1,12 +1,5 @@
 package com.soho.sohoapp.live.ui.view.activity.main
 
-/*import com.ssw.linkedinmanager.dto.LinkedInAccessToken
-import com.ssw.linkedinmanager.dto.LinkedInEmailAddress
-import com.ssw.linkedinmanager.dto.LinkedInUserProfile
-import com.ssw.linkedinmanager.events.LinkedInManagerResponse
-import com.ssw.linkedinmanager.events.LinkedInUserLoginDetailsResponse
-import com.ssw.linkedinmanager.events.LinkedInUserLoginValidationResponse
-import com.ssw.linkedinmanager.ui.LinkedInRequestManager*/
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -127,7 +120,6 @@ import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import zendesk.support.requestlist.RequestListActivity
 
-
 class MainActivity : ComponentActivity() {
 
     companion object {
@@ -164,6 +156,7 @@ class MainActivity : ComponentActivity() {
                     val contextLocal = LocalContext.current
 
                     //val viewMMain: MainViewModel = koinInject()
+                    val isLogged by viewMMain.isLoggedFlow.collectAsState()
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     val msOpenLiveCaster by viewMMain.stateOpenLiveCast.collectAsState()
                     val msOpenSupport by viewMMain.stateOpenSupport.collectAsState()
@@ -176,7 +169,7 @@ class MainActivity : ComponentActivity() {
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
-                    deepLinkResetPw(viewMMain)
+                    deepLinkResetPw(viewMMain, isLogged)
 
                     /*
                     * show alert message to confirm logout
@@ -317,13 +310,15 @@ class MainActivity : ComponentActivity() {
     }
 
     // Get the deep link data
-    private fun deepLinkResetPw(viewMMain: MainViewModel) {
+    private fun deepLinkResetPw(viewMMain: MainViewModel, isLogged: Boolean) {
         val intentData = intent?.data
         val loginToken = intentData?.getQueryParameter("login_token")
-        println("myDeepLink $loginToken")
+
         loginToken?.let {
-            viewMMain.deepLinkToken.value = it
-            viewMMain._isOpenResetPw.value = true
+            if (!isLogged) {
+                viewMMain.deepLinkToken.value = it
+                viewMMain._isOpenResetPw.value = true
+            }
         }
     }
 
