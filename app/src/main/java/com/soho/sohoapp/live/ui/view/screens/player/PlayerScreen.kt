@@ -369,16 +369,16 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier, isHideAgent: Bool
         //Agent Info
         agProp.agent?.let { agent ->
             val profImgSize = 32.dp
+            val mod = if (isHideAgent) Modifier.height(profImgSize) else Modifier
             Row(
-                modifier = Modifier
-                    .height(profImgSize)
+                modifier = mod
                     .background(agent.agencyBgColor)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 //profile image and name
-                if (isHideAgent) {
+                if (!isHideAgent) {
                     Row(
                         modifier = Modifier
                             .padding(8.dp)
