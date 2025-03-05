@@ -1077,6 +1077,9 @@ fun UnlistedPublicView(propItem: PropertyItem, pvtVidCount: Int) {
     propItem.listing?.let {
         val listedCount = it.listed
         val unlistedCount = it.unlisted
+
+        println("myProp "+listedCount +" "+unlistedCount)
+
         if (listedCount > 0 || unlistedCount > 0) {
             SpacerUp(size = 16.dp)
 

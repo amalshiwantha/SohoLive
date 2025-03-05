@@ -35,6 +35,10 @@ import java.io.File
 
 class SohoApiRepository(private val service: SohoApiServices) {
 
+    companion object{
+        const val PER_PAGE_TS = "50"
+    }
+
     fun onRollBackLiveCast(
         authToken: String,
         liveReq: LiveRequest
@@ -135,7 +139,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                     val propIdList = apiResponse.data.assets.map { it.propertyListingId }
                     val filterBy = "objectID:$propIdList"
                     val tsReq = TsPropertyRequest(
-                        "*", "address_1", filterBy, "20", "1"
+                        "*", "address_1", filterBy, PER_PAGE_TS, "1"
                     )
                     val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
 
@@ -270,7 +274,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                     val propIdList: List<Int> = it.map { prop -> prop.id }
                     val filterBy = "objectID:$propIdList"
                     val tsReq = TsPropertyRequest(
-                        "*", "address_1", filterBy, "20", "1"
+                        "*", "address_1", filterBy, PER_PAGE_TS, "1"
                     )
                     val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
                     val resPair = Pair(apiResponse, apiResponseTs)
