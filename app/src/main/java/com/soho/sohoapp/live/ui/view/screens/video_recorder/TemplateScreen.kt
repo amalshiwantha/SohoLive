@@ -355,6 +355,7 @@ fun PortraitView(
                 SpacerUp(size = 16.dp)
 
                 //selections
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
@@ -362,7 +363,7 @@ fun PortraitView(
                     BrandingOption(
                         isSelected = isTemplateWithBrand,
                         label = "With Branding",
-                        image = R.drawable.template_with_brand,
+                        image = if (goLiveData.isHideAgent) R.drawable.template_with_brand_no_info else R.drawable.template_with_brand,
                         onSelectTemplate = {
                             onSelection(!isTemplateWithBrand)
                         }
@@ -542,7 +543,7 @@ fun LandscapeView(
                     BrandingOptionLand(
                         isSelected = isTemplateWithBrand,
                         label = "With Branding",
-                        image = R.drawable.template_with_brand_land,
+                        image = if (goLiveData.isHideAgent) R.drawable.template_with_brand_no_info_land else R.drawable.template_with_brand_land,
                         onSelectTemplate = {
                             onSelection(!isTemplateWithBrand)
                         }

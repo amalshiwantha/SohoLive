@@ -55,7 +55,7 @@
     <string name="livecast_end">Ending Livecast in...</string>
     <string name="livecast_ended">Livecast Ended</string>
     <string name="your_shareable_links">Your shareable links</string>
-    <string name="apply_agent_agency_branding"><![CDATA[Apply Agent & Agency Branding]]></string>
+    <string name="apply_agent_agency_branding"><![CDATA[Apply agent & agency branding]]></string>
     <string name="what_livecast">What is this livecast for?</string>
     <plurals name="livecast">
         <item quantity="one">We’ve scheduled one livecast</item>
