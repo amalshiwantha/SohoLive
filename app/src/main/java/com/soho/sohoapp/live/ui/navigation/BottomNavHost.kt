@@ -235,12 +235,13 @@ fun BottomNavHost(
                     navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
                         //tab move
                         onTabMoveClick(1)
-                        mGlobalState.isOpenPvtVidLib.value = true
+                        mGlobalState.isOpenPvtVidLib.value = false
 
-                        // Pop up to the start destination (or a specific destination) and clear the stack
+                        //Clear all stack screens
                         popUpTo(navController.graph.findStartDestination().id) {
                             inclusive = true
                         }
+
                         // Ensure the new screen is the top-most screen
                         launchSingleTop = true
 

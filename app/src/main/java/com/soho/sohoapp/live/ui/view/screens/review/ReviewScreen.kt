@@ -35,6 +35,7 @@ import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
+import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
@@ -80,11 +81,8 @@ fun ReviewScreen(
                 )
             )
 
-            doNavigate(mGState, onBackListing = {
-                onBackListing()
-            }, onDoneClick = {
-                onDoneClick()
-            })
+            mGState.privateVideoId.value = -1
+            onDoneClick()
         }
     }
 
