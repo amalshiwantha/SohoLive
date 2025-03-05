@@ -1203,6 +1203,7 @@ fun StepContents(
                     DisplayNoData(message = "No Agency Information")
                 } else {
                     ProfileHideItem(isNotShowProfile, onCheckedChange = {
+                        mState.selectedAgentId = 0
                         onNotShowProfileChange.invoke(it)
                     })
 
