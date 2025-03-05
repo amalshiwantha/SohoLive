@@ -33,6 +33,10 @@ class VideoLibraryViewModel(
     val mState: MutableState<VideoLibraryState> = mutableStateOf(VideoLibraryState())
     var mReqData: VidLibRequest = VidLibRequest()
 
+    init {
+        getPvtVidList()
+    }
+
     fun onTriggerEvent(event: VidLibEvent) {
         when (event) {
             VidLibEvent.DismissAlert -> {
