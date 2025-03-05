@@ -67,15 +67,11 @@ class MainViewModel(
     val _isOpenResetPw = MutableStateFlow(false)
     val isOpenResetPw: StateFlow<Boolean> = _isOpenResetPw.asStateFlow()
 
-    val isLoggedFlow: StateFlow<Boolean> = dataStore.userProfile
-        .map { profile -> profile != null }
-        .stateIn(viewModelScope, SharingStarted.Lazily, false)
-
     var deepLinkToken: MutableState<String?> = mutableStateOf(null)
 
     val msUser: MutableState<User> = mutableStateOf(User())
 
-    val uploadNotification = NotificationHelper()
+    private val uploadNotification = NotificationHelper()
 
     fun uploadNow(data: UploadData) {
         val filePath = data.path ?: return
@@ -83,6 +79,10 @@ class MainViewModel(
         uploadVideo(File(filePath), uploadUrl)
 
         //startUploadService(filePath, uploadUrl)
+    }
+
+    fun dataStore() : AppDataStoreManager {
+        return dataStore
     }
 
     private fun startUploadService(filePath: String, uploadUrl: String) {

@@ -156,7 +156,6 @@ class MainActivity : ComponentActivity() {
                     val contextLocal = LocalContext.current
 
                     //val viewMMain: MainViewModel = koinInject()
-                    val isLogged by viewMMain.isLoggedFlow.collectAsState()
                     val smInfoConnect by viewMMain.isCallSMConnect.collectAsState()
                     val msOpenLiveCaster by viewMMain.stateOpenLiveCast.collectAsState()
                     val msOpenSupport by viewMMain.stateOpenSupport.collectAsState()
@@ -169,7 +168,7 @@ class MainActivity : ComponentActivity() {
 
                     ChangeSystemTrayColor()
                     AppNavHost(viewMMain)
-                    deepLinkResetPw(viewMMain, isLogged)
+                    deepLinkResetPw(viewMMain)
 
                     /*
                     * show alert message to confirm logout
@@ -310,14 +309,18 @@ class MainActivity : ComponentActivity() {
     }
 
     // Get the deep link data
-    private fun deepLinkResetPw(viewMMain: MainViewModel, isLogged: Boolean) {
+    private fun deepLinkResetPw(viewMMain: MainViewModel) {
         val intentData = intent?.data
         val loginToken = intentData?.getQueryParameter("login_token")
 
         loginToken?.let {
-            if (!isLogged) {
-                viewMMain.deepLinkToken.value = it
-                viewMMain._isOpenResetPw.value = true
+
+            GlobalScope.launch {
+                val loggedIn = viewMMain.dataStore().isLogged()
+                if (!loggedIn) {
+                    viewMMain.deepLinkToken.value = it
+                    viewMMain._isOpenResetPw.value = true
+                }
             }
         }
     }
