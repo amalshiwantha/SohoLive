@@ -12,6 +12,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun privateVideoDao(): PrivateVideoDao
 }
 
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE private_videos ADD COLUMN isHideAgent INTEGER NOT NULL DEFAULT 0")
+    }
+}
 
 // Define the migrations with existing data
 /*
