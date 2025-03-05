@@ -315,14 +315,16 @@ fun PortraitView(
             //bottom agent info and property info
             val targetPaddingDp = screenWidth * (55f / 360f)
 
-
             goLiveData.agentProperty?.let {
                 if (isTemplateWithBrand) {
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .padding(horizontal = targetPaddingDp, vertical = 0.dp)
                         .fillMaxWidth()
-                    AgentPropertyInfo(agProp = it, boxMod = mod)
+                    AgentPropertyInfo(
+                        agProp = it, boxMod = mod,
+                        isHideAgent = goLiveData.isHideAgent
+                    )
                 }
             }
         }
@@ -501,7 +503,11 @@ fun LandscapeView(
                             top = targetPaddingDp,
                             bottom = targetPaddingDp
                         )
-                    AgentPropertyInfo(agProp = it, boxMod = mod)
+                    AgentPropertyInfo(
+                        agProp = it,
+                        boxMod = mod,
+                        isHideAgent = goLiveData.isHideAgent
+                    )
                 }
             }
         }

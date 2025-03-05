@@ -316,7 +316,8 @@ fun VideoRecorderScreen(
                     if (MainStateHolder.mState.isTemplateWithBrand.value) {
                         AgentPropertyInfo(
                             agProp = it,
-                            boxMod = Modifier.fillMaxWidth()
+                            boxMod = Modifier.fillMaxWidth(),
+                            isHideAgent = goLiveData.isHideAgent
                         )
                     }
                 }

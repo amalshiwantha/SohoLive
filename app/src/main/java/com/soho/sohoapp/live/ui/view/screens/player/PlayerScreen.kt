@@ -230,7 +230,8 @@ fun PlayerScreen(
             Box(modifier = customModifier) {
                 //Player
                 if (isShowPlayer) {
-                    AndroidView(modifier = Modifier.fillMaxSize()
+                    AndroidView(modifier = Modifier
+                        .fillMaxSize()
                         .align(Alignment.Center),
                         factory = { ctx ->
                             VideoView(ctx).apply {
@@ -321,7 +322,7 @@ fun PlayerScreen(
                                     }
                                     drawLayer(graphicsLayer)
                                 }
-                            AgentPropertyInfo(it, mod)
+                            AgentPropertyInfo(it, mod, pvtVid.isHideAgent)
 
                             //Save the template image Cache
                             coroutineScope.launch {
@@ -346,7 +347,7 @@ fun PlayerScreen(
 }
 
 @Composable
-fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
+fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier, isHideAgent: Boolean) {
     Column(boxMod) {
 
         //Property Info
@@ -370,40 +371,45 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
             val profImgSize = 32.dp
             Row(
                 modifier = Modifier
+                    .height(profImgSize)
                     .background(agent.agencyBgColor)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 //profile image and name
-                Row(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    //profile image
-                    agent.avatar_url?.let {
-                        val urlPainter = rememberAsyncImagePainter(
-                            model = it,
-                            placeholder = painterResource(id = R.drawable.profile_placeholder),
-                            error = painterResource(id = R.drawable.profile_placeholder)
-                        )
+                if (isHideAgent) {
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        //profile image
+                        agent.avatar_url?.let {
+                            val urlPainter = rememberAsyncImagePainter(
+                                model = it,
+                                placeholder = painterResource(id = R.drawable.profile_placeholder),
+                                error = painterResource(id = R.drawable.profile_placeholder)
+                            )
 
-                        Image(
-                            painter = urlPainter,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(profImgSize)
-                                .clip(CircleShape)
-                        )
-                    } ?: kotlin.run {
-                        InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                            Image(
+                                painter = urlPainter,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(profImgSize)
+                                    .clip(CircleShape)
+                            )
+                        } ?: kotlin.run {
+                            InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                        }
+
+                        SpacerSide(size = 8.dp)
+
+                        //name
+                        Text700_12sp(label = agent.full_name, txtColor = TextDark)
                     }
-
-                    SpacerSide(size = 8.dp)
-
-                    //name
-                    Text700_12sp(label = agent.full_name, txtColor = TextDark)
                 }
 
                 //agency logo
