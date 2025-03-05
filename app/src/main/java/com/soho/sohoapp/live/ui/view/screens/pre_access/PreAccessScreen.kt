@@ -11,13 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,13 +25,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
@@ -54,11 +48,6 @@ import com.soho.sohoapp.live.ui.components.Text950_20spCenter
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
-import com.soho.sohoapp.live.ui.theme.AppWhite
-import com.soho.sohoapp.live.utility.AppEvent
-import com.soho.sohoapp.live.utility.AppEventBus
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -67,7 +56,7 @@ const val SIGNUP_TITLE = "Soho LiveCast"
 val onboardingItems = listOf(
     OnboardingData(
         R.drawable.on_board_4,
-        "Apply your agent and agency branding on every video"
+        "Apply your agent and agency branding on every video\n"
     ),
     OnboardingData(
         R.drawable.on_board_2,
@@ -101,7 +90,7 @@ fun PreAccessScreen(navController: NavHostController) {
             contentDescription = null,
             modifier = Modifier
                 .wrapContentSize()
-                .padding(vertical = 60.dp)
+                .padding(top = 60.dp, bottom = 45.dp)
                 .constrainAs(topLogo) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -141,7 +130,7 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val screenHeight = configuration.screenHeightDp.dp
+    val imgSize = (screenWidth * 0.87f)
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -156,7 +145,12 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
             ) {
-                Column {
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
                     if (page == 1) {
                         val composition by rememberLottieComposition(
@@ -164,7 +158,7 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                         )
 
                         //center animated image
-                        Box(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.size(imgSize)) {
                             LottieAnimation(
                                 composition = composition,
                                 iterations = LottieConstants.IterateForever,
@@ -173,24 +167,14 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
                         }
                     } else {
                         //center image
-                        Box(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.size(imgSize)) {
                             Image(
                                 painter = painterResource(id = onboardingItems[page].imageRes),
                                 contentDescription = null,
                                 modifier = Modifier.aspectRatio(1f)
                             )
-
-                            // Gradient overlay at the bottom of the image
-                            /*Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.BottomCenter)
-                                    .height(120.dp)
-                                    .background(onBoardGradientBg)
-                            )*/
                         }
                     }
-
 
                     SpacerUp(size = 32.dp)
 
@@ -204,8 +188,6 @@ fun OnboardingView(modifier: Modifier, pagerState: PagerState) {
         }
 
         SpacerUp(size = 16.dp)
-
-
     }
 }
 
@@ -215,12 +197,10 @@ fun BottomBtnIndicator(
     navController: NavHostController,
     pagerState: PagerState
 ) {
-    var isShowSignup = remember { true }
-
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, bottom = 40.dp),
+            .padding(start = 16.dp, end = 16.dp, bottom = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -232,8 +212,6 @@ fun BottomBtnIndicator(
                 .padding(vertical = 16.dp)
         ) {
             onboardingItems.forEachIndexed { index, _ ->
-                isShowSignup = pagerState.currentPage == 0
-
                 val isSelected = pagerState.currentPage == index
                 val itemWidth = if (isSelected) 24.dp else 16.dp
                 val itemColor = if (isSelected) Color.White else Color.Gray
@@ -259,62 +237,15 @@ fun BottomBtnIndicator(
                 navController.navigate(NavigationPath.SIGNIN.name)
             })
 
-        //No account login buttons
-        if (isShowSignup) {
-            Text800_14sp(label = "No Account Yet? ")
-            ButtonOutlineWhite(
-                text = "Visit Soho Livecast",
-                modifier = Modifier.fillMaxWidth(),
-                onBtnClick = {
-                    val webUrl = "https://soho.com.au/agents/livecast"
-                    val encodeUrl = URLEncoder.encode(webUrl, StandardCharsets.UTF_8.toString())
-                    navController.navigate("${NavigationPath.WEB_VIEW_MAIN.name}/$SIGNUP_TITLE/$encodeUrl")
-                })
-        }
-    }
-}
-
-@Composable
-fun CenterImgText(modifier: Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        CenterImage()
-
-        Text(
-            text = stringResource(R.string.pre_access_msg),
-            fontFamily = FontFamily(Font(R.font.axiforma)),
-            fontWeight = FontWeight(950),
-            color = AppWhite,
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center,
-            lineHeight = 33.6.sp,
-            letterSpacing = 0.28.sp
-        )
-    }
-}
-
-@Composable
-fun CenterImage() {
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.pre_access_img),
-            contentDescription = null,
-            modifier = Modifier.wrapContentSize()
-        )
-        Image(
-            painter = painterResource(id = R.drawable.girl_stand),
-            contentDescription = null,
-            modifier = Modifier
-                .wrapContentSize()
-                .align(alignment = Alignment.BottomCenter)
-        )
+        Text800_14sp(label = "No Account Yet? ")
+        ButtonOutlineWhite(
+            text = "Visit Soho Livecast",
+            modifier = Modifier.fillMaxWidth(),
+            onBtnClick = {
+                val webUrl = "https://soho.com.au/agents/livecast"
+                val encodeUrl = URLEncoder.encode(webUrl, StandardCharsets.UTF_8.toString())
+                navController.navigate("${NavigationPath.WEB_VIEW_MAIN.name}/$SIGNUP_TITLE/$encodeUrl")
+            })
     }
 }
 
