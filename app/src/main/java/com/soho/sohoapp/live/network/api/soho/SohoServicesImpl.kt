@@ -24,6 +24,7 @@ import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import com.soho.sohoapp.live.network.response.VideoDeleteReq
+import com.soho.sohoapp.live.utility.CACHED_IMG
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.onUpload
@@ -266,7 +267,7 @@ class SohoServicesImpl(private val httpClient: HttpClient) : SohoApiServices {
                 append("template", template.readBytes(), Headers.build {
                     append(
                         HttpHeaders.ContentDisposition,
-                        "form-data; name=\"template\"; filename=\"image.png\""
+                        "form-data; name=\"template\"; filename=\"$CACHED_IMG\""
                     )
                     append(HttpHeaders.ContentType, ContentType.Image.PNG.toString())
                 })

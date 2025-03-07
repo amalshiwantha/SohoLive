@@ -53,6 +53,8 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.concurrent.TimeUnit
 
+const val CACHED_IMG = "image.png"
+
 //Delete 30 days old files
 fun deleteOldRecordedVideos() {
     val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
@@ -86,12 +88,12 @@ fun getAllRecordedVideos(): List<File> {
 }
 
 //get image from CacheMemory
-fun getCachedImageFile(context: Context, fileName: String = "image.png"): File? {
+fun getCachedImageFile(context: Context, fileName: String = CACHED_IMG): File? {
     val file = File(context.cacheDir, fileName)
     return if (file.exists()) file else null
 }
 
-fun getCachedImageBitmap(context: Context, fileName: String = "image.png"): Bitmap? {
+fun getCachedImageBitmap(context: Context, fileName: String = CACHED_IMG): Bitmap? {
     val file = File(context.cacheDir, fileName)
     return if (file.exists()) BitmapFactory.decodeFile(file.absolutePath) else null
 }
@@ -100,7 +102,7 @@ fun getCachedImageBitmap(context: Context, fileName: String = "image.png"): Bitm
 fun saveBitmapToCache(
     context: Context,
     bitmap: ImageBitmap,
-    fileName: String = "image.png"
+    fileName: String = CACHED_IMG
 ): File {
     val file = File(context.cacheDir, fileName)
     val androidBitmap = bitmap.asAndroidBitmap()
@@ -112,7 +114,7 @@ fun saveBitmapToCache(
 }
 
 //Delete Cache image
-fun deleteCachedImage(context: Context, fileName: String = "image.png"): Boolean {
+fun deleteCachedImage(context: Context, fileName: String = CACHED_IMG): Boolean {
     val file = File(context.cacheDir, fileName)
     return if (file.exists()) {
         file.delete()
