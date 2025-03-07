@@ -32,10 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -48,7 +46,6 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.soho.sohoapp.live.R
-import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GlobalState
@@ -70,10 +67,8 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesIcon
 import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsViewModel
-import com.soho.sohoapp.live.utility.saveBitmapToCache
 import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.io.File
 import kotlin.math.roundToInt
@@ -316,19 +311,7 @@ fun PlayerScreen(
                                 .align(Alignment.BottomStart)
                                 .fillMaxWidth()
                                 .padding(vertical = 10.dp)
-                                .drawWithContent {
-                                    graphicsLayer.record {
-                                        this@drawWithContent.drawContent()
-                                    }
-                                    drawLayer(graphicsLayer)
-                                }
                             AgentPropertyInfo(it, mod, pvtVid.isHideAgent)
-
-                            //Save the template image Cache
-                            coroutineScope.launch {
-                                val bitmap = graphicsLayer.toImageBitmap()
-                                saveBitmapToCache(context, bitmap)
-                            }
                         }
                     }
                 }

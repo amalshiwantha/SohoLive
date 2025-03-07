@@ -37,10 +37,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -81,7 +85,9 @@ import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.rotateScreen
+import com.soho.sohoapp.live.utility.saveBitmapToCache
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
@@ -423,14 +429,30 @@ fun PortraitView(
 
             goLiveData.agentProperty?.let {
                 if (isTemplateWithBrand) {
+
+                    val coroutineScope = rememberCoroutineScope()
+                    val graphicsLayer = rememberGraphicsLayer()
+
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .padding(horizontal = targetPaddingDp, vertical = 0.dp)
                         .fillMaxWidth()
+                        .drawWithContent {
+                            graphicsLayer.record {
+                                this@drawWithContent.drawContent()
+                            }
+                            drawLayer(graphicsLayer)
+                        }
                     AgentPropertyInfo(
                         agProp = it, boxMod = mod,
                         isHideAgent = goLiveData.isHideAgent
                     )
+
+                    //Save the template image Cache
+                    coroutineScope.launch {
+                        val bitmap = graphicsLayer.toImageBitmap()
+                        saveBitmapToCache(context, bitmap)
+                    }
                 }
             }
         }
