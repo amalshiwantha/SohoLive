@@ -13,6 +13,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
@@ -722,7 +723,10 @@ class LiveStreamActivity : AppCompatActivity() {
                             if (isLand) getWatermarkLogoLandscape() else getWatermarkLogoPortrait()
                         val watermarkLAgent = getWatermarkAgentProp()
 
-                        it.glInterface.setFilter(watermarkLAgent)
+                        val watermarkFilter = ImageObjectFilterRender()
+                        watermarkFilter.setImage(createTransparentWatermark(context))
+
+                        it.glInterface.setFilter(watermarkFilter)
 
                         //start live
                         if (it.prepareAudio() && it.prepareVideo(
@@ -764,35 +768,36 @@ class LiveStreamActivity : AppCompatActivity() {
         val transparentBitmap =
             Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(transparentBitmap)
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        val paint = Paint()
+        paint.color = Color.argb(150, 255, 0, 0) // (Alpha 150 = ~60% transparency)
+        canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), paint)
 
         // Load the logo & watermark bitmaps
-        val logoBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
+        val logoBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_watermark)
         val agentBitmap = getCachedImageBitmap(SohoLiveApp.context) ?: BitmapFactory.decodeResource(
             resources,
-            R.drawable.logo_li
+            R.drawable.soho_logo_watermark
         )
 
         // Set logo size (e.g., 15% of screen width)
         val logoWidth = (screenWidth * 0.15).toInt()
         val logoHeight = (logoWidth * logoBitmap.height.toFloat() / logoBitmap.width).toInt()
 
-        // Set watermark size (e.g., 25% of screen width)
-        val watermarkWidth = (screenWidth * 0.25).toInt()
+        // Set watermark size
+        val watermarkWidth = screenWidth
         val watermarkHeight =
             (watermarkWidth * agentBitmap.height.toFloat() / agentBitmap.width).toInt()
 
-        // Padding for positioning
-        val padding = (screenWidth * 0.02).toInt() // 2% of screen width
+        // agent position top
+        val logoX = 32
+        val logoY = 32
 
-        // **Positioning**
-        val logoX = padding // Top-left X
-        val logoY = padding // Top-left Y
+        // agent position bottom
+        val agentX = 0
+        val agentY = screenHeight - watermarkHeight
 
-        val watermarkX = screenWidth - watermarkWidth - padding // Bottom-right X
-        val watermarkY = screenHeight - watermarkHeight - padding // Bottom-right Y
-
-        // **Draw the images on the transparent canvas**
+        // Draw the images on the transparent canvas
         canvas.drawBitmap(
             Bitmap.createScaledBitmap(logoBitmap, logoWidth, logoHeight, true),
             logoX.toFloat(),
@@ -805,7 +810,7 @@ class LiveStreamActivity : AppCompatActivity() {
                 watermarkWidth,
                 watermarkHeight,
                 true
-            ), watermarkX.toFloat(), watermarkY.toFloat(), null
+            ), agentX.toFloat(), agentY.toFloat(), null
         )
 
         return transparentBitmap
