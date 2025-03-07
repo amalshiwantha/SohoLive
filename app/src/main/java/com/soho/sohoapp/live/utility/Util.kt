@@ -12,6 +12,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.util.Base64
@@ -88,6 +89,11 @@ fun getAllRecordedVideos(): List<File> {
 fun getCachedImageFile(context: Context, fileName: String = "image.png"): File? {
     val file = File(context.cacheDir, fileName)
     return if (file.exists()) file else null
+}
+
+fun getCachedImageBitmap(context: Context, fileName: String = "image.png"): Bitmap? {
+    val file = File(context.cacheDir, fileName)
+    return if (file.exists()) BitmapFactory.decodeFile(file.absolutePath) else null
 }
 
 //Save image in CacheMemory

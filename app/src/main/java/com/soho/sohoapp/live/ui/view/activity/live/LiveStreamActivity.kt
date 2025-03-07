@@ -3,30 +3,33 @@ package com.soho.sohoapp.live.ui.view.activity.live
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -40,6 +43,8 @@ import com.pedro.library.rtmp.RtmpCamera2
 import com.pedro.library.util.FpsListener
 import com.pedro.library.view.OpenGlView
 import com.soho.sohoapp.live.R
+import com.soho.sohoapp.live.SohoLiveApp
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.databinding.ActivityLiveStreamBinding
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.Orientation
@@ -53,6 +58,7 @@ import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
 import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamParameters.resolution
 import com.soho.sohoapp.live.utility.copyToClipboard
+import com.soho.sohoapp.live.utility.getCachedImageBitmap
 import com.soho.sohoapp.live.utility.showAlertMessage
 import com.soho.sohoapp.live.utility.showProgressDialog
 import com.soho.sohoapp.live.utility.showToastTrans
@@ -62,6 +68,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class LiveStreamActivity : AppCompatActivity() {
 
@@ -319,7 +326,9 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun checkEssentialData() {
         isPublic = intent.getBooleanExtra(KEY_PUBLIC, false)
-        val jsonModel = intent.getStringExtra(KEY_STREAM)
+        //val jsonModel = intent.getStringExtra(KEY_STREAM)
+        val jsonModel =
+            "{\"simulcast_targets\":[],\"streamKey\":\"0a7b2ef0-ac25-ddc9-258e-9950c93c9704\",\"liveStreamId\":\"OHoF3Ga4rtzJ3A\",\"shareableLink\":\"https://dev.soho.com.au/properties/sale/18-ashton-street-bacchus-marsh-vic-3340-australia?live_stream_id=OHoF3Ga4rtzJ3A#livecast-inspection\"}"
 
         jsonModel?.let {
             reqLive = Json.decodeFromString<LiveRequest>(it)
@@ -492,6 +501,94 @@ class LiveStreamActivity : AppCompatActivity() {
         return imgRender
     }
 
+    private fun getWatermarkAgentProp(): ImageObjectFilterRender {
+        // Get screen width
+        val displayMetrics = Resources.getSystem().displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHight = displayMetrics.heightPixels
+
+        // Calculate scale relative to stream size
+        val streamWidth = resolution.width
+        val streamHeight = 5 // if change this image size will update
+
+        //val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
+        val watermarkBitmap = getCachedImageBitmap(context) ?: BitmapFactory.decodeResource(
+            resources,
+            R.drawable.logo_li
+        )
+        val imgWidth = streamWidth
+        val imgHeight = watermarkBitmap.height
+
+        val imgRender = ImageObjectFilterRender()
+        imgRender.setImage(watermarkBitmap)
+
+        // Calculate the scale
+        val scaleFactor =
+            minOf(streamWidth.toFloat() / imgWidth, streamHeight.toFloat() / imgHeight)
+        val imgw = imgWidth * scaleFactor
+        val imgh = imgHeight * scaleFactor
+
+        val scaleX = 750f / 7.48f //width
+        val scaleY = 250f / 16 //height s
+        imgRender.setScale(scaleX, scaleY)
+
+        println("imgSize $scaleX $scaleY")
+        println("imgSize $imgw $imgh")
+        println("imgSize ${resolution.width} ${resolution.height}")
+        println("imgSize $screenWidth $screenHight")
+
+        // Padding in dp
+        val paddingDp = 0
+        val scale = resources.displayMetrics.density
+        val paddingPx = (paddingDp * scale + 0.5f).toInt()
+
+        /*
+        * initial view this setPosition willNot show, so have to set it manual fake view
+        * when start the live setPosition is correct
+        * */
+        imgRender.setPosition(paddingPx.toFloat(), 2f)
+
+        return imgRender
+    }
+
+    private fun getAgentPropertyWatermark(): ImageObjectFilterRender {
+
+        val displayMetrics = Resources.getSystem().displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
+
+        // Get stream width & height dynamically
+        val streamWidth = resolution.width
+        val streamHeight = resolution.height // Use the actual height instead of hardcoded 5
+
+// Load watermark bitmap
+        val watermarkBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
+        val imgWidth = 260 // You can change this to be a percentage of stream width
+        val imgHeight = watermarkBitmap.height
+
+        val imgRender = ImageObjectFilterRender()
+        imgRender.setAlpha(2.0f) // Adjust brightness if needed
+        imgRender.setImage(watermarkBitmap)
+
+// Calculate the scale
+        val scaleFactor =
+            minOf(streamWidth.toFloat() / imgWidth, streamHeight.toFloat() / imgHeight)
+        imgRender.setScale(imgWidth * scaleFactor, imgHeight * scaleFactor)
+
+// Convert padding from DP to pixels
+        val paddingDp = 5
+        val scale = resources.displayMetrics.density
+        val paddingPx = (paddingDp * scale + 0.5f).toInt()
+
+// **Calculate the position for centering**
+        val xPosition = (screenWidth / 2f) - (imgWidth * scaleFactor / 2) // Center horizontally
+        val yPosition = (screenHeight / 2f) - (imgHeight * scaleFactor / 2) // Center vertically
+
+        imgRender.setPosition(xPosition, yPosition) // ✅ Set centered position
+
+        return imgRender
+    }
+
     /*
     * isStart = true mean going to start liveCast if false
     * going to end and have to change the text as well as tick icon for end
@@ -620,9 +717,12 @@ class LiveStreamActivity : AppCompatActivity() {
 
                         //watermark
                         watermark?.visibility = View.GONE
+
                         val watermarkLogo =
                             if (isLand) getWatermarkLogoLandscape() else getWatermarkLogoPortrait()
-                        it.glInterface.setFilter(watermarkLogo)
+                        val watermarkLAgent = getWatermarkAgentProp()
+
+                        it.glInterface.setFilter(watermarkLAgent)
 
                         //start live
                         if (it.prepareAudio() && it.prepareVideo(
@@ -651,6 +751,64 @@ class LiveStreamActivity : AppCompatActivity() {
         } else {
             requestPermissions()
         }
+    }
+
+
+    fun createTransparentWatermark(context: Context): Bitmap {
+        // Get screen width & height dynamically
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
+
+        // Create a fully transparent bitmap with screen size
+        val transparentBitmap =
+            Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(transparentBitmap)
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+
+        // Load the logo & watermark bitmaps
+        val logoBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_trans)
+        val agentBitmap = getCachedImageBitmap(SohoLiveApp.context) ?: BitmapFactory.decodeResource(
+            resources,
+            R.drawable.logo_li
+        )
+
+        // Set logo size (e.g., 15% of screen width)
+        val logoWidth = (screenWidth * 0.15).toInt()
+        val logoHeight = (logoWidth * logoBitmap.height.toFloat() / logoBitmap.width).toInt()
+
+        // Set watermark size (e.g., 25% of screen width)
+        val watermarkWidth = (screenWidth * 0.25).toInt()
+        val watermarkHeight =
+            (watermarkWidth * agentBitmap.height.toFloat() / agentBitmap.width).toInt()
+
+        // Padding for positioning
+        val padding = (screenWidth * 0.02).toInt() // 2% of screen width
+
+        // **Positioning**
+        val logoX = padding // Top-left X
+        val logoY = padding // Top-left Y
+
+        val watermarkX = screenWidth - watermarkWidth - padding // Bottom-right X
+        val watermarkY = screenHeight - watermarkHeight - padding // Bottom-right Y
+
+        // **Draw the images on the transparent canvas**
+        canvas.drawBitmap(
+            Bitmap.createScaledBitmap(logoBitmap, logoWidth, logoHeight, true),
+            logoX.toFloat(),
+            logoY.toFloat(),
+            null
+        )
+        canvas.drawBitmap(
+            Bitmap.createScaledBitmap(
+                agentBitmap,
+                watermarkWidth,
+                watermarkHeight,
+                true
+            ), watermarkX.toFloat(), watermarkY.toFloat(), null
+        )
+
+        return transparentBitmap
     }
 
     private fun hideShareableLinkView() {
@@ -981,5 +1139,4 @@ class LiveStreamActivity : AppCompatActivity() {
         rtmpCamera2?.stopPreview() // Stop the preview
         rtmpCamera2?.glInterface?.clearFilters() // Clear filters like the watermark
     }
-
 }
