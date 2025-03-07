@@ -80,7 +80,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
-import com.soho.sohoapp.live.db.AgentProperty
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.CastEnd
 import com.soho.sohoapp.live.enums.CategoryType
@@ -259,13 +258,33 @@ fun GoLiveScreen(
     if (isShowOrientationModel) {
         SelectOrientationBottomSheet(onGoLive = {
             isShowOrientationModel = false
-            navController.navigate(NavigationPath.TEMPLATE.name)
 
-            /*if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
-                callApi(mGoLiveSubmit, mFieldsError, netUtil, goLiveVm, onErrorsUpdate = {
-                    mFieldsError = it
-                })
-            }*/
+            if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
+                mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+                mFieldsError = mGoLiveSubmit.errors
+
+                if (netUtil.isNetworkAvailable()) {
+                    if (mFieldsError.isEmpty()) {
+                        navController.navigate(NavigationPath.TEMPLATE.name)
+                    } else {
+                        goLiveVm.showAlert(
+                            getAlertConfig(
+                                context.getString(R.string.attention),
+                                context.getString(R.string.attention_message)
+                            )
+                        )
+                    }
+                } else {
+                    goLiveVm.showAlert(
+                        getAlertConfig(
+                            context.getString(R.string.connection_lost),
+                            context.getString(R.string.no_net_msg)
+                        )
+                    )
+                }
+            } else {
+                navController.navigate(NavigationPath.TEMPLATE.name)
+            }
 
         }, onCancel = {
             isShowOrientationModel = false
@@ -508,7 +527,10 @@ fun GoLiveScreen(
                                             propertyId = 0
                                             title = null
                                             propertyType = null
-                                            purpose = getStateSelection(optionList, PropertyState.RENT.value)
+                                            purpose = getStateSelection(
+                                                optionList,
+                                                PropertyState.RENT.value
+                                            )
                                         }
                                     }
 
@@ -1077,7 +1099,7 @@ fun UnlistedPublicView(propItem: PropertyItem, pvtVidCount: Int) {
         val listedCount = it.listed
         val unlistedCount = it.unlisted
 
-        println("myProp "+listedCount +" "+unlistedCount)
+        println("myProp " + listedCount + " " + unlistedCount)
 
         if (listedCount > 0 || unlistedCount > 0) {
             SpacerUp(size = 16.dp)
@@ -1218,7 +1240,8 @@ fun StepContents(
 
         // step #3
         2 -> {
-            Content4(mGState,
+            Content4(
+                mGState,
                 optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
             )
         }
