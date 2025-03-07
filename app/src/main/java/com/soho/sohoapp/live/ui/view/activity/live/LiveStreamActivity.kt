@@ -13,7 +13,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
@@ -716,16 +715,12 @@ class LiveStreamActivity : AppCompatActivity() {
                 rtmpCamera2?.let {
                     if (!it.isStreaming) {
 
-                        //watermark
+                        //fake watermark hide
                         watermark?.visibility = View.GONE
 
-                        val watermarkLogo =
-                            if (isLand) getWatermarkLogoLandscape() else getWatermarkLogoPortrait()
-                        val watermarkLAgent = getWatermarkAgentProp()
-
+                        //add watermark set
                         val watermarkFilter = ImageObjectFilterRender()
-                        watermarkFilter.setImage(createTransparentWatermark(context))
-
+                        watermarkFilter.setImage(watermarkLayout(context))
                         it.glInterface.setFilter(watermarkFilter)
 
                         //start live
@@ -758,7 +753,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
 
-    fun createTransparentWatermark(context: Context): Bitmap {
+    fun watermarkLayout(context: Context): Bitmap {
         // Get screen width & height dynamically
         val displayMetrics = context.resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
@@ -768,34 +763,21 @@ class LiveStreamActivity : AppCompatActivity() {
         val transparentBitmap =
             Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(transparentBitmap)
-        //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-        val paint = Paint()
-        paint.color = Color.argb(150, 255, 0, 0) // (Alpha 150 = ~60% transparency)
-        canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), paint)
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
         // Load the logo & watermark bitmaps
         val logoBitmap = BitmapFactory.decodeResource(resources, R.drawable.soho_logo_watermark)
-        val agentBitmap = getCachedImageBitmap(SohoLiveApp.context) ?: BitmapFactory.decodeResource(
-            resources,
-            R.drawable.soho_logo_watermark
-        )
+        val agentBitmap = getCachedImageBitmap(SohoLiveApp.context)
+
+        /*SOHO WATERMARK*/
 
         // Set logo size (e.g., 15% of screen width)
         val logoWidth = (screenWidth * 0.15).toInt()
         val logoHeight = (logoWidth * logoBitmap.height.toFloat() / logoBitmap.width).toInt()
 
-        // Set watermark size
-        val watermarkWidth = screenWidth
-        val watermarkHeight =
-            (watermarkWidth * agentBitmap.height.toFloat() / agentBitmap.width).toInt()
-
         // agent position top
         val logoX = 32
         val logoY = 32
-
-        // agent position bottom
-        val agentX = 0
-        val agentY = screenHeight - watermarkHeight
 
         // Draw the images on the transparent canvas
         canvas.drawBitmap(
@@ -804,14 +786,28 @@ class LiveStreamActivity : AppCompatActivity() {
             logoY.toFloat(),
             null
         )
-        canvas.drawBitmap(
-            Bitmap.createScaledBitmap(
-                agentBitmap,
-                watermarkWidth,
-                watermarkHeight,
-                true
-            ), agentX.toFloat(), agentY.toFloat(), null
-        )
+
+        /*AGENT-PROP WATERMARK*/
+
+        // Set watermark size
+        agentBitmap?.let {
+            val watermarkWidth = screenWidth
+            val watermarkHeight =
+                (watermarkWidth * agentBitmap.height.toFloat() / agentBitmap.width).toInt()
+
+            // agent position bottom
+            val agentX = 0
+            val agentY = screenHeight - watermarkHeight
+
+            canvas.drawBitmap(
+                Bitmap.createScaledBitmap(
+                    agentBitmap,
+                    watermarkWidth,
+                    watermarkHeight,
+                    true
+                ), agentX.toFloat(), agentY.toFloat(), null
+            )
+        }
 
         return transparentBitmap
     }
