@@ -147,6 +147,7 @@ fun TemplateScreen(
             )
             val jsonStr = Json.encodeToString(requestLive)
             viewMMain.openLiveCastScreen(jsonStr)
+            delay(300) //to add smooth transit
             navController.popBackStack()
         }
     }
