@@ -62,7 +62,7 @@ import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveTarget
-import com.soho.sohoapp.live.ui.components.CenterMessageProgress
+import com.soho.sohoapp.live.ui.components.LoadingDialog
 import com.soho.sohoapp.live.ui.components.NotEnableStreamAlert
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
@@ -294,9 +294,9 @@ fun TemplateScreen(
                     })
             }
 
-            //Center Progress
+            //Center Loading Progress
             if (stateVm.loadingState == ProgressBarState.Loading) {
-                CenterMessageProgress(message = stateVm.loadingMessage)
+                LoadingDialog(stateVm.loadingMessage)
             }
         }
     } else {
