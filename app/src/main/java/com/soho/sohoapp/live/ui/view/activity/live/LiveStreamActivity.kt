@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -56,7 +55,6 @@ import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
-import com.soho.sohoapp.live.ui.view.activity.live.LiveStreamActivity.StreamParameters.resolution
 import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.getCachedImageBitmap
 import com.soho.sohoapp.live.utility.showAlertMessage
@@ -439,7 +437,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     //Watermark
-    private fun getWatermarkLogoLandscape(): ImageObjectFilterRender {
+    /*private fun getWatermarkLogoLandscape(): ImageObjectFilterRender {
         // Calculate scale relative to stream size
         val streamWidth = resolution.width
         val streamHeight = 8 // if change this image size will update
@@ -462,10 +460,10 @@ class LiveStreamActivity : AppCompatActivity() {
         val scale = resources.displayMetrics.density
         val paddingPx = (paddingDp * scale + 0.5f).toInt()
 
-        /*
+        *//*
         * initial view this setPosition willNot show, so have to set it manual fake view
         * when start the live setPosition is correct
-        * */
+        * *//*
         imgRender.setPosition(paddingPx.toFloat() - 11, 6f)
         return imgRender
     }
@@ -493,10 +491,10 @@ class LiveStreamActivity : AppCompatActivity() {
         val scale = resources.displayMetrics.density
         val paddingPx = (paddingDp * scale + 0.5f).toInt()
 
-        /*
+        *//*
         * initial view this setPosition willNot show, so have to set it manual fake view
         * when start the live setPosition is correct
-        * */
+        * *//*
         imgRender.setPosition(paddingPx.toFloat() - 6, 2f)
 
         return imgRender
@@ -538,10 +536,10 @@ class LiveStreamActivity : AppCompatActivity() {
         val scale = resources.displayMetrics.density
         val paddingPx = (paddingDp * scale + 0.5f).toInt()
 
-        /*
+        *//*
         * initial view this setPosition willNot show, so have to set it manual fake view
         * when start the live setPosition is correct
-        * */
+        * *//*
         imgRender.setPosition(paddingPx.toFloat(), 2f)
 
         return imgRender
@@ -584,7 +582,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
         return imgRender
     }
-
+*/
     /*
     * isStart = true mean going to start liveCast if false
     * going to end and have to change the text as well as tick icon for end
@@ -716,7 +714,11 @@ class LiveStreamActivity : AppCompatActivity() {
 
                         //add watermark set
                         val watermarkFilter = ImageObjectFilterRender()
-                        watermarkFilter.setImage(watermarkLayout(context))
+                        watermarkFilter.setImage(
+                            if (isLand) watermarkLayoutLand(context) else watermarkLayoutPort(
+                                context
+                            )
+                        )
                         it.glInterface.setFilter(watermarkFilter)
 
                         //start live
@@ -749,7 +751,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
 
-    fun watermarkLayout(context: Context): Bitmap {
+    fun watermarkLayoutPort(context: Context): Bitmap {
         // Get screen width & height dynamically
         val displayMetrics = context.resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
@@ -802,6 +804,69 @@ class LiveStreamActivity : AppCompatActivity() {
                     watermarkHeight,
                     true
                 ), agentX.toFloat(), agentY.toFloat(), null
+            )
+        }
+
+        return transparentBitmap
+    }
+
+    fun watermarkLayoutLand(context: Context): Bitmap {
+        // Get screen width & height dynamically
+        val displayMetrics = context.resources.displayMetrics
+        var screenWidth = displayMetrics.widthPixels
+        var screenHeight = displayMetrics.heightPixels
+
+        // Ensure landscape mode (swap values if needed)
+        if (screenWidth < screenHeight) {
+            val temp = screenWidth
+            screenWidth = screenHeight
+            screenHeight = temp
+        }
+
+        // Create a fully transparent bitmap with screen size
+        val transparentBitmap =
+            Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(transparentBitmap)
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+
+        // Load the logo & watermark bitmaps
+        val logoBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.soho_logo_watermark)
+        val agentBitmap = getCachedImageBitmap(context)
+
+        /* SOHO WATERMARK */
+
+        // Set logo size (e.g., 15% of screen width)
+        val logoWidth = (screenWidth * 0.15).toInt()
+        val logoHeight = (logoWidth * logoBitmap.height.toFloat() / logoBitmap.width).toInt()
+
+        // Agent position at top-left with padding
+        val logoX = 32
+        val logoY = 32
+
+        // Draw the Soho logo
+        canvas.drawBitmap(
+            Bitmap.createScaledBitmap(logoBitmap, logoWidth, logoHeight, true),
+            logoX.toFloat(),
+            logoY.toFloat(),
+            null
+        )
+
+        /* AGENT-PROP WATERMARK */
+
+        agentBitmap?.let {
+            // Set watermark width to fit screen width
+            val watermarkWidth = screenWidth
+            val watermarkHeight = (watermarkWidth * agentBitmap.height.toFloat() / agentBitmap.width).toInt()
+
+            // Position agent watermark at the bottom
+            val agentX = 0
+            val agentY = screenHeight - watermarkHeight
+
+            canvas.drawBitmap(
+                Bitmap.createScaledBitmap(agentBitmap, watermarkWidth, watermarkHeight, true),
+                agentX.toFloat(),
+                agentY.toFloat(),
+                null
             )
         }
 
