@@ -259,16 +259,13 @@ fun GoLiveScreen(
     if (isShowOrientationModel) {
         SelectOrientationBottomSheet(onGoLive = {
             isShowOrientationModel = false
+            navController.navigate(NavigationPath.TEMPLATE.name)
 
             /*if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
                 callApi(mGoLiveSubmit, mFieldsError, netUtil, goLiveVm, onErrorsUpdate = {
                     mFieldsError = it
                 })
-            } else {
-
             }*/
-
-            navController.navigate(NavigationPath.TEMPLATE.name)
 
         }, onCancel = {
             isShowOrientationModel = false

@@ -54,6 +54,7 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
+import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
@@ -174,7 +175,9 @@ fun TemplateScreen(
                 isCompletedMinRecTime,
                 isRecording,
                 onStartRecClick = {
-                    onStartRecClick()
+                    navigate(onPreRecClick = {
+                        onStartRecClick()
+                    })
                 },
                 onSelection = {
                     isTemplateWithBrand = it
@@ -191,7 +194,9 @@ fun TemplateScreen(
                 isCompletedMinRecTime,
                 isRecording,
                 onStartRecClick = {
-                    onStartRecClick()
+                    navigate(onPreRecClick = {
+                        onStartRecClick()
+                    })
                 },
                 onSelection = {
                     isTemplateWithBrand = it
@@ -226,6 +231,18 @@ fun TemplateScreen(
             )
         }
     }
+}
+
+fun navigate(onPreRecClick: () -> Unit) {
+    if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
+        callLiveStreamApi()
+    } else {
+        onPreRecClick()
+    }
+}
+
+fun callLiveStreamApi() {
+    TODO("Not yet implemented")
 }
 
 fun backClose(navController: NavHostController, activity: ComponentActivity) {
