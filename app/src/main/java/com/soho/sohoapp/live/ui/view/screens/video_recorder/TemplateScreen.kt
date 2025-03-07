@@ -84,6 +84,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive.openWebView
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
+import com.soho.sohoapp.live.utility.deleteCachedImage
 import com.soho.sohoapp.live.utility.rotateScreen
 import com.soho.sohoapp.live.utility.saveBitmapToCache
 import kotlinx.coroutines.delay
@@ -427,9 +428,8 @@ fun PortraitView(
             //bottom agent info and property info
             val targetPaddingDp = screenWidth * (55f / 360f)
 
-            goLiveData.agentProperty?.let {
-                if (isTemplateWithBrand) {
-
+            if (isTemplateWithBrand) {
+                goLiveData.agentProperty?.let {
                     val coroutineScope = rememberCoroutineScope()
                     val graphicsLayer = rememberGraphicsLayer()
 
@@ -454,6 +454,9 @@ fun PortraitView(
                         saveBitmapToCache(context, bitmap)
                     }
                 }
+            } else {
+                //remove watermark
+                deleteCachedImage(context)
             }
         }
 

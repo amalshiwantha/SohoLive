@@ -326,9 +326,11 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun checkEssentialData() {
         isPublic = intent.getBooleanExtra(KEY_PUBLIC, false)
-        //val jsonModel = intent.getStringExtra(KEY_STREAM)
-        val jsonModel =
-            "{\"simulcast_targets\":[],\"streamKey\":\"0a7b2ef0-ac25-ddc9-258e-9950c93c9704\",\"liveStreamId\":\"OHoF3Ga4rtzJ3A\",\"shareableLink\":\"https://dev.soho.com.au/properties/sale/18-ashton-street-bacchus-marsh-vic-3340-australia?live_stream_id=OHoF3Ga4rtzJ3A#livecast-inspection\"}"
+        val jsonModel = intent.getStringExtra(KEY_STREAM)
+
+        //this is for dev test
+        /*val jsonModel =
+            "{\"simulcast_targets\":[],\"streamKey\":\"0a7b2ef0-ac25-ddc9-258e-9950c93c9704\",\"liveStreamId\":\"OHoF3Ga4rtzJ3A\",\"shareableLink\":\"https://dev.soho.com.au/properties/sale/18-ashton-street-bacchus-marsh-vic-3340-australia?live_stream_id=OHoF3Ga4rtzJ3A#livecast-inspection\"}"*/
 
         jsonModel?.let {
             reqLive = Json.decodeFromString<LiveRequest>(it)

@@ -111,6 +111,16 @@ fun saveBitmapToCache(
     return file
 }
 
+//Delete Cache image
+fun deleteCachedImage(context: Context, fileName: String = "image.png"): Boolean {
+    val file = File(context.cacheDir, fileName)
+    return if (file.exists()) {
+        file.delete()
+    } else {
+        false // File doesn't exist
+    }
+}
+
 //Get Force Logout Error message
 fun getForceExitMessage(errCode: Int?): ForceExit {
     return when (errCode) {
