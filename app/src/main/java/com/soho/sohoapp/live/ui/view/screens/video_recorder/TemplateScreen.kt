@@ -54,22 +54,36 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
+import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.network.response.LiveTarget
+import com.soho.sohoapp.live.ui.components.CenterMessageProgress
+import com.soho.sohoapp.live.ui.components.NotEnableStreamAlert
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveEvent
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.RequestNotificationPermission
+import com.soho.sohoapp.live.ui.view.screens.golive.ShowAlert
+import com.soho.sohoapp.live.ui.view.screens.golive.getAlertConfig
+import com.soho.sohoapp.live.ui.view.screens.golive.openWebView
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
+import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
+import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.rotateScreen
 import kotlinx.coroutines.delay
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 
 
@@ -78,9 +92,12 @@ fun TemplateScreen(
     navController: NavHostController,
     goLiveData: GoLiveSubmit,
     goLiveVm: GoLiveViewModel = koinInject(),
+    viewMMain: MainViewModel,
     onStartRecClick: () -> Unit
 ) {
     val cont = LocalContext.current
+    val activity = LocalContext.current as ComponentActivity
+    val stateVm = goLiveVm.liveState.value
     val isCompletedMinRecTime by remember { mutableStateOf(false) }
     val isRecording by remember { mutableStateOf(false) }
     var hasCameraPermission by remember { mutableStateOf(false) }
@@ -89,7 +106,65 @@ fun TemplateScreen(
     val rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
     var isTemplateWithBrand by remember { mutableStateOf(MainStateHolder.mState.isTemplateWithBrand.value) }
-    val activity = LocalContext.current as ComponentActivity
+    val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
+
+    /*
+    * show stream not enabled view
+    * */
+    if (stateVm.isStreamNotEnabled.value) {
+        NotEnableStreamAlert(onDismiss = {
+            stateVm.isStreamNotEnabled.value = false
+        }, onEnableClick = {
+            stateVm.isStreamNotEnabled.value = false
+            openWebView(YT_ENABLE)
+        }, onVerifyClick = {
+            stateVm.isStreamNotEnabled.value = false
+            openWebView(YT_VERIFY)
+        })
+    }
+
+    /*
+    * if goLiveApi got success response then want
+    * to open the LiveCast Screen
+    * */
+    LaunchedEffect(stateVm.goLiveResults) {
+        stateVm.goLiveResults?.let {
+
+            val platformList = it.simulcastTargets.map { target ->
+                target.platform
+            }
+
+            val targetLive = LiveTarget()
+            targetLive.apply {
+                platform = platformList
+            }
+
+            val requestLive = LiveRequest(
+                simulcastTargets = it.simulcastTargets,
+                streamKey = it.streamKey,
+                liveStreamId = it.id,
+                shareableLink = it.shareableLink
+            )
+            val jsonStr = Json.encodeToString(requestLive)
+            viewMMain.openLiveCastScreen(jsonStr)
+            navController.popBackStack()
+        }
+    }
+
+    /*
+    * Checking alert state updated or not
+    * */
+    LaunchedEffect(stateVm.alertState) {
+        alertState.value = getAlertConfig(stateVm)
+    }
+
+    /*
+    * Show alert when state change
+    * */
+    ShowAlert(alertState.value, onDismiss = {
+        alertState.value = Pair(false, null)
+        goLiveVm.onTriggerEvent(GoLiveEvent.DismissAlert)
+    })
 
     // Handle back press
     BackHandler(enabled = true) {
@@ -170,49 +245,60 @@ fun TemplateScreen(
     //Content permission view and Camera
     if (hasCameraPermission && hasMicPermission) {
 
-        if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
-            LandscapeView(controller,
-                goLiveData,
-                isTemplateWithBrand,
-                isCompletedMinRecTime,
-                isRecording,
-                onStartRecClick = {
-                    navigate(goLiveData, onPreRecording = {
-                        onStartRecClick()
-                    }, onLiveCast = {
-                        goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BgGradientPurpleDark)
+        ) {
+            //Main Content
+            if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
+                LandscapeView(controller,
+                    goLiveData,
+                    isTemplateWithBrand,
+                    isCompletedMinRecTime,
+                    isRecording,
+                    onStartRecClick = {
+                        navigate(goLiveData, onPreRecording = {
+                            onStartRecClick()
+                        }, onLiveCast = {
+                            goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
+                        })
+                    },
+                    onSelection = {
+                        isTemplateWithBrand = it
+                        updateSelection(it)
+                    },
+                    onBackClick = {
+                        backClose(navController, activity)
                     })
-                },
-                onSelection = {
-                    isTemplateWithBrand = it
-                    updateSelection(it)
-                },
-                onBackClick = {
-                    backClose(navController, activity)
-                })
-        } else {
-            PortraitView(
-                controller,
-                goLiveData,
-                isTemplateWithBrand,
-                isCompletedMinRecTime,
-                isRecording,
-                onStartRecClick = {
-                    navigate(goLiveData, onPreRecording = {
-                        onStartRecClick()
-                    }, onLiveCast = {
-                        goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
+            } else {
+                PortraitView(
+                    controller,
+                    goLiveData,
+                    isTemplateWithBrand,
+                    isCompletedMinRecTime,
+                    isRecording,
+                    onStartRecClick = {
+                        navigate(goLiveData, onPreRecording = {
+                            onStartRecClick()
+                        }, onLiveCast = {
+                            goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
+                        })
+                    },
+                    onSelection = {
+                        isTemplateWithBrand = it
+                        updateSelection(it)
+                    },
+                    onBackClick = {
+                        backClose(navController, activity)
                     })
-                },
-                onSelection = {
-                    isTemplateWithBrand = it
-                    updateSelection(it)
-                },
-                onBackClick = {
-                    backClose(navController, activity)
-                })
-        }
+            }
 
+            //Center Progress
+            if (stateVm.loadingState == ProgressBarState.Loading) {
+                CenterMessageProgress(message = stateVm.loadingMessage)
+            }
+        }
     } else {
         //permission view
         Box(

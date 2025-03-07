@@ -164,6 +164,7 @@ fun BottomNavHost(
 
         composable(route = NavigationPath.TEMPLATE.name) {
             TemplateScreen(
+                viewMMain = mainViewModel,
                 navController = navController,
                 goLiveData = mGoLiveSubmit,
                 onStartRecClick = {

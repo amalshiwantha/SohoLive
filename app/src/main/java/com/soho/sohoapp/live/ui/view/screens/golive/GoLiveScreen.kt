@@ -240,7 +240,7 @@ fun GoLiveScreen(
     /*
     * show stream not enabled view
     * */
-    if (stateVm.isStreamNotEnabled.value) {
+    /*if (stateVm.isStreamNotEnabled.value) {
         NotEnableStreamAlert(onDismiss = {
             stateVm.isStreamNotEnabled.value = false
         }, onEnableClick = {
@@ -250,7 +250,7 @@ fun GoLiveScreen(
             stateVm.isStreamNotEnabled.value = false
             openWebView(YT_VERIFY)
         })
-    }
+    }*/
 
     /*
     * show select orientation view
@@ -335,7 +335,7 @@ fun GoLiveScreen(
     /*
     * if goLiveApi got success response then want to open the LiveCast Screen
     * */
-    LaunchedEffect(stateVm.goLiveResults) {
+    /*LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
 
             val platformList = it.simulcastTargets.map { target ->
@@ -361,7 +361,7 @@ fun GoLiveScreen(
                 isShowScheduleOkScreen = true
             }
         }
-    }
+    }*/
 
     /*
     * Connect the SM need to update the mGoLiveSubmit
