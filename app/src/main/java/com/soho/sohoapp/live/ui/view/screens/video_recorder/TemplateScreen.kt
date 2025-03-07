@@ -259,7 +259,7 @@ fun TemplateScreen(
                     isCompletedMinRecTime,
                     isRecording,
                     onStartRecClick = {
-                        navigate(goLiveData, onPreRecording = {
+                        navigate(onPreRecording = {
                             onStartRecClick()
                         }, onLiveCast = {
                             goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
@@ -280,7 +280,7 @@ fun TemplateScreen(
                     isCompletedMinRecTime,
                     isRecording,
                     onStartRecClick = {
-                        navigate(goLiveData, onPreRecording = {
+                        navigate(onPreRecording = {
                             onStartRecClick()
                         }, onLiveCast = {
                             goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
@@ -326,7 +326,7 @@ fun TemplateScreen(
     }
 }
 
-fun navigate(goLiveData: GoLiveSubmit, onPreRecording: () -> Unit, onLiveCast: () -> Unit) {
+fun navigate(onPreRecording: () -> Unit, onLiveCast: () -> Unit) {
     if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
         onLiveCast()
     } else {

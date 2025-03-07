@@ -129,6 +129,10 @@ fun BottomNavHost(
                         // Ensure the new screen is the top-most screen
                         launchSingleTop = true
                     }
+
+                    //Reset All GoLive data
+                    resetSteps(mGoLiveSubmit, mState)
+                    MainStateHolder.resetLive()
                 }
             )
         }

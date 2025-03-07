@@ -3,6 +3,7 @@ package com.soho.sohoapp.live.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
 
 object MainStateHolder {
@@ -11,6 +12,7 @@ object MainStateHolder {
 
     fun resetLive() {
         mState.apply {
+            liveFormat.value = LiveFormat.PRE.name
             liveOrientation.value = Orientation.PORT.name
             stepId.value = 0
             selectedAgentId = 0

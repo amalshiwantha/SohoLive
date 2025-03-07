@@ -66,6 +66,7 @@ data class MainState(
     var selectedAgentId: Int = 0,
 ) {
     fun reset() {
+        liveFormat.value = LiveFormat.PRE.name
         liveOrientation.value = Orientation.PORT.name
         stepId.value = 0
         isPublic.value = false
