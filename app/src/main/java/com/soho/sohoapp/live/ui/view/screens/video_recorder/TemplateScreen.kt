@@ -54,7 +54,6 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
-import com.soho.sohoapp.live.enums.FormFields
 import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GoLiveSubmit
@@ -68,10 +67,7 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveEvent
 import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.RequestNotificationPermission
-import com.soho.sohoapp.live.ui.view.screens.golive.getAlertConfig
-import com.soho.sohoapp.live.ui.view.screens.golive.validateData
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
-import com.soho.sohoapp.live.utility.NetworkUtils
 import com.soho.sohoapp.live.utility.rotateScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
@@ -81,7 +77,7 @@ import org.koin.compose.koinInject
 fun TemplateScreen(
     navController: NavHostController,
     goLiveData: GoLiveSubmit,
-    vmVidRec: VideoRecorderViewModel = koinInject(),
+    goLiveVm: GoLiveViewModel = koinInject(),
     onStartRecClick: () -> Unit
 ) {
     val cont = LocalContext.current
@@ -181,8 +177,10 @@ fun TemplateScreen(
                 isCompletedMinRecTime,
                 isRecording,
                 onStartRecClick = {
-                    navigate(goLiveData, onPreRecClick = {
+                    navigate(goLiveData, onPreRecording = {
                         onStartRecClick()
+                    }, onLiveCast = {
+                        goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
                     })
                 },
                 onSelection = {
@@ -200,8 +198,10 @@ fun TemplateScreen(
                 isCompletedMinRecTime,
                 isRecording,
                 onStartRecClick = {
-                    navigate(goLiveData, onPreRecClick = {
+                    navigate(goLiveData, onPreRecording = {
                         onStartRecClick()
+                    }, onLiveCast = {
+                        goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
                     })
                 },
                 onSelection = {
@@ -239,16 +239,12 @@ fun TemplateScreen(
     }
 }
 
-fun navigate(goLiveData: GoLiveSubmit, onPreRecClick: () -> Unit) {
+fun navigate(goLiveData: GoLiveSubmit, onPreRecording: () -> Unit, onLiveCast: () -> Unit) {
     if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
-        callLiveStreamApi(goLiveData)
+        onLiveCast()
     } else {
-        onPreRecClick()
+        onPreRecording()
     }
-}
-
-fun callLiveStreamApi(goLiveData: GoLiveSubmit) {
-    //goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
 }
 
 fun backClose(navController: NavHostController, activity: ComponentActivity) {
