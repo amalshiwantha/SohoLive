@@ -467,7 +467,6 @@ class LiveStreamActivity : AppCompatActivity() {
         * when start the live setPosition is correct
         * */
         imgRender.setPosition(paddingPx.toFloat() - 11, 6f)
-        println("imgSize QQ : $imgWidth - $imgHeight")
         return imgRender
     }
 
@@ -533,11 +532,6 @@ class LiveStreamActivity : AppCompatActivity() {
         val scaleX = 750f / 7.48f //width
         val scaleY = 250f / 16 //height s
         imgRender.setScale(scaleX, scaleY)
-
-        println("imgSize $scaleX $scaleY")
-        println("imgSize $imgw $imgh")
-        println("imgSize ${resolution.width} ${resolution.height}")
-        println("imgSize $screenWidth $screenHight")
 
         // Padding in dp
         val paddingDp = 0
