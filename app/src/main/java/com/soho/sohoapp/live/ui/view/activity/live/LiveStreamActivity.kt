@@ -719,7 +719,7 @@ class LiveStreamActivity : AppCompatActivity() {
                                 context
                             )
                         )
-                        it.glInterface.setFilter(watermarkFilter)
+                        //it.glInterface.setFilter(watermarkFilter)
 
                         //start live
                         if (it.prepareAudio() && it.prepareVideo(
