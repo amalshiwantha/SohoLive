@@ -92,6 +92,8 @@ import com.soho.sohoapp.live.ui.view.screens.golive.TypeAndCheckBox
 import com.soho.sohoapp.live.ui.view.screens.subscription.BulletText
 import com.soho.sohoapp.live.ui.view.screens.video_library.VidLibEvent
 import com.soho.sohoapp.live.ui.view.screens.video_library.getRemainingDays
+import com.soho.sohoapp.live.utility.TrackAssetManageVideo
+import com.soho.sohoapp.live.utility.TrackAssetUpdate
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.hexToColor
 import com.soho.sohoapp.live.utility.shareIntent
@@ -301,6 +303,7 @@ private fun MainContent(
                     isTxtBold = true,
                     color = AppGreen,
                     onBtnClick = {
+                        TrackAssetUpdate(it.id)
                         onSaveClick(it)
                     },
                     modifier = Modifier
