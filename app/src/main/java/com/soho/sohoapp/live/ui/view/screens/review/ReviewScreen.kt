@@ -28,6 +28,7 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
+import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -43,6 +44,8 @@ import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.TrackPreRecordSaved
+import com.soho.sohoapp.live.utility.TrackPreRecordStarted
 import org.koin.compose.koinInject
 
 @Composable
@@ -231,6 +234,9 @@ fun ReviewScreen(
                 if (mGState.isEditVideoData.value) {
                     vmReview.updateUpload(updatedItem, null)
                 } else {
+                    val isPvt = selectedOption == VideoPrivacy.PRIVATE.label
+                    TrackPreRecordSaved(mGoLiveSubmit.propertyId,isPvt)
+
                     vmReview.updateUpload(updatedItem, mGoLiveSubmit)
                 }
             })
