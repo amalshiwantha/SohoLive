@@ -53,9 +53,12 @@ import com.soho.sohoapp.live.enums.StreamBitrate
 import com.soho.sohoapp.live.enums.StreamResolution
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
+import com.soho.sohoapp.live.model.MainStateHolder.mState
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
 import com.soho.sohoapp.live.utility.TrackLiveStreamCancel
+import com.soho.sohoapp.live.utility.TrackLiveStreamPreview
+import com.soho.sohoapp.live.utility.TrackLiveStreamStarted
 import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.getCachedImageBitmap
 import com.soho.sohoapp.live.utility.showAlertMessage
@@ -652,6 +655,20 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun goLiveNow() {
         updateGoLiveBtn(true)
         startBroadcast()
+        TrackLiveStart()
+    }
+
+    private fun TrackLiveStart() {
+        mState.goLiveSubmit?.let { goLive->
+            TrackLiveStreamStarted(
+                reqLive.liveStreamId,
+                goLive.propertyId,
+                mState.liveOrientation.value,
+                mState.isTemplateWithBrand.value,
+                goLive.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
+                goLive.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
+            )
+        }
     }
 
     private fun updateGoLiveBtn(isStart: Boolean) {

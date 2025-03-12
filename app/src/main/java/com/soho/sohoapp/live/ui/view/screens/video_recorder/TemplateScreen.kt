@@ -158,6 +158,8 @@ fun TemplateScreen(
             val jsonStr = Json.encodeToString(requestLive)
             viewMMain.openLiveCastScreen(jsonStr)
 
+            mState.goLiveSubmit = goLiveData
+
             TrackLiveStreamPreview(
                 goLiveData.propertyId,
                 goLiveData.purpose.orEmpty(),
@@ -272,7 +274,7 @@ fun TemplateScreen(
                 .background(BgGradientPurpleDark)
         ) {
             //Main Content
-            if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
+            if (mState.liveOrientation.value == Orientation.LAND.name) {
                 LandscapeView(controller,
                     goLiveData,
                     isTemplateWithBrand,

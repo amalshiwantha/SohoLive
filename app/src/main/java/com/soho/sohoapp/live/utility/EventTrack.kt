@@ -12,9 +12,30 @@ enum class Event {
     user_logged_in, password_reset_requested,
     asset_step1_next_clicked, asset_step2_next_clicked,
     asset_step3_next_clicked, asset_step4_preview_clicked,
-    live_stream_preview_created, cancel_live_stream_preview
+    live_stream_preview_created, cancel_live_stream_preview,
+    live_stream_started
 }
 
+fun TrackLiveStreamStarted(
+    streamId: String,
+    property_listing_id: Int,
+    is_vertical_orientation: String,
+    is_branding_enabled: Boolean,
+    is_facebook_connected: Boolean,
+    is_youtube_connected: Boolean
+) {
+    val isVertical = is_vertical_orientation == Orientation.LAND.name
+
+    val params = mapOf(
+        "stream_id" to streamId,
+        "property_listing_id" to property_listing_id,
+        "is_vertical_orientation" to isVertical,
+        "is_branding_enabled" to is_branding_enabled,
+        "is_facebook_connected" to is_facebook_connected,
+        "is_youtube_connected" to is_youtube_connected
+    )
+    recordEvent(Event.live_stream_started, params)
+}
 
 fun TrackLiveStreamCancel(streamId: String) {
     val params = mapOf("stream_id" to streamId)

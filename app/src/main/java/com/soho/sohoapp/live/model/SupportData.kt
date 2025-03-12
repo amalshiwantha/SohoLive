@@ -64,6 +64,7 @@ data class MainState(
     var msPvtVidCount: MutableList<PrivateVideo>? = null,
     var agentEmail: String? = null,
     var selectedAgentId: Int = 0,
+    var goLiveSubmit: GoLiveSubmit? = null,
 ) {
     fun reset() {
         liveFormat.value = LiveFormat.PRE.name
