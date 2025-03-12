@@ -95,6 +95,7 @@ import com.soho.sohoapp.live.utility.TrackAssetClicked
 import com.soho.sohoapp.live.utility.TrackAssetDownloadDone
 import com.soho.sohoapp.live.utility.TrackAssetManageVideo
 import com.soho.sohoapp.live.utility.TrackLiveStreamCopyUrl
+import com.soho.sohoapp.live.utility.TrackMuxPlayer
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.shareIntent
@@ -326,7 +327,10 @@ private fun Content(
                                         onManageClick(it)
                                     },
                                     onShareVideo = { shareIntent(it) },
-                                    onPlayVideo = { onPlayVid(it) },
+                                    onPlayVideo = {
+                                        TrackMuxPlayer(item.id)
+                                        onPlayVid(it)
+                                    },
                                     onDownloadVideo = {
                                         downloadFile(
                                             it.first,
