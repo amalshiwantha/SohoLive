@@ -120,7 +120,6 @@ import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import zendesk.support.requestlist.RequestListActivity
 
-
 class MainActivity : ComponentActivity() {
 
     companion object {
@@ -313,10 +312,16 @@ class MainActivity : ComponentActivity() {
     private fun deepLinkResetPw(viewMMain: MainViewModel) {
         val intentData = intent?.data
         val loginToken = intentData?.getQueryParameter("login_token")
-        println("myDeepLink $loginToken")
+
         loginToken?.let {
-            viewMMain.deepLinkToken.value = it
-            viewMMain._isOpenResetPw.value = true
+
+            GlobalScope.launch {
+                val loggedIn = viewMMain.dataStore().isLogged()
+                if (!loggedIn) {
+                    viewMMain.deepLinkToken.value = it
+                    viewMMain._isOpenResetPw.value = true
+                }
+            }
         }
     }
 

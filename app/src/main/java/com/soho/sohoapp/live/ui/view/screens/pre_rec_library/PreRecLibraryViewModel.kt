@@ -9,6 +9,8 @@ import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.db.PrivateVideoDao
 import com.soho.sohoapp.live.network.api.soho.SohoApiRepository
 import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
+import com.soho.sohoapp.live.utility.deleteOldRecordedVideos
+import com.soho.sohoapp.live.utility.getAllRecordedVideos
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
@@ -61,36 +63,6 @@ class PreRecLibraryViewModel(
 
             mState.value = mState.value.copy(videoList = mutableStateOf(displayList))
             mState.value = mState.value.copy(isLoading = mutableStateOf(false))
-        }
-    }
-
-    private fun deleteOldRecordedVideos() {
-        val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-        val customDir = File(movieDir, PvtRecFolder)
-
-        if (customDir.exists()) {
-            val thirtyDaysInMillis = TimeUnit.DAYS.toMillis(30)
-            val currentTime = System.currentTimeMillis()
-
-            customDir.listFiles()?.filter {
-                it.extension == "mp4" && (currentTime - it.lastModified()) > thirtyDaysInMillis
-            }?.forEach { oldFile ->
-                if (oldFile.delete()) {
-                    println("Deleted old video: ${oldFile.name}")
-                } else {
-                    println("Failed to delete: ${oldFile.name}")
-                }
-            }
-        }
-    }
-
-    private fun getAllRecordedVideos(): List<File> {
-        val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-        val customDir = File(movieDir, PvtRecFolder)
-        return if (customDir.exists()) {
-            customDir.listFiles()?.filter { it.extension == "mp4" } ?: emptyList()
-        } else {
-            emptyList()
         }
     }
 

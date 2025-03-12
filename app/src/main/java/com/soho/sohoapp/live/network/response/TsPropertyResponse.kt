@@ -129,12 +129,12 @@ data class Document(
         if (floorSize > 0) {
             resPair = Pair(
                 getFormatPropertySize(floorSize, floorSizeUnit),
-                R.drawable.ic_floor_sizes
+                R.drawable.ic_land_size
             )
         } else if (landSize > 0) {
             resPair = Pair(
                 getFormatPropertySize(landSize, landSizeUnit),
-                R.drawable.ic_land_size
+                R.drawable.ic_floor_sizes
             )
         }
 

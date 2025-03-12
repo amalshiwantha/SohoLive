@@ -5,11 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -51,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -86,8 +85,10 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.roundToInt
 
 const val PvtRecFolder = "SohoPreRecord"
+const val PvtTemplateFolder = "SohoTemplate"
 private var recording: Recording? = null
 private var recFile: Uri? = null
 
@@ -242,12 +243,17 @@ fun VideoRecorderScreen(
                 .background(BgGradientPurpleDark)
         )
         {
+            val isLandScreen = rotateScreen == Orientation.LAND.name
+
             //Main Camera
             CameraPreview(
                 controller = controller,
+                isRecordMode = true,
+                isLandscape = isLandScreen,
                 modifier = Modifier.fillMaxSize()
             )
 
+            //CircularProgress Center
             if (isLoading) {
                 Card(
                     modifier = Modifier
@@ -274,11 +280,20 @@ fun VideoRecorderScreen(
                 }
             }
 
+            val configuration = LocalConfiguration.current
+            val screenWidth = configuration.screenWidthDp.dp
+            val screenHeight = configuration.screenHeightDp.dp
+
+            //Dynamic % of screen height
+            val paddingTop = (screenHeight * 0.08f).value.roundToInt().dp
+            val paddingEnd = (screenWidth * 0.04f).value.roundToInt().dp
+            val paddingStart = (screenWidth * 0.04f).value.roundToInt().dp
+
             //Top Left Soho Watermark
             Image(
                 painter = painterResource(id = R.drawable.soho_watermark),
                 contentDescription = "watermark",
-                modifier = Modifier.offset(16.dp, 16.dp)
+                modifier = Modifier.offset(paddingStart, paddingTop)
             )
 
             //Timer Top Right
@@ -286,9 +301,10 @@ fun VideoRecorderScreen(
                 timerValue = timerValue,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(end = paddingEnd, top = paddingTop)
             )
 
+            //BOTTOM
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -300,7 +316,8 @@ fun VideoRecorderScreen(
                     if (MainStateHolder.mState.isTemplateWithBrand.value) {
                         AgentPropertyInfo(
                             agProp = it,
-                            boxMod = Modifier.fillMaxWidth()
+                            boxMod = Modifier.fillMaxWidth(),
+                            isHideAgent = goLiveData.isHideAgent
                         )
                     }
                 }

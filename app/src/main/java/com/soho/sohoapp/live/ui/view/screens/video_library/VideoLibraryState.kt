@@ -1,6 +1,7 @@
 package com.soho.sohoapp.live.ui.view.screens.video_library
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.soho.sohoapp.live.enums.FieldType
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -8,6 +9,7 @@ import com.soho.sohoapp.live.network.response.DataVidRes
 
 data class VideoLibraryState(
     val isSuccess: Boolean = false,
+    val isHasPvtVid: MutableState<Boolean> = mutableStateOf(false),
     val loadingState: ProgressBarState = ProgressBarState.Idle,
     val loadingMessage: String = "Video Library Loading...",
     val alertState: AlertState = AlertState.Idle,

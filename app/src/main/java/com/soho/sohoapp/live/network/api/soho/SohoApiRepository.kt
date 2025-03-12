@@ -1,5 +1,6 @@
 package com.soho.sohoapp.live.network.api.soho
 
+import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.model.GoLiveSubmit
@@ -27,11 +28,16 @@ import com.soho.sohoapp.live.network.response.VidLibResponse
 import com.soho.sohoapp.live.network.response.VidPrivacyRequest
 import com.soho.sohoapp.live.network.response.VidPrivacyResponse
 import com.soho.sohoapp.live.network.response.VideoDeleteReq
+import com.soho.sohoapp.live.utility.getCachedImageFile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
 
 class SohoApiRepository(private val service: SohoApiServices) {
+
+    companion object{
+        const val PER_PAGE_TS = "50"
+    }
 
     fun onRollBackLiveCast(
         authToken: String,
@@ -133,7 +139,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                     val propIdList = apiResponse.data.assets.map { it.propertyListingId }
                     val filterBy = "objectID:$propIdList"
                     val tsReq = TsPropertyRequest(
-                        "*", "address_1", filterBy, "20", "1"
+                        "*", "address_1", filterBy, PER_PAGE_TS, "1"
                     )
                     val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
 
@@ -268,7 +274,7 @@ class SohoApiRepository(private val service: SohoApiServices) {
                     val propIdList: List<Int> = it.map { prop -> prop.id }
                     val filterBy = "objectID:$propIdList"
                     val tsReq = TsPropertyRequest(
-                        "*", "address_1", filterBy, "20", "1"
+                        "*", "address_1", filterBy, PER_PAGE_TS, "1"
                     )
                     val apiResponseTs = service.tsProperty(tsPropRequest = tsReq)
                     val resPair = Pair(apiResponse, apiResponseTs)
@@ -322,14 +328,32 @@ class SohoApiRepository(private val service: SohoApiServices) {
     ): Flow<ApiState<MuxUploadResponse>> =
         flow {
             try {
+                val templateFile = getCachedImageFile(context)
+
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Loading))
-                val apiResponse = service.uploadMux(
-                    authToken = authToken,
-                    videoInfo = videoInfo.copy().apply {
-                        this.streamType = streamType?.lowercase()
-                    }
-                )
-                emit(ApiState.Data(data = apiResponse))
+
+                templateFile?.let {
+                    val apiResponseTemplate = service.uploadPreRecord(
+                        authToken = authToken,
+                        videoInfo = videoInfo.copy().apply {
+                            this.streamType = streamType?.lowercase()
+                        },
+                        template = it
+                    )
+
+                    emit(ApiState.Data(data = apiResponseTemplate))
+
+                } ?: run {
+                    val apiResponse = service.uploadMux(
+                        authToken = authToken,
+                        videoInfo = videoInfo.copy().apply {
+                            this.streamType = streamType?.lowercase()
+                        }
+                    )
+
+                    emit(ApiState.Data(data = apiResponse))
+                }
+
             } catch (e: Exception) {
                 e.message?.let {
                     emit(ApiState.Alert(alertState = AlertState.Display(AlertConfig.COMMON_OK.apply {
@@ -400,7 +424,6 @@ class SohoApiRepository(private val service: SohoApiServices) {
                 emit(ApiState.Loading(progressBarState = ProgressBarState.Idle))
             }
         }
-
 
 
     //ERROR

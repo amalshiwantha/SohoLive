@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soho.sohoapp.live.db.PrivateVideo
 import com.soho.sohoapp.live.db.PrivateVideoDao
-import com.soho.sohoapp.live.db.VideoInfo
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
@@ -32,6 +31,7 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
         viewModelScope.launch {
             val pvtVid = PrivateVideo(
                 filePath = file.path.orEmpty(),
+                isHideAgent = goLiveData.isHideAgent,
                 propertyId = goLiveData.propertyId,
                 createdDate = createdAt,
                 castFor = goLiveData.purpose.orEmpty(),
@@ -39,7 +39,8 @@ class VideoRecorderViewModel(private val vidDb: PrivateVideoDao) : ViewModel() {
                 description = goLiveData.description.orEmpty(),
                 agentProperty = goLiveData.agentProperty,
                 videoInfo = goLiveData.toVideoInfo().apply {
-                    orientation = if (MainStateHolder.mState.liveOrientation.value == Orientation.PORT.name)"portrait" else "landscape"
+                    orientation =
+                        if (MainStateHolder.mState.liveOrientation.value == Orientation.PORT.name) "portrait" else "landscape"
                     isEnableTemplate = MainStateHolder.mState.isTemplateWithBrand.value
                 }
             )

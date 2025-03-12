@@ -790,6 +790,50 @@ fun Text800_12sp(
 }
 
 @Composable
+fun Text700_12sp(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtColor: Color = AppWhite,
+    txtAlign: TextAlign = TextAlign.Left,
+    isSingleLine: Boolean = false
+) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 12.sp,
+        lineHeight = 19.6.sp,
+        letterSpacing = 0.17.sp,
+        maxLines = if (isSingleLine) 1 else 2,
+        color = txtColor,
+        fontWeight = FontWeight(700),
+        fontFamily = FontFamily(Font(R.font.axiforma)),
+        textAlign = txtAlign
+    )
+}
+
+@Composable
+fun Text700_12sp_reg(
+    modifier: Modifier = Modifier,
+    label: String,
+    txtColor: Color = AppWhite,
+    txtAlign: TextAlign = TextAlign.Left,
+    isSingleLine: Boolean = false
+) {
+    Text(
+        modifier = modifier,
+        text = label,
+        fontSize = 10.sp,
+        lineHeight = 19.6.sp,
+        letterSpacing = 0.17.sp,
+        maxLines = if (isSingleLine) 1 else 2,
+        color = txtColor,
+        fontWeight = FontWeight(700),
+        fontFamily = FontFamily(Font(R.font.axiforma_regular)),
+        textAlign = txtAlign
+    )
+}
+
+@Composable
 fun Text800_14sp(
     modifier: Modifier = Modifier,
     label: String,

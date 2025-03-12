@@ -41,7 +41,7 @@ interface SohoApiServices {
         const val END_STREAM = "live_stream/{live_stream_id}/complete"
         const val ROLLBACK_STREAM = "live_stream/{live_stream_id}"
         const val TEST_UPLOAD = "dev/upload.php"
-        const val MUX_UPLOAD = "/video/upload"
+        const val MUX_UPLOAD = "video/upload"
         const val SUBS_PLANS = "plans/mobile"
         const val ACTIVE_PLAN = "plans/active"
         const val USAGE = "usage"
@@ -70,6 +70,7 @@ interface SohoApiServices {
     suspend fun rollBackStream(authToken: String, liveReq: LiveRequest): LiveResponse
     suspend fun uploadVideo(authToken: String, videoFile: File, onProgress: (Int) -> Unit): String
     suspend fun uploadMux(authToken: String, videoInfo: VideoInfo): MuxUploadResponse
+    suspend fun uploadPreRecord(authToken: String, videoInfo: VideoInfo, template: File): MuxUploadResponse
     suspend fun subsPlans(authToken: String): SubsPlansResponse
     suspend fun activePlan(authToken: String): PlanResponse
     suspend fun storageUsage(authToken: String): UsageResponse

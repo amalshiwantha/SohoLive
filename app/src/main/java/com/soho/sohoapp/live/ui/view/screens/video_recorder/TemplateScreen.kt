@@ -37,10 +37,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -54,19 +58,39 @@ import androidx.navigation.NavHostController
 import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
+import com.soho.sohoapp.live.enums.AlertConfig
+import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.network.common.ProgressBarState
+import com.soho.sohoapp.live.network.response.LiveRequest
+import com.soho.sohoapp.live.network.response.LiveTarget
+import com.soho.sohoapp.live.ui.components.LoadingDialog
+import com.soho.sohoapp.live.ui.components.NotEnableStreamAlert
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_14sp
 import com.soho.sohoapp.live.ui.components.Text800_14sp
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.theme.HintGray
+import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveEvent
+import com.soho.sohoapp.live.ui.view.screens.golive.GoLiveViewModel
 import com.soho.sohoapp.live.ui.view.screens.golive.RequestNotificationPermission
+import com.soho.sohoapp.live.ui.view.screens.golive.ShowAlert
+import com.soho.sohoapp.live.ui.view.screens.golive.getAlertConfig
+import com.soho.sohoapp.live.ui.view.screens.golive.openWebView
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
+import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
+import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
+import com.soho.sohoapp.live.utility.deleteCachedImage
 import com.soho.sohoapp.live.utility.rotateScreen
+import com.soho.sohoapp.live.utility.saveBitmapToCache
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 
 
@@ -74,10 +98,13 @@ import org.koin.compose.koinInject
 fun TemplateScreen(
     navController: NavHostController,
     goLiveData: GoLiveSubmit,
-    vmVidRec: VideoRecorderViewModel = koinInject(),
+    goLiveVm: GoLiveViewModel = koinInject(),
+    viewMMain: MainViewModel,
     onStartRecClick: () -> Unit
 ) {
     val cont = LocalContext.current
+    val activity = LocalContext.current as ComponentActivity
+    val stateVm = goLiveVm.liveState.value
     val isCompletedMinRecTime by remember { mutableStateOf(false) }
     val isRecording by remember { mutableStateOf(false) }
     var hasCameraPermission by remember { mutableStateOf(false) }
@@ -86,7 +113,66 @@ fun TemplateScreen(
     val rotateScreen by remember { mutableStateOf(MainStateHolder.mState.liveOrientation.value) }
     var isRotateLandScreen by remember { mutableStateOf(false) }
     var isTemplateWithBrand by remember { mutableStateOf(MainStateHolder.mState.isTemplateWithBrand.value) }
-    val activity = LocalContext.current as ComponentActivity
+    val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
+
+    /*
+    * show stream not enabled view
+    * */
+    if (stateVm.isStreamNotEnabled.value) {
+        NotEnableStreamAlert(onDismiss = {
+            stateVm.isStreamNotEnabled.value = false
+        }, onEnableClick = {
+            stateVm.isStreamNotEnabled.value = false
+            openWebView(YT_ENABLE)
+        }, onVerifyClick = {
+            stateVm.isStreamNotEnabled.value = false
+            openWebView(YT_VERIFY)
+        })
+    }
+
+    /*
+    * if goLiveApi got success response then want
+    * to open the LiveCast Screen
+    * */
+    LaunchedEffect(stateVm.goLiveResults) {
+        stateVm.goLiveResults?.let {
+
+            val platformList = it.simulcastTargets.map { target ->
+                target.platform
+            }
+
+            val targetLive = LiveTarget()
+            targetLive.apply {
+                platform = platformList
+            }
+
+            val requestLive = LiveRequest(
+                simulcastTargets = it.simulcastTargets,
+                streamKey = it.streamKey,
+                liveStreamId = it.id,
+                shareableLink = it.shareableLink
+            )
+            val jsonStr = Json.encodeToString(requestLive)
+            viewMMain.openLiveCastScreen(jsonStr)
+            delay(300) //to add smooth transit
+            navController.popBackStack()
+        }
+    }
+
+    /*
+    * Checking alert state updated or not
+    * */
+    LaunchedEffect(stateVm.alertState) {
+        alertState.value = getAlertConfig(stateVm)
+    }
+
+    /*
+    * Show alert when state change
+    * */
+    ShowAlert(alertState.value, onDismiss = {
+        alertState.value = Pair(false, null)
+        goLiveVm.onTriggerEvent(GoLiveEvent.DismissAlert)
+    })
 
     // Handle back press
     BackHandler(enabled = true) {
@@ -167,41 +253,60 @@ fun TemplateScreen(
     //Content permission view and Camera
     if (hasCameraPermission && hasMicPermission) {
 
-        if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
-            LandscapeView(controller,
-                goLiveData,
-                isTemplateWithBrand,
-                isCompletedMinRecTime,
-                isRecording,
-                onStartRecClick = {
-                    onStartRecClick()
-                },
-                onSelection = {
-                    isTemplateWithBrand = it
-                    updateSelection(it)
-                },
-                onBackClick = {
-                    backClose(navController, activity)
-                })
-        } else {
-            PortraitView(
-                controller,
-                goLiveData,
-                isTemplateWithBrand,
-                isCompletedMinRecTime,
-                isRecording,
-                onStartRecClick = {
-                    onStartRecClick()
-                },
-                onSelection = {
-                    isTemplateWithBrand = it
-                    updateSelection(it)
-                },
-                onBackClick = {
-                    backClose(navController, activity)
-                })
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BgGradientPurpleDark)
+        ) {
+            //Main Content
+            if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
+                LandscapeView(controller,
+                    goLiveData,
+                    isTemplateWithBrand,
+                    isCompletedMinRecTime,
+                    isRecording,
+                    onStartRecClick = {
+                        navigate(onPreRecording = {
+                            onStartRecClick()
+                        }, onLiveCast = {
+                            goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
+                        })
+                    },
+                    onSelection = {
+                        isTemplateWithBrand = it
+                        updateSelection(it)
+                    },
+                    onBackClick = {
+                        backClose(navController, activity)
+                    })
+            } else {
+                PortraitView(
+                    controller,
+                    goLiveData,
+                    isTemplateWithBrand,
+                    isCompletedMinRecTime,
+                    isRecording,
+                    onStartRecClick = {
+                        navigate(onPreRecording = {
+                            onStartRecClick()
+                        }, onLiveCast = {
+                            goLiveVm.onTriggerEvent(GoLiveEvent.CallSubmitGoLive(goLiveData))
+                        })
+                    },
+                    onSelection = {
+                        isTemplateWithBrand = it
+                        updateSelection(it)
+                    },
+                    onBackClick = {
+                        backClose(navController, activity)
+                    })
+            }
 
+            //Center Loading Progress
+            if (stateVm.loadingState == ProgressBarState.Loading) {
+                LoadingDialog(stateVm.loadingMessage)
+            }
+        }
     } else {
         //permission view
         Box(
@@ -225,6 +330,14 @@ fun TemplateScreen(
                 }
             )
         }
+    }
+}
+
+fun navigate(onPreRecording: () -> Unit, onLiveCast: () -> Unit) {
+    if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
+        onLiveCast()
+    } else {
+        onPreRecording()
     }
 }
 
@@ -315,15 +428,35 @@ fun PortraitView(
             //bottom agent info and property info
             val targetPaddingDp = screenWidth * (55f / 360f)
 
+            if (isTemplateWithBrand) {
+                goLiveData.agentProperty?.let {
+                    val coroutineScope = rememberCoroutineScope()
+                    val graphicsLayer = rememberGraphicsLayer()
 
-            goLiveData.agentProperty?.let {
-                if (isTemplateWithBrand) {
                     val mod = Modifier
                         .align(Alignment.BottomStart)
                         .padding(horizontal = targetPaddingDp, vertical = 0.dp)
                         .fillMaxWidth()
-                    AgentPropertyInfo(agProp = it, boxMod = mod)
+                        .drawWithContent {
+                            graphicsLayer.record {
+                                this@drawWithContent.drawContent()
+                            }
+                            drawLayer(graphicsLayer)
+                        }
+                    AgentPropertyInfo(
+                        agProp = it, boxMod = mod,
+                        isHideAgent = goLiveData.isHideAgent
+                    )
+
+                    //Save the template image Cache
+                    coroutineScope.launch {
+                        val bitmap = graphicsLayer.toImageBitmap()
+                        saveBitmapToCache(context, bitmap)
+                    }
                 }
+            } else {
+                //remove watermark
+                deleteCachedImage(context)
             }
         }
 
@@ -355,6 +488,7 @@ fun PortraitView(
                 SpacerUp(size = 16.dp)
 
                 //selections
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
@@ -362,7 +496,7 @@ fun PortraitView(
                     BrandingOption(
                         isSelected = isTemplateWithBrand,
                         label = "With Branding",
-                        image = R.drawable.template_with_brand,
+                        image = if (goLiveData.isHideAgent) R.drawable.template_with_brand_no_info else R.drawable.template_with_brand,
                         onSelectTemplate = {
                             onSelection(!isTemplateWithBrand)
                         }
@@ -500,7 +634,11 @@ fun LandscapeView(
                             top = targetPaddingDp,
                             bottom = targetPaddingDp
                         )
-                    AgentPropertyInfo(agProp = it, boxMod = mod)
+                    AgentPropertyInfo(
+                        agProp = it,
+                        boxMod = mod,
+                        isHideAgent = goLiveData.isHideAgent
+                    )
                 }
             }
         }
@@ -542,7 +680,7 @@ fun LandscapeView(
                     BrandingOptionLand(
                         isSelected = isTemplateWithBrand,
                         label = "With Branding",
-                        image = R.drawable.template_with_brand_land,
+                        image = if (goLiveData.isHideAgent) R.drawable.template_with_brand_no_info_land else R.drawable.template_with_brand_land,
                         onSelectTemplate = {
                             onSelection(!isTemplateWithBrand)
                         }

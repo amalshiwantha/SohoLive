@@ -25,8 +25,11 @@ import com.soho.sohoapp.live.utility.NotificationHelper
 import com.soho.sohoapp.live.utility.UploadService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -52,6 +55,9 @@ class MainViewModel(
     private val _stateOpenSupport = MutableStateFlow(false)
     val stateOpenSupport: StateFlow<Boolean> = _stateOpenSupport.asStateFlow()
 
+    private val _stateAskSupport = MutableStateFlow(false)
+    val stateAskSupport: StateFlow<Boolean> = _stateAskSupport.asStateFlow()
+
     private val _uploadProgress = MutableStateFlow(0)
     val uploadProgress: StateFlow<Int> = _uploadProgress.asStateFlow()
 
@@ -65,7 +71,7 @@ class MainViewModel(
 
     val msUser: MutableState<User> = mutableStateOf(User())
 
-    val uploadNotification = NotificationHelper()
+    private val uploadNotification = NotificationHelper()
 
     fun uploadNow(data: UploadData) {
         val filePath = data.path ?: return
@@ -73,6 +79,10 @@ class MainViewModel(
         uploadVideo(File(filePath), uploadUrl)
 
         //startUploadService(filePath, uploadUrl)
+    }
+
+    fun dataStore() : AppDataStoreManager {
+        return dataStore
     }
 
     private fun startUploadService(filePath: String, uploadUrl: String) {
@@ -290,6 +300,7 @@ class MainViewModel(
     }
 
     fun openSupport() {
+        _stateAskSupport.value = true
         loadProfileData()
     }
 
@@ -305,7 +316,11 @@ class MainViewModel(
                         name = it.name,
                         email = it.email
                     )
-                    _stateOpenSupport.value = true
+
+                    if (stateAskSupport.value) {
+                        _stateOpenSupport.value = true
+                        _stateAskSupport.value = false
+                    }
                 }
             }
         }

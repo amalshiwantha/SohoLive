@@ -269,9 +269,11 @@ private fun Content(
             .background(brushMainGradientBg)
     ) {
         //Private Video Button
-        ButtonOutLinedIcon(text = "Private Videos", icon = R.drawable.ic_pvt_video, onBtnClick = {
-            onShowPvtVideo()
-        }, modifier = Modifier.padding(16.dp))
+        if(state.isHasPvtVid.value){
+            ButtonOutLinedIcon(text = "Private Videos", icon = R.drawable.ic_pvt_video, onBtnClick = {
+                onShowPvtVideo()
+            }, modifier = Modifier.padding(16.dp))
+        }
 
         //Show Upload Progress
         if (mGState.uploadStatus.value != "hide") {

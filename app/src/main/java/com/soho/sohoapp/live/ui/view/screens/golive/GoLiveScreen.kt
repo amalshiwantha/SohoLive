@@ -245,7 +245,7 @@ fun GoLiveScreen(
     /*
     * show stream not enabled view
     * */
-    if (stateVm.isStreamNotEnabled.value) {
+    /*if (stateVm.isStreamNotEnabled.value) {
         NotEnableStreamAlert(onDismiss = {
             stateVm.isStreamNotEnabled.value = false
         }, onEnableClick = {
@@ -255,7 +255,7 @@ fun GoLiveScreen(
             stateVm.isStreamNotEnabled.value = false
             openWebView(YT_VERIFY)
         })
-    }
+    }*/
 
     /*
     * show select orientation view
@@ -265,11 +265,29 @@ fun GoLiveScreen(
             isShowOrientationModel = false
 
             if (MainStateHolder.mState.liveFormat.value == LiveFormat.LIVE.name) {
-                callApi(mGoLiveSubmit, mFieldsError, netUtil, goLiveVm, onErrorsUpdate = {
-                    mFieldsError = it
-                })
+                mGoLiveSubmit.apply { errors = mGoLiveSubmit.validateData() }
+                mFieldsError = mGoLiveSubmit.errors
+
+                if (netUtil.isNetworkAvailable()) {
+                    if (mFieldsError.isEmpty()) {
+                        navController.navigate(NavigationPath.TEMPLATE.name)
+                    } else {
+                        goLiveVm.showAlert(
+                            getAlertConfig(
+                                context.getString(R.string.attention),
+                                context.getString(R.string.attention_message)
+                            )
+                        )
+                    }
+                } else {
+                    goLiveVm.showAlert(
+                        getAlertConfig(
+                            context.getString(R.string.connection_lost),
+                            context.getString(R.string.no_net_msg)
+                        )
+                    )
+                }
             } else {
-                //Open Pre-Recorder Screen
                 navController.navigate(NavigationPath.TEMPLATE.name)
 
                 TrackStep4(
@@ -333,7 +351,7 @@ fun GoLiveScreen(
     /*
     * if goLiveApi got success response then want to open the LiveCast Screen
     * */
-    LaunchedEffect(stateVm.goLiveResults) {
+    /*LaunchedEffect(stateVm.goLiveResults) {
         stateVm.goLiveResults?.let {
 
             val platformList = it.simulcastTargets.map { target ->
@@ -367,7 +385,7 @@ fun GoLiveScreen(
                 isShowScheduleOkScreen = true
             }
         }
-    }
+    }*/
 
     /*
     * Connect the SM need to update the mGoLiveSubmit
@@ -534,7 +552,8 @@ fun GoLiveScreen(
                                             title = null
                                             propertyType = null
                                             purpose = getStateSelection(
-                                                optionList, PropertyState.RENT.value
+                                                optionList,
+                                                PropertyState.RENT.value
                                             )
                                         }
                                     }
@@ -1089,7 +1108,8 @@ fun PropertyItemRow(
                     .fillMaxWidth()
             ) {
 
-                TypeAndCheckBox(isSelected,
+                TypeAndCheckBox(
+                    isSelected,
                     true,
                     property,
                     txtColor = textColor,
@@ -1127,6 +1147,9 @@ fun UnlistedPublicView(propItem: PropertyItem, pvtVidCount: Int) {
     propItem.listing?.let {
         val listedCount = it.listed
         val unlistedCount = it.unlisted
+
+        println("myProp " + listedCount + " " + unlistedCount)
+
         if (listedCount > 0 || unlistedCount > 0) {
             SpacerUp(size = 16.dp)
 
@@ -1171,7 +1194,8 @@ fun ListingLabel(label: ListedLabel, count: Int) {
     Box(
         modifier = Modifier
             .background(
-                color = bgColor, shape = RoundedCornerShape(8.dp)
+                color = bgColor,
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
@@ -1249,6 +1273,7 @@ fun StepContents(
                     DisplayNoData(message = "No Agency Information")
                 } else {
                     ProfileHideItem(isNotShowProfile, onCheckedChange = {
+                        mState.selectedAgentId = 0
                         onNotShowProfileChange.invoke(it)
                     })
 
@@ -1266,9 +1291,7 @@ fun StepContents(
         2 -> {
             Content4(
                 mGState,
-                optionList = optionList,
-                mGoLiveSubmit = mGoLiveSubmit,
-                mFieldsError = mFieldsError
+                optionList = optionList, mGoLiveSubmit = mGoLiveSubmit, mFieldsError = mFieldsError
             )
         }
 
@@ -2209,7 +2232,8 @@ private fun SocialMediaItemContent(
                         )
                         Spacer(modifier = Modifier.weight(1f))
 
-                        SwitchCompo(isPublic.value,
+                        SwitchCompo(
+                            isPublic.value,
                             modifier = Modifier.height(35.dp),
                             onCheckedChange = {
                                 isPublic.value = it
@@ -2234,7 +2258,8 @@ private fun SocialMediaItemContent(
                         info = "Livecast will be shown publicly on property listing",
                         color = AppPrimaryDark,
                         modifier = Modifier.padding(end = 80.dp)
-                    )/*PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
+                    )
+                    /*PrivacySettings(isSohoPublic, isWhiteTheme = true, onChangePrivacy = {
                         val isPublic = it == VideoPrivacy.PUBLIC.label
                         onSohoItemChecked.invoke(isPublic)
                     })*/
@@ -2633,7 +2658,8 @@ fun RequestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             val permission = Manifest.permission.POST_NOTIFICATIONS
             if (ContextCompat.checkSelfPermission(
-                    context, permission
+                    context,
+                    permission
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 notificationPermissionLauncher.launch(permission)

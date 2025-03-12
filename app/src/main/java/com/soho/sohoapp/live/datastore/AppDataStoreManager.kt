@@ -9,6 +9,7 @@ import com.soho.sohoapp.live.datastore.DataStoreKeys.PREF_KEY_USER_SM_PROFILES
 import com.soho.sohoapp.live.model.ConnectedSocialProfile
 import com.soho.sohoapp.live.network.response.Data
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -62,6 +63,13 @@ class AppDataStoreManager(private val context: Context) {
                 Json.decodeFromString<Data>(jsonString)
             }
         }
+
+    //Check logged status
+    suspend fun isLogged(): Boolean {
+        return context.dataStore.data.firstOrNull()?.let { preferences ->
+            preferences[DataStoreKeys.PREF_KEY_USER_PROFILE]?.isNotEmpty() ?: false
+        } ?: false
+    }
 
     // Clear all data on logout
     suspend fun clearAllData() {

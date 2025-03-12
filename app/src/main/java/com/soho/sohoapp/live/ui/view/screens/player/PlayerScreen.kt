@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -24,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -54,7 +59,7 @@ import com.soho.sohoapp.live.ui.components.SpacerSide
 import com.soho.sohoapp.live.ui.components.SpacerUp
 import com.soho.sohoapp.live.ui.components.Text700_12sp
 import com.soho.sohoapp.live.ui.components.Text700_12spRight
-import com.soho.sohoapp.live.ui.components.Text800_14sp
+import com.soho.sohoapp.live.ui.components.Text700_12sp_reg
 import com.soho.sohoapp.live.ui.components.TopAppBarBackAction
 import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
@@ -66,6 +71,7 @@ import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 import java.io.File
+import kotlin.math.roundToInt
 
 @Composable
 fun PlayerScreen(
@@ -110,6 +116,7 @@ fun PlayerScreen(
     var isShowAlert by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
     var isShowPlayer by remember { mutableStateOf(true) }
+    var isLandscape by remember { mutableStateOf(false) }
     val thumbnail: Bitmap? = remember(fileUri) {
         createVideoThumbnail(
             fileUri.path ?: "", MediaStore.Images.Thumbnails.MINI_KIND
@@ -183,9 +190,30 @@ fun PlayerScreen(
             }
         )
 
+        //set dynamically position
+        val configuration = LocalConfiguration.current
+        val screenHeight = configuration.screenHeightDp.dp
+        val screenWidth = configuration.screenWidthDp.dp
+
+        //Dynamic % of screen height
+        val videoHeight = (screenHeight * 0.3f).value.roundToInt().dp
+        val paddingTop = (screenHeight * if (isLandscape) 0.04f else 0.03f).value.roundToInt().dp
+        val paddingStart = (screenWidth * 0.04f).value.roundToInt().dp
+
+        states.privateVideo.value?.let { pvtVid ->
+            val orientation = pvtVid.videoInfo?.orientation
+            isLandscape = orientation == "landscape"
+        }
+
+        //Change the player size according to the video orintation
+        var customModifier = Modifier.fillMaxSize()
+        if (isLandscape) {
+            customModifier = Modifier.height(videoHeight)
+        }
+
         //Center Player
         Column(modifier = Modifier
-            .fillMaxSize()
+            .wrapContentHeight()
             .constrainAs(content) {
                 top.linkTo(actionBar.bottom)
                 bottom.linkTo(bottomButton.top)
@@ -193,13 +221,13 @@ fun PlayerScreen(
                 end.linkTo(parent.end)
                 height = Dimension.fillToConstraints
             }
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            .padding(24.dp)) {
+            Box(modifier = customModifier) {
                 //Player
                 if (isShowPlayer) {
                     AndroidView(modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .align(Alignment.Center),
                         factory = { ctx ->
                             VideoView(ctx).apply {
                                 //set mediaController
@@ -229,9 +257,7 @@ fun PlayerScreen(
                         Image(
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Video Thumbnail",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 16.dp)
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }
@@ -268,21 +294,24 @@ fun PlayerScreen(
                     contentDescription = "watermark",
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 32.dp, top = 16.dp)
+                        .padding(start = paddingStart, top = paddingTop)
                 )
 
                 //Agent & Property Overlay
                 states.privateVideo.value?.let { pvtVid ->
                     val isTemplated = pvtVid.videoInfo?.isEnableTemplate ?: false
-                    val orie = pvtVid.videoInfo?.orientation
 
                     if (isTemplated) {
                         agentProperty?.let {
+
+                            val coroutineScope = rememberCoroutineScope()
+                            val graphicsLayer = rememberGraphicsLayer()
+
                             val mod = Modifier
                                 .align(Alignment.BottomStart)
                                 .fillMaxWidth()
-                                .padding(horizontal = 24.dp, vertical = 16.dp)
-                            AgentPropertyInfo(it, mod)
+                                .padding(vertical = 10.dp)
+                            AgentPropertyInfo(it, mod, pvtVid.isHideAgent)
                         }
                     }
                 }
@@ -301,7 +330,7 @@ fun PlayerScreen(
 }
 
 @Composable
-fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
+fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier, isHideAgent: Boolean) {
     Column(boxMod) {
 
         //Property Info
@@ -312,9 +341,9 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 agProp.address?.let {
-                    Text800_14sp(label = it, txtColor = AppWhite, isSingleLine = true)
+                    Text700_12sp(label = it, txtColor = AppWhite, isSingleLine = true)
                 }
-                SpacerUp(size = 8.dp)
+                SpacerUp(size = 4.dp)
                 AmenitiesViewSmall(agProp, AppWhite)
                 SpacerUp(size = 16.dp)
             }
@@ -323,42 +352,47 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier) {
         //Agent Info
         agProp.agent?.let { agent ->
             val profImgSize = 32.dp
+            val mod = if (isHideAgent) Modifier.height(profImgSize) else Modifier
             Row(
-                modifier = Modifier
+                modifier = mod
                     .background(agent.agencyBgColor)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 //profile image and name
-                Row(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    //profile image
-                    agent.avatar_url?.let {
-                        val urlPainter = rememberAsyncImagePainter(
-                            model = it,
-                            placeholder = painterResource(id = R.drawable.profile_placeholder),
-                            error = painterResource(id = R.drawable.profile_placeholder)
-                        )
+                if (!isHideAgent) {
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        //profile image
+                        agent.avatar_url?.let {
+                            val urlPainter = rememberAsyncImagePainter(
+                                model = it,
+                                placeholder = painterResource(id = R.drawable.profile_placeholder),
+                                error = painterResource(id = R.drawable.profile_placeholder)
+                            )
 
-                        Image(
-                            painter = urlPainter,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(profImgSize)
-                                .clip(CircleShape)
-                        )
-                    } ?: kotlin.run {
-                        InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                            Image(
+                                painter = urlPainter,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(profImgSize)
+                                    .clip(CircleShape)
+                            )
+                        } ?: kotlin.run {
+                            InitialProfileImage(agent.full_name, profImgSize, isSmall = true)
+                        }
+
+                        SpacerSide(size = 8.dp)
+
+                        //name
+                        Text700_12sp(label = agent.full_name, txtColor = TextDark)
                     }
-
-                    SpacerSide(size = 8.dp)
-
-                    //name
-                    Text700_12sp(label = agent.full_name, txtColor = TextDark)
                 }
 
                 //agency logo
@@ -401,22 +435,22 @@ fun AmenitiesViewSmall(ag: AgentProperty, textColor: Color) {
     ) {
 
         ag.bedrooms.visibleValue()?.let {
-            Text800_14sp(label = it, txtColor = textColor)
+            Text700_12sp_reg(label = it, txtColor = textColor)
             AmenitiesIcon(icon = R.drawable.ic_bedroom, iconColor = textColor, isCompact = false)
         }
 
         ag.bathrooms.visibleValue()?.let {
-            Text800_14sp(label = it, txtColor = textColor)
+            Text700_12sp_reg(label = it, txtColor = textColor)
             AmenitiesIcon(icon = R.drawable.ic_bathroom, iconColor = textColor, isCompact = false)
         }
 
         ag.parking.visibleValue()?.let {
-            Text800_14sp(label = it, txtColor = textColor)
+            Text700_12sp_reg(label = it, txtColor = textColor)
             AmenitiesIcon(icon = R.drawable.ic_car_park, iconColor = textColor, isCompact = false)
         }
 
         ag.areaSize?.let {
-            Text800_14sp(label = it.first, txtColor = textColor)
+            Text700_12sp_reg(label = it.first, txtColor = textColor)
             AmenitiesIcon(icon = it.second, iconColor = textColor, isCompact = false)
         }
     }

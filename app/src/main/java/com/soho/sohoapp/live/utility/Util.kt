@@ -8,10 +8,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.util.Base64
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +27,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -32,6 +39,7 @@ import com.soho.sohoapp.live.enums.Orientation
 import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.ForceExit
 import com.soho.sohoapp.live.ui.view.screens.signin.SignInState
+import com.soho.sohoapp.live.ui.view.screens.video_recorder.PvtRecFolder
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_403
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_404
 import com.soho.sohoapp.live.utility.Const.Companion.ERR_500
@@ -39,6 +47,81 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.util.concurrent.TimeUnit
+
+const val CACHED_IMG = "image.png"
+
+//Delete 30 days old files
+fun deleteOldRecordedVideos() {
+    val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    val customDir = File(movieDir, PvtRecFolder)
+
+    if (customDir.exists()) {
+        val thirtyDaysInMillis = TimeUnit.DAYS.toMillis(30)
+        val currentTime = System.currentTimeMillis()
+
+        customDir.listFiles()?.filter {
+            it.extension == "mp4" && (currentTime - it.lastModified()) > thirtyDaysInMillis
+        }?.forEach { oldFile ->
+            if (oldFile.delete()) {
+                println("Deleted old video: ${oldFile.name}")
+            } else {
+                println("Failed to delete: ${oldFile.name}")
+            }
+        }
+    }
+}
+
+//get all recorded video file
+fun getAllRecordedVideos(): List<File> {
+    val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    val customDir = File(movieDir, PvtRecFolder)
+    return if (customDir.exists()) {
+        customDir.listFiles()?.filter { it.extension == "mp4" } ?: emptyList()
+    } else {
+        emptyList()
+    }
+}
+
+//get image from CacheMemory
+fun getCachedImageFile(context: Context, fileName: String = CACHED_IMG): File? {
+    val file = File(context.cacheDir, fileName)
+    return if (file.exists()) file else null
+}
+
+fun getCachedImageBitmap(context: Context, fileName: String = CACHED_IMG): Bitmap? {
+    val file = File(context.cacheDir, fileName)
+    return if (file.exists()) BitmapFactory.decodeFile(file.absolutePath) else null
+}
+
+//Save image in CacheMemory
+fun saveBitmapToCache(
+    context: Context,
+    bitmap: ImageBitmap,
+    fileName: String = CACHED_IMG
+): File {
+    val file = File(context.cacheDir, fileName)
+    val androidBitmap = bitmap.asAndroidBitmap()
+
+    FileOutputStream(file).use { out ->
+        androidBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+    }
+    return file
+}
+
+//Delete Cache image
+fun deleteCachedImage(context: Context, fileName: String = CACHED_IMG): Boolean {
+    val file = File(context.cacheDir, fileName)
+    return if (file.exists()) {
+        file.delete()
+    } else {
+        false // File doesn't exist
+    }
+}
 
 //Get Force Logout Error message
 fun getForceExitMessage(errCode: Int?): ForceExit {
@@ -350,4 +433,22 @@ private fun getDownloadStatus(downloadId: Long): Int {
     }
     cursor.close()
     return DownloadManager.STATUS_FAILED
+}
+
+
+fun printHashKey() {
+    try {
+        val info: PackageInfo = context.packageManager
+            .getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
+        for (signature in info.signatures) {
+            val md: MessageDigest = MessageDigest.getInstance("SHA")
+            md.update(signature.toByteArray())
+            val hashKey: String = String(Base64.encode(md.digest(), 0))
+            Log.d("hashkey", "Hash Key: $hashKey")
+        }
+    } catch (e: NoSuchAlgorithmException) {
+        Log.e("Error", "${e.localizedMessage}")
+    } catch (e: Exception) {
+        Log.e("Exception", "${e.localizedMessage}")
+    }
 }

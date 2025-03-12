@@ -129,6 +129,10 @@ fun BottomNavHost(
                         // Ensure the new screen is the top-most screen
                         launchSingleTop = true
                     }
+
+                    //Reset All GoLive data
+                    resetSteps(mGoLiveSubmit, mState)
+                    MainStateHolder.resetLive()
                 }
             )
         }
@@ -164,6 +168,7 @@ fun BottomNavHost(
 
         composable(route = NavigationPath.TEMPLATE.name) {
             TemplateScreen(
+                viewMMain = mainViewModel,
                 navController = navController,
                 goLiveData = mGoLiveSubmit,
                 onStartRecClick = {
@@ -235,12 +240,13 @@ fun BottomNavHost(
                     navController.navigate(NavigationPath.VIDEO_LIBRARY.name) {
                         //tab move
                         onTabMoveClick(1)
-                        mGlobalState.isOpenPvtVidLib.value = true
+                        mGlobalState.isOpenPvtVidLib.value = false
 
-                        // Pop up to the start destination (or a specific destination) and clear the stack
+                        //Clear all stack screens
                         popUpTo(navController.graph.findStartDestination().id) {
                             inclusive = true
                         }
+
                         // Ensure the new screen is the top-most screen
                         launchSingleTop = true
 
