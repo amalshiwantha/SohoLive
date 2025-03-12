@@ -61,8 +61,10 @@ import com.soho.sohoapp.live.SohoLiveApp.Companion.getActivity
 import com.soho.sohoapp.live.enums.AlertConfig
 import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
+import com.soho.sohoapp.live.enums.SocialMediaInfo
 import com.soho.sohoapp.live.model.GoLiveSubmit
 import com.soho.sohoapp.live.model.MainStateHolder
+import com.soho.sohoapp.live.model.MainStateHolder.mState
 import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.network.response.LiveTarget
@@ -84,6 +86,7 @@ import com.soho.sohoapp.live.ui.view.screens.golive.openWebView
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
+import com.soho.sohoapp.live.utility.TrackLiveStreamPreview
 import com.soho.sohoapp.live.utility.deleteCachedImage
 import com.soho.sohoapp.live.utility.rotateScreen
 import com.soho.sohoapp.live.utility.saveBitmapToCache
@@ -154,6 +157,16 @@ fun TemplateScreen(
             )
             val jsonStr = Json.encodeToString(requestLive)
             viewMMain.openLiveCastScreen(jsonStr)
+
+            TrackLiveStreamPreview(
+                goLiveData.propertyId,
+                goLiveData.purpose.orEmpty(),
+                requestLive.liveStreamId,
+                goLiveData.checkedPlatforms.contains(SocialMediaInfo.FACEBOOK.title.lowercase()),
+                goLiveData.checkedPlatforms.contains(SocialMediaInfo.YOUTUBE.title.lowercase()),
+                mState.liveOrientation.value
+            )
+
             delay(300) //to add smooth transit
             navController.popBackStack()
         }

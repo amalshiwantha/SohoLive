@@ -108,8 +108,6 @@ import com.soho.sohoapp.live.network.common.ProgressBarState
 import com.soho.sohoapp.live.network.response.AgentProfileGoLive
 import com.soho.sohoapp.live.network.response.DataGoLive
 import com.soho.sohoapp.live.network.response.Document
-import com.soho.sohoapp.live.network.response.LiveRequest
-import com.soho.sohoapp.live.network.response.LiveTarget
 import com.soho.sohoapp.live.network.response.TsPropertyResponse
 import com.soho.sohoapp.live.ui.components.AppAlertDialog
 import com.soho.sohoapp.live.ui.components.ButtonColoredIcon
@@ -121,7 +119,6 @@ import com.soho.sohoapp.live.ui.components.ButtonOutLinedIcon
 import com.soho.sohoapp.live.ui.components.CenterMessageProgress
 import com.soho.sohoapp.live.ui.components.DropDownWhatForLiveStream
 import com.soho.sohoapp.live.ui.components.InitialProfileImage
-import com.soho.sohoapp.live.ui.components.NotEnableStreamAlert
 import com.soho.sohoapp.live.ui.components.SearchBar
 import com.soho.sohoapp.live.ui.components.SelectOrientationBottomSheet
 import com.soho.sohoapp.live.ui.components.SpacerSide
@@ -170,10 +167,7 @@ import com.soho.sohoapp.live.ui.view.screens.schedule.ShowDeleteAlert
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
-import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
-import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
 import com.soho.sohoapp.live.utility.NetworkUtils
-import com.soho.sohoapp.live.utility.TrackLiveStreamPreview
 import com.soho.sohoapp.live.utility.TrackStep1
 import com.soho.sohoapp.live.utility.TrackStep2
 import com.soho.sohoapp.live.utility.TrackStep3
@@ -184,8 +178,6 @@ import com.soho.sohoapp.live.utility.toUppercaseFirst
 import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
