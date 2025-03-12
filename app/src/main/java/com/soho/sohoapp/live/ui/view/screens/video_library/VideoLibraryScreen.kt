@@ -56,7 +56,6 @@ import com.soho.sohoapp.live.enums.PropertyType
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.enums.VideoStatus
 import com.soho.sohoapp.live.model.GlobalState
-import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.VidLibRequest
 import com.soho.sohoapp.live.network.common.AlertState
 import com.soho.sohoapp.live.network.common.ProgressBarState
@@ -92,6 +91,7 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.TrackAssetDownloadDone
 import com.soho.sohoapp.live.utility.TrackLiveStreamCopyUrl
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
@@ -270,10 +270,15 @@ private fun Content(
             .background(brushMainGradientBg)
     ) {
         //Private Video Button
-        if(state.isHasPvtVid.value){
-            ButtonOutLinedIcon(text = "Private Videos", icon = R.drawable.ic_pvt_video, onBtnClick = {
-                onShowPvtVideo()
-            }, modifier = Modifier.padding(16.dp))
+        if (state.isHasPvtVid.value) {
+            ButtonOutLinedIcon(
+                text = "Private Videos",
+                icon = R.drawable.ic_pvt_video,
+                onBtnClick = {
+                    onShowPvtVideo()
+                },
+                modifier = Modifier.padding(16.dp)
+            )
         }
 
         //Show Upload Progress
@@ -317,9 +322,15 @@ private fun Content(
                                     onShareVideo = { shareIntent(it) },
                                     onPlayVideo = { onPlayVid(it) },
                                     onDownloadVideo = {
-                                        downloadFile(it.first, it.second, onDownloadStatus = {
-                                            downloadStatus = it
-                                        })
+                                        downloadFile(
+                                            it.first,
+                                            it.second,
+                                            onDownloadStatus = { dwnStatus ->
+                                                downloadStatus = dwnStatus
+                                                if (dwnStatus == "Download Completed") {
+                                                    TrackAssetDownloadDone(item.id)
+                                                }
+                                            })
                                     },
                                     onStorageClick = {
                                         onStorageClick()

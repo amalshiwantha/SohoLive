@@ -16,10 +16,14 @@ enum class Event {
     live_stream_started, live_stream_finished, live_stream_url_copied,
     cancel_prerecord_video_preview, prerecord_video_started,
     prerecord_video_saved_internal, prerecord_video_deleted_internal,
-    prerecord_video_published
+    prerecord_video_published,asset_download_completed
 }
 
 //Event Tracks
+fun TrackAssetDownloadDone(asset_id: Int) {
+    val params = mapOf("asset_id" to asset_id)
+    recordEvent(Event.asset_download_completed, params)
+}
 
 fun TrackPreRecordPublished(
     property_listing_id: Int,
@@ -28,7 +32,6 @@ fun TrackPreRecordPublished(
     live_cast_for: String,
     is_vertical_orientation: Boolean
 ) {
-
     val params = mapOf(
         "property_listing_id" to property_listing_id,
         "screen" to screen,
