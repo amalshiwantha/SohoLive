@@ -91,7 +91,9 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.TrackAssetClicked
 import com.soho.sohoapp.live.utility.TrackAssetDownloadDone
+import com.soho.sohoapp.live.utility.TrackAssetManageVideo
 import com.soho.sohoapp.live.utility.TrackLiveStreamCopyUrl
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
@@ -318,7 +320,11 @@ private fun Content(
 
                             VideoStatus.READY.status -> {
                                 ListItemView(item,
-                                    onClickManage = { onManageClick(it) },
+                                    onClickManage = {
+                                        TrackAssetManageVideo(item.id)
+                                        TrackAssetClicked(item.propertyListingId, item.id)
+                                        onManageClick(it)
+                                    },
                                     onShareVideo = { shareIntent(it) },
                                     onPlayVideo = { onPlayVid(it) },
                                     onDownloadVideo = {

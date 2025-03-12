@@ -16,10 +16,22 @@ enum class Event {
     live_stream_started, live_stream_finished, live_stream_url_copied,
     cancel_prerecord_video_preview, prerecord_video_started,
     prerecord_video_saved_internal, prerecord_video_deleted_internal,
-    prerecord_video_published,asset_download_completed
+    prerecord_video_published, asset_download_completed, linked_listing_clicked,
+    manage_video_opened
 }
 
 //Event Tracks
+
+fun TrackAssetManageVideo(asset_id: Int) {
+    val params = mapOf("asset_id" to asset_id)
+    recordEvent(Event.manage_video_opened, params)
+}
+
+fun TrackAssetClicked(property_listing_id: Int, asset_id: Int) {
+    val params = mapOf("property_listing_id" to property_listing_id, "asset_id" to asset_id)
+    recordEvent(Event.linked_listing_clicked, params)
+}
+
 fun TrackAssetDownloadDone(asset_id: Int) {
     val params = mapOf("asset_id" to asset_id)
     recordEvent(Event.asset_download_completed, params)
@@ -58,8 +70,10 @@ fun TrackPreRecordSaved(property_listing_id: Int, is_private: Boolean) {
     recordEvent(Event.prerecord_video_saved_internal, params)
 }
 
-fun TrackPreRecordStarted(property_listing_id: Int,
-                          is_branding_enabled: Boolean) {
+fun TrackPreRecordStarted(
+    property_listing_id: Int,
+    is_branding_enabled: Boolean
+) {
     val params = mapOf(
         "property_listing_id" to property_listing_id,
         "is_branding_enabled" to is_branding_enabled
