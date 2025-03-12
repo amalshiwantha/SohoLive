@@ -28,7 +28,6 @@ import com.soho.sohoapp.live.R
 import com.soho.sohoapp.live.enums.VideoPrivacy
 import com.soho.sohoapp.live.model.GlobalState
 import com.soho.sohoapp.live.model.GoLiveSubmit
-import com.soho.sohoapp.live.model.MainStateHolder
 import com.soho.sohoapp.live.model.UploadData
 import com.soho.sohoapp.live.ui.components.ButtonColouredProgress
 import com.soho.sohoapp.live.ui.components.SpacerUp
@@ -36,7 +35,6 @@ import com.soho.sohoapp.live.ui.components.Text400_14sp
 import com.soho.sohoapp.live.ui.components.Text950_20sp
 import com.soho.sohoapp.live.ui.components.TopAppBarActionBack
 import com.soho.sohoapp.live.ui.components.brushMainGradientBg
-import com.soho.sohoapp.live.ui.navigation.NavigationPath
 import com.soho.sohoapp.live.ui.theme.AppGreen
 import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.OptionDarkBg
@@ -44,8 +42,8 @@ import com.soho.sohoapp.live.ui.view.screens.golive.InfoCard
 import com.soho.sohoapp.live.ui.view.screens.video_manage.PrivacyOption
 import com.soho.sohoapp.live.utility.AppEvent
 import com.soho.sohoapp.live.utility.AppEventBus
+import com.soho.sohoapp.live.utility.TrackPreRecordPublished
 import com.soho.sohoapp.live.utility.TrackPreRecordSaved
-import com.soho.sohoapp.live.utility.TrackPreRecordStarted
 import org.koin.compose.koinInject
 
 @Composable
@@ -230,14 +228,44 @@ fun ReviewScreen(
             color = AppGreen,
             onBtnClick = {
                 val updatedItem = states.privateVideo.value?.copy(privacy = selectedOption)
+                var propertyId = 0
+                var isVertical = false
+                var purpose = ""
 
                 if (mGState.isEditVideoData.value) {
+
+                    states.privateVideo.value?.let {
+                        propertyId = it.propertyId
+                        isVertical =
+                            it.videoInfo?.orientation?.contains("vertical", ignoreCase = true)
+                                ?: false
+                        purpose = it.videoInfo?.streamType.orEmpty()
+                    }
+
                     vmReview.updateUpload(updatedItem, null)
                 } else {
                     val isPvt = selectedOption == VideoPrivacy.PRIVATE.label
-                    TrackPreRecordSaved(mGoLiveSubmit.propertyId,isPvt)
+                    TrackPreRecordSaved(mGoLiveSubmit.propertyId, isPvt)
+
+                    propertyId = mGoLiveSubmit.propertyId
+                    isVertical = mGoLiveSubmit.orientation.contains("vertical", ignoreCase = true)
+                    purpose = mGoLiveSubmit.purpose.orEmpty()
 
                     vmReview.updateUpload(updatedItem, mGoLiveSubmit)
+                }
+
+                if (selectedOption == VideoPrivacy.PUBLIC.label) {
+
+                    val screen =
+                        if (mGState.isEditVideoData.value) "VideoLibrary" else "VideoRecording"
+
+                    TrackPreRecordPublished(
+                        property_listing_id = propertyId,
+                        screen = screen,
+                        is_public = true,
+                        is_vertical_orientation = isVertical,
+                        live_cast_for = purpose
+                    )
                 }
             })
     }

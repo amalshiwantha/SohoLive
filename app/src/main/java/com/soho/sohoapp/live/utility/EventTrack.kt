@@ -22,11 +22,13 @@ enum class Event {
 //Event Tracks
 
 fun TrackPreRecordPublished(
-    property_listing_id: Int, screen: String,
+    property_listing_id: Int,
+    screen: String,
     is_public: Boolean,
     live_cast_for: String,
     is_vertical_orientation: Boolean
 ) {
+
     val params = mapOf(
         "property_listing_id" to property_listing_id,
         "screen" to screen,
