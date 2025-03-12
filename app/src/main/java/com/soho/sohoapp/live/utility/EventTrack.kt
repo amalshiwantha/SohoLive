@@ -13,7 +13,72 @@ enum class Event {
     asset_step1_next_clicked, asset_step2_next_clicked,
     asset_step3_next_clicked, asset_step4_preview_clicked,
     live_stream_preview_created, cancel_live_stream_preview,
-    live_stream_started
+    live_stream_started, live_stream_finished, live_stream_url_copied,
+    cancel_prerecord_video_preview, prerecord_video_started,
+    prerecord_video_saved_internal, prerecord_video_deleted_internal,
+    prerecord_video_published
+}
+
+//Event Tracks
+
+fun TrackPreRecordPublished(
+    property_listing_id: Int, screen: String,
+    is_public: Boolean,
+    live_cast_for: String,
+    is_vertical_orientation: Boolean
+) {
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "screen" to screen,
+        "is_public" to is_public,
+        "live_cast_for" to live_cast_for,
+        "is_vertical_orientation" to is_vertical_orientation
+    )
+    recordEvent(Event.prerecord_video_published, params)
+}
+
+fun TrackPreRecordDelete(property_listing_id: Int, screen: String) {
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "screen" to screen
+    )
+    recordEvent(Event.prerecord_video_deleted_internal, params)
+}
+
+fun TrackPreRecordSaved(property_listing_id: Int, is_private: Boolean) {
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "is_private" to is_private
+    )
+    recordEvent(Event.prerecord_video_saved_internal, params)
+}
+
+fun TrackPreRecordStarted(property_listing_id: Int,
+                          is_branding_enabled: Boolean) {
+    val params = mapOf(
+        "property_listing_id" to property_listing_id,
+        "is_branding_enabled" to is_branding_enabled
+    )
+    recordEvent(Event.prerecord_video_started, params)
+}
+
+
+fun TrackPreRecordPreviewCancel() {
+    val params = mapOf("" to "")
+    recordEvent(Event.cancel_prerecord_video_preview, params)
+}
+
+fun TrackLiveStreamCopyUrl(streamId: String, screen: String) {
+    val params = mapOf(
+        "stream_id" to streamId,
+        "screen" to screen
+    )
+    recordEvent(Event.live_stream_url_copied, params)
+}
+
+fun TrackLiveStreamFinished(streamId: String) {
+    val params = mapOf("stream_id" to streamId)
+    recordEvent(Event.live_stream_finished, params)
 }
 
 fun TrackLiveStreamStarted(
