@@ -12,16 +12,14 @@ enum class Event {
     user_logged_in, password_reset_requested,
     asset_step1_next_clicked, asset_step2_next_clicked,
     asset_step3_next_clicked, asset_step4_preview_clicked,
-    live_stream_preview_created
+    live_stream_preview_created, cancel_live_stream_preview
 }
 
-/*@Composable
-fun TrackLogin(email: String) {
-    LaunchedEffect(Unit) {
-        val params = mapOf("email" to email)
-        recordEvent(Event.user_logged_in, params)
-    }
-}*/
+
+fun TrackLiveStreamCancel(streamId: String) {
+    val params = mapOf("stream_id" to streamId)
+    recordEvent(Event.cancel_live_stream_preview, params)
+}
 
 fun TrackLiveStreamPreview(
     property_listing_id: Int,
@@ -145,3 +143,11 @@ private fun recordEvent(event: Event, parameters: Map<String, Any?>) {
 
     Log.i("TrackEvent", event.toString() + " :: " + Gson().toJson(bundle))
 }
+
+/*@Composable
+fun TrackLogin(email: String) {
+    LaunchedEffect(Unit) {
+        val params = mapOf("email" to email)
+        recordEvent(Event.user_logged_in, params)
+    }
+}*/

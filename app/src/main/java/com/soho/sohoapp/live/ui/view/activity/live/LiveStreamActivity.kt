@@ -55,6 +55,7 @@ import com.soho.sohoapp.live.model.AlertData
 import com.soho.sohoapp.live.model.LiveCastStatus
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
+import com.soho.sohoapp.live.utility.TrackLiveStreamCancel
 import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.getCachedImageBitmap
 import com.soho.sohoapp.live.utility.showAlertMessage
@@ -830,7 +831,8 @@ class LiveStreamActivity : AppCompatActivity() {
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
         // Load the logo & watermark bitmaps
-        val logoBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.soho_logo_watermark)
+        val logoBitmap =
+            BitmapFactory.decodeResource(context.resources, R.drawable.soho_logo_watermark)
         val agentBitmap = getCachedImageBitmap(context)
 
         /* SOHO WATERMARK */
@@ -856,7 +858,8 @@ class LiveStreamActivity : AppCompatActivity() {
         agentBitmap?.let {
             // Set watermark width to fit screen width
             val watermarkWidth = screenWidth
-            val watermarkHeight = (watermarkWidth * agentBitmap.height.toFloat() / agentBitmap.width).toInt()
+            val watermarkHeight =
+                (watermarkWidth * agentBitmap.height.toFloat() / agentBitmap.width).toInt()
 
             // Position agent watermark at the bottom
             val agentX = 0
@@ -920,6 +923,7 @@ class LiveStreamActivity : AppCompatActivity() {
 
     private fun finishSendStatus(castEnd: CastEnd) {
 
+        trackEvent(castEnd)
         rotateToPortrait()
 
         val status = LiveCastStatus(1, castEnd)
@@ -930,6 +934,12 @@ class LiveStreamActivity : AppCompatActivity() {
         }
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
+    }
+
+    private fun trackEvent(castEnd: CastEnd) {
+        if (castEnd == CastEnd.CANCEL) {
+            TrackLiveStreamCancel(reqLive.liveStreamId)
+        }
     }
 
     private fun rotateToPortrait() {
