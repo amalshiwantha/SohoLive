@@ -57,7 +57,7 @@ import com.soho.sohoapp.live.model.MainStateHolder.mState
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
 import com.soho.sohoapp.live.utility.TrackLiveStreamCancel
-import com.soho.sohoapp.live.utility.TrackLiveStreamPreview
+import com.soho.sohoapp.live.utility.TrackLiveStreamFinished
 import com.soho.sohoapp.live.utility.TrackLiveStreamStarted
 import com.soho.sohoapp.live.utility.copyToClipboard
 import com.soho.sohoapp.live.utility.getCachedImageBitmap
@@ -659,7 +659,7 @@ class LiveStreamActivity : AppCompatActivity() {
     }
 
     private fun TrackLiveStart() {
-        mState.goLiveSubmit?.let { goLive->
+        mState.goLiveSubmit?.let { goLive ->
             TrackLiveStreamStarted(
                 reqLive.liveStreamId,
                 goLive.propertyId,
@@ -956,6 +956,8 @@ class LiveStreamActivity : AppCompatActivity() {
     private fun trackEvent(castEnd: CastEnd) {
         if (castEnd == CastEnd.CANCEL) {
             TrackLiveStreamCancel(reqLive.liveStreamId)
+        } else if (castEnd == CastEnd.COMPLETE) {
+            TrackLiveStreamFinished(reqLive.liveStreamId)
         }
     }
 
