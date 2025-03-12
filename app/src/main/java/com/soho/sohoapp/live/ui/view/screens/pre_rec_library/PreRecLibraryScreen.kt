@@ -65,6 +65,7 @@ import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.view.screens.player.deleteFileFromUri
 import com.soho.sohoapp.live.ui.view.screens.player.getVideoThumbnail
 import com.soho.sohoapp.live.ui.view.screens.video_library.ActionIconButton
+import com.soho.sohoapp.live.utility.TrackPreRecordDelete
 import com.soho.sohoapp.live.utility.showToast
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -98,6 +99,8 @@ fun PreRecordLibraryScreen(
             actionFile?.let {
                 deleteFileFromUri(it).also { isDeleted ->
                     if (isDeleted) {
+                        val propId = states.privateVideo.value?.propertyId ?: 0
+                        TrackPreRecordDelete(propId, "PrivateVideos")
                         showToast("Private Video Deleted")
                     }
                 }

@@ -67,6 +67,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.TextDark
 import com.soho.sohoapp.live.ui.view.screens.golive.AmenitiesIcon
 import com.soho.sohoapp.live.ui.view.screens.video_edit_details.VidEditDetailsViewModel
+import com.soho.sohoapp.live.utility.TrackPreRecordDelete
 import com.soho.sohoapp.live.utility.visibleValue
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
@@ -140,6 +141,10 @@ fun PlayerScreen(
         AppAlertDialog(alert = AlertConfig.DELETE_ALERT.apply {
             isConfirm = true
         }, onConfirm = {
+
+            val propId = states.privateVideo.value?.propertyId ?: 0
+            TrackPreRecordDelete(propId, "PlayerScreen")
+
             deleteFileFromUri(fileUri)
             navController.popBackStack()
             isShowAlert = false
