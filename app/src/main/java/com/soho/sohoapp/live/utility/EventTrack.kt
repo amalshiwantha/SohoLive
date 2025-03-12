@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
+import com.soho.sohoapp.live.BuildConfig
 import com.soho.sohoapp.live.SohoLiveApp.Companion.context
 import com.soho.sohoapp.live.enums.LiveFormat
 import com.soho.sohoapp.live.enums.Orientation
@@ -248,6 +249,11 @@ fun TrackLogin(email: String) {
 
 //Event Track
 private fun recordEvent(event: Event, parameters: Map<String, Any?>?) {
+    if (BuildConfig.DEBUG) {
+        Log.i("TrackEvent", "Event Skipped in DEBUG : $event")
+        return
+    }
+
     val bundle = Bundle()
 
     parameters?.let {
@@ -267,11 +273,3 @@ private fun recordEvent(event: Event, parameters: Map<String, Any?>?) {
 
     Log.i("TrackEvent", event.toString() + " :: " + Gson().toJson(bundle))
 }
-
-/*@Composable
-fun TrackLogin(email: String) {
-    LaunchedEffect(Unit) {
-        val params = mapOf("email" to email)
-        recordEvent(Event.user_logged_in, params)
-    }
-}*/
