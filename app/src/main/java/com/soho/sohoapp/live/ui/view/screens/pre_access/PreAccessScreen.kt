@@ -240,7 +240,7 @@ fun BottomBtnIndicator(
         Text800_14sp(label = "No Account Yet? ")
         ButtonOutlineWhite(
             text = "Visit Soho Livecast",
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().height(48.dp),
             onBtnClick = {
                 val webUrl = "https://soho.com.au/agents/livecast"
                 val encodeUrl = URLEncoder.encode(webUrl, StandardCharsets.UTF_8.toString())

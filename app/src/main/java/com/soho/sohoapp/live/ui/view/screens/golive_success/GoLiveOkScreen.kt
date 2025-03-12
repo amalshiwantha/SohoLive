@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.wrapContentSize
@@ -68,7 +69,7 @@ fun BottomButtons(modifier: Modifier, navController: NavHostController) {
     ) {
         ButtonOutlineWhite(
             text = "Manage Scheduled livecasts",
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().height(48.dp),
             onBtnClick = { navController.popBackStack() })
 
         ButtonColoured(text = "Schedule Another livecast",
