@@ -92,6 +92,7 @@ import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.LinkTxtColor
 import com.soho.sohoapp.live.ui.theme.OverageRed
 import com.soho.sohoapp.live.utility.NetworkUtils
+import com.soho.sohoapp.live.utility.TrackLiveStreamCopyUrl
 import com.soho.sohoapp.live.utility.downloadFile
 import com.soho.sohoapp.live.utility.getThumbUrl
 import com.soho.sohoapp.live.utility.shareIntent
@@ -687,6 +688,7 @@ private fun ListItemView(
             ActionIconButton(R.drawable.ic_share, onClickAction = {
                 item.shareableLink?.let {
                     onShareVideo(it)
+                    TrackLiveStreamCopyUrl(item.liveStreamId.toString(), "VideoLibrary")
                 } ?: kotlin.run {
                     showToast("Not found a shareable link")
                 }

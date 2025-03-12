@@ -62,7 +62,6 @@ fun TrackPreRecordStarted(property_listing_id: Int,
     recordEvent(Event.prerecord_video_started, params)
 }
 
-
 fun TrackPreRecordPreviewCancel() {
     val params = mapOf("" to "")
     recordEvent(Event.cancel_prerecord_video_preview, params)

@@ -57,6 +57,7 @@ import com.soho.sohoapp.live.model.MainStateHolder.mState
 import com.soho.sohoapp.live.network.response.LiveRequest
 import com.soho.sohoapp.live.ui.components.ShareableLinkDialog
 import com.soho.sohoapp.live.utility.TrackLiveStreamCancel
+import com.soho.sohoapp.live.utility.TrackLiveStreamCopyUrl
 import com.soho.sohoapp.live.utility.TrackLiveStreamFinished
 import com.soho.sohoapp.live.utility.TrackLiveStreamStarted
 import com.soho.sohoapp.live.utility.copyToClipboard
@@ -208,6 +209,7 @@ class LiveStreamActivity : AppCompatActivity() {
         binding.imgSmSoho.setOnClickListener {
             val linkSoho = reqLive.shareableLink
             copyToClipboard("soho.com.au", linkSoho, true)
+            TrackLiveStreamCopyUrl(reqLive.liveStreamId, "LiveStream")
         }
         binding.imgSmFb.setOnClickListener {
             val linkFb = getSmShareLink(SocialMedia.FACEBOOK)
