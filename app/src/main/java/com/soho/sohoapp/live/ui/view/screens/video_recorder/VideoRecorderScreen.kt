@@ -78,6 +78,7 @@ import com.soho.sohoapp.live.ui.theme.AppWhite
 import com.soho.sohoapp.live.ui.theme.BgGradientPurpleDark
 import com.soho.sohoapp.live.ui.view.screens.golive.RequestNotificationPermission
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
+import com.soho.sohoapp.live.utility.TrackPreRecordStarted
 import com.soho.sohoapp.live.utility.rotateScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
@@ -223,6 +224,9 @@ fun VideoRecorderScreen(
     LaunchedEffect("startRecording") {
         delay(2000)
         isLoading = false
+
+        TrackPreRecordStarted(goLiveData.propertyId, MainStateHolder.mState.isTemplateWithBrand.value)
+
         startStopRecord(controller, onRecord = {
             isRecording = it
         }, onDone = {
