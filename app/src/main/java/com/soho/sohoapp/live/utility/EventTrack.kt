@@ -17,10 +17,21 @@ enum class Event {
     cancel_prerecord_video_preview, prerecord_video_started,
     prerecord_video_saved_internal, prerecord_video_deleted_internal,
     prerecord_video_published, asset_download_completed, linked_listing_clicked,
-    manage_video_opened, mux_player_opened, asset_data_updated
+    manage_video_opened, mux_player_opened, asset_data_updated,
+    all_plans_viewed, plan_usage_viewed
 }
 
 //Event Tracks
+
+fun TrackPlanViewed() {
+    val params = mapOf("" to "")
+    recordEvent(Event.all_plans_viewed, params)
+}
+
+fun TrackPlanUsage() {
+    val params = mapOf("" to "")
+    recordEvent(Event.plan_usage_viewed, params)
+}
 
 fun TrackAssetUpdate(asset_id: Int) {
     val params = mapOf("asset_id" to asset_id)

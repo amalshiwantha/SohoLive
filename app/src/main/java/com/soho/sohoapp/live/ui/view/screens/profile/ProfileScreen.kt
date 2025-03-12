@@ -53,6 +53,8 @@ import com.soho.sohoapp.live.ui.theme.HintGray
 import com.soho.sohoapp.live.ui.theme.ItemCardBg
 import com.soho.sohoapp.live.ui.theme.logoutRed
 import com.soho.sohoapp.live.ui.view.activity.main.MainViewModel
+import com.soho.sohoapp.live.utility.TrackPlanUsage
+import com.soho.sohoapp.live.utility.TrackPlanViewed
 import com.soho.sohoapp.live.utility.toCapsFirstLetter
 import org.koin.compose.koinInject
 import java.net.URLEncoder
@@ -132,8 +134,10 @@ private fun MainContent(
             Column {
                 MainStateHolder.mState.activePlan.value?.let {
                     CurrentPlanCard(onPlanClick = {
+                        TrackPlanViewed()
                         navCont.navigate(NavigationPath.SUBSCRIPTION.name)
                     }, onUsageClick = {
+                        TrackPlanUsage()
                         navCont.navigate(NavigationPath.USAGE.name)
                     }, it)
                 }
