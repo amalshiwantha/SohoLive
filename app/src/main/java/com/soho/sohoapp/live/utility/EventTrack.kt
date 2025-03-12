@@ -24,13 +24,11 @@ enum class Event {
 //Event Tracks
 
 fun TrackPlanViewed() {
-    val params = mapOf("" to "")
-    recordEvent(Event.all_plans_viewed, params)
+    recordEvent(Event.all_plans_viewed, null)
 }
 
 fun TrackPlanUsage() {
-    val params = mapOf("" to "")
-    recordEvent(Event.plan_usage_viewed, params)
+    recordEvent(Event.plan_usage_viewed, null)
 }
 
 fun TrackAssetUpdate(asset_id: Int) {
@@ -103,8 +101,7 @@ fun TrackPreRecordStarted(
 }
 
 fun TrackPreRecordPreviewCancel() {
-    val params = mapOf("" to "")
-    recordEvent(Event.cancel_prerecord_video_preview, params)
+    recordEvent(Event.cancel_prerecord_video_preview, null)
 }
 
 fun TrackLiveStreamCopyUrl(streamId: String, screen: String) {
@@ -250,15 +247,17 @@ fun TrackLogin(email: String) {
 }
 
 //Event Track
-private fun recordEvent(event: Event, parameters: Map<String, Any?>) {
+private fun recordEvent(event: Event, parameters: Map<String, Any?>?) {
     val bundle = Bundle()
 
-    for ((key, value) in parameters) {
-        when (value) {
-            is String -> bundle.putString(key, value)
-            is Int -> bundle.putInt(key, value)
-            is Double -> bundle.putDouble(key, value)
-            is Boolean -> bundle.putBoolean(key, value)
+    parameters?.let {
+        for ((key, value) in it) {
+            when (value) {
+                is String -> bundle.putString(key, value)
+                is Int -> bundle.putInt(key, value)
+                is Double -> bundle.putDouble(key, value)
+                is Boolean -> bundle.putBoolean(key, value)
+            }
         }
     }
 
