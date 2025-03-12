@@ -86,7 +86,9 @@ import com.soho.sohoapp.live.ui.view.screens.golive.openWebView
 import com.soho.sohoapp.live.ui.view.screens.player.AgentPropertyInfo
 import com.soho.sohoapp.live.utility.Const.Companion.YT_ENABLE
 import com.soho.sohoapp.live.utility.Const.Companion.YT_VERIFY
+import com.soho.sohoapp.live.utility.TrackLiveStreamFinished
 import com.soho.sohoapp.live.utility.TrackLiveStreamPreview
+import com.soho.sohoapp.live.utility.TrackPreRecordPreviewCancel
 import com.soho.sohoapp.live.utility.deleteCachedImage
 import com.soho.sohoapp.live.utility.rotateScreen
 import com.soho.sohoapp.live.utility.saveBitmapToCache
@@ -117,6 +119,11 @@ fun TemplateScreen(
     var isRotateLandScreen by remember { mutableStateOf(false) }
     var isTemplateWithBrand by remember { mutableStateOf(MainStateHolder.mState.isTemplateWithBrand.value) }
     val alertState = remember { mutableStateOf(Pair(false, null as AlertConfig?)) }
+
+    //Save globally goLiveSubmit data
+    LaunchedEffect(key1 = goLiveData) {
+        mState.goLiveSubmit = goLiveData
+    }
 
     /*
     * show stream not enabled view
@@ -157,8 +164,6 @@ fun TemplateScreen(
             )
             val jsonStr = Json.encodeToString(requestLive)
             viewMMain.openLiveCastScreen(jsonStr)
-
-            mState.goLiveSubmit = goLiveData
 
             TrackLiveStreamPreview(
                 goLiveData.propertyId,
@@ -357,10 +362,15 @@ fun navigate(onPreRecording: () -> Unit, onLiveCast: () -> Unit) {
 }
 
 fun backClose(navController: NavHostController, activity: ComponentActivity) {
+    if (mState.liveFormat.value == LiveFormat.PRE.name) {
+        TrackPreRecordPreviewCancel()
+    }
+
     if (MainStateHolder.mState.liveOrientation.value == Orientation.LAND.name) {
         rotateScreen(Orientation.PORT.name, activity)
     }
     navController.popBackStack()
+
 }
 
 fun updateSelection(it: Boolean) {
