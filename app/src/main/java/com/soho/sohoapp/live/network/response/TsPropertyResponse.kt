@@ -227,8 +227,7 @@ data class Agent(
     val full_name: String,
     val avatar_url: String?,
     val agent_bg_colour: String = "#FFFFFF",
-    @SerialName("banner_image")
-    val bannerImage: BannerImage? = null,
+    val banner_image: String? = null,
     val rating_count: Float?,
     val reviews_count: Float?,
     var agency_name: String? = null

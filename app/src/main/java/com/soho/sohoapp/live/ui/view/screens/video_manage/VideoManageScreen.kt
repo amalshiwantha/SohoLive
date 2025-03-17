@@ -695,13 +695,13 @@ fun VideoItemContent(vidItem: VideoItem, onPlayClick: () -> Unit) {
                             }
 
                             //agency logo
-                            agent.bannerImage?.let {
+                            agent.banner_image?.let {
                                 Box(
                                     modifier = Modifier
                                         .align(Alignment.CenterVertically)
                                         .padding(end = 8.dp)
                                 ) {
-                                    val imgUrl = rememberAsyncImagePainter(model = it.url)
+                                    val imgUrl = rememberAsyncImagePainter(model = it)
 
                                     Image(
                                         painter = imgUrl,
