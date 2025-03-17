@@ -401,13 +401,13 @@ fun AgentPropertyInfo(agProp: AgentProperty, boxMod: Modifier, isHideAgent: Bool
                 }
 
                 //agency logo
-                agent.banner_image?.let {
+                agent.bannerImage?.let {
                     Box(
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(end = 8.dp)
                     ) {
-                        val urlPainter = rememberAsyncImagePainter(model = it)
+                        val urlPainter = rememberAsyncImagePainter(model = it.url)
 
                         Image(
                             painter = urlPainter,

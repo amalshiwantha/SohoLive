@@ -195,8 +195,15 @@ data class ClosestStation(
 @Serializable
 data class Meta(
     @SerialName("line_names") val lineNames: List<String> = emptyList(),
-    @SerialName("lines") val lines: List<String> = emptyList(),
+    @SerialName("lines") val lines: List<Line> = emptyList(),
     @SerialName("station_codes") val stationCodes: List<String> = emptyList()
+)
+
+@Serializable
+data class Line(
+    val code: String? = null,
+    val color: String? = null,
+    val name: String? = null
 )
 
 @Serializable
@@ -220,7 +227,8 @@ data class Agent(
     val full_name: String,
     val avatar_url: String?,
     val agent_bg_colour: String = "#FFFFFF",
-    var banner_image: String?,
+    @SerialName("banner_image")
+    val bannerImage: BannerImage? = null,
     val rating_count: Float?,
     val reviews_count: Float?,
     var agency_name: String? = null
